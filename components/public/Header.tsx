@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown, Menu, X } from 'lucide-react';
-// import { motion } from 'framer-motion'; // Removed unused import
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);

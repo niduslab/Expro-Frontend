@@ -3,71 +3,42 @@
 import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { motion, Variants, useScroll, useTransform, MotionValue, useSpring, useInView } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const fadeInUp: Variants = {
-  hidden: { 
-    opacity: 0, 
-    y: 30,
-    scale: 0.95,
-    filter: "blur(10px)"
-  },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: { 
-      duration: 1.5, 
-      ease: [0.22, 0.61, 0.36, 1] 
-    }
-  }
-};
-
-const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.35,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const Word = ({ children, range, progress, className }: { children: string, range: [number, number], progress: MotionValue<number>, className: string }) => {
-  const opacity = useTransform(progress, range, [0, 1]);
-  return (
-    <motion.span style={{ opacity }} className={`${className} inline-block mr-[0.25em]`}>
-      {children}
-    </motion.span>
-  );
-}
+gsap.registerPlugin(ScrollTrigger);
 
 const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-  const springValue = useSpring(0, {
-    damping: 60,
-    stiffness: 45,
-    restDelta: 0.001
-  });
 
   useEffect(() => {
-    if (inView) {
-      springValue.set(value);
+    if (!ref.current) {
+      return;
     }
-  }, [inView, value, springValue]);
 
-  useEffect(() => {
-    return springValue.on("change", (latest) => {
-      if (ref.current) {
-        // Format number with leading zero if less than 10, otherwise normal
-        const formatted = Math.floor(latest);
-        ref.current.textContent = (formatted < 10 ? `0${formatted}` : `${formatted}`) + suffix;
-      }
-    });
-  }, [springValue, suffix]);
+    const ctx = gsap.context(() => {
+      const obj = { value: 0 };
+      gsap.to(obj, {
+        value,
+        duration: 1.6,
+        ease: 'power1.out',
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top 85%',
+          once: true,
+        },
+        onUpdate: () => {
+          if (!ref.current) {
+            return;
+          }
+          const formatted = Math.floor(obj.value);
+          ref.current.textContent = `${formatted < 10 ? `0${formatted}` : formatted}${suffix}`;
+        },
+      });
+    }, ref);
+
+    return () => ctx.revert();
+  }, [value, suffix]);
 
   return <span ref={ref} className="text-4xl font-bold text-gray-900">00{suffix}</span>;
 };
@@ -75,9 +46,9 @@ const Counter = ({ value, suffix = "" }: { value: number, suffix?: string }) => 
 const WhoWeAre = () => {
   // Text segments for the animated paragraph
   const textSegments = [
-    { text: "Expro Welfare Foundation", className: "italic text-[#008A4B] font-bold" },
-    { text: " is a welfare-focused organization committed to empowering communities through sustainable initiatives, transparent governance, and long-term financial security programs. Our mission is to support individuals with structured welfare services and ", className: "text-gray-900" },
-    { text: "pension solutions that promote stability, dignity, and shared progress.", className: "italic text-[#667085]" }
+    { text: "Expro Welfare Foundation", className: "font-playfair-display italic text-[#008A4B] font-bold" },
+    { text: " is a welfare-focused organization committed to empowering communities through sustainable initiatives, transparent governance, and long-term financial security programs. Our mission is to support individuals with structured welfare services and ", className: "font-dm-sans text-gray-900" },
+    { text: "pension solutions that promote stability, dignity, and shared progress.", className: "font-playfair-display italic text-[#667085]" }
   ];
 
   // Flatten words for range calculation
@@ -88,104 +59,150 @@ const WhoWeAre = () => {
     })
   });
   
-  const element = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: element,
-    offset: ['start 0.95', 'start 0.15']
-  });
-  
-  // Add spring smoothing to the scroll progress for GSAP-like feel
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 45,
-    restDelta: 0.001
-  });
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.from('[data-who-badge]', {
+        opacity: 0,
+        y: 30,
+        scale: 0.95,
+        filter: 'blur(10px)',
+        duration: 1.2,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '[data-who-badge]',
+          start: 'top 85%',
+          once: true,
+        },
+      });
+
+      gsap.from('[data-who-button]', {
+        opacity: 0,
+        y: 30,
+        scale: 0.95,
+        filter: 'blur(10px)',
+        duration: 1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '[data-who-button]',
+          start: 'top 85%',
+          once: true,
+        },
+      });
+
+      const words = gsap.utils.toArray<HTMLElement>('[data-who-word]');
+      if (words.length) {
+        gsap.set(words, { opacity: 0.45, y: 4, filter: 'grayscale(1)' });
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 70%',
+            end: 'top 35%',
+            scrub: 1.2,
+          },
+        }).to(words, {
+          opacity: 1,
+          y: 0,
+          filter: 'grayscale(0)',
+          duration: 1.2,
+          ease: 'power1.out',
+          stagger: {
+            each: 0.05,
+            from: 'start',
+          },
+        });
+      }
+
+      gsap.from('[data-who-stat]', {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.7,
+        ease: 'power2.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: '[data-who-stats]',
+          start: 'top 85%',
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="py-20 bg-white">
+    <section ref={sectionRef} className="py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div className="mx-auto">
           {/* Badge */}
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp} 
-            className="mb-6"
-          >
+          <div data-who-badge className="mb-6">
             <span className="inline-flex items-center gap-2 bg-[#ECFDF3] text-[#027A48] px-4 py-1.5 rounded-full text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-[#027A48]"></span>
               Who We Are?
             </span>
-          </motion.div>
+          </div>
 
           {/* Main Content - Word by Word Reveal */}
           <div className="mb-10">
-            <p ref={element} className="font-playfair-display text-[40px] leading-[1.2] tracking-[-0.4px] flex flex-wrap">
+            <p
+              data-who-paragraph
+              className="text-[40px] leading-[1.2] tracking-[-0.4px] flex flex-wrap"
+            >
               {words.map((wordObj, i) => {
-                const start = i / words.length;
-                const end = start + (1 / words.length);
                 return (
-                  <Word 
-                    key={i} 
-                    range={[start, end]} 
-                    progress={smoothProgress} 
-                    className={wordObj.className}
+                  <span
+                    key={i}
+                    data-who-word
+                    className={`${wordObj.className} inline-block mr-[0.25em]`}
                   >
                     {wordObj.text}
-                  </Word>
+                  </span>
                 );
               })}
             </p>
           </div>
 
           {/* Button */}
-          <motion.div 
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="mb-16"
-          >
+          <div data-who-button className="mb-16">
             <Link href="/about">
-              <Button className="bg-green-700 hover:bg-green-900 text-white px-8 py-6 text-base font-medium rounded-lg">
+              <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
                 More About Us
               </Button>
             </Link>
-          </motion.div>
+          </div>
 
           {/* Stats Grid */}
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
+          <div data-who-stats className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
-            <motion.div variants={fadeInUp} className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Years Of Experience</h3>
               <Counter value={8} suffix=" +" />
-            </motion.div>
+            </div>
             
             {/* Card 2 */}
-            <motion.div variants={fadeInUp} className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Active Users</h3>
               <Counter value={2000} suffix=" +" />
-            </motion.div>
+            </div>
 
             {/* Card 3 */}
-            <motion.div variants={fadeInUp} className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Customer Satisfaction</h3>
               <Counter value={100} suffix=" %" />
-            </motion.div>
+            </div>
 
             {/* Card 4 */}
-            <motion.div variants={fadeInUp} className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Projects Are Done</h3>
               <Counter value={50} suffix=" +" />
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

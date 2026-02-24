@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
   Heart, 
   GraduationCap, 
@@ -59,51 +60,125 @@ const services = [
   },
 ];
 
+gsap.registerPlugin(ScrollTrigger);
+
 const WhatWeDo = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      const badge = sectionRef.current?.querySelector('[data-whatwedo-badge]');
+      const title = sectionRef.current?.querySelector('[data-whatwedo-title]');
+      const grid = sectionRef.current?.querySelector('[data-whatwedo-grid]');
+      const button = sectionRef.current?.querySelector('[data-whatwedo-button]');
+      const cards = sectionRef.current?.querySelectorAll('[data-whatwedo-card]');
+
+      if (badge) {
+        gsap.fromTo(badge, 
+          { opacity: 0, y: -20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: badge,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      if (title) {
+        gsap.fromTo(title, 
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: title,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      if (cards && cards.length > 0) {
+        gsap.fromTo(cards, 
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: grid || sectionRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      if (button) {
+        gsap.fromTo(button, 
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: button,
+              start: 'top 90%',
+              once: true,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 bg-white">
+    <section ref={sectionRef} className="py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
-        {/* Header Section */}
         <div className="text-center mb-16">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+          <div
+            data-whatwedo-badge
             className="inline-block px-4 py-1.5 bg-green-100 text-green-800 text-sm font-semibold rounded-full mb-6"
           >
             Our Projects
-          </motion.div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-3xl md:text-5xl font-bold text-gray-900"
-          >
+          </div>
+          <h2 data-whatwedo-title className="text-3xl md:text-5xl font-bold text-gray-900">
             Our Impact Areas – “What We Do”
-          </motion.h2>
+          </h2>
         </div>
         
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div data-whatwedo-grid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {services.map((service, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              data-whatwedo-card
               className="bg-white rounded-[8px] p-[24px] shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 flex flex-col h-[538px] w-full max-w-[421px] mx-auto group"
             >
-              {/* Icon */}
               <div className="mb-6">
                 <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white">
                   <service.icon size={24} strokeWidth={1.5} />
                 </div>
               </div>
               
-              {/* Content */}
               <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
                 {service.title}
               </h3>
@@ -111,7 +186,6 @@ const WhatWeDo = () => {
                 {service.description}
               </p>
               
-              {/* Link */}
               <Link 
                 href={service.link} 
                 className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 mb-8 transition-colors group/link"
@@ -120,7 +194,6 @@ const WhatWeDo = () => {
                 <ArrowUpRight size={16} className="ml-1 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
               </Link>
               
-              {/* Image */}
               <div className="relative h-[192px] w-full rounded-[4px] overflow-hidden mt-auto shrink-0">
                 <Image
                   src={service.image}
@@ -130,25 +203,19 @@ const WhatWeDo = () => {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        {/* Bottom Button */}
         <div className="text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
+          <div data-whatwedo-button>
             <Link 
               href="/projects" 
               className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md"
             >
               View All Projects
             </Link>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
