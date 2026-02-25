@@ -1,5 +1,6 @@
 import { Header } from '@/components/public/Header';
 import Footer from '@/components/public/layout/Footer';
+import { CtaSection } from '@/components/public/layout/CtaSection';
 
 export default function PublicLayout({
   children,
@@ -10,6 +11,7 @@ export default function PublicLayout({
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">{children}</main>
+      <CtaSection />
       <Footer />
     </div>
   );

@@ -95,25 +95,30 @@ const WhoWeAre = () => {
         },
       });
 
-      const words = gsap.utils.toArray<HTMLElement>('[data-who-word]');
-      if (words.length) {
-        gsap.set(words, { opacity: 0.45, y: 4, filter: 'grayscale(1)' });
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            end: 'top 35%',
-            scrub: 1.2,
-          },
-        }).to(words, {
+      const wordElements = gsap.utils.toArray<HTMLElement>('[data-who-word]');
+      if (wordElements.length) {
+        // Initial state: muted, grayed out, slightly offset
+        gsap.set(wordElements, { 
+          opacity: 0.2, 
+          filter: 'grayscale(100%)', 
+          y: 20,
+          willChange: 'opacity, transform, filter' 
+        });
+
+        // Animate to full visibility and vibrant color
+        gsap.to(wordElements, {
           opacity: 1,
+          filter: 'grayscale(0%)',
           y: 0,
-          filter: 'grayscale(0)',
-          duration: 1.2,
-          ease: 'power1.out',
-          stagger: {
-            each: 0.05,
-            from: 'start',
+          duration: 1,
+          ease: 'power2.out',
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: '[data-who-paragraph]',
+            start: 'top 85%',
+            end: 'bottom 45%',
+            scrub: 1,
+            toggleActions: 'play reverse play reverse',
           },
         });
       }
@@ -180,25 +185,25 @@ const WhoWeAre = () => {
           {/* Stats Grid */}
           <div data-who-stats className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
-            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#F0F4F2] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Years Of Experience</h3>
               <Counter value={8} suffix=" +" />
             </div>
             
             {/* Card 2 */}
-            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#F0F4F2] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Active Users</h3>
               <Counter value={2000} suffix=" +" />
             </div>
 
             {/* Card 3 */}
-            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#F0F4F2] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Customer Satisfaction</h3>
               <Counter value={100} suffix=" %" />
             </div>
 
             {/* Card 4 */}
-            <div data-who-stat className="bg-[#E5E7EB] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
+            <div data-who-stat className="bg-[#F0F4F2] w-[310px] h-[195px] p-8 rounded-[8px] border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center">
               <h3 className="text-gray-600 text-base mb-4 font-medium">Projects Are Done</h3>
               <Counter value={50} suffix=" +" />
             </div>

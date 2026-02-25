@@ -10,41 +10,82 @@ import { ArrowUpRight } from 'lucide-react';
 const team = [
   {
     name: 'Md. Motahar Hossen',
-    role: 'Founder & Chairman',
+    role: 'Executive Member',
     emNo: '01',
-    image: '/images/landing-page/our-leadership/125e98101d7746b2ef31b68b728baf6d5c697e82.png',
+    image: '/images/landing-page/our-leadership/06-md-ataur-rahman.png',
   },
   {
-    name: 'Md. Hasan Shafiul Kabir',
-    role: 'Vice Chairman',
+    name: 'Md. Hashan Sofiul Kabir',
+    role: 'Executive Member',
     emNo: '02',
-    image: '/images/landing-page/our-leadership/5145dbda138612bb2d5e7f49182b8cbc39f4fdf9.png',
+    image: '/images/landing-page/our-leadership/05-md-nur-islam.png',
   },
   {
     name: 'Md. Ahsanuzzaman',
-    role: 'Secretary / Executive Director',
+    role: 'Executive Member',
     emNo: '03',
-    image: '/images/landing-page/our-leadership/8da3f7de3c0ee9f8ed0220c6156392ec089d31d8.png',
+    image: '/images/landing-page/our-leadership/03-md-ahsanuzzaman.png',
   },
   {
-    name: 'Md. Yusuf Ali Khondokar',
-    role: 'Treasurer',
+    name: 'Md. Yusuf Ali Khandaker',
+    role: 'Executive Member',
     emNo: '04',
-    image: '/images/landing-page/our-leadership/d28bf04d467e6b54b921af2ffb218941bd4c3f78.png',
+    image: '/images/landing-page/our-leadership/04-md-yusuf-ali-khandaker.png',
   },
   {
     name: 'Md. Nur Islam',
     role: 'Executive Member',
     emNo: '05',
-    image: '/images/landing-page/our-leadership/decbdde75be73f8ee519cf25ddefec10417179dc.png',
+    image: '/images/landing-page/our-leadership/01-md-motahar-hossen.png',
   },
   {
-    name: 'Md. Motahar Hossen',
-    role: 'Founder & Chairman',
+    name: 'Md. Ataur Rahman',
+    role: 'Executive Member',
     emNo: '06',
-    image: '/images/landing-page/our-leadership/dfcc50a8f0f9b01836b48922b8d7028264313e2e.png',
+    image: '/images/landing-page/our-leadership/02-md-hashan-sofiul-kabir.png',
   },
 ];
+
+
+
+
+
+// {
+//     name: 'Md. Motahar Hossen',
+//     role: 'Executive Member',
+//     emNo: '01',
+//     image: '/images/landing-page/our-leadership/06-md-ataur-rahman.png',
+//   },
+//   {
+//     name: 'Md. Hashan Sofiul Kabir',
+//     role: 'Executive Member',
+//     emNo: '02',
+//     image: '/images/landing-page/our-leadership/02-md-hashan-sofiul-kabir.png',
+//   },
+//   {
+//     name: 'Md. Ahsanuzzaman',
+//     role: 'Executive Member',
+//     emNo: '03',
+//     image: '/images/landing-page/our-leadership/03-md-ahsanuzzaman.png',
+//   },
+//   {
+//     name: 'Md. Yusuf Ali Khandaker',
+//     role: 'Executive Member',
+//     emNo: '04',
+//     image: '/images/landing-page/our-leadership/04-md-yusuf-ali-khandaker.png',
+//   },
+//   {
+//     name: 'Md. Nur Islam',
+//     role: 'Executive Member',
+//     emNo: '05',
+//     image: '/images/landing-page/our-leadership/05-md-nur-islam.png',
+//   },
+//   {
+//     name: 'Md. Ataur Rahman',
+//     role: 'Executive Member',
+//     emNo: '06',
+//     image: '/images/landing-page/our-leadership/06-md-ataur-rahman.png',
+//   },
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -116,7 +157,7 @@ const Leadership = () => {
             <div
               key={index}
               data-leadership-card
-              className="group relative w-full max-w-[421px] h-[500px] rounded-[8px] overflow-hidden border border-b-[1px] border-[#E5E7EB]"
+              className="group relative w-full max-w-[421px] h-[500px] bg-[#F3F4F6] rounded-[8px] overflow-hidden border border-b-[1px] border-[#E5E7EB]"
             >
               {/* Background Image */}
               <div className="absolute inset-0">
