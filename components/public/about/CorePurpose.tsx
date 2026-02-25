@@ -45,9 +45,9 @@ const CorePurpose = () => {
           {items.map((item, index) => (
             <div 
               key={index} 
-              className="bg-white p-8 md:p-10 rounded-[12px] border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-start h-full"
+              className="bg-white p-8 md:p-10 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-start h-full"
             >
-              <div className="w-14 h-14 rounded-[8px] bg-[#008A4B] flex items-center justify-center mb-6 text-white shrink-0">
+              <div className="w-14 h-14 rounded-lg bg-[#008A4B] flex items-center justify-center mb-6 text-white shrink-0">
                 <item.icon size={28} strokeWidth={1.5} />
               </div>
               
@@ -68,3 +68,4 @@ const CorePurpose = () => {
 };
 
 export default CorePurpose;
+

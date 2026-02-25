@@ -9,7 +9,7 @@ const OurStory = () => {
           
           {/* Left Column: Image with Floating Card */}
           <div className="relative">
-            <div className="relative h-[400px] md:h-[500px] lg:h-[698px] w-full lg:w-[644px] rounded-[8px] overflow-hidden">
+            <div className="relative h-100 md:h-125 lg:h-174.5 w-full lg:w-161 rounded-lg overflow-hidden">
               <Image
                 src="/images/about/our-story-img.jpg"
                 alt="Community collaboration"
@@ -20,8 +20,8 @@ const OurStory = () => {
             </div>
             
             {/* Floating Card */}
-            <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 bg-white p-6 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] flex items-center gap-4 max-w-[240px]">
-              <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#EBFDF3] flex items-center justify-center text-[#36F293] font-bold text-xl md:text-2xl">
+            <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 bg-white p-6 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] flex items-center gap-4 max-w-60">
+              <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#EBFDF3] flex items-center justify-center text-[#36F293] font-bold text-xl md:text-2xl">
                 8+
               </div>
               <div>
@@ -79,3 +79,4 @@ const OurStory = () => {
 };
 
 export default OurStory;
+

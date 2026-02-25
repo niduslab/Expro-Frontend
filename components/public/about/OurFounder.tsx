@@ -49,7 +49,7 @@ const OurFounder = () => {
 
           {/* Right Column: Image */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[644px] h-[500px] md:h-[600px] lg:h-[675px] rounded-[8px] overflow-hidden bg-[#F5F5F5]">
+            <div className="relative w-full max-w-161 h-125 md:h-150 lg:h-168.75 rounded-lg overflow-hidden bg-[#F5F5F5]">
               <Image
                 src="/images/about/our-founder.png"
                 alt="Md. Motaher Hossain - Founder Chairman"
@@ -67,3 +67,4 @@ const OurFounder = () => {
 };
 
 export default OurFounder;
+

@@ -120,7 +120,7 @@ const Events = () => {
               } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
             >
               {/* Image */}
-              <div className="w-full lg:w-1/2 h-[300px] lg:h-[360px] relative rounded-xl overflow-hidden shrink-0">
+              <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
                 <Image
                   src={event.image}
                   alt={event.title}

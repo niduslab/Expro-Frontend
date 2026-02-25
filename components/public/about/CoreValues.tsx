@@ -50,9 +50,9 @@ const CoreValues = () => {
           {values.map((value, index) => (
             <div 
               key={index}
-              className="group flex flex-col items-center justify-center p-8 rounded-[12px] border border-gray-300 transition-all duration-300 min-h-[180px] bg-white hover:border-[#36F293]/30 hover:shadow-[0_4px_20px_rgba(54,242,147,0.1)]"
+              className="group flex flex-col items-center justify-center p-8 rounded-xl border border-gray-300 transition-all duration-300 min-h-45 bg-white hover:border-[#36F293]/30 hover:shadow-[0_4px_20px_rgba(54,242,147,0.1)]"
             >
-              <div className="w-12 h-12 rounded-[8px] flex items-center justify-center mb-4 transition-colors duration-300 bg-[#F5F7FA] text-[#008A4B] group-hover:bg-[#EBFDF3]">
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-colors duration-300 bg-[#F5F7FA] text-[#008A4B] group-hover:bg-[#EBFDF3]">
                 <value.icon size={24} strokeWidth={1.5} />
               </div>
               
@@ -69,3 +69,4 @@ const CoreValues = () => {
 };
 
 export default CoreValues;
+

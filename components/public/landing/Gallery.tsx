@@ -27,9 +27,9 @@ const Gallery = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-[600px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-150">
           {/* Column 1 - Large Image */}
-          <div className="relative w-full h-[300px] md:h-full rounded-2xl overflow-hidden group">
+          <div className="relative w-full h-75 md:h-full rounded-2xl overflow-hidden group">
             <Image
               src={galleryImages[0]}
               alt="Gallery Image 1"
@@ -40,7 +40,7 @@ const Gallery = () => {
 
           {/* Column 2 */}
           <div className="flex flex-col gap-6 h-full">
-            <div className="relative w-full h-[300px] md:flex-1 rounded-2xl overflow-hidden group">
+            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
               <Image
                 src={galleryImages[1]}
                 alt="Gallery Image 2"
@@ -48,7 +48,7 @@ const Gallery = () => {
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
-            <div className="relative w-full h-[300px] md:flex-1 rounded-2xl overflow-hidden group">
+            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
               <Image
                 src={galleryImages[2]}
                 alt="Gallery Image 3"
@@ -60,7 +60,7 @@ const Gallery = () => {
 
           {/* Column 3 */}
           <div className="flex flex-col gap-6 h-full">
-             <div className="relative w-full h-[300px] md:flex-1 rounded-2xl overflow-hidden group">
+             <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
               <Image
                 src={galleryImages[3]}
                 alt="Gallery Image 4"
@@ -68,7 +68,7 @@ const Gallery = () => {
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
-            <div className="relative w-full h-[300px] md:flex-1 rounded-2xl overflow-hidden group">
+            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
               <Image
                 src={galleryImages[4]}
                 alt="Gallery Image 5"

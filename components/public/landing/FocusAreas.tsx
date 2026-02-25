@@ -100,8 +100,8 @@ const FocusAreas = () => {
 
   return (
     <section ref={sectionRef} className="relative py-20 bg-[#0B2F1C] text-white overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(38,168,113,0.35),_rgba(11,47,28,0.15)_45%,_rgba(11,47,28,0.9)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,_rgba(9,26,17,0.1)_0%,_rgba(9,26,17,0.7)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(38,168,113,0.35),rgba(11,47,28,0.15)_45%,rgba(11,47,28,0.9)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,26,17,0.1)_0%,rgba(9,26,17,0.7)_100%)]" />
       <div className="relative container mx-auto px-6 md:px-12 lg:px-20 xl:px-28">
         <div data-focus-header className="flex flex-col items-center text-center mb-14">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#0E4026] border border-white/10 px-4 py-1.5 text-sm font-medium text-[#DFF5E9] shadow-[0_10px_25px_rgba(0,0,0,0.25)]">
