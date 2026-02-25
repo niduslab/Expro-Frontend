@@ -1,38 +1,42 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import React, { useEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 const featuredArticle = {
-  title: 'Empowering Rural Communities Through Digital Education',
-  date: '29 January 2026',
-  image: '/images/landing-page/news-articles/03bd5239104db81558f6719f369a859738745006.jpg',
-  link: '/blog',
+  title: "Empowering Rural Communities Through Digital Education",
+  date: "29 January 2026",
+  image:
+    "/images/landing-page/news-articles/03bd5239104db81558f6719f369a859738745006.jpg",
+  link: "/blog",
 };
 
 const articles = [
   {
-    title: 'Success Stories: Women Entrepreneurs Making a Difference',
-    date: '29 January 2026',
-    image: '/images/landing-page/news-articles/a219485de1d6d9b32269b25fa62578c5deca26a2.jpg',
-    link: '/blog',
+    title: "Success Stories: Women Entrepreneurs Making a Difference",
+    date: "29 January 2026",
+    image:
+      "/images/landing-page/news-articles/a219485de1d6d9b32269b25fa62578c5deca26a2.jpg",
+    link: "/blog",
   },
   {
-    title: 'Pension Scheme: Securing Your Financial Future',
-    date: '29 January 2026',
-    image: '/images/landing-page/news-articles/e5d0015f1fb74183f7a0e248c7f6ff85af0306cb.jpg',
-    link: '/blog',
+    title: "Pension Scheme: Securing Your Financial Future",
+    date: "29 January 2026",
+    image:
+      "/images/landing-page/news-articles/e5d0015f1fb74183f7a0e248c7f6ff85af0306cb.jpg",
+    link: "/blog",
   },
   {
-    title: 'Investing 101: Building Wealth with a Strategic Investment Plan',
-    date: '29 January 2026',
-    image: '/images/landing-page/news-articles/f59cd0ed0506a9cd50194461aaecc6eaede4eb1b.jpg',
-    link: '/blog',
+    title: "Investing 101: Building Wealth with a Strategic Investment Plan",
+    date: "29 January 2026",
+    image:
+      "/images/landing-page/news-articles/f59cd0ed0506a9cd50194461aaecc6eaede4eb1b.jpg",
+    link: "/blog",
   },
 ];
 
@@ -47,39 +51,39 @@ const NewsArticles = () => {
     }
 
     const ctx = gsap.context(() => {
-      gsap.from('[data-news-header]', {
+      gsap.from("[data-news-header]", {
         opacity: 0,
         y: 16,
         duration: 0.6,
-        ease: 'power2.out',
+        ease: "power2.out",
         scrollTrigger: {
-          trigger: '[data-news-header]',
-          start: 'top 85%',
+          trigger: "[data-news-header]",
+          start: "top 85%",
           once: true,
         },
       });
 
-      gsap.from('[data-news-featured]', {
+      gsap.from("[data-news-featured]", {
         opacity: 0,
         y: 20,
         duration: 0.7,
-        ease: 'power2.out',
+        ease: "power2.out",
         scrollTrigger: {
-          trigger: '[data-news-featured]',
-          start: 'top 85%',
+          trigger: "[data-news-featured]",
+          start: "top 85%",
           once: true,
         },
       });
 
-      gsap.from('[data-news-card]', {
+      gsap.from("[data-news-card]", {
         opacity: 0,
         y: 18,
         duration: 0.6,
-        ease: 'power2.out',
+        ease: "power2.out",
         stagger: 0.12,
         scrollTrigger: {
-          trigger: '[data-news-list]',
-          start: 'top 85%',
+          trigger: "[data-news-list]",
+          start: "top 85%",
           once: true,
         },
       });
@@ -91,7 +95,10 @@ const NewsArticles = () => {
   return (
     <section ref={sectionRef} className="py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
-        <div data-news-header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+        <div
+          data-news-header
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12"
+        >
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] mb-4">
               <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
@@ -115,7 +122,7 @@ const NewsArticles = () => {
             data-news-featured
             className="bg-white rounded-2xl border border-[#EAECF0] shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
           >
-            <div className="relative h-[280px] md:h-[360px] w-full">
+            <div className="relative h-70 md:h-90 w-full">
               <Image
                 src={featuredArticle.image}
                 alt={featuredArticle.title}
@@ -125,7 +132,9 @@ const NewsArticles = () => {
               />
             </div>
             <div className="p-6 md:p-8">
-              <p className="text-sm font-medium text-[#667085] mb-3">{featuredArticle.date}</p>
+              <p className="text-sm font-medium text-[#667085] mb-3">
+                {featuredArticle.date}
+              </p>
               <h3 className="text-2xl md:text-3xl font-semibold text-[#101828] mb-6">
                 {featuredArticle.title}
               </h3>
@@ -144,7 +153,7 @@ const NewsArticles = () => {
                 data-news-card
                 className="bg-white rounded-2xl border border-[#EAECF0] p-5 md:p-6 flex flex-col sm:flex-row gap-5 items-start shadow-sm hover:shadow-md transition-shadow duration-300"
               >
-                <div className="relative w-full sm:w-[180px] h-[140px] rounded-xl overflow-hidden shrink-0">
+                <div className="relative w-full sm:w-45 h-35 rounded-xl overflow-hidden shrink-0">
                   <Image
                     src={article.image}
                     alt={article.title}
@@ -154,7 +163,9 @@ const NewsArticles = () => {
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-[#667085] mb-2">{article.date}</p>
+                  <p className="text-sm font-medium text-[#667085] mb-2">
+                    {article.date}
+                  </p>
                   <h4 className="text-lg md:text-xl font-semibold text-[#101828] mb-4">
                     {article.title}
                   </h4>
