@@ -1,6 +1,6 @@
 import React from 'react';
 import PageHero from '@/components/ui/PageHero';
-import PersonalInformation from '@/components/public/membership/PersonalInformation';
+import MembershipForm from '@/components/public/membership/MembershipForm';
 
 export default function BecomeMemberPage() {
   return (
@@ -12,7 +12,7 @@ export default function BecomeMemberPage() {
         pageName="Become a Member"
         objectPosition="top"
       />
-      <PersonalInformation />
+      <MembershipForm />
     </>
   );
 }

@@ -1,44 +1,43 @@
 "use client";
 
-import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
+import React, { useState, ChangeEvent, useRef } from 'react';
 import { Camera, ChevronRight, ChevronLeft, Upload } from 'lucide-react';
 
-export type PersonalInfoState = {
-  nameBangla: string;
-  nameEnglish: string;
-  fatherHusbandName: string;
-  motherName: string;
+export type NomineeInfoState = {
+  nomineeNameBangla: string;
+  nomineeNameEnglish: string;
   dateOfBirth: string;
+  relation: string;
   nid: string;
-  qualification: string[];
   photo: File | null;
 };
 
-type FormErrors = Partial<Record<keyof PersonalInfoState, string>>;
+type FormErrors = Partial<Record<keyof NomineeInfoState, string>>;
 
 const nameBanglaPlaceholder = "আপনার নাম";
 const nameEnglishPlaceholder = "You full name";
-const fatherHusbandPlaceholder = "Father's / Husband's Name";
-const motherNamePlaceholder = "Mother's name";
 const dateOfBirthPlaceholder = "mm/dd/yyyy";
-const nidPlaceholder = "Enter your NID number";
+const relationPlaceholder = "e.g. wife, son, daughter friend";
+const nidPlaceholder = "Nominee national ID number if available";
 
 import StepsNavigation from './StepsNavigation';
 
-interface PersonalInformationProps {
-  data: PersonalInfoState;
-  onUpdate: (data: PersonalInfoState) => void;
+interface NomineeInformationProps {
+  data: NomineeInfoState;
+  onUpdate: (data: NomineeInfoState) => void;
   onNext: () => void;
+  onPrev: () => void;
   steps: { label: string; id: string }[];
   currentStep: number;
   maxStepReached: number;
   onStepClick: (index: number) => void;
 }
 
-const PersonalInformation: React.FC<PersonalInformationProps> = ({
+const NomineeInformation: React.FC<NomineeInformationProps> = ({
   data,
   onUpdate,
   onNext,
+  onPrev,
   steps,
   currentStep,
   maxStepReached,
@@ -47,10 +46,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const qualifications = ['JSC', 'SSC', 'HSC', 'Bachelor', 'Masters', 'Others'];
-
   const handleChange =
-    (field: keyof PersonalInfoState) =>
+    (field: keyof NomineeInfoState) =>
     (event: ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
       onUpdate({
@@ -64,27 +61,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         }));
       }
     };
-
-  const handleQualificationSelect = (qualification: string) => {
-    let newQualifications: string[];
-    if (data.qualification.includes(qualification)) {
-      newQualifications = data.qualification.filter((q) => q !== qualification);
-    } else {
-      newQualifications = [...data.qualification, qualification];
-    }
-
-    onUpdate({
-      ...data,
-      qualification: newQualifications,
-    });
-    
-    if (newQualifications.length > 0 && errors.qualification) {
-      setErrors((prev) => ({
-        ...prev,
-        qualification: undefined,
-      }));
-    }
-  };
 
   const handlePhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
@@ -103,20 +79,12 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   const validate = () => {
     const nextErrors: FormErrors = {};
 
-    if (!data.nameBangla.trim()) {
-      nextErrors.nameBangla = "Name (Bangla) is required";
+    if (!data.nomineeNameBangla.trim()) {
+      nextErrors.nomineeNameBangla = "Nominee Name (Bangla) is required";
     }
 
-    if (!data.nameEnglish.trim()) {
-      nextErrors.nameEnglish = "Name (English) is required";
-    }
-
-    if (!data.fatherHusbandName.trim()) {
-      nextErrors.fatherHusbandName = "Father's / Husband's Name is required";
-    }
-
-    if (!data.motherName.trim()) {
-      nextErrors.motherName = "Mother's Name is required";
+    if (!data.nomineeNameEnglish.trim()) {
+      nextErrors.nomineeNameEnglish = "Nominee Name (English) is required";
     }
 
     if (!data.dateOfBirth.trim()) {
@@ -128,8 +96,12 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       }
     }
 
+    if (!data.relation.trim()) {
+      nextErrors.relation = "Relation With Applicant's is required";
+    }
+
     if (!data.nid.trim()) {
-      nextErrors.nid = "National/Smart ID No is required";
+      nextErrors.nid = "Nominee National Id No is required";
     } else {
       const nidPattern = /^[0-9]{10,17}$/;
       if (!nidPattern.test(data.nid.trim())) {
@@ -137,12 +109,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       }
     }
 
-    if (data.qualification.length === 0) {
-      nextErrors.qualification = "Select at least one qualification";
-    }
-
-    // Since file cannot be persisted in localStorage, we skip required check if loading from there?
-    // No, let's enforce it. If user refreshes, they need to upload again.
     if (!data.photo) {
       nextErrors.photo = "Passport size photo is required";
     } else if (data.photo.size > 2 * 1024 * 1024) {
@@ -168,8 +134,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-[#00341C] text-3xl font-bold mb-2">Personal Information</h2>
-            <p className="text-gray-500 text-sm md:text-base">Please provide your basic details</p>
+            <h2 className="text-[#00341C] text-3xl font-bold mb-2">Nominee Information</h2>
+            <p className="text-gray-500 text-sm md:text-base">Please fill out all required fields to complete your application.</p>
           </div>
 
           <StepsNavigation 
@@ -182,83 +148,43 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           {/* Form Content */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             
-            {/* Name (Bangla) */}
+            {/* Nominee Name (Bangla) */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
-                Name (Bangla) <span className="text-red-500">*</span>
+                Nominee Name (Bangla) <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={data.nameBangla}
-                onChange={handleChange("nameBangla")}
+                value={data.nomineeNameBangla}
+                onChange={handleChange("nomineeNameBangla")}
                 placeholder={nameBanglaPlaceholder}
-                aria-invalid={Boolean(errors.nameBangla)}
+                aria-invalid={Boolean(errors.nomineeNameBangla)}
                 className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nameBangla ? "border-red-500" : "border-gray-200"
+                  errors.nomineeNameBangla ? "border-red-500" : "border-gray-200"
                 }`}
               />
-              {errors.nameBangla && (
-                <p className="text-xs text-red-500">{errors.nameBangla}</p>
+              {errors.nomineeNameBangla && (
+                <p className="text-xs text-red-500">{errors.nomineeNameBangla}</p>
               )}
             </div>
 
-            {/* Name (English) */}
+            {/* Nominee Name (English) */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
-                Name (English) <span className="text-red-500">*</span>
+                Nominee Name (English) <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={data.nameEnglish}
-                onChange={handleChange("nameEnglish")}
+                value={data.nomineeNameEnglish}
+                onChange={handleChange("nomineeNameEnglish")}
                 placeholder={nameEnglishPlaceholder}
-                aria-invalid={Boolean(errors.nameEnglish)}
+                aria-invalid={Boolean(errors.nomineeNameEnglish)}
                 className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nameEnglish ? "border-red-500" : "border-gray-200"
+                  errors.nomineeNameEnglish ? "border-red-500" : "border-gray-200"
                 }`}
               />
-              {errors.nameEnglish && (
-                <p className="text-xs text-red-500">{errors.nameEnglish}</p>
-              )}
-            </div>
-
-            {/* Father's / Husband's Name */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900">
-                Father's / Husband's Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={data.fatherHusbandName}
-                onChange={handleChange("fatherHusbandName")}
-                placeholder={fatherHusbandPlaceholder}
-                aria-invalid={Boolean(errors.fatherHusbandName)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.fatherHusbandName ? "border-red-500" : "border-gray-200"
-                }`}
-              />
-              {errors.fatherHusbandName && (
-                <p className="text-xs text-red-500">{errors.fatherHusbandName}</p>
-              )}
-            </div>
-
-            {/* Mother's Name */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900">
-                Mother's Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={data.motherName}
-                onChange={handleChange("motherName")}
-                placeholder={motherNamePlaceholder}
-                aria-invalid={Boolean(errors.motherName)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.motherName ? "border-red-500" : "border-gray-200"
-                }`}
-              />
-              {errors.motherName && (
-                <p className="text-xs text-red-500">{errors.motherName}</p>
+              {errors.nomineeNameEnglish && (
+                <p className="text-xs text-red-500">{errors.nomineeNameEnglish}</p>
               )}
             </div>
 
@@ -282,10 +208,30 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               )}
             </div>
 
-            {/* National/Smart ID No */}
+            {/* Relation With Applicant's */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
-                National/Smart ID No <span className="text-red-500">*</span>
+                Relation With Applicant's <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={data.relation}
+                onChange={handleChange("relation")}
+                placeholder={relationPlaceholder}
+                aria-invalid={Boolean(errors.relation)}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
+                  errors.relation ? "border-red-500" : "border-gray-200"
+                }`}
+              />
+              {errors.relation && (
+                <p className="text-xs text-red-500">{errors.relation}</p>
+              )}
+            </div>
+
+            {/* Nominee National Id No */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900">
+                Nominee National Id No <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -299,32 +245,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               />
               {errors.nid && (
                 <p className="text-xs text-red-500">{errors.nid}</p>
-              )}
-            </div>
-
-            {/* Academic Qualification */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900 mb-3">
-                Academic Qualification <span className="text-red-500">*</span>
-              </label>
-              <div className="flex flex-wrap gap-3">
-                {qualifications.map((qual) => (
-                  <button
-                    key={qual}
-                    type="button"
-                    onClick={() => handleQualificationSelect(qual)}
-                    className={`px-6 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#008543] ${
-                      data.qualification.includes(qual)
-                        ? "bg-[#008543] text-white"
-                        : "bg-[#F3F4F6] text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    {qual}
-                  </button>
-                ))}
-              </div>
-              {errors.qualification && (
-                <p className="text-xs text-red-500 mt-2">{errors.qualification}</p>
               )}
             </div>
 
@@ -381,8 +301,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         <div className="flex justify-between items-center mt-8">
           <button
             type="button"
-            className="flex items-center px-6 py-3 bg-[#F3F4F6] text-gray-600 rounded-md font-medium hover:bg-gray-200 transition-colors opacity-50 cursor-not-allowed"
-            disabled
+            onClick={onPrev}
+            className="flex items-center px-6 py-3 bg-[#F3F4F6] text-gray-600 rounded-md font-medium hover:bg-gray-200 transition-colors"
           >
             <ChevronLeft size={20} className="mr-2" />
             Previous
@@ -403,4 +323,4 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   );
 };
 
-export default PersonalInformation;
+export default NomineeInformation;
