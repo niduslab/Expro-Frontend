@@ -1,12 +1,18 @@
-import { Button } from "@/components/ui/Button";
+"use client";
 import { ArrowRightFromLine, ArrowUpRight, MoveUpRight } from "lucide-react";
 import Image from "next/image";
 
 export default function BlogItem1() {
+  function redirectodetailspage() {
+    window.location.href = "/blog/blogdetails";
+  }
   return (
     <>
       {/* card 1 */}
-      <div className="w-[421px] h-[506px] opacity-100 gap-2.5 rounded-[8px] border border-[#E5E7EB] p-6 shadow-[0_4px_40px_0_#00000014]">
+      <div
+        onClick={() => redirectodetailspage()}
+        className="w-[421px] h-[506px] opacity-100 gap-2.5 rounded-[8px] border border-[#E5E7EB] p-6 shadow-[0_4px_40px_0_#00000014]"
+      >
         <div className=" flex flex-col items-start justify-start w-[373px] h-[458px] opacity-100 gap-6">
           {/* Image Section */}
           <div className="w-[373px] h-[272px] opacity-100 rounded-[4px] overflow-hidden relative gap-6">

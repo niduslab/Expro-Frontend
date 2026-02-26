@@ -1,6 +1,5 @@
-import React from "react";
+"use client";
 import Hero from "./hero";
-import BlogItems from "./blogitems/blogitems1";
 import BlogItem1 from "./blogitems/blogitems1";
 import BlogItems2 from "./blogitems/blogitems2";
 import BlogItems3 from "./blogitems/blogitems3";
@@ -10,13 +9,14 @@ import BlogItems6 from "./blogitems/blogitems6";
 import BlogItems7 from "./blogitems/blogitems7";
 import BlogItems9 from "./blogitems/blogitems9";
 import BlogItems8 from "./blogitems/blogitems8";
+import { Link } from "lucide-react";
 
 export default function BlogPage() {
   return (
     <>
       <div className="w-[1440px] h-[3717px] bg-white">
         {" "}
-        <div className=" h-[590px] w-[1440px]">
+        <div className="h-[590px] w-[1440px]">
           <Hero />
         </div>
         <div className="bg-white flex flex-row w-[1440px] h-[2030px]  pt-[120px] pr-[64px] pb-[120px] pl-[64px] gap-[10px]">
