@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Camera, ChevronRight, ChevronLeft, Upload } from 'lucide-react';
 
