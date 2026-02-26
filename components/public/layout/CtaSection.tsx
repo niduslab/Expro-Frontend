@@ -7,7 +7,7 @@ import Image from 'next/image';
 export function CtaSection() {
   return (
     <section className="w-full py-16 md:py-20 bg-white flex justify-center">
-      <div className="relative w-full max-w-[1312px] min-h-[476px] mx-auto rounded-[16px] overflow-hidden flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-12 bg-[#00341C]/12">
+      <div className="relative w-full max-w-[1450px] min-h-[476px] mx-auto rounded-[16px] overflow-hidden flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-12 bg-[#00341C]/12">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -17,6 +17,7 @@ export function CtaSection() {
             className="object-cover object-center opacity-100"
             quality={100}
           />
+          <div className="absolute inset-0 bg-[#F0F4F2] opacity-90" />
         </div>
 
         <div className="relative z-10 w-full">
