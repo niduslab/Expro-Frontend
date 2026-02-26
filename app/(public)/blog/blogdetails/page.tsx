@@ -9,7 +9,7 @@ export default function BlogDetails() {
           <Hero />
         </div>{" "}
         <div className="relative  flex w-[1440px] h-[1813px] pt-[120px] pr-16 pb-[120px] pl-16 gap-2.5">
-          <div className="w-[1312px]  bg-green-500 h-[1573px] flex justify-between opacity-100">
+          <div className="w-[1312px] h-[1573px] flex justify-between opacity-100">
             <div className="flex flex-col bg-white text-[#030712] w-[867px] h-[1573px] gap-6 opacity-100">
               <div className="w-[867px] h-[24px]">
                 <p className="font-['DM_Sans'] text-[#4A5565] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
@@ -142,7 +142,124 @@ export default function BlogDetails() {
               </div>
             </div>
 
-            <div className="w-[421px] h-[713px] opacity-100 rounded-[8px] bg-white border border-[#E5E7EB] shadow-[0_4px_40px_0_#00000014]"></div>
+            <div className="flex flex-col w-[421px] h-[713px] opacity-100 rounded-[8px] bg-white border border-[#E5E7EB] shadow-[0_4px_40px_0_#00000014]">
+              <div className="relative top-6 left-6 w-[191px] h-[29px] opacity-100">
+                <p className="font-['DM_Sans'] font-semibold text-[24px] leading-[120%] tracking-[-0.01em] text-[#030712]">
+                  Recent Posts
+                </p>
+                <div className="absolute top-[41px] w-[421px] h-0 border left-[-24px] opacity-100"></div>
+              </div>
+              <div className="relative top-[65px] w-[421px] h-[600px] flex flex-col gap-6 opacity-100 ">
+                <div className="w-[421px] flex h-[138px] gap-[24px] px-6  border-b border-b-[#E5E7EB] ">
+                  <div className="w-[421px] flex h-[138px] gap-[16px]">
+                    <div className=" ">
+                      <Image
+                        src="/images/blog-media/blog-item-two.jpg"
+                        alt="Blog Hero Background"
+                        height={166}
+                        width={114}
+                        className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
+                      />
+                    </div>
+                    <div className=" h-[114px] w-[200px] p-[4px] my-[2px] flex flex-col gap-[8px]">
+                      <div className="w-[191px] h-[24px] ">
+                        <p className="font-['DM_Sans'] text-[#4A5565] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
+                          March 12, 2026
+                        </p>
+                      </div>
+                      <div>
+                        <span className="h-[191px] w-[72px]">
+                          <p className="font-['DM_Sans'] text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
+                            Why Pension Security Matters for a Stable...
+                          </p>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[421px] flex h-[138px] gap-[24px] px-6  border-b border-b-[#E5E7EB]">
+                  <div className="w-[421px] flex h-[138px] gap-[16px]">
+                    <div className=" ">
+                      <Image
+                        src="/images/blog-media/blog-item-three.jpg"
+                        alt="Blog Hero Background"
+                        height={166}
+                        width={114}
+                        className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
+                      />
+                    </div>
+                    <div className=" h-[114px] w-[200px] p-[4px] my-[2px] flex flex-col gap-[8px]">
+                      <div className="w-[191px] h-[24px] ">
+                        <p className="font-['DM_Sans'] text-[#4A5565] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
+                          March 12, 2026
+                        </p>
+                      </div>
+                      <div>
+                        <span className="h-[191px] w-[72px]">
+                          <p className="font-['DM_Sans'] text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
+                            Women Empowerment: Building Stronger...
+                          </p>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[421px] flex h-[138px] gap-[24px] px-6  border-b border-b-[#E5E7EB] ">
+                  <div className="w-[421px] flex h-[138px] gap-[16px]">
+                    <div className=" ">
+                      <Image
+                        src="/images/blog-details/poster-one.jpg"
+                        alt="Blog Hero Background"
+                        height={166}
+                        width={114}
+                        className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
+                      />
+                    </div>
+                    <div className=" h-[114px] w-[200px] p-[4px] my-[2px] flex flex-col gap-[8px]">
+                      <div className="w-[191px] h-[24px] ">
+                        <p className="font-['DM_Sans'] text-[#4A5565] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
+                          March 12, 2026
+                        </p>
+                      </div>
+                      <div>
+                        <span className="h-[191px] w-[72px]">
+                          <p className="font-['DM_Sans'] text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
+                            Technology as a Tool for Social Transformation...
+                          </p>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[421px] flex h-[138px] gap-[24px] px-6">
+                  <div className="w-[421px] flex h-[138px] gap-[16px]">
+                    <div className="">
+                      <Image
+                        src="/images/blog-media/blog-item-two.jpg"
+                        alt="Blog Hero Background"
+                        height={166}
+                        width={114}
+                        className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
+                      />
+                    </div>
+                    <div className=" h-[114px] w-[200px] p-[4px] my-[2px] flex flex-col gap-[8px]">
+                      <div className="w-[191px] h-[24px] ">
+                        <p className="font-['DM_Sans'] text-[#4A5565] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
+                          March 12, 2026
+                        </p>
+                      </div>
+                      <div>
+                        <span className="h-[191px] w-[72px]">
+                          <p className="font-['DM_Sans'] text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
+                            Education as the Gateway to Opportunity...
+                          </p>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
