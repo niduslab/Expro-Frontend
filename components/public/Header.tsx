@@ -19,7 +19,7 @@ export function Header() {
 
   const navLinks = [
     { name: "About", href: "/about", hasDropdown: true },
-    { name: "Projects", href: "/projects", hasDropdown: true },
+    { name: "Projects", href: "/projects/project", hasDropdown: true },
     { name: "Blog & Media", href: "/blog", hasDropdown: false },
     { name: "Become a Member", href: "/membership", hasDropdown: false },
     { name: "Contact", href: "/contact", hasDropdown: false },

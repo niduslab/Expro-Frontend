@@ -235,7 +235,7 @@ export default function BlogDetails() {
                   <div className="w-[421px] flex h-[138px] gap-[16px]">
                     <div className="">
                       <Image
-                        src="/images/blog-media/blog-item-two.jpg"
+                        src="/images/blog-media/blog-item-nine.jpg"
                         alt="Blog Hero Background"
                         height={166}
                         width={114}
