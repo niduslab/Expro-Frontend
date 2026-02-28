@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,8 +8,8 @@ const Hero = () => {
       {/* Background Layer with Image and Gradient */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/blog-media/blog-item-one.png"
-          alt="Blog item one"
+          src="/images/projects/project/project-hero.jpg"
+          alt="Project Hero Background"
           fill
           style={{ objectFit: "cover", objectPosition: "center top" }}
           priority
@@ -28,7 +29,7 @@ const Hero = () => {
 
       {/* Content */}
 
-      <div className="relative  top-[242.5px] z-10 container mx-auto px-6  md:px-12 lg:px-20 flex flex-col justify-center">
+      <div className="relative  top-[242.5px] z-10 container mx-auto px-6 right-[24px] md:px-12 lg:px-20 flex flex-col justify-center">
         <div className="max-w-2xl text-white space-y-4">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm md:text-base font-medium mb-2">
@@ -39,17 +40,18 @@ const Hero = () => {
               Home
             </Link>
             <span className="text-white">•</span>
-            <span className="text-[#36F293]">Blog Details</span>
+            <span className="text-[#ffffff]">Projects</span>
+            <span className="text-white">•</span>
+            <span className="text-[#36F293]">Our Project</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
-            Blog Details
+            Our Projects
           </h1>
 
           <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
-            Exploring how long-term welfare initiatives, transparency, and
-            community-driven solutions create lasting social and economic
-            impact.
+            Our projects promote sustainable development and community
+            empowerment through transparent, impactdriven initiatives.
           </p>
         </div>
       </div>

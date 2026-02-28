@@ -24,7 +24,7 @@ export default function BlogDetails() {
               <div className="">
                 <Image
                   src="/images/blog-details/poster.jpg"
-                  alt="Blog Hero Background"
+                  alt="Blog poster"
                   width={867}
                   height={410}
                   className=" opacity-100 rounded-[8px]"
@@ -155,7 +155,7 @@ export default function BlogDetails() {
                     <div className=" ">
                       <Image
                         src="/images/blog-media/blog-item-two.jpg"
-                        alt="Blog Hero Background"
+                        alt="Blog Item two"
                         height={166}
                         width={114}
                         className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
@@ -182,7 +182,7 @@ export default function BlogDetails() {
                     <div className=" ">
                       <Image
                         src="/images/blog-media/blog-item-three.jpg"
-                        alt="Blog Hero Background"
+                        alt="Blog Item three"
                         height={166}
                         width={114}
                         className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
@@ -209,7 +209,7 @@ export default function BlogDetails() {
                     <div className=" ">
                       <Image
                         src="/images/blog-details/poster-one.jpg"
-                        alt="Blog Hero Background"
+                        alt="Blog Poster "
                         height={166}
                         width={114}
                         className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
@@ -235,8 +235,8 @@ export default function BlogDetails() {
                   <div className="w-[421px] flex h-[138px] gap-[16px]">
                     <div className="">
                       <Image
-                        src="/images/blog-media/blog-item-two.jpg"
-                        alt="Blog Hero Background"
+                        src="/images/blog-media/blog-item-nine.jpg"
+                        alt="Blog Item Nine"
                         height={166}
                         width={114}
                         className="h-[114px] w-[168px] opacity-100 rounded-[4px]"
