@@ -9,7 +9,7 @@ const Hero = () => {
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/projects/project/project-hero.jpg"
-          alt="Blog Hero Background"
+          alt="Project Hero Background"
           fill
           style={{ objectFit: "cover", objectPosition: "center top" }}
           priority

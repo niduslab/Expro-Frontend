@@ -29,14 +29,14 @@ export default function BlogItems8() {
                 partnerships help drive...
               </p>
             </div>
-            <div className="flex items-center w-[113px] h-[24px] opacity-100 gap-2 rounded-full">
-              <div className="w-[113px] h-[24px]">
-                <button className="opacity-100 font-['DM_Sans'] font-semibold  text-[16px] leading-[150%] tracking-[-0.01em] text-[#068847]">
-                  Learn More{" "}
-                </button>
-              </div>{" "}
-              <ArrowUpRight className="text-[#068847] h-[20px] w-[20px] " />
-            </div>
+            <button className="flex items-center w-[113px]  gap-[8px] h-[24px]">
+              <span className="w-[85px] h-[24px]">
+                <p className="opacity-100 whitespace-nowrap font-['DM_Sans'] font-semibold text-[16px] leading-[150%] tracking-[-0.01em] text-[#068847]">
+                  Learn More
+                </p>
+              </span>
+              <ArrowUpRight className="text-[#068847] h-[20px] w-[20px]" />
+            </button>
           </div>
         </div>
       </div>
