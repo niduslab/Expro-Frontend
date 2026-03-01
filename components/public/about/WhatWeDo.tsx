@@ -37,7 +37,7 @@ const WhatWeDo = () => {
               {features.map((feature, index) => (
                 <div 
                   key={index}
-                  className="flex items-center gap-4 bg-white p-4 rounded-[8px] border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
+                  className="flex items-center gap-4 bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   <div className="w-5 h-5 rounded-full border-[1.5px] border-[#008A4B] flex items-center justify-center shrink-0">
                     <Check className="text-[#008A4B]" size={10} strokeWidth={4} />
@@ -52,7 +52,7 @@ const WhatWeDo = () => {
 
           {/* Right Column: Image */}
           <div className="relative h-full flex items-center justify-center lg:justify-end">
-            <div className="relative w-full lg:w-[644px] h-[500px] lg:h-[650px] rounded-[8px] overflow-hidden shadow-lg">
+            <div className="relative w-full lg:w-161 h-125 lg:h-162.5 rounded-lg overflow-hidden shadow-lg">
               <Image
                 src="/images/about/what-we-do-img.jpg"
                 alt="Global Community Collaboration"

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Hero = () => {
   return (
-    <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
+    <section className="relative h-screen min-h-150 flex items-center overflow-hidden">
       {/* Background Layer with Image and Gradient */}
       <div className="absolute inset-0 z-0">
         <Image

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const AboutHero = () => {
   return (
-    <section className="relative h-[700px] flex items-center overflow-hidden">
+    <section className="relative h-175 flex items-center overflow-hidden">
       {/* Background Layer with Image and Gradient */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -52,3 +52,4 @@ const AboutHero = () => {
 };
 
 export default AboutHero;
+

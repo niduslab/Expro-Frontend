@@ -1,55 +1,55 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Check } from 'lucide-react';
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Check } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const packages = [
   {
-    name: 'Basic',
-    price: '300',
+    name: "Basic",
+    price: "300",
     isPopular: false,
     features: [
-      'Total Months 100',
-      'Maturity Amount ৳50,000',
-      'Status Closed',
-      'Join Commission Closed',
+      "Total Months 100",
+      "Maturity Amount ৳50,000",
+      "Status Closed",
+      "Join Commission Closed",
     ],
   },
   {
-    name: 'Standard',
-    price: '500',
+    name: "Standard",
+    price: "500",
     isPopular: true,
     features: [
-      'Total Months 100',
-      'Maturity Amount ৳85,000',
-      'Status Closed',
-      'Join Commission ৳500',
+      "Total Months 100",
+      "Maturity Amount ৳85,000",
+      "Status Closed",
+      "Join Commission ৳500",
     ],
   },
   {
-    name: 'Advanced',
-    price: '1000',
+    name: "Advanced",
+    price: "1000",
     isPopular: false,
     features: [
-      'Total Months 100',
-      'Maturity Amount ৳172,000',
-      'Status Closed',
-      'Join Commission ৳600',
+      "Total Months 100",
+      "Maturity Amount ৳172,000",
+      "Status Closed",
+      "Join Commission ৳600",
     ],
   },
   {
-    name: 'Premium',
-    price: '1500',
+    name: "Premium",
+    price: "1500",
     isPopular: false,
     features: [
-      'Total Months 100',
-      'Maturity Amount ৳260,000',
-      'Status Running',
-      'Join Commission ৳700',
+      "Total Months 100",
+      "Maturity Amount ৳260,000",
+      "Status Running",
+      "Join Commission ৳700",
     ],
   },
 ];
@@ -64,37 +64,38 @@ const PensionPackages = () => {
 
     const ctx = gsap.context(() => {
       // Header Animation
-      gsap.from('[data-packages-header]', {
+      gsap.from("[data-packages-header]", {
         opacity: 0,
         y: 20,
         duration: 0.6,
-        ease: 'power2.out',
+        ease: "power2.out",
         scrollTrigger: {
-          trigger: '[data-packages-header]',
-          start: 'top 85%',
+          trigger: "[data-packages-header]",
+          start: "top 85%",
           once: true,
         },
       });
 
       // Cards Animation
-      const cards = gsap.utils.toArray('[data-package-card]');
-      gsap.fromTo(cards, 
-        { 
-          opacity: 0, 
-          y: 50 
+      const cards = gsap.utils.toArray("[data-package-card]");
+      gsap.fromTo(
+        cards,
+        {
+          opacity: 0,
+          y: 50,
         },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: 'power3.out',
+          ease: "power3.out",
           stagger: 0.15,
           scrollTrigger: {
-            trigger: '[data-packages-grid]',
-            start: 'top 80%',
+            trigger: "[data-packages-grid]",
+            start: "top 80%",
             once: true,
           },
-        }
+        },
       );
     }, sectionRef);
 
@@ -116,27 +117,38 @@ const PensionPackages = () => {
         </div>
 
         {/* Packages Grid */}
-        <div data-packages-grid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
+        <div
+          data-packages-grid
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center"
+        >
           {packages.map((pkg, index) => {
             const isDark = pkg.isPopular;
-            const cardBg = isDark ? 'bg-[#003923]' : 'bg-white';
-            const borderColor = isDark ? 'border-[#068847]' : 'border-[#E4E7EC]';
-            const titleColor = isDark ? 'text-white' : 'text-[#1D2939]';
-            const priceColor = isDark ? 'text-white' : 'text-[#101828]';
-            const monthColor = isDark ? 'text-[#D0D5DD]' : 'text-[#667085]';
-            const buttonBg = isDark ? 'bg-[#068847]' : 'bg-white';
-            const buttonText = isDark ? 'text-white' : 'text-[#344054]';
-            const buttonBorder = isDark ? 'border-[#12B76A]' : 'border-[#D0D5DD]';
-            const buttonHover = isDark ? 'hover:bg-[#0E9F5C]' : 'hover:bg-[#F9FAFB]';
-            const featureTitleColor = isDark ? 'text-white' : 'text-[#1D2939]';
-            const featureTextColor = isDark ? 'text-[#EAECF0]' : 'text-[#475467]';
-            const checkColor = isDark ? 'text-[#47CD89]' : 'text-[#17B26A]';
+            const cardBg = isDark ? "bg-[#003923]" : "bg-white";
+            const borderColor = isDark
+              ? "border-[#068847]"
+              : "border-[#E4E7EC]";
+            const titleColor = isDark ? "text-white" : "text-[#1D2939]";
+            const priceColor = isDark ? "text-white" : "text-[#101828]";
+            const monthColor = isDark ? "text-[#D0D5DD]" : "text-[#667085]";
+            const buttonBg = isDark ? "bg-[#068847]" : "bg-white";
+            const buttonText = isDark ? "text-white" : "text-[#344054]";
+            const buttonBorder = isDark
+              ? "border-[#12B76A]"
+              : "border-[#D0D5DD]";
+            const buttonHover = isDark
+              ? "hover:bg-[#0E9F5C]"
+              : "hover:bg-[#F9FAFB]";
+            const featureTitleColor = isDark ? "text-white" : "text-[#1D2939]";
+            const featureTextColor = isDark
+              ? "text-[#EAECF0]"
+              : "text-[#475467]";
+            const checkColor = isDark ? "text-[#47CD89]" : "text-[#17B26A]";
 
             return (
               <div
                 key={index}
                 data-package-card
-                className={`relative rounded-lg border ${cardBg} ${borderColor} w-[310px] min-h-[452px] p-6 flex flex-col transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl`}
+                className={`relative rounded-lg border ${cardBg} ${borderColor} w-77.5 min-h-113 p-6 flex flex-col transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl`}
               >
                 {/* Popular Badge */}
                 {pkg.isPopular && (
@@ -152,14 +164,18 @@ const PensionPackages = () => {
 
                 {/* Price */}
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className={`text-[48px] font-bold leading-none ${priceColor}`}>
+                  <span
+                    className={`text-[48px] font-bold leading-none ${priceColor}`}
+                  >
                     ৳{pkg.price}
                   </span>
-                  <span className={`text-base font-normal ${monthColor}`}>/month</span>
+                  <span className={`text-base font-normal ${monthColor}`}>
+                    /month
+                  </span>
                 </div>
 
                 {/* Action Button */}
-                <button 
+                <button
                   className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
                 >
                   Choose {pkg.name} Package
@@ -167,7 +183,9 @@ const PensionPackages = () => {
 
                 {/* Features List */}
                 <div className="flex-1">
-                  <p className={`text-sm font-semibold mb-3 ${featureTitleColor}`}>
+                  <p
+                    className={`text-sm font-semibold mb-3 ${featureTitleColor}`}
+                  >
                     Core Feature
                   </p>
                   <ul className="space-y-3">
@@ -176,13 +194,17 @@ const PensionPackages = () => {
                         <div className={`mt-0.5 shrink-0 ${checkColor}`}>
                           <Check size={16} strokeWidth={2.5} />
                         </div>
-                        <span className={`text-sm font-normal leading-relaxed ${featureTextColor}`}>
-                          {feature.split(/(৳[\d,]+)/).map((part, i) => 
+                        <span
+                          className={`text-sm font-normal leading-relaxed ${featureTextColor}`}
+                        >
+                          {feature.split(/(৳[\d,]+)/).map((part, i) =>
                             part.match(/৳[\d,]+/) ? (
-                              <span key={i} className="font-semibold">{part}</span>
+                              <span key={i} className="font-semibold">
+                                {part}
+                              </span>
                             ) : (
                               part
-                            )
+                            ),
                           )}
                         </span>
                       </li>
