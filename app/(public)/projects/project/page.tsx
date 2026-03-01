@@ -69,7 +69,7 @@ export default function Project() {
               Our Projects
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-semibold leading-tight">
+          <h2 className="text-3xl md:text-4xl xl:text-5xl font-semibold leading-tight">
             Our Impact Areas – “What We Do”
           </h2>
         </div>
