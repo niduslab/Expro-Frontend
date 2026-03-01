@@ -12,7 +12,7 @@ export default function BlogDetails() {
           {/* Blog Content */}
           <article className="flex-1 flex flex-col gap-8 bg-white p-8 rounded-lg shadow-md">
             <p className="text-gray-500 text-sm">Published On: 12 Feb 2026</p>
-            <h1 className="text-4xl font-bold text-gray-900 leading-tight">
+            <h1 className="text-2xl md:text-3xl xl:text-4xl font-bold text-gray-900 leading-tight">
               Empowering Communities Through Sustainable Welfare
             </h1>
 
