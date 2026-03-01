@@ -1,6 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface PageHeroProps {
   title: string;
@@ -17,7 +17,7 @@ const PageHero: React.FC<PageHeroProps> = ({
   bgImage,
   pageName,
   height = "h-[590px] md:h-[600px]",
-  objectPosition = "center"
+  objectPosition = "center",
 }) => {
   return (
     <section className={`relative ${height} flex items-center overflow-hidden`}>
@@ -27,15 +27,16 @@ const PageHero: React.FC<PageHeroProps> = ({
           src={bgImage}
           alt={`${pageName} Hero Background`}
           fill
-          style={{ objectFit: 'cover', objectPosition: "center" }}
+          style={{ objectFit: "cover", objectPosition: "center" }}
           priority
           className="w-full h-full object-cover"
         />
         {/* Gradient Overlay - Matching Landing Page Style */}
-        <div 
-          className="absolute inset-0" 
+        <div
+          className="absolute inset-0"
           style={{
-            background: 'linear-gradient(80deg, #00341C 0%, #002C18 20%, transparent 70%)'
+            background:
+              "linear-gradient(80deg, #00341C 0%, #002C18 20%, transparent 70%)",
           }}
         />
         {/* Mobile Overlay for readability */}
@@ -47,7 +48,10 @@ const PageHero: React.FC<PageHeroProps> = ({
         <div className="max-w-2xl text-white space-y-4">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm md:text-base font-medium mb-2">
-            <Link href="/" className="text-white hover:text-gray-200 transition-colors">
+            <Link
+              href="/"
+              className="text-white hover:text-gray-200 transition-colors"
+            >
               Home
             </Link>
             <span className="text-white">•</span>
@@ -57,7 +61,7 @@ const PageHero: React.FC<PageHeroProps> = ({
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
             {title}
           </h1>
-          
+
           <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
             {description}
           </p>

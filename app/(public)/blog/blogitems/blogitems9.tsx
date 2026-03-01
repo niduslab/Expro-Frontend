@@ -1,45 +1,47 @@
+"use client";
+
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function BlogItems9() {
+  const router = useRouter();
+
   return (
-    <>
-      {/* card 1 */}
-      <div className="w-[421px] h-[506px] opacity-100 gap-2.5 rounded-[8px] border border-[#E5E7EB] p-6 shadow-[0_4px_40px_0_#00000014]">
-        <div className=" flex flex-col items-start justify-start w-[373px] h-[458px] opacity-100 gap-6">
-          {/* Image Section */}
-          <div className="w-[373px] h-[272px] opacity-100 rounded-[4px] overflow-hidden relative gap-6">
-            <Image
-              src="/images/blog-media/blog-item-nine.jpg"
-              alt="Blog Item first image"
-              fill
-              style={{ objectFit: "cover", objectPosition: "center right" }}
-              priority
-              className="w-full h-full"
-            />
-          </div>
-          {/* Content Section */}
-          <div className="flex flex-col h-[162px] w-[373px] gap-[24px] ">
-            <div className="flex flex-col h-[122px] w-[373px] gap-[16px] ">
-              <p className="w-[373px] h-[58px] font-['DM_Sans'] font-semibold text-[24px] leading-[120%] tracking-[-0.01em] text-[#030712] ">
-                Education as the Gateway to Opportunity
-              </p>
-              <p className="w-[373px] h-[48px] opacity-100 font-['DM_Sans'] font-normal text-[16px] leading-[150%] tracking-[-0.01em] text-[#4A5565]">
-                Explore how access to education and learning resources
-                transforms lives
-              </p>
-            </div>
-            <button className="flex items-center w-[113px]  gap-[8px] h-[24px]">
-              <span className="w-[85px] h-[24px]">
-                <p className="opacity-100 whitespace-nowrap font-['DM_Sans'] font-semibold text-[16px] leading-[150%] tracking-[-0.01em] text-[#068847]">
-                  Learn More
-                </p>
-              </span>
-              <ArrowUpRight className="text-[#068847] h-[20px] w-[20px]" />
-            </button>
-          </div>
+    <div
+      onClick={() => router.push("/blog/blogdetails")}
+      className="w-full rounded-lg border border-gray-200 p-6 shadow-md hover:shadow-xl transition cursor-pointer bg-white"
+    >
+      {/* Image */}
+      <div className="relative w-full h-64 rounded-md overflow-hidden">
+        <Image
+          src="/images/blog-media/blog-item-nine.jpg"
+          alt="Blog Item nine image"
+          fill
+          sizes=""
+          className="object-cover"
+          priority
+        />
+      </div>
+
+      {/* Content */}
+      <div className="mt-6 space-y-4">
+        <div className="space-y-3">
+          <h3 className="text-xl font-semibold text-gray-900 leading-tight">
+            Education as the Gateway to Opportunity
+          </h3>
+
+          <p className="text-gray-600 text-sm leading-relaxed">
+            Explore how access to education and learning resources transforms
+            lives
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 text-[#068847] font-semibold">
+          <span>Learn More</span>
+          <ArrowUpRight className="h-4 w-4" />
         </div>
       </div>
-    </>
+    </div>
   );
 }
