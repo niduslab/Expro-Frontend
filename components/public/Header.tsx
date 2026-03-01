@@ -45,6 +45,7 @@ export function Header() {
                   src="/logo.svg"
                   alt="Expro Welfare Foundation"
                   fill
+                  sizes="373px"
                   style={{ objectFit: "contain", objectPosition: "left" }}
                   priority
                 />

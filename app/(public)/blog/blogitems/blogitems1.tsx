@@ -1,5 +1,5 @@
 "use client";
-import { ArrowRightFromLine, ArrowUpRight, MoveUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
 export default function BlogItem1() {
@@ -17,9 +17,10 @@ export default function BlogItem1() {
           {/* Image Section */}
           <div className="w-[373px] h-[272px] opacity-100 rounded-[4px] overflow-hidden relative gap-6">
             <Image
-              src="/images/blog-media/blog-item-one.png"
+              src="/images/blog-media/blog-item-one.jpg"
               alt="Blog Item first image"
               fill
+              sizes="373px"
               style={{ objectFit: "cover", objectPosition: "center right" }}
               priority
               className="w-full h-full"

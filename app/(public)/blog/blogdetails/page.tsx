@@ -21,13 +21,12 @@ export default function BlogDetails() {
                   Empowering Communities Through Sustainable Welfare
                 </p>
               </div>
-              <div className="">
+              <div className="relative w-full h-[410px] rounded-[8px] overflow-hidden">
                 <Image
                   src="/images/blog-details/poster.jpg"
                   alt="Blog poster"
-                  width={867}
-                  height={410}
-                  className=" opacity-100 rounded-[8px]"
+                  fill
+                  className="object-cover opacity-100"
                 />
               </div>
               <div className="w-[867px] h-[96px]">

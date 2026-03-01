@@ -1,16 +1,16 @@
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className="bg-white h-[590px] w-[1440px] overflow-hidden">
+    <section className="relative h-[590px] md:h-[600px] w-full">
       {/* Background Layer with Image and Gradient */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/blog-media/blog-hero.jpg"
-          alt="Blog Hero Background"
+          alt="Blog item one"
           fill
+          sizes="373px"
           style={{ objectFit: "cover", objectPosition: "center top" }}
           priority
           className="ml-auto w-full h-full object-cover"
@@ -24,12 +24,12 @@ const Hero = () => {
           }}
         />
         {/* Mobile Gradient Overlay for better text readability on small screens */}
-        {/* <div className="absolute inset-0 bg-black/40 md:hidden" /> */}
+        <div className="absolute inset-0 bg-black/40 md:hidden" />
       </div>
 
       {/* Content */}
 
-      <div className="relative  top-[242.5px] z-10 container mx-auto px-6 right-[24px] md:px-12 lg:px-20 flex flex-col justify-center">
+      <div className="relative z-10 container mx-auto px-6 md:px-12 lg:px-20 flex flex-col justify-center h-full">
         <div className="max-w-2xl text-white space-y-4">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm md:text-base font-medium mb-2">
@@ -40,7 +40,7 @@ const Hero = () => {
               Home
             </Link>
             <span className="text-white">•</span>
-            <span className="text-[#36F293]">Blog & Media</span>
+            <span className="text-[#36F293]">Blog Details</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">

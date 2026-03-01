@@ -32,7 +32,7 @@ export default function Project() {
                 Our Impact Areas – “What We Do”
               </p>
             </div>
-            <div className="flex w-[1312px] h-[1100px] gap-6 opacity-100">
+            <div className="flex w-[1312px] h-[1100px] md:h-[] gap-6 opacity-100">
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-black w-[431px] h-[538px] p-6 gap-[10px] border border-[#F3F4F6] shadow-[0_4px_40px_0_#00000014] rounded-[8px]">
                   <div className="w-[373px] h-[490px] flex flex-col justify-between items-start">

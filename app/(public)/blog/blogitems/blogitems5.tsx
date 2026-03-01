@@ -11,8 +11,9 @@ export default function BlogItems5() {
           <div className="w-[373px] h-[272px] opacity-100 rounded-[4px] overflow-hidden relative gap-6">
             <Image
               src="/images/blog-media/blog-item-five.jpg"
-              alt="Blog Item first image"
+              alt="Blog Item five image"
               fill
+              sizes="373px"
               style={{ objectFit: "cover", objectPosition: "center right" }}
               priority
               className="w-full h-full"

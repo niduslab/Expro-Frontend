@@ -9,16 +9,12 @@ import BlogItems6 from "./blogitems/blogitems6";
 import BlogItems7 from "./blogitems/blogitems7";
 import BlogItems9 from "./blogitems/blogitems9";
 import BlogItems8 from "./blogitems/blogitems8";
-import { Link } from "lucide-react";
 
 export default function BlogPage() {
   return (
     <>
+      <Hero />
       <div className="w-[1440px] h-[3717px] bg-white">
-        {" "}
-        <div className="h-[590px] w-[1440px]">
-          <Hero />
-        </div>
         <div className="bg-white flex flex-row w-[1440px] h-[2030px]  pt-[120px] pr-[64px] pb-[120px] pl-[64px] gap-[10px]">
           <div className=" flex flex-col w-[1312px]  items-center h-[1790px] gap-[60px]">
             <div className=" flex flex-col items-center w-[516px] h-[164px] gap-4">
