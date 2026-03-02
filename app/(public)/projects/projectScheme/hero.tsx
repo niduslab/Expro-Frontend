@@ -43,7 +43,7 @@ const Hero = () => {
             <span className="text-[#36F293]">About Us</span>
           </div>
 
-          <p className="w-[732px] font-['DM_Sans'] font-semibold text-[20px] md:text-[36px] lg:text-[52px] leading-[120%] tracking-[-0.01em]">
+          <p className="w-[732px] font-dm-sans font-semibold text-[20px] md:text-[36px] lg:text-[52px] leading-[120%] tracking-[-0.01em]">
             Pension Scheme for the <br /> Economic Empowerment of <br />
             the Lower-Middle Class
           </p>

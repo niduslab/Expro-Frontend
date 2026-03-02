@@ -1,16 +1,10 @@
 "use client";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 export default function BlogItem1() {
-  const router = useRouter();
-
   return (
-    <div
-      onClick={() => router.push("/blog/blogdetails")}
-      className="w-full rounded-lg border border-gray-200 p-6 shadow-md hover:shadow-xl transition cursor-pointer bg-white"
-    >
+    <div className="w-full rounded-lg border border-gray-200 p-6 shadow-md hover:shadow-xl transition cursor-pointer bg-white">
       {/* Image */}
       <div className="relative w-full h-64 rounded-md overflow-hidden">
         <Image
