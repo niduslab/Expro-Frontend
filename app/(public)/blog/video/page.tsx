@@ -39,8 +39,7 @@ const Videos = () => {
         </div>
 
         <p className="text-gray-500 max-w-2xl">
-          Explore our curated collection of educational and professional video
-          content designed to help you grow and succeed.
+          Explore our video content designed to help you grow and succeed.
         </p>
       </div>
 
