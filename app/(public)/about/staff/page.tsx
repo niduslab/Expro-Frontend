@@ -9,127 +9,34 @@ import { ArrowUpRight } from "lucide-react";
 
 const team = [
   {
-    name: "Md. Motahar Hossen",
-    role: "Executive Member",
-    emNo: "01",
-    image: "/images/landing-page/our-leadership/06-md-ataur-rahman.png",
+    name: "Sarah Jenkins",
+    role: "Outreach Coordinator",
+    smNo: "01",
+    image: "/images/our-staff/1-sarah.png",
   },
   {
-    name: "Md. Hashan Sofiul Kabir",
-    role: "Executive Member",
-    emNo: "02",
-    image: "/images/landing-page/our-leadership/05-md-nur-islam.png",
+    name: "Maria Garcia",
+    role: "Case Manager",
+    smNo: "02",
+    image: "/images/our-staff/02-staff.png",
   },
   {
-    name: "Md. Ahsanuzzaman",
-    role: "Executive Member",
-    emNo: "03",
-    image: "/images/landing-page/our-leadership/03-md-ahsanuzzaman.png",
+    name: "john doe",
+    role: "Volunteer Manager",
+    smNo: "03",
+    image: "/images/our-staff/03-staff.png",
   },
   {
-    name: "Md. Yusuf Ali Khandaker",
-    role: "Executive Member",
-    emNo: "04",
-    image: "/images/landing-page/our-leadership/04-md-yusuf-ali-khandaker.png",
-  },
-  {
-    name: "Md. Nur Islam",
-    role: "Executive Member",
-    emNo: "05",
-    image: "/images/landing-page/our-leadership/01-md-motahar-hossen.png",
-  },
-  {
-    name: "Md. Ataur Rahman",
-    role: "Executive Member",
-    emNo: "06",
-    image: "/images/landing-page/our-leadership/02-md-hashan-sofiul-kabir.png",
-  },
-  {
-    name: "Md. Motasim Billah",
-    role: "Executive Member",
-    emNo: "07",
-    image: "/images/landing-page/our-leadership/07-md-motasim-billah.png",
-  },
-  {
-    name: "Md. Abdul Mottalib",
-    role: "Executive Member",
-    emNo: "08",
-    image: "/images/landing-page/our-leadership/08-md-abdul-mottalib.png",
-  },
-  {
-    name: "Md. Mofazzal Hossen Manik",
-    role: "Executive Member",
-    emNo: "09",
-    image:
-      "/images/landing-page/our-leadership/09-md-mofazzal-hossen-manik.png",
-  },
-  {
-    name: "Mst. Hajara Akter",
-    role: "Executive Member",
-    emNo: "10",
-    image: "/images/landing-page/our-leadership/10-mst-hajara-akter.png",
-  },
-  {
-    name: "Md. Ashikuzzaman",
-    role: "Executive Member",
-    emNo: "11",
-    image: "/images/landing-page/our-leadership/11-md-ashikuzzaman.png",
-  },
-  {
-    name: "Mst.Fatema Begum",
-    role: "Executive Member",
-    emNo: "12",
-    image: "/images/landing-page/our-leadership/12-mst-fatema-begum.png",
-  },
-  {
-    name: "Md. Shahinur Rahman",
-    role: "Executive Member",
-    emNo: "13",
-    image: "/images/landing-page/our-leadership/13-md-shahinur-rahman.png",
-  },
-  {
-    name: "Md. Motiur Rahman",
-    role: "Executive Member",
-    emNo: "14",
-    image: "/images/landing-page/our-leadership/14-md-motiur-rahman.png",
-  },
-  {
-    name: "Md. Jahangir Alom ",
-    role: "Executive Member",
-    emNo: "15",
-    image: "/images/landing-page/our-leadership/15-md-jahangir-alom.png",
-  },
-  {
-    name: "Md. Abul kalam Azad ",
-    role: "Executive Member",
-    emNo: "16",
-    image: "/images/landing-page/our-leadership/16-md-abul-kalam-azad.png",
-  },
-  {
-    name: "Md. Jahangir Hossain",
-    role: "Executive Member",
-    emNo: "17",
-    image: "/images/landing-page/our-leadership/17-md-jahangir-hossain.png",
-  },
-  {
-    name: "Md. Ariful Islam",
-    role: "Executive Member",
-    emNo: "18",
-    image: "/images/landing-page/our-leadership/18-md-ariful-islam.png",
+    name: "Chloe Chen",
+    role: "Donation Coordinator",
+    smNo: "04",
+    image: "/images/our-staff/04-staff.png",
   },
 ];
 
-interface ProjectMembersProps {
-  badgeText?: string;
-  headingText?: string;
-}
-
 gsap.registerPlugin(ScrollTrigger);
 
-const ProjectMembers: React.FC<ProjectMembersProps> = ({
-  badgeText = "Project Members",
-  headingText = "Project Brand Ambassadors",
-}) => {
+const Staff = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -185,11 +92,8 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
         <div data-leadership-header className="text-center mb-14">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] mb-4">
             <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-            {badgeText}
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-            {headingText}
-          </h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900"></h2>
         </div>
 
         <div
@@ -231,7 +135,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
                   {member.role}
                 </p>
                 <p className="text-[#475467] text-xs font-normal">
-                  EM No: {member.emNo}
+                  SM No: {member.smNo}
                 </p>
               </div>
             </div>
@@ -242,4 +146,4 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
   );
 };
 
-export default ProjectMembers;
+export default Staff;

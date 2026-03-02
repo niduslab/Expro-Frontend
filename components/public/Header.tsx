@@ -217,7 +217,7 @@ export function Header() {
         },
       ],
     },
-    { name: "Our Project", href: "/projects", hasDropdown: false },
+    { name: "Our Project", href: "/projects/project", hasDropdown: false },
     {
       name: "Become A Member",
       href: "/membership",

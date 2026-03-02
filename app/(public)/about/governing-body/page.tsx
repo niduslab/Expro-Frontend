@@ -79,7 +79,7 @@ const team = [
 ];
 
 gsap.registerPlugin(ScrollTrigger);
-export default function AdvisoryCounsil() {
+export default function GoverninBody() {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
