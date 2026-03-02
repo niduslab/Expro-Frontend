@@ -51,7 +51,7 @@ const MagazineCard = ({
     <div
       className={`bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden group ${className}`}
     >
-      <div className="h-52 overflow-hidden">
+      <div className="h-30 md:h-42 xl:h-52 overflow-hidden">
         <img
           src={image}
           alt={`${title} cover`}
