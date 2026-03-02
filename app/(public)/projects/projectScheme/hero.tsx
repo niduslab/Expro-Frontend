@@ -7,7 +7,7 @@ const Hero = () => {
       {/* Background Layer with Image and Gradient */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/blog-media/blog-item-one.jpg"
+          src="/images/projectScheme/poster.jpg"
           alt="Blog item one"
           fill
           sizes="573px"
@@ -40,17 +40,12 @@ const Hero = () => {
               Home
             </Link>
             <span className="text-white">•</span>
-            <span className="text-[#36F293]">Blog Details</span>
+            <span className="text-[#36F293]">About Us</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
-            Blog Details
-          </h1>
-
-          <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
-            Exploring how long-term welfare initiatives, transparency, and
-            community-driven solutions create lasting social and economic
-            impact.
+          <p className="w-[732px] font-['DM_Sans'] font-semibold text-[20px] md:text-[36px] lg:text-[52px] leading-[120%] tracking-[-0.01em]">
+            Pension Scheme for the <br /> Economic Empowerment of <br />
+            the Lower-Middle Class
           </p>
         </div>
       </div>
