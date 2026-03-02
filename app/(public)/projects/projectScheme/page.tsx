@@ -5,6 +5,7 @@ import OverviewScheme from "./overview";
 import Directors from "./directors";
 import CoreFocusArea from "./corefocusarea";
 import MissionVision from "./missionvision";
+import KeyObjectives from "./keyobjectives";
 
 export default function ProjectScheme() {
   return (
@@ -12,6 +13,7 @@ export default function ProjectScheme() {
       <Hero />
       <OverviewScheme />
       <Directors />
+      <KeyObjectives />
       <CoreFocusArea />
       <MissionVision />
     </>
