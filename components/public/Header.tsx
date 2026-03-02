@@ -207,11 +207,11 @@ export function Header() {
           items: [
             {
               name: "Social Development",
-              href: "/what-we-do/social-development",
+              href: "/about/what-we-do/social-development",
             },
             {
               name: "Social Enterprise",
-              href: "/what-we-do/social-enterprise",
+              href: "/about/what-we-do/social-enterprise",
             },
           ],
         },
@@ -240,7 +240,7 @@ export function Header() {
         { name: "Careers", href: "/careers" },
       ],
     },
-    { name: "Contracts", href: "/contracts", hasDropdown: false },
+    { name: "Contracts", href: "/contact", hasDropdown: false },
   ];
 
   return (
