@@ -15,7 +15,10 @@ export default function ProjectScheme() {
       <Hero />
       <OverviewScheme />
       <Directors />
-      <ProjectMembers />
+      <ProjectMembers
+        badgeText="Project Members"
+        headingText="Project Brand Ambassadors"
+      />
       <KeyObjectives />
       <CoreFocusArea />
       <PensionPackage />

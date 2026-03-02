@@ -5,7 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronDown, Menu, X } from "lucide-react";
 import gsap from "gsap";
-import { GoogleTranslateScript, GoogleTranslateButton } from "../ui/GoogleTranslator";
+import {
+  GoogleTranslateScript,
+  GoogleTranslateButton,
+} from "../ui/GoogleTranslator";
 
 interface NavLink {
   name: string;
@@ -28,12 +31,12 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
   useEffect(() => {
     if (hasAnyDropdown && dropdownRef.current) {
       // Set initial state for animation: Hidden, slightly shifted down, scaled down
-      gsap.set(dropdownRef.current, { 
-        autoAlpha: 0, 
-        y: 10, 
-        scaleY: 0.95, 
+      gsap.set(dropdownRef.current, {
+        autoAlpha: 0,
+        y: 10,
+        scaleY: 0.95,
         transformOrigin: "top center",
-        display: "block" 
+        display: "block",
       });
     }
 
@@ -159,7 +162,9 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -171,15 +176,15 @@ export function Header() {
 
   const navLinks: NavLink[] = [
     { name: "Home", href: "/", hasDropdown: false },
-    { 
-      name: "About", 
-      href: "/about", 
+    {
+      name: "About",
+      href: "/about",
       hasDropdown: true,
       megaMenu: [
         {
           title: "Who We Are",
           items: [
-            { name: "About Us", href: "/about/us" },
+            { name: "About Us", href: "/about" },
             { name: "About The Founder", href: "/about/founder" },
             { name: "Advisory Council", href: "/about/advisory-council" },
             { name: "Governing Body", href: "/about/governing-body" },
@@ -200,25 +205,31 @@ export function Header() {
         {
           title: "What We Do",
           items: [
-            { name: "Social Development", href: "/what-we-do/social-development" },
-            { name: "Social Enterprise", href: "/what-we-do/social-enterprise" },
+            {
+              name: "Social Development",
+              href: "/about/what-we-do/social-development",
+            },
+            {
+              name: "Social Enterprise",
+              href: "/about/what-we-do/social-enterprise",
+            },
           ],
         },
-      ]
+      ],
     },
-    { name: "Our Project", href: "/projects", hasDropdown: false },
-    { 
-      name: "Become A Member", 
-      href: "/membership", 
+    { name: "Our Project", href: "/projects/project", hasDropdown: false },
+    {
+      name: "Become A Member",
+      href: "/membership",
       hasDropdown: true,
       dropdownItems: [
         // { name: "Executive Membership", href: "/membership/executive" },
         { name: "General Membership", href: "/membership/general" },
-      ]
+      ],
     },
-    { 
-      name: "Blog/Media", 
-      href: "/blog", 
+    {
+      name: "Blog/Media",
+      href: "/blog",
       hasDropdown: true,
       dropdownItems: [
         { name: "Gallery", href: "/blog/gallery" },
@@ -227,9 +238,9 @@ export function Header() {
         { name: "Calendar", href: "/blog/calendar" },
         { name: "Notices", href: "/blog/notices" },
         { name: "Careers", href: "/careers" },
-      ]
+      ],
     },
-    { name: "Contracts", href: "/contracts", hasDropdown: false },
+    { name: "Contracts", href: "/contact", hasDropdown: false },
   ];
 
   return (
@@ -275,7 +286,7 @@ export function Header() {
               >
                 Donate Now
               </Link>
-              
+
               {/* Google Translator Button */}
               <div className="hidden sm:block">
                 <GoogleTranslateButton />
@@ -298,7 +309,10 @@ export function Header() {
             <div className="lg:hidden px-6 pb-6 pt-2 border-t border-gray-100 animate-in slide-in-from-top-2">
               <div className="flex flex-col space-y-1">
                 {navLinks.map((link) => (
-                  <div key={link.name} className="border-b border-gray-50 last:border-0">
+                  <div
+                    key={link.name}
+                    className="border-b border-gray-50 last:border-0"
+                  >
                     <div className="flex items-center justify-between py-2">
                       <Link
                         href={link.href}
@@ -307,18 +321,26 @@ export function Header() {
                       >
                         {link.name}
                       </Link>
-                      
+
                       {link.megaMenu || link.dropdownItems ? (
                         <button
-                          onClick={() => setExpandedMobileMenu(expandedMobileMenu === link.name ? null : link.name)}
+                          onClick={() =>
+                            setExpandedMobileMenu(
+                              expandedMobileMenu === link.name
+                                ? null
+                                : link.name,
+                            )
+                          }
                           className="p-2 text-gray-500 hover:text-[#068847]"
                         >
-                          <ChevronDown 
-                            className={`w-4 h-4 transition-transform duration-200 ${expandedMobileMenu === link.name ? "rotate-180" : ""}`} 
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform duration-200 ${expandedMobileMenu === link.name ? "rotate-180" : ""}`}
                           />
                         </button>
                       ) : (
-                        link.hasDropdown && <ChevronDown className="w-4 h-4 text-gray-400" />
+                        link.hasDropdown && (
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        )
                       )}
                     </div>
 
@@ -327,7 +349,9 @@ export function Header() {
                       <div className="pl-2 pb-4 space-y-4 animate-in slide-in-from-top-1 fade-in duration-200">
                         {link.megaMenu.map((section) => (
                           <div key={section.title}>
-                            <h4 className="font-semibold text-sm text-[#068847] mb-2 uppercase tracking-wide">{section.title}</h4>
+                            <h4 className="font-semibold text-sm text-[#068847] mb-2 uppercase tracking-wide">
+                              {section.title}
+                            </h4>
                             <ul className="space-y-2 pl-3 border-l border-gray-100">
                               {section.items.map((item) => (
                                 <li key={item.name}>
@@ -371,7 +395,7 @@ export function Header() {
                 >
                   Donate Now
                 </Link>
-                
+
                 {/* Mobile Google Translator Button */}
                 <div className="pt-2">
                   <GoogleTranslateButton className="w-full" />

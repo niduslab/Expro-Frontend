@@ -9,8 +9,10 @@ import BlogItems6 from "./blogitems/blogitems6";
 import BlogItems7 from "./blogitems/blogitems7";
 import BlogItems8 from "./blogitems/blogitems8";
 import BlogItems9 from "./blogitems/blogitems9";
+import { useRouter } from "next/navigation";
 
 export default function BlogPage() {
+  const router = useRouter();
   return (
     <>
       <Hero />
@@ -33,7 +35,10 @@ export default function BlogPage() {
           </div>
 
           {/* Blog Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+            onClick={() => router.push("/blog/blogdetails")}
+          >
             <BlogItem1 />
             <BlogItems2 />
             <BlogItems3 />

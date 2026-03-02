@@ -119,9 +119,17 @@ const team = [
   },
 ];
 
+interface ProjectMembersProps {
+  badgeText?: string;
+  headingText?: string;
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
-const ProjectMembers = () => {
+const ProjectMembers: React.FC<ProjectMembersProps> = ({
+  badgeText = "Project Members",
+  headingText = "Project Brand Ambassadors",
+}) => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -177,10 +185,10 @@ const ProjectMembers = () => {
         <div data-leadership-header className="text-center mb-14">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] mb-4">
             <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-            Project Members
+            {badgeText}
           </div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-            Project Brand Ambassadors
+            {headingText}
           </h2>
         </div>
 
