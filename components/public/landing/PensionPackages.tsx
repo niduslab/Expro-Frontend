@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Check } from "lucide-react";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -156,12 +157,10 @@ const PensionPackages = () => {
                     Popular
                   </div>
                 )}
-
                 {/* Package Name */}
                 <h3 className={`text-lg font-semibold mb-3 ${titleColor}`}>
                   {pkg.name}
                 </h3>
-
                 {/* Price */}
                 <div className="flex items-baseline gap-1 mb-6">
                   <span
@@ -173,13 +172,14 @@ const PensionPackages = () => {
                     /month
                   </span>
                 </div>
-
                 {/* Action Button */}
-                <button
-                  className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
-                >
-                  Choose {pkg.name} Package
-                </button>
+                <Link href="/membership">
+                  <button
+                    className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
+                  >
+                    Choose {pkg.name} Package
+                  </button>
+                </Link>
 
                 {/* Features List */}
                 <div className="flex-1">

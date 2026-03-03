@@ -27,6 +27,9 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+html {
+  scroll-behavior: smooth;
+}
 
 /* Bengali font utility class */
 .font-noto-sans-bengali {

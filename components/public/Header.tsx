@@ -224,7 +224,7 @@ export function Header() {
       hasDropdown: true,
       dropdownItems: [
         // { name: "Executive Membership", href: "/membership/executive" },
-        { name: "General Membership", href: "/membership/general" },
+        { name: "General Membership", href: "/membership" },
       ],
     },
     {

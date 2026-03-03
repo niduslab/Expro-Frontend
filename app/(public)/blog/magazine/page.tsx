@@ -1,6 +1,5 @@
 "use client";
 
-import DemoNoticeTicker from "@/components/dev-warning/page";
 import { jsPDF } from "jspdf";
 import Link from "next/link";
 
@@ -117,19 +116,18 @@ const MagazinePage = () => {
 
   return (
     <section className="bg-white min-h-screen pt-32 pb-24 px-6">
-      <DemoNoticeTicker />
       {/* HERO */}
-      <div className="max-w-6xl mx-auto text-center mb-20">
+
+      <div className="text-center mb-16 flex flex-col items-center gap-5">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           2026 Digital Edition
         </div>
-
-        <h1 className="text-5xl font-extrabold mt-2 text-gray-900">
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Our Magazine
-        </h1>
+        </h2>
 
-        <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
+        <p className="text-gray-500 max-w-2xl">
           A transparent, innovative and impact-driven publication highlighting
           pension growth, humanitarian projects and community development.
         </p>

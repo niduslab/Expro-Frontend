@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useRef } from "react";
 import gsap from "gsap";
+import DemoNoticeTicker from "../dev-warning/page";
 
 type ComingSoonProps = {
   title: string;
@@ -58,9 +59,7 @@ const ComingSoon: FC<ComingSoonProps> = ({ title }) => {
           Pending
         </div>
 
-        <h2 className="text-4xl md:text-5xl font-bold tracking-wide text-gray-700">
-          Updates Will Be Available Soon.
-        </h2>
+        <DemoNoticeTicker />
       </div>
 
       {/* Animated Icon */}

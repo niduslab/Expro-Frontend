@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 
 const OurFounder = () => {
@@ -7,7 +6,7 @@ const OurFounder = () => {
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Column: Content */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-2 lg:order-1">
             {/* Tag */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]"></span>
@@ -62,7 +61,7 @@ const OurFounder = () => {
           </div>
 
           {/* Right Column: Image */}
-          <div className="relative flex justify-center lg:justify-end">
+          <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
             <div className="relative w-full max-w-161 h-125 md:h-150 lg:h-168.75 rounded-lg overflow-hidden bg-[#F5F5F5]">
               <Image
                 src="/images/about/our-founder.png"
