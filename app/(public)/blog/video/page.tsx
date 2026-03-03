@@ -1,6 +1,4 @@
-import DemoNoticeTicker from "@/components/dev-warning/page";
-import React from "react";
-
+"use Client";
 const videoData = [
   {
     id: 1,
@@ -28,7 +26,6 @@ const videoData = [
 const Videos = () => {
   return (
     <section className="bg-white min-h-screen px-6 pt-32 md:px-16 py-20">
-      <DemoNoticeTicker />
       {/* Header */}
       <div className="text-center mb-16 flex flex-col items-center gap-5">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">

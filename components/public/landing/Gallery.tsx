@@ -1,17 +1,21 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
+
+type GalleryProps = {
+  header2: string;
+};
 
 const galleryImages = [
-  '/images/landing-page/gallery/75078fcca13640498f537bb1ed99fec6fdf3bbff.jpg',
-  '/images/landing-page/gallery/29b8f955feee723d75cdfbde39b8f13c16cf3517.jpg',
-  '/images/landing-page/gallery/a8e7ad2df1a93ece6fa17575882ece9001a367af.jpg',
-  '/images/landing-page/gallery/7c8e0916f9f2764fde3c5c3298b7c1a2e8be3374.jpg',
-  '/images/landing-page/gallery/a7b8440868a04a45cc452a7925eb10e54e747be6.jpg',
+  "/images/landing-page/gallery/75078fcca13640498f537bb1ed99fec6fdf3bbff.jpg",
+  "/images/landing-page/gallery/29b8f955feee723d75cdfbde39b8f13c16cf3517.jpg",
+  "/images/landing-page/gallery/a8e7ad2df1a93ece6fa17575882ece9001a367af.jpg",
+  "/images/landing-page/gallery/7c8e0916f9f2764fde3c5c3298b7c1a2e8be3374.jpg",
+  "/images/landing-page/gallery/a7b8440868a04a45cc452a7925eb10e54e747be6.jpg",
 ];
 
-const Gallery = () => {
+const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
@@ -22,7 +26,7 @@ const Gallery = () => {
             Our Gallery
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
-            Visual Stories of Service
+            {header2}
           </h2>
         </div>
 
@@ -60,7 +64,7 @@ const Gallery = () => {
 
           {/* Column 3 */}
           <div className="flex flex-col gap-6 h-full">
-             <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
               <Image
                 src={galleryImages[3]}
                 alt="Gallery Image 4"

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { ArrowUpRight, Bell, Calendar } from "lucide-react";
-import DemoNoticeTicker from "@/components/dev-warning/page";
 
 type Notice = {
   id: string;
@@ -46,7 +45,6 @@ const NoticePage = () => {
 
   return (
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
-      <DemoNoticeTicker />
       {/* Header */}
       <div className="text-center mb-10 flex flex-col items-center gap-5">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
