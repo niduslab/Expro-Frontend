@@ -249,7 +249,7 @@ export function Header() {
         isScrolled ? "py-2" : "py-6"
       }`}
     >
-      <GoogleTranslateScript />
+      {/* <GoogleTranslateScript /> */}
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div
           className={`bg-white rounded-lg shadow-lg transition-all duration-300 ${
@@ -291,8 +291,6 @@ export function Header() {
               <div className="hidden sm:block">
                 <GoogleTranslateButton />
               </div>
-
-              {/* Mobile Menu Button */}
 
               {/* Mobile Menu Button */}
               <button

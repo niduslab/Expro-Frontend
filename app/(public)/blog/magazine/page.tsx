@@ -2,6 +2,7 @@
 
 import DemoNoticeTicker from "@/components/dev-warning/page";
 import { jsPDF } from "jspdf";
+import Link from "next/link";
 
 type MagazineCardProps = {
   year: string;
@@ -69,13 +70,13 @@ const MagazineCard = ({
 
         <div className="flex gap-3 mt-6">
           {/* Disabled Read button */}
-          <a
+          <Link
             href="#"
             className="flex-1 text-center bg-gray-200 text-gray-400 py-2 rounded-lg cursor-not-allowed"
             onClick={(e) => e.preventDefault()}
           >
             Read
-          </a>
+          </Link>
 
           <button
             type="button"

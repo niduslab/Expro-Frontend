@@ -4,6 +4,7 @@ import { useState } from "react";
 import { format, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 import { ArrowUpRight } from "lucide-react";
 import DemoNoticeTicker from "@/components/dev-warning/page";
+import Link from "next/link";
 
 type Event = {
   id: string;
@@ -123,12 +124,12 @@ const CalendarPage = () => {
                   <h4 className="font-semibold text-gray-800">{event.title}</h4>
                   <p className="text-gray-600">{event.description}</p>
                   {event.link && (
-                    <a
+                    <Link
                       href={event.link}
                       className="text-green-600 hover:underline text-sm"
                     >
                       More info
-                    </a>
+                    </Link>
                   )}
                 </div>
               ))
@@ -159,12 +160,12 @@ const CalendarPage = () => {
                 </p>
                 <p className="text-gray-600 mt-2">{event.description}</p>
                 {event.link && (
-                  <a
+                  <Link
                     href={event.link}
                     className="mt-4 flex items-center  text-green-600 font-semibold hover:underline"
                   >
                     More info <ArrowUpRight />
-                  </a>
+                  </Link>
                 )}
               </div>
             </div>
