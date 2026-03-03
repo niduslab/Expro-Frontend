@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { format, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 import { ArrowUpRight } from "lucide-react";
+import DemoNoticeTicker from "@/components/dev-warning/page";
 
 type Event = {
   id: string;
@@ -62,6 +63,7 @@ const CalendarPage = () => {
 
   return (
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
+      <DemoNoticeTicker />
       {/* Header */}
 
       <div className="text-center mb-16 flex flex-col items-center gap-5">

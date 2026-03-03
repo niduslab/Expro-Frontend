@@ -223,7 +223,7 @@ export function Header() {
       href: "/membership",
       hasDropdown: true,
       dropdownItems: [
-        // { name: "Executive Membership", href: "/membership/executive" },
+        { name: "Executive Membership", href: "/membership/executive" },
         { name: "General Membership", href: "/membership/general" },
       ],
     },
