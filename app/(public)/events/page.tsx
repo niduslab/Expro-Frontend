@@ -107,13 +107,6 @@ const Events = () => {
               Engagements That Strengthen Communities
             </h2>
           </div>
-          <div className="shrink-0">
-            <Link href="/events">
-              <Button className="inline-block px-8 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
-                View All Events
-              </Button>
-            </Link>
-          </div>
         </div>
 
         {/* Events List */}
