@@ -30,7 +30,7 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 md:px-12 lg:px-20 h-full flex flex-col justify-center">
         <div className="max-w-2xl text-white space-y-6">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
+          <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
             Empowering Lives <br />
             <span className="font-serif italic text-[#36F293]">
               Building
