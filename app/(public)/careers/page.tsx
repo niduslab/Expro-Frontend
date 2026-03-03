@@ -1,5 +1,6 @@
 "use client";
 
+import DemoNoticeTicker from "@/components/dev-warning/page";
 import { format } from "date-fns";
 import { BriefcaseIcon, CalendarIcon, MapPinIcon } from "lucide-react";
 
@@ -50,6 +51,7 @@ const sampleJobs: Job[] = [
 const CareerPage = () => {
   return (
     <section className="text-black min-h-screen pt-36 pb-24 px-6">
+      <DemoNoticeTicker />
       {/* Header */}
       <div className="text-center mb-10 flex flex-col items-center gap-5">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">

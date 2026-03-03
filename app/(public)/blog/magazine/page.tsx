@@ -1,5 +1,6 @@
 "use client";
 
+import DemoNoticeTicker from "@/components/dev-warning/page";
 import { jsPDF } from "jspdf";
 
 type MagazineCardProps = {
@@ -115,6 +116,7 @@ const MagazinePage = () => {
 
   return (
     <section className="bg-white min-h-screen pt-32 pb-24 px-6">
+      <DemoNoticeTicker />
       {/* HERO */}
       <div className="max-w-6xl mx-auto text-center mb-20">
         <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">

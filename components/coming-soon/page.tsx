@@ -13,14 +13,14 @@ const ComingSoon: FC<ComingSoonProps> = ({ title }) => {
       {/* Header */}
       <div className="mb-12 flex flex-col items-center gap-4">
         <motion.div
-          className="inline-flex items-center gap-2 rounded-full bg-[#fdecec] px-4 py-1.5 text-sm font-semibold text-[#7a1c02] cursor-default hover:scale-105 transition-transform"
+          className="inline-flex items-center gap-2 rounded-full bg-[#fdecec] px-4 py-1.5 text-sm font-semibold text-[#7a1c02] cursor-default"
           whileHover={{ scale: 1.1 }}
         >
           <span className="h-2 w-2 rounded-full bg-[#7a1c02] animate-pulse" />
           Pending
         </motion.div>
 
-        <h2 className="text-4xl md:text-5xl font-bold tracking-150% text-gray-700">
+        <h2 className="text-4xl md:text-5xl font-bold tracking-wide text-gray-700">
           Updates Will Be Available Soon.
         </h2>
       </div>
@@ -63,7 +63,7 @@ const ComingSoon: FC<ComingSoonProps> = ({ title }) => {
       </h1>
 
       {/* Message */}
-      <p className="text-gray-400 text-normal md:text-medium max-w-lg leading-relaxed pt-5">
+      <p className="text-gray-400 text-base md:text-lg max-w-lg leading-relaxed pt-5">
         The content for{" "}
         <span className="font-semibold text-red-600">{title} </span>
         has not been received yet. Once it’s available, this page will be
