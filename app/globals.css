@@ -12,6 +12,7 @@
   --font-mono: var(--font-geist-mono);
   --font-dm-sans: var(--font-dm-sans);
   --font-playfair-display: var(--font-playfair-display);
+  --font-bengali: var(--font-noto-sans-bengali);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,4 +29,9 @@ body {
 }
 html {
   scroll-behavior: smooth;
+}
+
+/* Bengali font utility class */
+.font-noto-sans-bengali {
+  font-family: var(--font-noto-sans-bengali), 'Noto Sans Bengali', sans-serif;
 }
