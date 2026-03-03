@@ -54,7 +54,8 @@ const Hero = () => {
               Become a Member
             </Link>
             <Link
-              href="/programs"
+              href="#what-we-do"
+              scroll={true}
               className="inline-flex items-center justify-center bg-transparent border border-white hover:bg-white/10 text-white font-medium py-3.5 px-8 rounded-md transition-colors duration-300"
             >
               Explore Our Programs

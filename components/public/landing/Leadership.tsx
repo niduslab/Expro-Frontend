@@ -197,7 +197,7 @@ const Leadership = () => {
         <div className="text-center">
           <div data-leadership-button>
             <Link
-              href="/leadership"
+              href="/projects/projectScheme"
               className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md"
             >
               View All Members

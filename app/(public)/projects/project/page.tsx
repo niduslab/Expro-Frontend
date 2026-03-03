@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Hero from "./hero";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const projects = [
   {
@@ -58,6 +59,7 @@ const projects = [
 ];
 
 export default function Project() {
+  const router = useRouter();
   return (
     <>
       <Hero />
@@ -78,6 +80,7 @@ export default function Project() {
           {projects.map((project, idx) => (
             <div
               key={idx}
+              onClick={() => router.push("/projects/project-details")}
               className="bg-white text-black rounded-lg shadow-md border border-gray-200 p-6 flex flex-col justify-between h-[538px]"
             >
               <div className="flex flex-col gap-4">
