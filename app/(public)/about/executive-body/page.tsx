@@ -6,7 +6,7 @@ export default function ExecutiveBody() {
       <div className="relative top-20">
         <ProjectMembers
           badgeText="Executive Body"
-          headingText="Executive Committee Members"
+          headingText="Executive Body"
         />
       </div>
     </>

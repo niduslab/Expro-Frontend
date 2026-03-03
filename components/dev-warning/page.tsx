@@ -5,35 +5,18 @@ import { motion } from "framer-motion";
 
 const DemoNoticeTicker: FC = () => {
   return (
-    <div className="fixed bottom-0 left-0 w-full h-9 md:h-10 bg-red-600 text-white overflow-hidden z-50 shadow-md">
-      <div className="flex items-center h-full">
-        {/* Breaking Label */}
-        <div className="bg-black px-3 h-full flex items-center text-xs md:text-sm font-bold uppercase tracking-wide">
-          Attention
-        </div>
-
-        {/* Scrolling Text */}
-        <div className="relative flex-1 overflow-hidden">
-          <motion.div
-            className="whitespace-nowrap text-xs md:text-sm font-medium pl-6"
-            animate={{ x: ["100%", "-100%"] }}
-            transition={{
-              repeat: Infinity,
-              duration: 20,
-              ease: "linear",
-            }}
-          >
-            This page has been created solely for display and demonstration
-            purposes, as the original content was not provided by the client at
-            the time of development. To present a complete and visually
-            representative layout, the developer included temporary placeholder
-            text, images, and structure. The content shown here is for
-            illustration only and will be replaced once the client provides the
-            official materials.
-          </motion.div>
+    <>
+      <div className="w-full flex items-center justify-center">
+        <div
+          className="w-44 mt-8 mb-8 h-12  rounded-xl flex items-center justify-center
+                text-red-600 bg-red-100 border border-red-500 
+                shadow-xl shadow-red-200 text-sm font-bold"
+        >
+          Content Required{" "}
+          <span className="ml-1 font-extrabold text-[20px] mt-2">*</span>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -119,12 +119,13 @@ const MagazinePage = () => {
       <DemoNoticeTicker />
       {/* HERO */}
       <div className="max-w-6xl mx-auto text-center mb-20">
-        <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           2026 Digital Edition
-        </span>
+        </div>
 
-        <h1 className="text-5xl font-extrabold mt-6 text-gray-900">
-          Expro Welfare Foundation Magazine
+        <h1 className="text-5xl font-extrabold mt-2 text-gray-900">
+          Our Magazine
         </h1>
 
         <p className="text-gray-600 mt-6 max-w-2xl mx-auto">

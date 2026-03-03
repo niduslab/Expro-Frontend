@@ -66,7 +66,7 @@ const CalendarPage = () => {
       <DemoNoticeTicker />
       {/* Header */}
 
-      <div className="text-center mb-16 flex flex-col items-center gap-5">
+      <div className="text-center mb-6 flex flex-col items-center gap-5">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Calendar & Events
         </h2>
@@ -79,10 +79,10 @@ const CalendarPage = () => {
 
       {/* Calendar */}
       <div className="max-w-4xl mx-auto mb-20">
-        <h2 className="text-3xl font-bold mb-6 text-gray-800">This Month</h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-600">This Month</h2>
         <div className="grid grid-cols-7 gap-2 text-center">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div key={day} className="font-semibold">
+            <div key={day} className="font-semibold text-gray-800">
               {day}
             </div>
           ))}
@@ -92,7 +92,7 @@ const CalendarPage = () => {
             return (
               <div
                 key={day.toISOString()}
-                className={`p-3 border rounded-lg cursor-pointer hover:bg-green-50 ${
+                className={`p-3 border border-gray-300 text-gray-800 rounded-lg cursor-pointer hover:bg-green-50 ${
                   isSameDay(day, today) ? "bg-[#027A48] font-bold" : ""
                 }`}
                 onClick={() => setSelectedDate(day)}
