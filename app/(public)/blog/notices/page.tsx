@@ -48,7 +48,7 @@ const NoticePage = () => {
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
       <DemoNoticeTicker />
       {/* Header */}
-      <div className="text-center mb-16 flex flex-col items-center gap-5">
+      <div className="text-center mb-10 flex flex-col items-center gap-5">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Notices
         </h2>
@@ -57,11 +57,6 @@ const NoticePage = () => {
           <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           Notices
         </div>
-
-        <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-          Stay updated with official announcements, reports, and community
-          notices.
-        </p>
       </div>
 
       {/* Notice List */}
@@ -86,47 +81,13 @@ const NoticePage = () => {
               <p className="text-gray-500 text-[13px] mt-2 ">
                 {notice.description}
               </p>
-              {notice.link && (
-                <a
-                  href={notice.link}
-                  className="mt-2 flex items-center text-green-600 font-medium hover:underline"
-                >
-                  Read More <ArrowUpRight />
-                </a>
-              )}
+              <span className="mt-2 flex items-center text-green-600 font-medium hover:text-green-700">
+                Read More <ArrowUpRight />
+              </span>
             </div>
           </div>
         ))}
       </div>
-
-      {/* Selected Notice Modal */}
-      {selectedNotice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-8 max-w-xl w-full shadow-lg relative">
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 font-bold"
-              onClick={() => setSelectedNotice(null)}
-            >
-              ×
-            </button>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {selectedNotice.title}
-            </h2>
-            <p className="text-gray-500 mb-2">
-              {format(new Date(selectedNotice.date), "MMMM d, yyyy")}
-            </p>
-            <p className="text-gray-700">{selectedNotice.description}</p>
-            {selectedNotice.link && (
-              <a
-                href={selectedNotice.link}
-                className="mt-4 inline-block text-green-600 font-semibold hover:underline"
-              >
-                More Info <ArrowUpRight />
-              </a>
-            )}
-          </div>
-        </div>
-      )}
     </section>
   );
 };

@@ -24,7 +24,6 @@ const sampleJobs: Job[] = [
     postedDate: "2026-03-01",
     description:
       "Work on our web platform, implement features, optimize performance, and collaborate with cross-functional teams.",
-    link: "#",
   },
   {
     id: "2",
@@ -34,7 +33,6 @@ const sampleJobs: Job[] = [
     postedDate: "2026-03-05",
     description:
       "Assist with marketing campaigns, social media content, and community engagement initiatives.",
-    link: "#",
   },
   {
     id: "3",
@@ -44,13 +42,12 @@ const sampleJobs: Job[] = [
     postedDate: "2026-03-10",
     description:
       "Manage ongoing projects, coordinate teams, track progress, and ensure timely delivery of initiatives.",
-    link: "#",
   },
 ];
 
 const CareerPage = () => {
   return (
-    <section className="text-black min-h-screen pt-36 pb-24 px-6">
+    <section className="text-black min-h-screen pt-32 pb-24 px-6">
       <DemoNoticeTicker />
       {/* Header */}
       <div className="text-center mb-10 flex flex-col items-center gap-5">
@@ -64,7 +61,7 @@ const CareerPage = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-2 gap-10">
         {sampleJobs.map((job) => (
           <div
             key={job.id}
@@ -96,16 +93,6 @@ const CareerPage = () => {
               <p className="text-gray-500 text-[14px] mt-4 flex-1 ">
                 {job.description}
               </p>
-
-              {/* Apply Button */}
-              {job.link && (
-                <a
-                  href={job.link}
-                  className="mt-6 inline-block text-white bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded-lg text-center transition"
-                >
-                  Apply Now
-                </a>
-              )}
             </div>
           </div>
         ))}
