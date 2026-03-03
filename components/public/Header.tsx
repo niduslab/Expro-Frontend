@@ -282,7 +282,7 @@ export function Header() {
             <div className="flex items-center gap-4">
               <Link
                 href="/donate"
-                className="hidden sm:inline-flex items-center justify-center rounded-md bg-[#D62828] hover:bg-[#b81d1d] text-white font-semibold px-6 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                className="hidden sm:inline-flex items-center justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white font-semibold px-6 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
                 Donate Now
               </Link>
@@ -389,7 +389,7 @@ export function Header() {
                 <Link
                   href="/donate"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full inline-flex items-center justify-center rounded-md bg-[#068847] hover:bg-[#056d39] text-white mt-4 font-medium h-10 px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  className="w-full inline-flex items-center justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white mt-4 font-medium h-10 px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
                   Donate Now
                 </Link>

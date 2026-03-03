@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Globe } from "lucide-react";
 
 declare global {
@@ -12,50 +12,100 @@ declare global {
 
 export function GoogleTranslateScript() {
   useEffect(() => {
-    // Check if script is already added
+    // Prevent duplicate script loading
     if (document.querySelector("script[src*='translate.google.com']")) {
       return;
     }
 
-    // Add Google Translate script
-    const addScript = document.createElement("script");
-    addScript.setAttribute(
-      "src",
-      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-    );
-    document.body.appendChild(addScript);
+    // Add styles to hide top bar
+    const style = document.createElement("style");
+    style.id = "google-translate-styles";
+    style.innerHTML = `
+      /* Hide Google Translate top bar */
+      body {
+        top: 0 !important;
+        position: static !important;
+      }
+      
+      .skiptranslate iframe,
+      .goog-te-banner-frame {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      
+      body > .skiptranslate {
+        display: none !important;
+      }
+      
+      html, body {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
+      
+      /* Hide the widget but keep it functional */
+      .goog-te-gadget {
+        display: none !important;
+      }
+      
+      /* Bengali font for translated content */
+      html[lang="bn"] *,
+      body.translated-ltr *,
+      body.translated-rtl *,
+      font[style*="vertical-align: inherit"] {
+        font-family: var(--font-noto-sans-bengali), 'Noto Sans Bengali', sans-serif !important;
+      }
+    `;
+    document.head.appendChild(style);
 
+    // Load Google Translate script
+    const script = document.createElement("script");
+    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    
+    // Initialize callback
     window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "en,bn",
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false,
-        },
-        "google_translate_element"
-      );
+      if (window.google && window.google.translate) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,bn",
+            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          },
+          "google_translate_element"
+        );
+      }
+    };
+
+    document.body.appendChild(script);
+
+    // Remove top bar when it appears
+    const removeTopBar = setInterval(() => {
+      const iframe = document.querySelector(".goog-te-banner-frame");
+      if (iframe) {
+        iframe.remove();
+      }
+      if (document.body.style.top) {
+        document.body.style.top = "0";
+        document.body.style.position = "static";
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(removeTopBar);
     };
   }, []);
 
   return (
-    <>
-      <div id="google_translate_element" className="hidden"></div>
-      <style jsx global>{`
-        .goog-te-banner-frame {
-          display: none !important;
-        }
-        body {
-          top: 0px !important;
-        }
-        .goog-tooltip {
-          display: none !important;
-        }
-        .goog-te-gadget-simple {
-          display: none !important;
-        }
-      `}</style>
-    </>
+    <div 
+      id="google_translate_element" 
+      style={{ 
+        position: 'absolute',
+        left: '-9999px',
+        width: '1px',
+        height: '1px',
+        overflow: 'hidden'
+      }}
+    />
   );
 }
 
@@ -63,41 +113,46 @@ export function GoogleTranslateButton({ className }: { className?: string }) {
   const [isTranslated, setIsTranslated] = useState(false);
 
   useEffect(() => {
-    // Check initial state from cookie
-    const checkCookie = () => {
-      const cookies = document.cookie.split(";");
-      const googtrans = cookies.find((c) => c.trim().startsWith("googtrans="));
-      if (googtrans && googtrans.includes("/bn")) {
-        setIsTranslated(true);
-      } else {
-        setIsTranslated(false);
+    // Check cookie on mount
+    const checkTranslation = () => {
+      const cookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("googtrans="));
+      
+      if (cookie) {
+        const value = cookie.split("=")[1];
+        setIsTranslated(value.includes("/bn"));
       }
     };
-    checkCookie();
+
+    checkTranslation();
   }, []);
 
-  const handleTranslate = () => {
+  const toggleTranslation = () => {
     if (isTranslated) {
-      // Switch back to English
-      document.cookie = "googtrans=/en/en; path=/; domain=" + window.location.hostname;
-      document.cookie = "googtrans=/en/en; path=/";
-      window.location.reload();
+      // Reset to English
+      document.cookie = "googtrans=; path=/; max-age=0";
+      document.cookie = `googtrans=; path=/; domain=${window.location.hostname}; max-age=0`;
     } else {
-      // Switch to Bangla
-      document.cookie = "googtrans=/en/bn; path=/; domain=" + window.location.hostname;
+      // Set to Bengali
       document.cookie = "googtrans=/en/bn; path=/";
-      window.location.reload();
+      document.cookie = `googtrans=/en/bn; path=/; domain=${window.location.hostname}`;
     }
+    
+    // Reload page to apply translation
+    window.location.reload();
   };
 
   return (
     <button
-      onClick={handleTranslate}
-      className={`flex items-center justify-center gap-2 rounded-md border border-[#068847] text-[#068847] hover:bg-[#068847] hover:text-white font-semibold px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#068847] ${className || ""}`}
+      onClick={toggleTranslation}
+      className={`notranslate flex items-center justify-center gap-2 rounded-md border border-[#068847] text-[#068847] hover:bg-[#068847] hover:text-white font-semibold px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#068847] ${className || ""}`}
       aria-label={isTranslated ? "Switch to English" : "Switch to Bangla"}
     >
       <Globe size={18} />
-      <span>{isTranslated ? "English" : "বাংলা"}</span>
+      <span className="font-noto-sans-bengali">
+        {isTranslated ? "English" : "বাংলা"}
+      </span>
     </button>
   );
 }
