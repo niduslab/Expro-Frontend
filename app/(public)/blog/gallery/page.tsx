@@ -4,10 +4,17 @@ import React from "react";
 
 const Galleries = () => {
   return (
-    <div className="pt-16">
-      <DemoNoticeTicker />
-      <Gallery />
-    </div>
+    <>
+      <div className="pt-8">
+        <div className="relative top-24">
+          <DemoNoticeTicker />
+        </div>
+
+        <div className="pt-2">
+          <Gallery />
+        </div>
+      </div>
+    </>
   );
 };
 

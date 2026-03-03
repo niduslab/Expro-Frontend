@@ -88,10 +88,7 @@ export default function AdvisoryCounsil() {
   return (
     <section ref={sectionRef} className="py-20 bg-white">
       <div className="container relative top-20 mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
-        <div
-          data-leadership-header
-          className="text-center mb-14 flex flex-col items-center gap-5"
-        >
+        <div className="text-center mb-8 flex flex-col items-center gap-5">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 ">
             Advisory Council
           </h2>
@@ -103,7 +100,7 @@ export default function AdvisoryCounsil() {
 
         <div
           data-leadership-grid
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-16"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-6"
         >
           {team.map((member, index) => (
             <div

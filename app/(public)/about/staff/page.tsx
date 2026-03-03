@@ -87,19 +87,19 @@ const Staff = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 bg-white">
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
-        <div data-leadership-header className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] mb-4">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900"></h2>
+    <section ref={sectionRef} className="py-20 bg-white ">
+      <div className="container pt-[40px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+        <div className="text-center  flex flex-col items-center gap-5">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+            Our Staffs
+          </h2>
+          <p className="text-gray-500 max-w-2xl">
+            Get to know the journey, challenges, and purpose that started it
+            all.
+          </p>
         </div>
 
-        <div
-          data-leadership-grid
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-16"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center pt-[32px] mb-16">
           {team.map((member, index) => (
             <div
               key={index}
