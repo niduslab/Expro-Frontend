@@ -1,7 +1,6 @@
 "use client";
 
 import { FC } from "react";
-import { motion } from "framer-motion";
 
 const DemoNoticeTicker: FC = () => {
   return (

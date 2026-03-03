@@ -14,7 +14,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
