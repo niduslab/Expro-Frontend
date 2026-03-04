@@ -7,8 +7,8 @@ const Hero = () => {
       {/* Background Layer with Image and Gradient */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/additional/terms-conditions-hero.png"
-          alt="terms and condition hero"
+          src="/images/additional/privacy-policies-hero.png"
+          alt="Privacy & Policy hero"
           fill
           sizes="573px"
           style={{ objectFit: "cover", objectPosition: "center right" }}
@@ -39,18 +39,17 @@ const Hero = () => {
               Footer
             </Link>
             <span className="text-white">•</span>
-            <span className="text-[#36F293]">Terms & Conditions</span>
+            <span className="text-[#36F293]">Privacy & Policies</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
-            Terms And Conditions
+            Privacy And Policies
           </h1>
 
           <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
-            By accessing our website, you agree to follow these Terms &
-            Conditions. We may update them at any time, and your continued use
-            constitutes acceptance. Users must comply with all applicable laws
-            while using our services.
+            We respect your privacy and are committed to protecting your
+            personal information. We collect only what is necessary to provide
+            our services and never share your data without consent.
           </p>
         </div>
       </div>

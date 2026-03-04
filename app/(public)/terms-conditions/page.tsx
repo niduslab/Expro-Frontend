@@ -91,7 +91,7 @@ export default function TermsCondition() {
                     <strong>Expro Welfare Foundation</strong>
                   </p>
                   <p>Email: ewf.bogura.bd@gmail.com</p>
-                  <p>Phone: +8801304-493937</p>
+                  <p>Phone: +88 01308-483637</p>
                   <p>
                     Address: Boshundhara Villa, Sher-e-Bangla Nagar, Nishindara,
                     Bogura Sadar, Bogura-5800
