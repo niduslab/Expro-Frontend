@@ -260,6 +260,7 @@ export function Header() {
       href: "/blog",
       hasDropdown: true,
       dropdownItems: [
+        { name: "Blog & Media", href: "/blog" },
         { name: "Gallery", href: "/blog/gallery" },
         { name: "Video", href: "/blog/video" },
         { name: "Magazine", href: "/blog/magazine" },
@@ -274,7 +275,7 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
-    px-4 sm:px-6 md:px-12 lg:px-20 ${isScrolled ? "py-2" : "py-6"}`}
+    ${isScrolled ? "py-2" : "py-6"}`}
     >
       <GoogleTranslateScript />
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
@@ -339,19 +340,19 @@ export function Header() {
                     className="border-b border-gray-50 last:border-0"
                   >
                     {/* Menu Item Header (click anywhere to toggle submenu) */}
-                    <div
-                      className="flex items-center justify-between py-2 cursor-pointer"
-                      onClick={() =>
-                        setExpandedMobileMenu(
-                          expandedMobileMenu === link.name ? null : link.name,
-                        )
-                      }
-                    >
-                      <span className="text-gray-800 hover:text-[#068847] font-normal text-[16px] flex-1">
-                        {link.name}
-                      </span>
+                    {link.megaMenu || link.dropdownItems ? (
+                      <div
+                        className="flex items-center justify-between py-2 cursor-pointer"
+                        onClick={() =>
+                          setExpandedMobileMenu(
+                            expandedMobileMenu === link.name ? null : link.name,
+                          )
+                        }
+                      >
+                        <span className="text-gray-800 font-normal text-[16px] flex-1">
+                          {link.name}
+                        </span>
 
-                      {(link.megaMenu || link.dropdownItems) && (
                         <ChevronDown
                           className={`w-4 h-4 transition-transform duration-200 ${
                             expandedMobileMenu === link.name
@@ -359,8 +360,16 @@ export function Header() {
                               : "text-gray-500"
                           }`}
                         />
-                      )}
-                    </div>
+                      </div>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block py-2 text-gray-800 hover:text-[#068847] font-normal text-[16px]"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
 
                     {/* Mobile Mega Menu */}
                     {link.megaMenu && expandedMobileMenu === link.name && (
