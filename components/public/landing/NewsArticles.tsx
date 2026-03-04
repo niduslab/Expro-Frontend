@@ -105,13 +105,13 @@ const NewsArticles = () => {
               News & Blogs
             </div>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#101828]">
-              Latest News & Articles
+              Latest News & Blogs
             </h2>
           </div>
           <div className="shrink-0">
             <Link href="/blog">
-              <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
-                View All Articles
+              <Button className="cursor-pointer inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                View All Blogs
               </Button>
             </Link>
           </div>
@@ -139,7 +139,7 @@ const NewsArticles = () => {
                 {featuredArticle.title}
               </h3>
               <Link href={featuredArticle.link}>
-                <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                <Button className="cursor-pointer inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
                   Learn More
                 </Button>
               </Link>

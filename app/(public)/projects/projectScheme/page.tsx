@@ -19,10 +19,10 @@ export default function ProjectScheme() {
         badgeText="Project Members"
         headingText="Project Brand Ambassadors"
       />
-      <KeyObjectives />
+      {/* <KeyObjectives />
       <CoreFocusArea />
       <PensionPackage />
-      <MissionVision />
+      <MissionVision /> */}
     </>
   );
 }

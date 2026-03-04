@@ -18,7 +18,7 @@ const events = [
     time: "11.30 AM - 2.30 PM",
     image:
       "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg", // Placeholder, using first available
-    link: "#",
+    link: "events/event-details",
   },
   {
     title: "Disaster Relief Training",
@@ -29,7 +29,7 @@ const events = [
     time: "11.30 AM - 2.30 PM",
     image:
       "/images/landing-page/events/45cfcb47c1850f33fb81de1fcbb9c346e53f1581.jpg", // Placeholder, using second available
-    link: "#",
+    link: "events/event-details",
   },
   {
     title: "Women Business Workshop",
@@ -40,7 +40,7 @@ const events = [
     time: "11.30 AM - 2.30 PM",
     image:
       "/images/landing-page/events/9d28340008ab0f8b020c34003fa1a49fdbe7cda1.jpg",
-    link: "#",
+    link: "events/event-details",
   },
 ];
 
@@ -165,7 +165,7 @@ const Events = () => {
                 {/* Button */}
                 <div>
                   <Link href={event.link}>
-                    <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                    <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
                       Learn More
                     </Button>
                   </Link>

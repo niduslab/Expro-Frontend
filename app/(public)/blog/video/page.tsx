@@ -27,7 +27,7 @@ const Videos = () => {
   return (
     <section className="bg-white min-h-screen px-6 pt-32 md:px-16 py-20">
       {/* Header */}
-      <div className="text-center mb-16 flex flex-col items-center gap-5">
+      <div className="text-center mb-10 pt-6 flex flex-col items-center gap-5">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           Our Videos

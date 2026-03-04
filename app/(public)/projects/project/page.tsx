@@ -93,7 +93,7 @@ export default function Project() {
                 </p>
               </div>
               <div className="mt-4">
-                <button className="flex items-center gap-2 text-[#068847] font-semibold">
+                <button className="flex items-center cursor-pointer gap-2 text-[#068847] font-semibold">
                   Learn More <ArrowUpRight className="w-5 h-5" />
                 </button>
               </div>

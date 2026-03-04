@@ -18,7 +18,7 @@ const events = [
     time: "11.30 AM - 2.30 PM",
     image:
       "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg", // Placeholder, using first available
-    link: "#",
+    link: "events/event-details",
   },
   {
     title: "Disaster Relief Training",
@@ -29,7 +29,7 @@ const events = [
     time: "11.30 AM - 2.30 PM",
     image:
       "/images/landing-page/events/45cfcb47c1850f33fb81de1fcbb9c346e53f1581.jpg", // Placeholder, using second available
-    link: "#",
+    link: "events/event-details",
   },
   {
     title: "Women Business Workshop",
@@ -40,7 +40,7 @@ const events = [
     time: "11.30 AM - 2.30 PM",
     image:
       "/images/landing-page/events/9d28340008ab0f8b020c34003fa1a49fdbe7cda1.jpg",
-    link: "#",
+    link: "events/event-details",
   },
 ];
 
@@ -92,22 +92,22 @@ const Events = () => {
 
   return (
     <section ref={sectionRef} className="py-20 bg-[#F2F4F7]">
+      <div
+        data-events-header
+        className="flex flex-col items-center justify-between mb-12 gap-6"
+      >
+        <div className="max-w-2xl pt-16 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 bg-[#ECFDF3] px-3 py-1 rounded-md text-sm font-semibold text-[#027A48] mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#027A48]"></span>
+            Our Events
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#101828] leading-tight">
+            Engagements That Strengthen Communities
+          </h2>
+        </div>
+      </div>
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
         {/* Header */}
-        <div
-          data-events-header
-          className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6"
-        >
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-[#ECFDF3] px-3 py-1 rounded-md text-sm font-semibold text-[#027A48] mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#027A48]"></span>
-              Our Events
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-[#101828] leading-tight">
-              Engagements That Strengthen Communities
-            </h2>
-          </div>
-        </div>
 
         {/* Events List */}
         <div className="space-y-8">
