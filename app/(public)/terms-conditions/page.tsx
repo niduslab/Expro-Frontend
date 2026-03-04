@@ -48,7 +48,7 @@ export default function TermsCondition() {
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-10">
               {/* Important Notice */}
-              <div className="bg-blue-50 border-l-4 border-[#29A36A] p-6 rounded-xl shadow-sm">
+              <div className="bg-blue-50 border-l-4 border-[#f70202] p-6 rounded-xl shadow-sm">
                 <h2 className="text-lg font-semibold mb-2">Important Notice</h2>
                 <p className="text-sm leading-relaxed">
                   By registering, accessing, or using the Platform, you agree to
@@ -62,7 +62,7 @@ export default function TermsCondition() {
                 <section
                   key={index}
                   id={`section-${index + 1}`}
-                  className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 scroll-mt-24"
+                  className="bg-slate-100 hover:bg-green-50 border border-slate-200 rounded-2xl shadow-sm p-8 scroll-mt-24"
                 >
                   <div className="flex items-center mb-6">
                     <div className="w-10 h-10 p-2 flex items-center justify-center rounded-full bg-[#29A36A] text-white font-bold mr-4">
@@ -80,16 +80,17 @@ export default function TermsCondition() {
               {/* Contact Section */}
               <section
                 id="section-18"
-                className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 scroll-mt-24"
+                className="bg-[#29A36A] border text-white border-slate-200 rounded-2xl shadow-sm p-8 scroll-mt-24"
               >
                 <h2 className="text-2xl font-semibold mb-6">
                   Contact Information
                 </h2>
 
-                <div className="space-y-3 text-sm text-slate-600">
+                <div className="space-y-3 text-sm text-slate-200">
                   <p>
                     <strong>Expro Welfare Foundation</strong>
                   </p>
+                  <div className="h-[2px] w-full bg-red-500"></div>
                   <p>Email: ewf.bogura.bd@gmail.com</p>
                   <p>Phone: +88 01308-483637</p>
                   <p>

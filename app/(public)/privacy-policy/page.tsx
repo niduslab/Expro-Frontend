@@ -192,16 +192,18 @@ export default function PrivacyPolicy() {
               <div
                 key={idx}
                 onClick={() => toggleSection(idx)}
-                className="bg-slate-100 hover:bg-green-50  pb-5 border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+                className="bg-slate-100 hover:bg-green-50 cursor-pointer pb-5 border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
               >
                 <button className="w-full text-left px-6 py-4  flex justify-between items-center focus:outline-none">
-                  <span className="text-lg font-semibold">{sec.title}</span>
+                  <span className="text-lg font-semibold cursor-pointer">
+                    {sec.title}
+                  </span>
                   <span
                     className={`text-xl transform transition-transform duration-300 ${
                       openIndex === idx ? "rotate-180" : ""
                     }`}
                   >
-                    <ArrowDown className="h-4 w-4 text-[#36F293]" />
+                    <ArrowDown className="h-4 w-4 cursor-pointer text-[#36F293]" />
                   </span>
                 </button>
 
