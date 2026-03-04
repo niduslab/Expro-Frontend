@@ -88,7 +88,7 @@ const Staff = () => {
 
   return (
     <section ref={sectionRef} className="py-20 bg-white ">
-      <div className="container pt-[40px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container pt-[55px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
         <div className="text-center  flex flex-col items-center gap-5">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
             Our Staffs

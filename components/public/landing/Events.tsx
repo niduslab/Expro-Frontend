@@ -165,7 +165,7 @@ const Events = () => {
                 {/* Button */}
                 <div>
                   <Link href={event.link}>
-                    <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                    <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
                       Learn More
                     </Button>
                   </Link>

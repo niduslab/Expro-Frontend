@@ -46,7 +46,7 @@ const NoticePage = () => {
   return (
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
       {/* Header */}
-      <div className="text-center mb-10 flex flex-col items-center gap-5">
+      <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Notices
         </h2>

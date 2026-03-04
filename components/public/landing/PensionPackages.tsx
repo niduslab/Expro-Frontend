@@ -138,7 +138,7 @@ const PensionPackages = () => {
               : "border-[#D0D5DD]";
             const buttonHover = isDark
               ? "hover:bg-[#0E9F5C]"
-              : "hover:bg-[#F9FAFB]";
+              : "hover:bg-[#068847] hover:text-white hover:border-[#068847]";
             const featureTitleColor = isDark ? "text-white" : "text-[#1D2939]";
             const featureTextColor = isDark
               ? "text-[#EAECF0]"
@@ -175,7 +175,7 @@ const PensionPackages = () => {
                 {/* Action Button */}
                 <Link href="/membership">
                   <button
-                    className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
+                    className={`w-full py-2.5 px-4 rounded-lg text-sm cursor-pointer  font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
                   >
                     Choose {pkg.name} Package
                   </button>

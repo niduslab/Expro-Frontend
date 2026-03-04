@@ -80,7 +80,7 @@ const MagazineCard = ({
           <button
             type="button"
             onClick={handleDownload}
-            className="flex-1 bg-[#068847] text-white py-2 rounded-lg hover:text-gray-300 hover:scale-102 transition"
+            className="flex-1 bg-[#068847] cursor-pointer text-white py-2 rounded-lg hover:text-gray-300 hover:scale-102 transition"
           >
             Download
           </button>
@@ -118,7 +118,7 @@ const MagazinePage = () => {
     <section className="bg-white min-h-screen pt-32 pb-24 px-6">
       {/* HERO */}
 
-      <div className="text-center mb-16 flex flex-col items-center gap-5">
+      <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           2026 Digital Edition

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
-import { Camera, ChevronRight, ChevronLeft, Upload } from 'lucide-react';
+import React, { useState, ChangeEvent, useRef, useEffect } from "react";
+import { Camera, ChevronRight, ChevronLeft, Upload } from "lucide-react";
 
 export type PersonalInfoState = {
   nameBangla: string;
@@ -23,7 +23,7 @@ const motherNamePlaceholder = "Mother's name";
 const dateOfBirthPlaceholder = "mm/dd/yyyy";
 const nidPlaceholder = "Enter your NID number";
 
-import StepsNavigation from './StepsNavigation';
+import StepsNavigation from "./StepsNavigation";
 
 interface PersonalInformationProps {
   data: PersonalInfoState;
@@ -47,7 +47,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const qualifications = ['JSC', 'SSC', 'HSC', 'Bachelor', 'Masters', 'Others'];
+  const qualifications = ["JSC", "SSC", "HSC", "Bachelor", "Masters", "Others"];
 
   const handleChange =
     (field: keyof PersonalInfoState) =>
@@ -77,7 +77,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       ...data,
       qualification: newQualifications,
     });
-    
+
     if (newQualifications.length > 0 && errors.qualification) {
       setErrors((prev) => ({
         ...prev,
@@ -162,17 +162,19 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-7xl">
-        
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10">
-          
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-[#00341C] text-3xl font-bold mb-2">Personal Information</h2>
-            <p className="text-gray-500 text-sm md:text-base">Please provide your basic details</p>
+            <h2 className="text-[#00341C] text-3xl font-bold mb-2">
+              Personal Information
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Please provide your basic details
+            </p>
           </div>
 
-          <StepsNavigation 
+          <StepsNavigation
             steps={steps}
             currentStep={currentStep}
             maxStepReached={maxStepReached}
@@ -181,7 +183,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
           {/* Form Content */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            
             {/* Name (Bangla) */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
@@ -225,7 +226,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             {/* Father's / Husband's Name */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
-                Father's / Husband's Name <span className="text-red-500">*</span>
+                Father's / Husband's Name{" "}
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -234,11 +236,15 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 placeholder={fatherHusbandPlaceholder}
                 aria-invalid={Boolean(errors.fatherHusbandName)}
                 className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.fatherHusbandName ? "border-red-500" : "border-gray-200"
+                  errors.fatherHusbandName
+                    ? "border-red-500"
+                    : "border-gray-200"
                 }`}
               />
               {errors.fatherHusbandName && (
-                <p className="text-xs text-red-500">{errors.fatherHusbandName}</p>
+                <p className="text-xs text-red-500">
+                  {errors.fatherHusbandName}
+                </p>
               )}
             </div>
 
@@ -324,7 +330,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 ))}
               </div>
               {errors.qualification && (
-                <p className="text-xs text-red-500 mt-2">{errors.qualification}</p>
+                <p className="text-xs text-red-500 mt-2">
+                  {errors.qualification}
+                </p>
               )}
             </div>
 
@@ -336,13 +344,13 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               <p className="text-xs text-gray-500 mb-3">
                 Upload a recent passport size photograph (max 2MB, JPG/PNG)
               </p>
-              
+
               <div className="flex flex-col items-start space-y-3">
                 <div className="w-40 h-40 bg-[#F3F4F6] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 relative overflow-hidden">
                   {data.photo ? (
-                    <img 
-                      src={URL.createObjectURL(data.photo)} 
-                      alt="Preview" 
+                    <img
+                      src={URL.createObjectURL(data.photo)}
+                      alt="Preview"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -352,7 +360,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     </>
                   )}
                 </div>
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -373,7 +381,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 <p className="text-xs text-red-500">{errors.photo}</p>
               )}
             </div>
-
           </div>
         </div>
 
@@ -381,23 +388,22 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         <div className="flex justify-between items-center mt-8">
           <button
             type="button"
-            className="flex items-center px-6 py-3 bg-[#F3F4F6] text-gray-600 rounded-md font-medium hover:bg-gray-200 transition-colors opacity-50 cursor-not-allowed"
+            className="flex items-center  px-6 py-3 bg-[#F3F4F6] text-gray-600 rounded-md font-medium hover:bg-gray-200 transition-colors opacity-50 cursor-not-allowed"
             disabled
           >
             <ChevronLeft size={20} className="mr-2" />
             Previous
           </button>
-          
+
           <button
             type="button"
             onClick={handleNextClick}
-            className="flex items-center px-8 py-3 bg-[#008543] text-white rounded-md font-medium hover:bg-[#006C36] transition-colors shadow-sm"
+            className="flex items-center px-8 py-3 cursor-pointer bg-[#008543] text-white rounded-md font-medium hover:bg-[#006C36] transition-colors shadow-sm"
           >
             Next
             <ChevronRight size={20} className="ml-2" />
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ const CalendarPage = () => {
   return (
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
       {/* Header */}
-      <div className="text-center mb-12 flex flex-col items-center gap-5">
+      <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Calendar
         </h2>
@@ -29,7 +29,7 @@ const CalendarPage = () => {
           {/* Preview Button */}
           <button
             onClick={() => setShowPreview(true)}
-            className="bg-gray-200 text-gray-800 px-8 py-3 rounded-xl font-semibold hover:bg-gray-300 transition duration-300"
+            className="bg-gray-200 text-gray-800 px-8 py-3 cursor-pointer rounded-xl font-semibold hover:bg-gray-300 transition duration-300"
           >
             Preview Calendar
           </button>

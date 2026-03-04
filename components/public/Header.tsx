@@ -240,7 +240,7 @@ export function Header() {
         { name: "Careers", href: "/careers" },
       ],
     },
-    { name: "Contracts", href: "/contact", hasDropdown: false },
+    { name: "Contracts", href: "/contract", hasDropdown: false },
   ];
 
   return (
@@ -288,7 +288,7 @@ export function Header() {
               </Link>
 
               {/* Google Translator Button */}
-              <div className="hidden sm:block">
+              <div className="hidden sm:block ">
                 <GoogleTranslateButton />
               </div>
 

@@ -59,9 +59,10 @@ export function GoogleTranslateScript() {
 
     // Load Google Translate script
     const script = document.createElement("script");
-    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.src =
+      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     script.async = true;
-    
+
     // Initialize callback
     window.googleTranslateElementInit = () => {
       if (window.google && window.google.translate) {
@@ -69,9 +70,10 @@ export function GoogleTranslateScript() {
           {
             pageLanguage: "en",
             includedLanguages: "en,bn",
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+            layout:
+              window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           },
-          "google_translate_element"
+          "google_translate_element",
         );
       }
     };
@@ -96,14 +98,14 @@ export function GoogleTranslateScript() {
   }, []);
 
   return (
-    <div 
-      id="google_translate_element" 
-      style={{ 
-        position: 'absolute',
-        left: '-9999px',
-        width: '1px',
-        height: '1px',
-        overflow: 'hidden'
+    <div
+      id="google_translate_element"
+      style={{
+        position: "absolute",
+        left: "-9999px",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
       }}
     />
   );
@@ -118,7 +120,7 @@ export function GoogleTranslateButton({ className }: { className?: string }) {
       const cookie = document.cookie
         .split("; ")
         .find((row) => row.startsWith("googtrans="));
-      
+
       if (cookie) {
         const value = cookie.split("=")[1];
         setIsTranslated(value.includes("/bn"));
@@ -138,7 +140,7 @@ export function GoogleTranslateButton({ className }: { className?: string }) {
       document.cookie = "googtrans=/en/bn; path=/";
       document.cookie = `googtrans=/en/bn; path=/; domain=${window.location.hostname}`;
     }
-    
+
     // Reload page to apply translation
     window.location.reload();
   };
@@ -146,7 +148,7 @@ export function GoogleTranslateButton({ className }: { className?: string }) {
   return (
     <button
       onClick={toggleTranslation}
-      className={`notranslate flex items-center justify-center gap-2 rounded-md border border-[#068847] text-[#068847] hover:bg-[#068847] hover:text-white font-semibold px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#068847] ${className || ""}`}
+      className={`cursor-pointer notranslate flex items-center justify-center gap-2 rounded-md border border-[#068847] text-[#068847] hover:bg-[#068847] hover:text-white font-semibold px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#068847] ${className || ""}`}
       aria-label={isTranslated ? "Switch to English" : "Switch to Bangla"}
     >
       <Globe size={18} />
