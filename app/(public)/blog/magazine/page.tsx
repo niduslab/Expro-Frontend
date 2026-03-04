@@ -121,7 +121,7 @@ const MagazinePage = () => {
       <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          2026 Digital Edition
+          Magazine
         </div>
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Our Magazine
