@@ -1,11 +1,8 @@
 "use client";
 
 import {
-  Download,
   DownloadIcon,
-  Eye,
   FileText,
-  Info,
   MoveUpRightIcon,
   Notebook,
   TimerIcon,

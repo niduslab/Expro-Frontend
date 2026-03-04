@@ -36,7 +36,7 @@ const CalendarPage = () => {
 
           {/* Download Button */}
           <a
-            href="/file/Annual-Edition-2026.pdf"
+            href="/file/blog/calendar-pdf.pdf"
             download
             className="bg-[#027A48] text-white px-8 py-3 rounded-xl font-semibold hover:bg-green-700 transition duration-300"
           >
@@ -59,7 +59,7 @@ const CalendarPage = () => {
 
             {/* PDF Viewer */}
             <iframe
-              src="/file/Annual-Edition-2026.pdf"
+              src="/file/blog/calendar-pdf.pdf"
               className="w-full h-full"
               title="Calendar Preview"
             />
