@@ -75,7 +75,21 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
       }
     }, 150); // 150ms delay to prevent flickering
   };
-
+  // Inside DesktopNavItem component
+  const handleItemClick = () => {
+    // Close mega menu immediately
+    setIsHovered(false);
+    if (dropdownRef.current) {
+      gsap.to(dropdownRef.current, {
+        autoAlpha: 0,
+        y: 10,
+        scaleY: 0.95,
+        duration: 0.2,
+        ease: "power2.in",
+        overwrite: true,
+      });
+    }
+  };
   return (
     <div
       className="relative flex items-center gap-1 cursor-pointer h-full py-4"
@@ -121,6 +135,7 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
                       <Link
                         href={item.href}
                         className="text-gray-600 hover:text-[#068847] text-[15px] transition-colors duration-200 block hover:translate-x-1 transform"
+                        onClick={handleItemClick} // ✅ Added this
                       >
                         {item.name}
                       </Link>
@@ -141,11 +156,13 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
         >
           <div className="bg-white shadow-xl rounded-md py-2 border-t-2 border-[#068847]">
             <ul className="flex flex-col">
+              {/* Simple Dropdown Items */}
               {link.dropdownItems.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
                     className="text-gray-600 hover:text-[#068847] text-[15px] px-6 py-2 block hover:bg-gray-50 transition-colors duration-200"
+                    onClick={handleItemClick} // ✅ Added this
                   >
                     {item.name}
                   </Link>
@@ -165,6 +182,17 @@ export function Header() {
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
     null,
   );
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -304,45 +332,38 @@ export function Header() {
 
           {/* Mobile Menu Dropdown */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden px-6 pb-6 pt-2 border-t border-gray-100 animate-in slide-in-from-top-2">
+            <div className="lg:hidden px-6 pb-6 pt-2 border-t border-gray-100 relative z-50 max-h-[calc(100vh-60px)] overflow-auto">
               <div className="flex flex-col space-y-1">
                 {navLinks.map((link) => (
                   <div
                     key={link.name}
                     className="border-b border-gray-50 last:border-0"
                   >
-                    <div className="flex items-center justify-between py-2">
-                      <Link
-                        href={link.href}
-                        className="text-gray-800 hover:text-[#068847] font-normal not-italic text-[16px] leading-[150%] tracking-[-0.16px] flex-1"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {link.name}
-                      </Link>
-
-                      {link.megaMenu || link.dropdownItems ? (
-                        <button
-                          onClick={() =>
-                            setExpandedMobileMenu(
-                              expandedMobileMenu === link.name
-                                ? null
-                                : link.name,
-                            )
-                          }
-                          className="p-2 text-gray-500 hover:text-[#068847]"
-                        >
-                          <ChevronDown
-                            className={`w-4 h-4 transition-transform duration-200 ${expandedMobileMenu === link.name ? "rotate-180" : ""}`}
-                          />
-                        </button>
-                      ) : (
-                        link.hasDropdown && (
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                    {/* Menu Item Header (click anywhere to toggle submenu) */}
+                    <div
+                      className="flex items-center justify-between py-2 cursor-pointer"
+                      onClick={() =>
+                        setExpandedMobileMenu(
+                          expandedMobileMenu === link.name ? null : link.name,
                         )
+                      }
+                    >
+                      <span className="text-gray-800 hover:text-[#068847] font-normal text-[16px] flex-1">
+                        {link.name}
+                      </span>
+
+                      {(link.megaMenu || link.dropdownItems) && (
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-200 ${
+                            expandedMobileMenu === link.name
+                              ? "rotate-180 text-[#068847]"
+                              : "text-gray-500"
+                          }`}
+                        />
                       )}
                     </div>
 
-                    {/* Mobile Submenu */}
+                    {/* Mobile Mega Menu */}
                     {link.megaMenu && expandedMobileMenu === link.name && (
                       <div className="pl-2 pb-4 space-y-4 animate-in slide-in-from-top-1 fade-in duration-200">
                         {link.megaMenu.map((section) => (
@@ -386,6 +407,8 @@ export function Header() {
                     )}
                   </div>
                 ))}
+
+                {/* Donate Button */}
                 <Link
                   href="/donate"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -394,7 +417,7 @@ export function Header() {
                   Donate Now
                 </Link>
 
-                {/* Mobile Google Translator Button */}
+                {/* Google Translator */}
                 <div className="pt-2">
                   <GoogleTranslateButton className="w-full" />
                 </div>
