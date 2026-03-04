@@ -96,7 +96,7 @@ const Events = () => {
         data-events-header
         className="flex flex-col items-center justify-between mb-12 gap-6"
       >
-        <div className="max-w-2xl pt-32 flex flex-col items-center">
+        <div className="max-w-2xl pt-16 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 bg-[#ECFDF3] px-3 py-1 rounded-md text-sm font-semibold text-[#027A48] mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#027A48]"></span>
             Our Events

@@ -19,7 +19,7 @@ export default function EventDetails() {
               Green Earth Initiative
             </h1>
 
-            <div className="relative w-full h-96 rounded-md overflow-hidden">
+            <div className="relative w-full h-96 rounded-md overflow-hidden duration-500 hover:scale-102 hover:transition-transform hover:duration-500">
               <Image
                 src="/images/events/event-poster.png"
                 alt="Event banner"

@@ -19,7 +19,7 @@ export default function ProjectDetails() {
               Agriculture Development
             </h1>
 
-            <div className="relative w-full h-96 rounded-md overflow-hidden">
+            <div className="relative w-full h-96 rounded-md overflow-hidden duration-500 hover:scale-102 hover:transition-transform hover:duration-500">
               <Image
                 src="/images/projects/project/project poster.png"
                 alt="Project banner"
@@ -116,7 +116,7 @@ export default function ProjectDetails() {
                 key={idx}
                 className="flex gap-4 items-start border-b border-gray-200 pb-4 last:border-b-0"
               >
-                <div className="relative w-28 h-28 flex-shrink-0 rounded-md overflow-hidden">
+                <div className="relative w-28 h-28 flex-shrink-0 rounded-md overflow-hidden ">
                   <Image
                     src={project.image}
                     alt={project.title}
