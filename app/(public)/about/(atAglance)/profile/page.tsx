@@ -24,10 +24,6 @@ const Profile = () => {
             <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
               Profile Document
             </h2>
-
-            <p className="font-dm-sans text-gray-500 max-w-2xl">
-              View and download your uploaded profile document below.
-            </p>
           </div>
 
           {/* Card Container */}
@@ -35,18 +31,18 @@ const Profile = () => {
             {/* LEFT SIDE — 1/3 */}
             <div className="flex flex-col justify-between bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-200">
               {/* File Info */}
-              <div className="p-8 space-y-8">
-                <div className="flex items-center sm:items-start gap-4">
+              <div className="p-4 space-y-6 bg-green-50">
+                <div className="flex items-center sm:items-start gap-4 ">
                   {/* Icon */}
                   <div className="p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
                     <FileText className="text-[#068847]" size={26} />
                   </div>
 
                   {/* Text Info */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 ">
                     <div className="flex flex-col justify-between md:flex-row ">
                       <h2 className="font-dm-sans text-xl font-semibold text-gray-900">
-                        Blog Profile 2026
+                        EWF Blog Profile 2026
                       </h2>
                     </div>
 
@@ -65,9 +61,9 @@ const Profile = () => {
             </div>
 
             {/* RIGHT SIDE — 2/3 PDF Preview */}
-            <div className="p-8">
+            <div className="p-2">
               {/* Actions */}
-              <div className="p-2 pt-0 flex flex-wrap justify-center sm:justify-end gap-3">
+              <div className="p-2 pb-6 sm:pb-1 flex flex-wrap justify-center sm:justify-end gap-3">
                 <a
                   href={pdfUrl}
                   target="_blank"

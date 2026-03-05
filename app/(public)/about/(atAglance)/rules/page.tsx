@@ -49,10 +49,6 @@ const Rules = () => {
           <h2 className="font-dm-sans text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
             Rules Documents
           </h2>
-
-          <p className="font-dm-sans text-gray-500 text-sm sm:text-base max-w-2xl">
-            View and download your uploaded rules documents below.
-          </p>
         </div>
 
         {/* Main layout */}

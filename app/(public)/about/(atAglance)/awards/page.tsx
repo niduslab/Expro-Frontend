@@ -44,11 +44,6 @@ const Awards = () => {
           <h2 className="font-dm-sans text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
             Awards & Recognition Documents
           </h2>
-
-          <p className="font-dm-sans text-gray-500 text-sm sm:text-base max-w-2xl">
-            View and download your uploaded awards and recognition documents
-            below.
-          </p>
         </div>
 
         {/* Main layout */}
@@ -97,7 +92,7 @@ const Awards = () => {
             {/* Header + Actions */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
               {/* Title + meta */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 w-full ">
                 <h2 className="text-xl font-dm-sans sm:text-2xl font-semibold text-gray-900 break-words">
                   {selectedPdf.name}
                 </h2>
