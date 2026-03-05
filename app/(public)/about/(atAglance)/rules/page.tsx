@@ -42,6 +42,10 @@ const Rules = () => {
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Page Header */}
         <div className="text-center pt-20 sm:pt-28 flex flex-col items-center gap-3">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4  text-sm font-medium text-[#027A48]">
+            <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+            Rules
+          </div>
           <h2 className="font-dm-sans text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
             Rules Documents
           </h2>
