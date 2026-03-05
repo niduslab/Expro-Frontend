@@ -7,7 +7,7 @@ export default function EventDetails() {
   return (
     <>
       <Hero />
-      <div className="flex flex-col items-center bg-gray-50">
+      <div className="font-dm-sans flex flex-col items-center bg-gray-50">
         <main className="w-full max-w-7xl px-6 py-16 flex flex-col lg:flex-row gap-12">
           {/* Event Content */}
           <article className="flex-1 flex flex-col gap-8 bg-white p-8 rounded-lg shadow-md">
