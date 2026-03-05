@@ -175,7 +175,7 @@ export default function PrivacyPolicy() {
     <>
       <Hero />
 
-      <div className="min-h-screen bg-gray-50 text-gray-800 py-12">
+      <div className="font-dm-sans min-h-screen bg-gray-50 text-gray-800 py-12">
         <div className="max-w-8xl mx-auto px-6 sm:px-12 lg:px-20 xl:px-40 py-6 sm:py-8 lg:py-10">
           {/* Page Header */}
           <div className="font-dm-sans text-start mb-12">

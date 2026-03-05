@@ -172,14 +172,18 @@ const WhatWeDo = () => {
   }, []);
 
   return (
-    <section id="what-we-do" ref={sectionRef} className="py-20 bg-white">
+    <section
+      id="what-we-do"
+      ref={sectionRef}
+      className="font-dm-sans py-20 bg-white"
+    >
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
         <div className="text-center mb-10 flex flex-col items-center gap-5">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+            <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
             Our Projects
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
             Our Impact Areas – “What We Do”
           </h2>
         </div>
@@ -231,7 +235,7 @@ const WhatWeDo = () => {
           ))}
         </div>
 
-        <div className="text-center">
+        <div className="text-center font-dm-sans ">
           <div data-whatwedo-button>
             <Link
               href="/projects/project"

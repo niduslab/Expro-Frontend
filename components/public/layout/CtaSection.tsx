@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export function CtaSection() {
   return (
-    <section className="w-full py-16 md:py-20 bg-white flex justify-center">
+    <section className="font-dm-sans w-full py-16 md:py-20 bg-white flex justify-center">
       <div className="relative w-full max-w-362.5 min-h-119 mx-auto rounded-2xl overflow-hidden flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-12 bg-[#00341C]/12">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">

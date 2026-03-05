@@ -28,7 +28,7 @@ const Hero = () => {
 
       {/* Content */}
 
-      <div className="relative z-10 container mx-auto  pt-[50px] md:pt-0 px-6 md:px-12 lg:px-20 flex flex-col justify-center h-full">
+      <div className="font-dm-sans relative z-10 container mx-auto  pt-[50px] md:pt-0 px-6 md:px-12 lg:px-20 flex flex-col justify-center h-full">
         <div className="max-w-2xl text-white space-y-4">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm md:text-base font-medium mb-2">

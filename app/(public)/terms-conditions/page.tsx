@@ -5,7 +5,7 @@ export default function TermsCondition() {
     <>
       <Hero />
 
-      <div className="min-h-screen bg-slate-50 text-slate-800">
+      <div className="font-dm-sans min-h-screen bg-slate-50 text-slate-800">
         <div className="max-w-8xl mx-auto px-6 sm:px-12 lg:px-20 xl:px-40 py-6 sm:py-8 lg:py-10">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
             {/* Sidebar Navigation */}

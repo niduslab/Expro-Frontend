@@ -17,7 +17,7 @@ const galleryImages = [
 
 const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
   return (
-    <section className="py-20 bg-white">
+    <section className="font-dm-sans py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         {/* Header */}
         <div className="text-center pt-10 mb-10 space-y-4">
