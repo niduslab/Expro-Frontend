@@ -104,7 +104,7 @@ const PensionPackages = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 bg-[#F2F4F7]">
+    <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
         {/* Header */}
         <div data-packages-header className="text-center mb-16">

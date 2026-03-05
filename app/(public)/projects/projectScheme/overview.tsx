@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 
 export default function OverviewScheme() {
   return (
-    <div className="flex pt-16 pb-16 lg:pt-[120px] lg:pb-[120px]">
+    <div className="font-dm-sans flex pt-16 pb-16 lg:pt-[120px] lg:pb-[120px]">
       <div className="w-full px-4 sm:px-6 lg:px-[64px]">
         <div className="flex flex-col lg:flex-row items-start justify-between gap-10">
           {/* Image */}

@@ -29,7 +29,7 @@ const Hero = () => {
 
       {/* Content */}
 
-      <div className="relative z-10 pt-[50px] md:pt-0 container mx-auto px-6 md:px-12 lg:px-20 flex flex-col justify-center h-full">
+      <div className="font-dm-sans relative z-10 pt-[50px] md:pt-0 container mx-auto px-6 md:px-12 lg:px-20 flex flex-col justify-center h-full">
         {" "}
         <div className="max-w-2xl text-white space-y-4">
           {/* Breadcrumb */}

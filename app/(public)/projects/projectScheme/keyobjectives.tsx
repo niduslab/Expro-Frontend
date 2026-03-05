@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function KeyObjectives() {
   return (
-    <section className="w-full bg-[#F0F4F2] px-4 sm:px-6 lg:px-[64px] py-16 lg:py-[120px]">
+    <section className="font-dm-sans w-full bg-[#F0F4F2] px-4 sm:px-6 lg:px-[64px] py-16 lg:py-[120px]">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Content */}
         <div className="w-full lg:w-1/2 flex items-center">

@@ -7,7 +7,7 @@ export default function ProjectDetails() {
   return (
     <>
       <Hero />
-      <div className="flex flex-col items-center bg-gray-50">
+      <div className="font-dm-sans flex flex-col items-center bg-gray-50">
         <main className="w-full max-w-7xl px-6 py-16 flex flex-col lg:flex-row gap-12">
           {/* Project Content */}
           <article className="flex-1 flex flex-col gap-8 bg-white p-8 rounded-lg shadow-md">
@@ -114,7 +114,7 @@ export default function ProjectDetails() {
             ].map((project, idx) => (
               <div
                 key={idx}
-                className="flex gap-4 items-start border-b border-gray-200 pb-4 last:border-b-0"
+                className="font-dm-sans flex gap-4 items-start border-b border-gray-200 pb-4 last:border-b-0"
               >
                 <div className="relative w-28 h-28 flex-shrink-0 rounded-md overflow-hidden ">
                   <Image
