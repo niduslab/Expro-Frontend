@@ -2,7 +2,7 @@ import { Eye, Target } from "lucide-react";
 
 export default function MissionVision() {
   return (
-    <section className="w-full bg-[#F0F4F2] px-4 sm:px-6 lg:px-[64px] py-16 lg:py-[64px] flex flex-col items-center gap-6">
+    <section className="font-dm-sans w-full bg-[#F0F4F2] px-4 sm:px-6 lg:px-[64px] py-16 lg:py-[64px] flex flex-col items-center gap-6">
       {/* Tag */}
       <div className="inline-flex items-center w-fit gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">
         <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]" />

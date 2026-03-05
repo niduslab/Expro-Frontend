@@ -17,17 +17,17 @@ const galleryImages = [
 
 const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
   return (
-    <section className="py-20 bg-white">
+    <section className="font-dm-sans py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         {/* Header */}
         <div className="text-center pt-10 mb-10 space-y-4">
-          <div className="inline-flex items-center justify-center px-4 py-1.5 bg-[#E8FAF0] text-[#008A4B] text-sm font-medium rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#008A4B] mr-2"></span>
-            Our Gallery
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
+          <h2 className="font-dm-sans text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
             {header2}
           </h2>
+          <div className="inline-flex items-center justify-center px-4 py-1.5 bg-[#E8FAF0] text-[#008A4B] text-sm font-medium rounded-full">
+            <span className="font-dm-sans w-1.5 h-1.5 rounded-full bg-[#008A4B] mr-2"></span>
+            Our Gallery
+          </div>
         </div>
 
         {/* Grid */}

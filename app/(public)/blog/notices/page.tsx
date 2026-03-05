@@ -47,12 +47,12 @@ const NoticePage = () => {
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
       {/* Header */}
       <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Notices
+        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          Notices of EWF
         </h2>
 
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           Notices
         </div>
       </div>
@@ -65,7 +65,7 @@ const NoticePage = () => {
             className="bg-white hover:bg-gray-100 p-6 rounded-2xl shadow-lg cursor-pointer border border-gray-200 hover:shadow-xl transition duration-300"
             onClick={() => setSelectedNotice(notice)}
           >
-            <div className="flex justify-between items-center">
+            <div className="font-dm-sans flex justify-between items-center">
               <h2 className="flex items-center gap-2 text-xl font-dm-sans  font-bold text-gray-800">
                 <Bell className="h-4 w-4 text-[#027A48]" /> {notice.title}
               </h2>
@@ -79,7 +79,7 @@ const NoticePage = () => {
               <p className="text-gray-500 text-[13px] mt-2 ">
                 {notice.description}
               </p>
-              <span className="mt-2 flex items-center text-green-600 font-medium hover:text-green-700">
+              <span className="font-dm-sans mt-2 flex items-center text-green-600 font-medium hover:text-green-700">
                 Read More <ArrowUpRight />
               </span>
             </div>

@@ -49,13 +49,13 @@ const CareerPage = () => {
     <section className="text-black min-h-screen pt-32 pb-24 px-6">
       {/* Header */}
       <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Careers
+        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          Careers at EWF
         </h2>
 
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          Careers
+          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+          Career
         </div>
       </div>
 
@@ -65,7 +65,7 @@ const CareerPage = () => {
             key={job.id}
             className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
           >
-            <div className="p-6 flex flex-col h-full">
+            <div className="font-dm-sans p-6 flex flex-col h-full">
               {/* Job Title */}
               <h2 className="text-xl font-bold text-gray-950">{job.title}</h2>
 

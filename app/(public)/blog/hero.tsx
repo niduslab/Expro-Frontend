@@ -35,15 +35,15 @@ const Hero = () => {
           <div className="flex items-center space-x-2 text-sm md:text-base font-medium mb-2">
             <Link
               href="/"
-              className="text-white hover:text-gray-200 transition-colors"
+              className="font-dm-sans text-white hover:text-gray-200 transition-colors"
             >
               Home
             </Link>
             <span className="text-white">•</span>
-            <span className="text-[#36F293]">Blog Details</span>
+            <span className="text-[#36F293] font-dm-sans ">Blog Details</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
+          <h1 className="font-dm-sans text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
             Blog & Media
           </h1>
 

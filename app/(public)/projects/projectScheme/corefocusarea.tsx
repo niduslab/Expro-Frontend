@@ -1,6 +1,6 @@
 export default function CoreFocusArea() {
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-[64px] py-16 lg:py-[64px] flex flex-col items-center gap-12">
+    <section className="font-dm-sans w-full px-4 sm:px-6 lg:px-[64px] py-16 lg:py-[64px] flex flex-col items-center gap-12">
       {/* Header */}
       <div className="flex flex-col items-center text-center gap-2">
         <div className="inline-flex items-center w-fit gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">

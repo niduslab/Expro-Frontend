@@ -11,8 +11,10 @@ export default function BlogDetails() {
         <main className="w-full max-w-7xl px-6 py-16 flex flex-col lg:flex-row gap-12">
           {/* Blog Content */}
           <article className="flex-1 flex flex-col gap-8 bg-white p-8 rounded-lg shadow-md">
-            <p className="text-gray-500 text-sm">Published On: 12 Feb 2026</p>
-            <h1 className="text-2xl md:text-3xl xl:text-4xl font-bold text-gray-900 leading-tight">
+            <p className="font-dm-sans text-gray-500 text-sm">
+              Published On: 12 Feb 2026
+            </p>
+            <h1 className="font-dm-sans text-2xl md:text-3xl xl:text-4xl font-bold text-gray-900 leading-tight">
               Empowering Communities Through Sustainable Welfare
             </h1>
 
@@ -25,7 +27,7 @@ export default function BlogDetails() {
               />
             </div>
 
-            <p className="text-gray-700 leading-relaxed text-base">
+            <p className="font-dm-sans text-gray-700 leading-relaxed text-base">
               Sustainable welfare goes beyond short-term assistance—it focuses
               on creating systems that empower individuals and communities to
               become self-reliant, resilient, and future-ready. At Expro Welfare
@@ -36,10 +38,10 @@ export default function BlogDetails() {
 
             {/* Section: Sustainable Welfare */}
             <section className="flex flex-col gap-4">
-              <h2 className="text-2xl font-semibold text-gray-900">
+              <h2 className="font-dm-sans text-2xl font-semibold text-gray-900">
                 What Sustainable Welfare Really Means
               </h2>
-              <p className="text-gray-700 leading-relaxed text-base">
+              <p className="font-dm-sans text-gray-700 leading-relaxed text-base">
                 Sustainable welfare is about designing solutions that address
                 root causes rather than temporary symptoms. Instead of one-time
                 support, it focuses on building skills, financial stability, and
@@ -47,11 +49,11 @@ export default function BlogDetails() {
                 over time.
               </p>
 
-              <h3 className="text-xl font-semibold text-gray-900 mt-4">
+              <h3 className="font-dm-sans text-xl font-semibold text-gray-900 mt-4">
                 At Expro Welfare Foundation, our welfare approach is centered
                 on:
               </h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-800 text-base">
+              <ul className="font-dm-sans list-disc list-inside space-y-2 text-gray-800 text-base">
                 <li>
                   Empowering people through education and skill development
                 </li>
@@ -66,10 +68,10 @@ export default function BlogDetails() {
                 </li>
               </ul>
 
-              <h3 className="text-xl font-semibold text-gray-900 mt-6">
+              <h3 className="font-dm-sans text-xl font-semibold text-gray-900 mt-6">
                 Empowerment Through Education and Skills
               </h3>
-              <p className="text-gray-700 leading-relaxed text-base">
+              <p className="font-dm-sans text-gray-700 leading-relaxed text-base">
                 Education and training are powerful tools for change. By
                 offering skill development programs, awareness initiatives, and
                 capacity-building opportunities, we help individuals improve
@@ -83,21 +85,21 @@ export default function BlogDetails() {
                 change.
               </p>
 
-              <h3 className="text-xl font-semibold text-gray-900 mt-6">
+              <h3 className="font-dm-sans text-xl font-semibold text-gray-900 mt-6">
                 Financial Security as a Foundation for Stability
               </h3>
-              <p className="text-gray-700 leading-relaxed text-base">
+              <p className="font-dm-sans text-gray-700 leading-relaxed text-base">
                 Economic uncertainty is one of the biggest challenges facing
                 underprivileged communities. Structured financial support and
                 pension-based systems play a critical role in ensuring long-term
                 stability and dignity.
               </p>
 
-              <h4 className="text-lg font-semibold text-gray-900 mt-4">
+              <h4 className="font-dm-sans text-lg font-semibold text-gray-900 mt-4">
                 Expro Welfare Foundation’s financial initiatives are designed
                 to:
               </h4>
-              <ul className="list-disc list-inside space-y-2 text-gray-800 text-base">
+              <ul className="font-dm-sans list-disc list-inside space-y-2 text-gray-800 text-base">
                 <li>Encourage responsible savings and contributions</li>
                 <li>Provide long-term pension security</li>
                 <li>Support individuals during times of need</li>
@@ -108,7 +110,7 @@ export default function BlogDetails() {
 
           {/* Sidebar: Recent Posts */}
           <aside className="w-full lg:w-80 flex flex-col gap-6 bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="font-dm-sans text-2xl font-semibold text-gray-900">
               Recent Posts
             </h2>
 
@@ -146,7 +148,7 @@ export default function BlogDetails() {
                     className="object-cover"
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="font-dm-sans flex flex-col gap-2">
                   <p className="text-gray-500 text-sm">{post.date}</p>
                   <p className="font-semibold text-gray-900 text-base">
                     {post.title}

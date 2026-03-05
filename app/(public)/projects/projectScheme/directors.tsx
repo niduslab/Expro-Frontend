@@ -4,7 +4,7 @@ export default function Directors() {
   return (
     <>
       {/* Director 1 */}
-      <section className="w-full px-4 sm:px-6 lg:px-[60px] pb-16 lg:pb-[120px]">
+      <section className="font-dm-sans w-full px-4 sm:px-6 lg:px-[60px] pb-16 lg:pb-[120px]">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
           {/* Image */}
           <div className="relative w-[300px] lg:w-[640px] h-[320px] sm:h-[420px] lg:h-[675px] bg-[#F3F4F6] rounded-lg overflow-hidden">
@@ -39,7 +39,7 @@ export default function Directors() {
       </section>
 
       {/* Director 2 */}
-      <section className="w-full px-4 sm:px-6 lg:px-[60px] pb-16 lg:pb-[120px]">
+      <section className="font-dm-sans w-full px-4 sm:px-6 lg:px-[60px] pb-16 lg:pb-[120px]">
         <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-10">
           {/* Content */}
           <div className="w-full lg:w-1/2 flex flex-col items-start justify-center gap-6">

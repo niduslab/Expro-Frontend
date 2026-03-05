@@ -23,12 +23,12 @@ export default function BlogPage() {
           <div className="text-center max-w-2xl space-y-4">
             <div className="inline-flex items-center justify-center px-4 py-1 bg-[#D8FFEB] rounded-md gap-2">
               <span className="text-[#36F293] text-xl leading-none">•</span>
-              <span className="text-sm font-medium text-[#030712]">
+              <span className="font-dm-sans text-sm font-medium text-[#030712]">
                 Blog & Media
               </span>
             </div>
 
-            <h2 className="text-2xl md:text-3xl xl:text-5xl font-semibold leading-tight text-[#030712]">
+            <h2 className="font-dm-sans text-2xl md:text-3xl xl:text-5xl font-semibold leading-tight text-[#030712]">
               Take a look at the latest
               <span className="block">article and blog</span>
             </h2>
@@ -36,7 +36,7 @@ export default function BlogPage() {
 
           {/* Blog Grid */}
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+            className="font-dm-sans grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
             onClick={() => router.push("/blog/blogdetails")}
           >
             <BlogItem1 />

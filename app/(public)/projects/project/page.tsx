@@ -63,7 +63,7 @@ export default function Project() {
   return (
     <>
       <Hero />
-      <div className="text-black flex flex-col items-center bg-gray-50 py-16 px-6">
+      <div className="font-dm-sans text-black flex flex-col items-center bg-gray-50 py-16 px-6">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center bg-[#D8FFEB] rounded-md px-3 py-1 gap-1 mb-4">
             <span className="text-[#36F293] text-2xl leading-none">•</span>

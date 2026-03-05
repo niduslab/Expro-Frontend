@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const OurFounder = () => {
   return (
-    <section className="py-10 md:py-14 bg-white overflow-hidden">
+    <section className="font-dm-sans py-10 md:py-14 bg-white overflow-hidden">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Column: Content */}

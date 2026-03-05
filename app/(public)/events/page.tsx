@@ -91,7 +91,7 @@ const Events = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 bg-[#F2F4F7]">
+    <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
       <div
         data-events-header
         className="flex flex-col items-center justify-between mb-12 gap-6"

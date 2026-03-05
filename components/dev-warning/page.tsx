@@ -5,7 +5,7 @@ import { FC } from "react";
 const DemoNoticeTicker: FC = () => {
   return (
     <>
-      <div className="w-full flex items-center justify-center">
+      <div className="font-dm-sans w-full flex items-center justify-center">
         <div
           className="w-44  h-12  rounded-xl flex items-center justify-center
                 text-red-600 bg-red-100 border border-red-500 

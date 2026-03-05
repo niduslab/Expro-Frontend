@@ -1,6 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
-import { Check } from 'lucide-react';
+import React from "react";
+import Image from "next/image";
+import { Check } from "lucide-react";
 
 const WhatWeDo = () => {
   const features = [
@@ -11,14 +11,13 @@ const WhatWeDo = () => {
     "Providing quality education for the advancement of lives",
     "Transfer of technology to increase productivity",
     "Establishing good governance within the organization",
-    "Establishing it as a sustainable model organization"
+    "Establishing it as a sustainable model organization",
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-[#F3F4F6] overflow-hidden">
+    <section className="py-16 md:py-24 bg-[#F3F4F6] overflow-hidden font-dm-sans ">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          
           {/* Left Column: Content */}
           <div className="space-y-8">
             {/* Header */}
@@ -35,12 +34,16 @@ const WhatWeDo = () => {
             {/* Features List */}
             <div className="space-y-3">
               {features.map((feature, index) => (
-                <div 
+                <div
                   key={index}
                   className="flex items-center gap-4 bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   <div className="w-5 h-5 rounded-full border-[1.5px] border-[#008A4B] flex items-center justify-center shrink-0">
-                    <Check className="text-[#008A4B]" size={10} strokeWidth={4} />
+                    <Check
+                      className="text-[#008A4B]"
+                      size={10}
+                      strokeWidth={4}
+                    />
                   </div>
                   <span className="text-gray-700 font-dm-sans text-[15px] md:text-[16px] font-medium">
                     {feature}
@@ -62,7 +65,6 @@ const WhatWeDo = () => {
               />
             </div>
           </div>
-
         </div>
       </div>
     </section>
