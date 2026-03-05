@@ -98,7 +98,7 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
     >
       <Link
         href={link.href}
-        className={`relative font-normal not-italic text-[16px] leading-[150%] tracking-[-0.16px] transition-colors duration-200 flex items-center gap-1 ${
+        className={`relative font-medium  not-italic text-[16px] lg:text-[12px] xl:text-[16px] leading-[150%] lg:leading-[110%] xl:leading-[150%] tracking-[-0.16px] lg:tracking-tight xl:tracking-[-0.16px] transition-colors duration-200 flex items-center gap-1 lg:gap-0.5 xl:gap-1 ${
           isHovered ? "text-[#068847]" : "text-gray-800"
         }`}
       >
@@ -274,7 +274,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-dm-sans 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
     ${isScrolled ? "py-2" : "py-6"}`}
     >
       <GoogleTranslateScript />
@@ -284,10 +284,10 @@ export function Header() {
             isScrolled ? "shadow-md" : ""
           }`}
         >
-          <div className="flex items-center justify-between px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between w-full px-6 py-3 md:py-2">
             {/* Logo */}
-            <Link href="/" className="flex items-center">
-              <div className="relative w-40 h-12 md:w-48 md:h-14">
+            <Link href="/" className="flex items-center lg:w-1/5 xl:max-w-none">
+              <div className="relative w-40 md:w-36 xl:w-48 lg:w-40 h-12 md:h-14 lg:h-12">
                 <Image
                   src="/logo.svg"
                   alt="Expro Welfare Foundation"
@@ -300,23 +300,25 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center justify-between gap-4 lg:gap-1.5 xl:gap-4 px-2 lg:w-3/5 xl:max-w-none">
               {navLinks.map((link) => (
                 <DesktopNavItem key={link.name} link={link} />
               ))}
             </nav>
 
             {/* CTA Button & Mobile Menu Toggle */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center  space-x-2 lg:space-x-3 xl:space-x-2 lg:w-1/5 xl:max-w-none lg:ml-8 xl:ml-0 xl:gap-4">
               <Link
                 href="/donate"
-                className="hidden sm:inline-flex items-center justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white font-semibold px-6 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                className="hidden sm:inline-flex items-center text-[13px] 
+                justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white 
+                font-normal px-1 xl:px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
                 Donate Now
               </Link>
 
               {/* Google Translator Button */}
-              <div className="hidden sm:block ">
+              <div className="hidden sm:block lg:w-2 xl:w-auto">
                 <GoogleTranslateButton />
               </div>
 
