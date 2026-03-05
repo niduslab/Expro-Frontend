@@ -48,7 +48,7 @@ const ComingSoon: FC<ComingSoonProps> = ({ title }) => {
   }, []);
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-[70vh] pt-32 pb-24 px-6 text-center bg-gradient-to-b from-red-50 via-red-100 to-white">
+    <section className="font-dm-sans flex flex-col items-center justify-center min-h-[70vh] pt-32 pb-24 px-6 text-center bg-gradient-to-b from-red-50 via-red-100 to-white">
       {/* Header */}
       <div className="mb-12 flex flex-col items-center gap-4">
         <div

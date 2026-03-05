@@ -31,7 +31,7 @@ const CoreValues = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="font-dm-sans py-16 md:py-24 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
