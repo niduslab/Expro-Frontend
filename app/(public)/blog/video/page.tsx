@@ -28,17 +28,13 @@ const Videos = () => {
     <section className="bg-white min-h-screen px-6 pt-32 md:px-16 py-20">
       {/* Header */}
       <div className="text-center mb-10 pt-6 flex flex-col items-center gap-5">
+        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          EWF Digital Content & Videos
+        </h2>
         <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+          <span className="font-dm-sans  h-1.5 w-1.5 rounded-full bg-[#027A48]" />
           Our Videos
         </div>
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Digital Content & Videos
-        </h2>
-
-        <p className="text-gray-500 max-w-2xl">
-          Insights. Inspiration. Impact.
-        </p>
       </div>
 
       {/* Video Grid */}

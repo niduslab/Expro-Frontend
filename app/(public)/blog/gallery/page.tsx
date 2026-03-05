@@ -7,7 +7,7 @@ const Galleries = () => {
         <div className="relative top-24"></div>
 
         <div className="pt-2">
-          <Gallery header2={""} />
+          <Gallery header2={"EWF Image Gallery"} />
         </div>
       </div>
     </>

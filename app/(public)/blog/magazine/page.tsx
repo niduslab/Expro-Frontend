@@ -118,23 +118,18 @@ const MagazinePage = () => {
     <section className="bg-white min-h-screen pt-32 pb-24 px-6">
       {/* HERO */}
 
-      <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          Magazine
-        </div>
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+      <div className="text-center mb-5 pt-10  flex flex-col items-center gap-2">
+        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
           Our Magazine
         </h2>
-
-        <p className="text-gray-500 max-w-2xl">
-          A transparent, innovative and impact-driven publication highlighting
-          pension growth, humanitarian projects and community development.
-        </p>
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4  text-sm font-medium text-[#027A48]">
+          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+          Magazine
+        </div>
       </div>
 
       {/* FEATURED CARD */}
-      <div className="max-w-6xl mx-auto mb-24">
+      <div className="max-w-6xl font-dm-sans  mx-auto mb-24">
         <MagazineCard
           year="2026"
           title="Annual Edition"
@@ -145,11 +140,11 @@ const MagazinePage = () => {
 
       {/* PREVIOUS EDITIONS */}
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-14 text-gray-800">
+        <h2 className="font-dm-sans text-3xl font-bold text-center mb-14 text-gray-800">
           Previous Editions
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-10">
+        <div className="grid md:grid-cols-3 gap-10 font-dm-sans ">
           {previousEditions.map((edition) => (
             <MagazineCard key={edition.year} {...edition} />
           ))}
