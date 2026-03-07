@@ -23,7 +23,7 @@ const Stepper: React.FC<StepperProps> = ({ step }) => {
           {/* Step circle */}
           <div
             className={`w-4 h-4 sm:w-9 sm:h-9 flex items-center justify-center rounded-full font-semibold text-sm
-            ${step >= s.id ? "bg-green-600 text-white" : "bg-gray-200 text-gray-500"}`}
+            ${step >= s.id ? "bg-[#36F293] text-white" : "bg-gray-200 text-gray-500"}`}
           >
             {s.id}
           </div>
@@ -41,7 +41,7 @@ const Stepper: React.FC<StepperProps> = ({ step }) => {
             <div className="flex-1 h-1 bg-gray-200 rounded mt-1 sm:mt-0">
               <div
                 className={`h-1 rounded transition-all
-                ${step > s.id ? "bg-green-600 w-full" : "bg-green-600 w-0"}`}
+                ${step > s.id ? "bg-[#36F293] w-full" : "bg-[#36F293] w-0"}`}
               />
             </div>
           )}

@@ -86,7 +86,7 @@ const Donationform = () => {
                     className={`border border-slate-200 rounded-xl p-4 flex flex-col items-center gap-2 transition
                     ${
                       form.cause === c.name
-                        ? "bg-green-600 text-white border-green-600"
+                        ? "bg-[#36F293] text-white border-[#36F293]"
                         : "hover:bg-gray-100 text-gray-600"
                     }`}
                   >
@@ -112,7 +112,7 @@ const Donationform = () => {
                   className={`border rounded-lg py-3 font-medium transition
                   ${
                     form.amount === a
-                      ? "bg-green-600 text-white border-green-600"
+                      ? "bg-[#36F293] text-white border-[#36F293]"
                       : "hover:bg-gray-100 text-gray-600"
                   }`}
                 >
@@ -133,7 +133,7 @@ const Donationform = () => {
 
           <button
             onClick={() => setStep(2)}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
+            className="w-full bg-[#36F293] hover:bg-green-700 text-white py-3 rounded-lg"
           >
             Continue
           </button>
@@ -188,7 +188,7 @@ const Donationform = () => {
 
             <button
               onClick={() => setStep(3)}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg"
+              className="px-6 py-2 bg-[#36F293] text-white rounded-lg"
             >
               Continue
             </button>
@@ -210,7 +210,7 @@ const Donationform = () => {
               className={`border rounded-xl p-4 text-center transition
               ${
                 form.payment === "bKash"
-                  ? "bg-green-600 text-white border-green-600"
+                  ? "bg-[#36F293] text-white border-[#36F293]"
                   : "hover:bg-gray-100 text-gray-600"
               }`}
             >
@@ -224,7 +224,7 @@ const Donationform = () => {
               className={`border rounded-xl p-4 text-center transition
               ${
                 form.payment === "Bank"
-                  ? "bg-green-600 text-white border-green-600"
+                  ? "bg-[#36F293] text-white border-[#36F293]"
                   : "hover:bg-gray-100 text-gray-600"
               }`}
             >
@@ -266,7 +266,7 @@ const Donationform = () => {
 
             <button
               onClick={handleSubmit}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              className="px-6 py-2 bg-[#36F293] text-white rounded-lg hover:bg-green-700"
             >
               Complete Donation
             </button>
