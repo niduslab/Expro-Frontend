@@ -92,13 +92,13 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
   };
   return (
     <div
-      className="relative flex items-center gap-1 cursor-pointer h-full py-4"
+      className="relative flex items-center gap-1 cursor-pointer xl:right-2 h-full py-4 "
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <Link
         href={link.href}
-        className={`relative font-medium  not-italic text-[16px] lg:text-[12px] xl:text-[16px] leading-[150%] lg:leading-[110%] xl:leading-[150%] tracking-[-0.16px] lg:tracking-tight xl:tracking-[-0.16px] transition-colors duration-200 flex items-center gap-1 lg:gap-0.5 xl:gap-1 ${
+        className={`relative font-medium  not-italic text-[16px] lg:text-[12px] xl:text-[16px] leading-[150%] lg:leading-[110%] xl:leading-[150%] tracking-[-0.16px] lg:tracking-tight xl:tracking-[-0.16px] transition-colors duration-200 flex items-center gap-1 lg:gap-0.5 xl:gap-1 xl:right-3 ${
           isHovered ? "text-[#068847]" : "text-gray-800"
         }`}
       >
@@ -111,7 +111,7 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
       </Link>
       {link.hasDropdown && (
         <ChevronDown
-          className={`w-4 h-4 transition-colors duration-200 ${
+          className={`w-4 h-4 transition-colors duration-200 xl:relative xl:right-2 ${
             isHovered ? "text-[#068847]" : "text-gray-500"
           }`}
         />
@@ -125,7 +125,7 @@ const DesktopNavItem = ({ link }: { link: NavLink }) => {
         >
           <div className="bg-white shadow-xl rounded-md p-6 w-[800px] grid grid-cols-3 gap-8 border-t-2 border-[#068847]">
             {link.megaMenu.map((section) => (
-              <div key={section.title} className="flex flex-col gap-3">
+              <div key={section.title} className="flex flex-col xl:gap-3">
                 <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-2">
                   {section.title}
                 </h3>
@@ -284,7 +284,7 @@ export function Header() {
             isScrolled ? "shadow-md" : ""
           }`}
         >
-          <div className="flex items-center justify-between w-full px-6 py-3 md:py-2">
+          <div className="flex items-center justify-between w-full px-6 py-3  xl:gap-3 md:py-2 xl:py-4">
             {/* Logo */}
             <Link href="/" className="flex items-center lg:w-1/5 xl:max-w-none">
               <div className="relative w-40 md:w-36 xl:w-48 lg:w-40 h-12 md:h-14 lg:h-12">
@@ -300,17 +300,17 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center justify-between gap-4 lg:gap-1.5 xl:gap-4 px-2 lg:w-3/5 xl:max-w-none">
+            <nav className="hidden lg:flex items-center justify-between gap-4 lg:gap-1.5 xl:gap-2 px-2 lg:w-3/5 xl:max-w-none">
               {navLinks.map((link) => (
                 <DesktopNavItem key={link.name} link={link} />
               ))}
             </nav>
 
             {/* CTA Button & Mobile Menu Toggle */}
-            <div className="flex items-center  space-x-2 lg:space-x-3 xl:space-x-2 lg:w-1/5 xl:max-w-none lg:ml-8 xl:ml-0 xl:gap-4">
+            <div className="flex items-center  space-x-2 xl:justify-end lg:space-x-3 xl:space-x-2 lg:w-1/5 xl:max-w-none lg:ml-4 xl:ml-0 xl:gap-4">
               <Link
                 href="/donate"
-                className="hidden sm:inline-flex items-center text-[13px] 
+                className="hidden sm:inline-flex items-center text-[13px] xl:text-10px xl:whitespace-nowrap
                 justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white 
                 font-normal px-1 xl:px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
