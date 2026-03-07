@@ -310,9 +310,9 @@ export function Header() {
             <div className="flex items-center  space-x-2 xl:justify-end lg:space-x-3 xl:space-x-2 lg:w-1/5 xl:max-w-none lg:ml-4 xl:ml-0 xl:gap-4">
               <Link
                 href="/donate"
-                className="hidden sm:inline-flex items-center text-[13px] xl:text-10px xl:whitespace-nowrap
+                className="hidden sm:inline-flex items-center text-[13px] xl:text-[14px] xl:whitespace-nowrap
                 justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white 
-                font-normal px-1 xl:px-4 py-2 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                font-normal px-1 xl:px-4 py-2 xl:py-3 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
                 Donate Now
               </Link>
