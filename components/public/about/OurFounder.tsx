@@ -6,7 +6,7 @@ const OurFounder = () => {
       <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-16 ">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 lg:px-2 items-center">
           {/* Left Column */}
-          <div className="space-y-5 md:space-y-6 order-2 lg:order-1 md:px-2  ">
+          <div className="space-y-5 md:space-y-6 order-2 lg:order-1 px-2 md:px-2  ">
             {/* Tag */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]" />
