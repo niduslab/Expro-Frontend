@@ -11,8 +11,8 @@ const Donation = () => {
       <Hero />
 
       <section className="py-16  overflow-hidden">
-        <div className="w-full max-w-[1440px] 2xl:max-w-[1548px] mx-auto px-6 md:px-10 lg:px-20 xl:px-36 2xl:px-18">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 xl:gap-10 sm:px-2 lg:px-0 xl:px-4 items-start">
+        <div className="container mx-auto px-6 md:px-10 lg:px-20 xl:px-16 2xl:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 xl:gap-10  sm:px-2 lg:px-0 xl:px-4 2xl:px-4 items-start">
             {" "}
             {/* Image */}
             <div className="w-full">
@@ -96,7 +96,7 @@ const Donation = () => {
           </div>
         </div>
       </section>
-      <section className="space-y-8 px-6  w-full max-w-[1440px] 2xl:max-w-[1548px] mx-auto md:px-12 lg:px-20  xl:px-40 2xl:px-22  ">
+      <section className="space-y-8 container mx-auto px-6 md:px-12 lg:px-20 xl:px-20 2xl:px-20">
         {/* Heading */}
         <div>
           <h3 className="text-3xl md:text-4xl font-semibold text-gray-900">
@@ -154,7 +154,7 @@ const Donation = () => {
           </p>
         </div>
       </section>
-      <section className="w-full max-w-[1440px] 2xl:max-w-[1548px] mx-auto mb-6 px-6 md:px-12 lg:px-20 xl:px-40 2xl:px-22">
+      <section className="container mx-auto my-6 px-6 md:px-12 lg:px-20 xl:px-20 2xl:px-20">
         <Donationform />
       </section>
     </>
