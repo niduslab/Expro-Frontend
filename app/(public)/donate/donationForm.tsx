@@ -33,41 +33,64 @@ const Donationform = () => {
   };
 
   const [form, setForm] = useState<FormType>(initialForm);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleNext = (currentStep: number) => {
+    let result;
+
+    if (currentStep === 1) {
+      const stepOneSchema = donationSchema.pick({ cause: true, amount: true });
+      result = stepOneSchema.safeParse(form);
+    } else if (currentStep === 2) {
+      const stepTwoSchema = donationSchema.pick({
+        name: true,
+        email: true,
+        phone: true,
+        message: true,
+      });
+      result = stepTwoSchema.safeParse(form);
+    } else {
+      return; // <--- if step is not 1 or 2, exit early
+    }
+
+    if (result.success) {
+      setErrors({});
+      setStep(currentStep + 1);
+    } else {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
+      });
+      setErrors(fieldErrors);
+
+      const firstMessage = result.error.issues[0]?.message;
+      if (firstMessage) toast.error(firstMessage);
+    }
+  };
+
   const handleSubmit = () => {
     try {
       donationSchema.parse(form);
+      setErrors({});
       toast.success("Donation completed successfully");
       setForm(initialForm);
       setStep(1);
     } catch (error: unknown) {
       if (error instanceof ZodError) {
-        // use error.issues instead of error.errors
-        toast.error(error.issues[0]?.message ?? "Invalid input");
+        const fieldErrors: Record<string, string> = {};
+        error.issues.forEach((issue) => {
+          if (issue.path[0])
+            fieldErrors[issue.path[0] as string] = issue.message;
+        });
+        setErrors(fieldErrors);
       }
     }
   };
-  const handleNext = (currentStep: number) => {
-    try {
-      if (currentStep === 1) {
-        donationSchema.pick({ cause: true, amount: true }).parse(form);
-      }
-      if (currentStep === 2) {
-        donationSchema
-          .pick({ name: true, email: true, phone: true, message: true })
-          .parse(form);
-      }
-      setStep(currentStep + 1);
-    } catch (error: unknown) {
-      if (error instanceof ZodError) {
-        toast.error(error.issues[0]?.message ?? "Invalid input");
-      }
-    }
-  };
+
   return (
     <div className="max-w-2xl mx-auto  border-t-2 border-green-200 bg-white shadow-xl rounded-2xl p-6 space-y-8">
       <div className="my-4">
@@ -89,12 +112,14 @@ const Donationform = () => {
           handleChange={handleChange}
           step={step}
           handleNext={handleNext}
+          errors={errors}
         />
       )}
 
       {step === 2 && (
         <StepTwo
           form={form}
+          errors={errors}
           setStep={setStep}
           handleChange={handleChange}
           step={step}
@@ -109,6 +134,7 @@ const Donationform = () => {
           setStep={setStep}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
+          errors={errors}
         />
       )}
     </div>

@@ -30,6 +30,7 @@ export default function StepOne({
   step,
   handleNext,
   handleChange,
+  errors,
 }: {
   form: any;
   setForm: any;
@@ -37,6 +38,7 @@ export default function StepOne({
   handleChange: any;
   step: number;
   handleNext: (currentStep: number) => void;
+  errors: Record<string, string>;
 }) {
   return (
     <div className="space-y-8 ">
@@ -45,7 +47,6 @@ export default function StepOne({
         <h2 className="font-semibold text-gray-950 text-lg mb-4 flex items-center gap-2">
           <HeartHandshake size={18} /> Donation Towards
         </h2>
-
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {causes.map((c) => {
             const Icon = c.icon;
@@ -65,7 +66,10 @@ export default function StepOne({
               </button>
             );
           })}
-        </div>
+        </div>{" "}
+        {errors.cause && (
+          <p className="text-red-500 text-sm mt-1">{errors.cause}</p>
+        )}
       </div>
 
       {/* Amount */}
@@ -101,6 +105,9 @@ export default function StepOne({
           onChange={handleChange}
           className="w-full border border-gray-300 text-gray-700 rounded-lg p-3 mt-4"
         />
+        {errors.amount && (
+          <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
+        )}
       </div>
 
       <button

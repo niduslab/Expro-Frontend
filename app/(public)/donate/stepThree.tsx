@@ -17,6 +17,7 @@ export default function StepThree({
   setStep,
   handleChange,
   handleSubmit,
+  errors,
 }: any) {
   const [copied, setCopied] = useState(false);
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
@@ -51,7 +52,6 @@ export default function StepThree({
       <h2 className="font-semibold text-gray-950 text-lg flex items-center gap-2">
         <CreditCard size={18} /> Payment Method
       </h2>
-
       <div className="grid grid-cols-2 gap-4">
         {/* bKash */}
         <button
@@ -81,7 +81,6 @@ export default function StepThree({
           Bank Transfer
         </button>
       </div>
-
       {form.payment === "bKash" && (
         <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
           <div className="flex pb-1 items-center justify-between">
@@ -108,7 +107,6 @@ export default function StepThree({
           )}
         </div>
       )}
-
       {form.payment === "Bank" && (
         <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex flex-col gap-4">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -172,7 +170,6 @@ export default function StepThree({
           )}
         </div>
       )}
-
       <input
         type="text"
         name="transactionId"
@@ -180,8 +177,10 @@ export default function StepThree({
         value={form.transactionId}
         onChange={handleChange}
         className="w-full border rounded-lg p-3 text-gray-500 border-slate-300"
-      />
-
+      />{" "}
+      {errors.transactionId && (
+        <p className="text-red-500 text-sm mt-1">{errors.transactionId}</p>
+      )}
       <div className="flex justify-between pt-4">
         <button
           onClick={() => setStep(2)}
