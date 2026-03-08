@@ -307,22 +307,21 @@ export function Header() {
             </nav>
 
             {/* CTA Button & Mobile Menu Toggle */}
-            <div className="flex items-center  space-x-2 xl:justify-end lg:space-x-3 xl:space-x-2 lg:w-1/5 xl:max-w-none lg:ml-4 xl:ml-0 xl:gap-4">
-              <Link
-                href="/donate"
-                className="hidden sm:inline-flex items-center text-[13px] xl:text-[14px] xl:whitespace-nowrap
-                justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white 
-                font-normal px-1 xl:px-4 py-2 xl:py-3 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
-              >
-                Donate Now
-              </Link>
-
+            <div className="flex items-center space-x-2 lg:justify-end lg:w-1/5 lg:ml-4 xl:ml-0 xl:gap-4 flex-nowrap">
               {/* Google Translator Button */}
-              <div className="hidden sm:block lg:w-2 xl:w-auto">
+              <div className="hidden sm:block">
                 <GoogleTranslateButton />
               </div>
 
-              {/* Mobile Menu Button */}
+              <Link
+                href="/donate"
+                className="hidden sm:inline-flex items-center lg:text-[13px] xl:text-[14px] font-semibold lg:whitespace-nowrap
+    justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white
+     px-2 xl:px-4 py-3.5 xl:py-4 transition-colors duration-300
+    focus:outline-none focus:ring-2 focus:ring-offset-2 "
+              >
+                Donate Now
+              </Link>
               <button
                 className="lg:hidden text-gray-800 hover:text-gray-600 focus:outline-none"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

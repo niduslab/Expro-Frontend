@@ -148,16 +148,16 @@ export function GoogleTranslateButton({ className }: { className?: string }) {
   return (
     <button
       onClick={toggleTranslation}
-      className={`cursor-pointer notranslate flex items-center text-xs 
+      className={`cursor-pointer notranslate flex items-center 
         justify-center gap-2 rounded-md border border-[#068847]
          text-[#068847] hover:bg-[#068847] hover:text-white 
-         font-semibold px-2 xl:px-4 py-2 transition-colors duration-300 focus:outline-none
+         font-semibold px-2 xl:px-4 py-2 xl:py-3 transition-colors duration-300 focus:outline-none
           focus:ring-2 focus:ring-offset-2 focus:ring-[#068847] ${className || ""}`}
       aria-label={isTranslated ? "Switch to English" : "Switch to Bangla"}
     >
-      <Globe size={18} />
+      <Globe size={17} />
       <span className="font-noto-sans-bengali">
-        {isTranslated ? "English" : "বাংলা"}
+        {isTranslated ? "EN" : "BN"}
       </span>
     </button>
   );
