@@ -29,7 +29,7 @@ const Donation = () => {
             </div>
             {/* Content */}
             <div>
-              <div className="mb-8">
+              <div className="mb-4">
                 <h3 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
                   Activities You Can Support
                 </h3>
