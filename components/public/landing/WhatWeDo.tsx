@@ -177,7 +177,7 @@ const WhatWeDo = () => {
       ref={sectionRef}
       className="font-dm-sans py-20 bg-white"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 2xl:px-17">
         <div className="text-center mb-10 flex flex-col items-center gap-5">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
             <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
@@ -196,7 +196,7 @@ const WhatWeDo = () => {
             <div
               key={index}
               data-whatwedo-card
-              className="bg-white rounded-[8px] p-[24px] shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 flex flex-col h-[538px] w-full max-w-[421px] mx-auto group"
+              className="bg-white rounded-[8px] p-[24px]  shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 flex flex-col h-[538px] w-full max-w-[421px] mx-auto group"
             >
               <div className="mb-6">
                 <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white">
@@ -204,7 +204,7 @@ const WhatWeDo = () => {
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
+              <h3 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
                 {service.title}
               </h3>
               <p className="text-gray-600 mb-6 flex-grow leading-relaxed line-clamp-4">

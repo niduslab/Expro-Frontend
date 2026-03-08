@@ -207,12 +207,12 @@ const WhoWeAre = () => {
           {/* Stats Grid */}
           <div
             data-who-stats
-            className="grid grid-cols-1 items-center md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 items-center md:grid-cols-2 lg:grid-cols-4 gap-6 "
           >
             {/* Card 1 */}
             <div
               data-who-stat
-              className="bg-[#F0F4F2] w-77.5 lg:w-48.5 xl:w-77.5 h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
+              className="bg-[#F0F4F2]  h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
             >
               <h3 className="text-gray-600 text-base mb-4 font-medium">
                 Years Of Experience
@@ -223,7 +223,7 @@ const WhoWeAre = () => {
             {/* Card 2 */}
             <div
               data-who-stat
-              className="bg-[#F0F4F2] w-77.5 lg:w-48.5 xl:w-77.5 h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
+              className="bg-[#F0F4F2]  h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
             >
               <h3 className="text-gray-600 text-base mb-4 font-medium">
                 Active Users
@@ -234,7 +234,7 @@ const WhoWeAre = () => {
             {/* Card 3 */}
             <div
               data-who-stat
-              className="bg-[#F0F4F2] w-77.5 lg:w-48.5  xl:w-77.5 h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
+              className="bg-[#F0F4F2] h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
             >
               <h3 className="text-gray-600 text-base mb-4 font-medium">
                 Customer Satisfaction
@@ -245,7 +245,7 @@ const WhoWeAre = () => {
             {/* Card 4 */}
             <div
               data-who-stat
-              className="bg-[#F0F4F2] w-77.5 lg:w-48.5 xl:w-77.5 h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
+              className="bg-[#F0F4F2]  h-48.75 p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300 flex flex-col justify-center"
             >
               <h3 className="text-gray-600 text-base mb-4 font-medium">
                 Projects Are Done
