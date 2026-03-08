@@ -11,8 +11,9 @@ const Donation = () => {
       <Hero />
 
       <section className="py-16  overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="container mx-auto px-6 md:px-10 lg:px-20 xl:px-16 2xl:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 xl:gap-10  sm:px-2 lg:px-0 xl:px-4 2xl:px-4 items-start">
+            {" "}
             {/* Image */}
             <div className="w-full">
               <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-lg">
@@ -26,10 +27,9 @@ const Donation = () => {
                 />
               </div>
             </div>
-
             {/* Content */}
             <div>
-              <div className="mb-8">
+              <div className="mb-4">
                 <h3 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
                   Activities You Can Support
                 </h3>
@@ -96,7 +96,7 @@ const Donation = () => {
           </div>
         </div>
       </section>
-      <section className="space-y-8 px-8  lg:px-20 ">
+      <section className="space-y-8 container mx-auto px-6 md:px-12 lg:px-20 xl:px-20 2xl:px-20">
         {/* Heading */}
         <div>
           <h3 className="text-3xl md:text-4xl font-semibold text-gray-900">
@@ -154,7 +154,7 @@ const Donation = () => {
           </p>
         </div>
       </section>
-      <section>
+      <section className="container mx-auto my-6 px-6 md:px-12 lg:px-20 xl:px-20 2xl:px-20">
         <Donationform />
       </section>
     </>

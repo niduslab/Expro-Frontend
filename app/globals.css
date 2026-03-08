@@ -35,3 +35,45 @@ html {
 .font-noto-sans-bengali {
   font-family: var(--font-noto-sans-bengali), 'Noto Sans Bengali', sans-serif;
 }
+
+/* base progress bar */
+[data-sonner-toast]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left;
+  animation: toast-progress linear forwards;
+  animation-duration: 2500ms;
+}
+
+/* success toast */
+[data-sonner-toast][data-type="success"]::after {
+  background: #22c55e; /* green */
+}
+
+/* error toast */
+[data-sonner-toast][data-type="error"]::after {
+  background: #ef4444; /* red */
+}
+
+/* warning toast */
+[data-sonner-toast][data-type="warning"]::after {
+  background: #f59e0b; /* amber */
+}
+
+/* default toast */
+[data-sonner-toast]:not([data-type])::after {
+  background: #111;
+}
+
+@keyframes toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
