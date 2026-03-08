@@ -95,7 +95,7 @@ const Events = () => {
       ref={sectionRef}
       className="font-dm-sans overflow-hidden py-20 bg-[#F2F4F7]"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 2xl:px-20">
         {/* Header */}
         <div
           data-events-header

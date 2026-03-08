@@ -113,7 +113,7 @@ const FocusAreas = () => {
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(38,168,113,0.35),rgba(11,47,28,0.15)_45%,rgba(11,47,28,0.9)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,26,17,0.1)_0%,rgba(9,26,17,0.7)_100%)]" />
-      <div className="relative container mx-auto px-6 md:px-12 lg:px-20 xl:px-28">
+      <div className="relative container mx-auto px-6 md:px-12 lg:px-20">
         <div
           data-focus-header
           className="flex flex-col items-center text-center mb-14"
@@ -129,7 +129,7 @@ const FocusAreas = () => {
 
         <div
           data-focus-grid
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
           {areas.map((area) => (
             <div
