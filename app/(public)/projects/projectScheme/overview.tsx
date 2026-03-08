@@ -4,10 +4,10 @@ import { CheckCircle } from "lucide-react";
 export default function OverviewScheme() {
   return (
     <div className="font-dm-sans flex pt-16 pb-16 lg:pt-[120px] lg:pb-[120px]">
-      <div className="w-full px-4 sm:px-6 lg:px-[64px]">
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-10">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
           {/* Image */}
-          <div className="relative w-full lg:w-[644px] h-[280px] sm:h-[360px] lg:h-[518px] rounded-lg overflow-hidden">
+          <div className="relative container lg:w-1/2 mx-auto h-[280px] sm:h-[360px] lg:h-[518px] rounded-lg overflow-hidden">
             <Image
               src="/images/about/our-story-img.jpg"
               alt="Community collaboration"
@@ -18,7 +18,7 @@ export default function OverviewScheme() {
           </div>
 
           {/* Content */}
-          <div className="w-full lg:w-1/2 flex flex-col gap-6 lg:gap-[36px]">
+          <div className=" lg:w-1/2 flex flex-col gap-6 lg:gap-[36px]">
             {/* Tag */}
             <div className="inline-flex items-center w-fit gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]" />

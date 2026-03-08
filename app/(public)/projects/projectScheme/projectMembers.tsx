@@ -182,19 +182,19 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
-        <div data-leadership-header className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] mb-4">
+        <div data-leadership-header className="text-start mb-14">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-2 py-1.5 text-sm font-medium text-[#027A48] mb-4">
             <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
             {badgeText}
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-2xl md:text-4xl whitespace-nowrap font-bold tracking-tight text-gray-900">
             {headingText}
           </h2>
         </div>
 
         <div
           data-leadership-grid
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-16"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center mb-16"
         >
           {team.map((member, index) => (
             <div
