@@ -54,7 +54,7 @@ export default function StepOne({
               <button
                 key={c.name}
                 onClick={() => setForm({ ...form, cause: c.name })}
-                className={`border border-slate-200 rounded-xl p-4 flex flex-col items-center gap-2 transition
+                className={`border cursor-pointer border-slate-200 rounded-xl p-4 flex flex-col items-center gap-2 transition
                       ${
                         form.cause === c.name
                           ? "bg-green-700 text-white border border-green-700"
@@ -84,7 +84,7 @@ export default function StepOne({
             <button
               key={a}
               onClick={() => setForm({ ...form, amount: a.toString() })} // store as string
-              className={`border border-slate-200 rounded-lg py-3 font-medium transition
+              className={`border cursor-pointer border-slate-200 rounded-lg py-3 font-medium transition
         ${
           form.amount === a.toString()
             ? "bg-green-700 text-white border border-green-700"
@@ -112,7 +112,7 @@ export default function StepOne({
 
       <button
         onClick={() => handleNext(step)}
-        className="w-full bg-green-700 hover:bg-green-700 text-white py-3 rounded-lg"
+        className="w-full bg-green-700 cursor-pointer hover:bg-green-700 text-white py-3 rounded-lg"
       >
         Continue
       </button>

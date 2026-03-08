@@ -70,14 +70,14 @@ export default function StepTwo({
       <div className="flex justify-between pt-4">
         <button
           onClick={() => setStep(1)}
-          className="px-6 py-2 border rounded-lg text-slate-500"
+          className="px-6 py-2 cursor-pointer border rounded-lg text-slate-500"
         >
           Back
         </button>
 
         <button
           onClick={() => handleNext(step)}
-          className="px-6 py-2 bg-green-700 text-white rounded-lg"
+          className="px-6 py-2 cursor-pointer bg-green-700 text-white rounded-lg"
         >
           Continue
         </button>

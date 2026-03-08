@@ -29,7 +29,7 @@ export default function StepThree({
       toast.success(`${label} copied!`);
 
       // Reset copied icon after 3 seconds
-      setTimeout(() => setCopiedValue(null), 3000);
+      setTimeout(() => setCopiedValue(null), 7000);
     } catch (err) {
       console.error("Failed to copy", err);
     }
@@ -56,7 +56,7 @@ export default function StepThree({
         {/* bKash */}
         <button
           onClick={() => setForm({ ...form, payment: "bKash" })}
-          className={`rounded-xl p-4 text-center transition
+          className={`rounded-xl cursor-pointer p-4 text-center transition
             ${
               form.payment === "bKash"
                 ? "bg-green-700 text-white border border-green-700"
@@ -70,7 +70,7 @@ export default function StepThree({
         {/* BANK */}
         <button
           onClick={() => setForm({ ...form, payment: "Bank" })}
-          className={`border rounded-xl p-4 text-center transition
+          className={`border cursor-pointer rounded-xl p-4 text-center transition
             ${
               form.payment === "Bank"
                 ? "bg-green-700 text-white border border-green-700"
@@ -184,14 +184,14 @@ export default function StepThree({
       <div className="flex justify-between pt-4">
         <button
           onClick={() => setStep(2)}
-          className="px-6 py-2 border rounded-lg text-gray-500"
+          className="px-6 py-2 border rounded-lg cursor-pointer text-gray-500"
         >
           Back
         </button>
 
         <button
           onClick={handleSubmit}
-          className="px-6 py-2 bg-green-700 text-white rounded-lg hover:bg-green-700"
+          className="px-6 py-2 bg-green-700 cursor-pointer text-white rounded-lg hover:bg-green-700"
         >
           Complete Donation
         </button>
