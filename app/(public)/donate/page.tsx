@@ -1,207 +1,162 @@
 import ComingSoon from "@/components/coming-soon/page";
 import Image from "next/image";
+import Hero from "./hero";
+import Donationform from "./donationForm";
 
 const Donation = () => {
   return (
     <>
-      <ComingSoon title="Donate " />
-      {/* <div className="">
-        <section className="py-10 md:py-14 bg-white overflow-hidden">
-          <div className="container mx-auto px-6 md:px-12 lg:px-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div className="relative flex justify-center lg:justify-start ">
-                <div className="relative w-full max-w-161 h-125 md:h-150 lg:h-168.75 rounded-2xl overflow-hidden bg-[#F5F5F5]">
-                  <Image
-                    src="/images/donate/donation-poster.jpeg"
-                    alt="Co-Founder"
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, rounded-2xl 50vw"
-                  />
-                </div>
+      {/* <ComingSoon title="Donate " /> */}
+
+      <Hero />
+
+      <section className="py-16  overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+            {/* Image */}
+            <div className="w-full">
+              <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-lg">
+                <Image
+                  src="/images/donate/donation-poster.jpeg"
+                  alt="Donation Poster"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 40vw"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Content */}
+            <div>
+              <div className="mb-8">
+                <h3 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3">
+                  Activities You Can Support
+                </h3>
+                <p className="text-gray-600 text-lg">
+                  Your donations directly support the following initiatives that
+                  help improve lives and strengthen communities.
+                </p>
               </div>
 
-              <section className="flex flex-col gap-10 ">
-                <div className="space-y-6 pt-20">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]"></span>
-                    Donate Now
-                  </div>
-
-                  <h2 className=" text-2xl md:text-3xl font-dm-sans text-gray-600 leading-[1.2]">
-                    In service of humanity <br />
-                    <span className="font-dm-sans relative top-2 font-bold text-gray-900 text-3xl md:text-4xl">
-                      “Project Humanity” — Your Donation, A Smiling Face
-                    </span>
-                  </h2>
-
-                  <div>
-                    <p className="font-dm-sans text-lg mb-1 text-gray-700 leading-relaxed max-w-3xl">
-                      “Humans are for humanity; life is for one another.”
+              {/* Card Grid */}
+              <div className="grid sm:grid-cols-2 gap-2">
+                {[
+                  {
+                    title: "Orphan and Disability Welfare",
+                    text: "Rehabilitation of orphans and persons with disabilities while ensuring their basic rights.",
+                  },
+                  {
+                    title: "Education and Training",
+                    text: "Scholarships, education for children with disabilities, vocational training, and self-reliance programs.",
+                  },
+                  {
+                    title: "Street Children Development",
+                    text: "Rehabilitation and development initiatives for disadvantaged and street children.",
+                  },
+                  {
+                    title: "Disaster Relief",
+                    text: "Food, clothing, medical support, and emergency relief for disaster-affected communities.",
+                  },
+                  {
+                    title: "Healthcare Services",
+                    text: "Free medical camps and maternal & child healthcare programs.",
+                  },
+                  {
+                    title: "Social Development",
+                    text: "Anti-drug awareness, blood donation programs, and elderly care initiatives.",
+                  },
+                  {
+                    title: "Environmental Protection",
+                    text: "Tree plantation and social afforestation programs to protect the environment.",
+                  },
+                  {
+                    title: "Religious Institutions",
+                    text: "Renovation and infrastructural support for mosques, temples, and community worship places.",
+                  },
+                  {
+                    title: "Zakat Fund",
+                    text: "Distribution of Zakat funds according to Islamic principles for eligible beneficiaries.",
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition duration-300"
+                  >
+                    <h4 className="font-semibold text-gray-900 mb-2 text-lg">
+                      {item.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {item.text}
                     </p>
-                    <p className="font-dm-sans text-gray-700 leading-relaxed max-w-3xl">
-                      <span className=" text-gray-900">Project Humanity</span>{" "}
-                      is a charitable initiative of the Xpro Welfare Foundation.
-                      We believe that your small contribution can bring
-                      significant change to the lives of neglected and helpless
-                      people in society. Join our humanitarian journey today by
-                      donating according to your capacity.
-                    </p>
                   </div>
-                </div>
-                <div className="border-t border-gray-200" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="space-y-8 px-8  lg:px-20 ">
+        {/* Heading */}
+        <div>
+          <h3 className="text-3xl md:text-4xl font-semibold text-gray-900">
+            Why Donate to Us?
+          </h3>
+          <p className="text-gray-600 mt-2">
+            Your contribution creates real change and supports people who need
+            it most.
+          </p>
+        </div>
 
-                <div className="space-y-2">
-                  <h3 className="text-2xl md:text-3xl  text-gray-900 tracking-tight">
-                    Activities You Can Support
-                  </h3>
-
-                  <p className="text-gray-700 leading-relaxed">
-                    Your donations are directly allocated to the following
-                    sectors:
-                  </p>
-
-                  <ul className="list-disc list-outside pl-6 space-y-4 text-gray-800 text-base leading-relaxed">
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Orphan and Disability Welfare:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        Rehabilitation of orphans and persons with disabilities
-                        while ensuring their basic rights.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Education and Training:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        Scholarships, education for children with disabilities,
-                        vocational training, and special care to help them
-                        become self-reliant.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Street and Underprivileged Children Development:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        Rehabilitation and overall development initiatives for
-                        disadvantaged and street children.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Disaster Relief:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        Distribution of food, clothing, medical care, and
-                        essential relief among people affected by natural
-                        disasters.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Healthcare Services:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        {" "}
-                        Free medical camps and programs to protect maternal and
-                        child health.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Social Development:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        {" "}
-                        Anti-drug awareness, old-age home establishment, and
-                        blood donation programs.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Environmental Protection:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        {" "}
-                        Social afforestation and tree plantation programs to
-                        preserve environmental balance.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Development of Religious Institutions:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        Renovation and infrastructural support for mosques,
-                        temples, and other community places of worship.
-                      </span>
-                    </li>
-
-                    <li>
-                      <span className="font-bold text-gray-900">
-                        Zakat Fund:
-                      </span>{" "}
-                      <span className="text-[15px] text-gray-600">
-                        {" "}
-                        Distribution of collected Zakat funds according to
-                        Islamic principles for rightful beneficiaries.
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="border-t border-gray-200" />
-
-                <div className="space-y-2">
-                  <h3 className="text-2xl md:text-3xl  text-gray-900 tracking-tight">
-                    Why Donate to Us?
-                  </h3>
-
-                  <div className="bg-gray-50 p-6 rounded-lg space-y-4">
-                    <ul className="list-disc list-outside pl-6 space-y-3 text-gray-800 leading-relaxed">
-                      <li>
-                        <span className=" text-gray-900">Transparency:</span>{" "}
-                        Every penny of your donation is spent on clearly defined
-                        projects.
-                      </li>
-
-                      <li>
-                        <span className=" text-gray-900">Direct Impact:</span>{" "}
-                        Contributions reach marginalized communities directly at
-                        their doorstep.
-                      </li>
-
-                      <li>
-                        <span className=" text-gray-900">
-                          Humanitarian Responsibility:
-                        </span>{" "}
-                        Empowering neglected and oppressed communities to become
-                        self-reliant.
-                      </li>
-                    </ul>
-                  </div>
+        {/* Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {[
+            {
+              title: "Transparency",
+              text: "Every penny of your donation is spent on clearly defined projects.",
+            },
+            {
+              title: "Direct Impact",
+              text: "Your contributions reach marginalized communities directly at their doorstep.",
+            },
+            {
+              title: "Humanitarian Responsibility",
+              text: "We empower neglected and oppressed communities to become self-reliant.",
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition duration-300"
+            >
+              <div className="flex items-start gap-3">
+                {/* Icon */}
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-600 font-bold">
+                  ✓
                 </div>
 
                 <div>
-                  <p className="text-xl  text-gray-900 italic">
-                    “Your one small step can change a life.”
+                  <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                    {item.title}
+                  </h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {item.text}
                   </p>
                 </div>
-              </section>
+              </div>
             </div>
-          </div>
-        </section>
-      </div> */}
+          ))}
+        </div>
+
+        {/* Quote */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 p-6 rounded-2xl">
+          <p className="text-lg md:text-xl italic text-gray-800 text-center">
+            “Your one small step can change a life.”
+          </p>
+        </div>
+      </section>
+      <section>
+        <Donationform />
+      </section>
     </>
   );
 };
