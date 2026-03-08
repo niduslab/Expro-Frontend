@@ -105,7 +105,7 @@ const PensionPackages = () => {
 
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
         {/* Header */}
         <div data-packages-header className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-[#ECFDF3] px-3 py-1 rounded-md text-sm font-semibold text-[#027A48] mb-4">
@@ -120,7 +120,7 @@ const PensionPackages = () => {
         {/* Packages Grid */}
         <div
           data-packages-grid
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center"
+          className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center"
         >
           {packages.map((pkg, index) => {
             const isDark = pkg.isPopular;
@@ -149,7 +149,7 @@ const PensionPackages = () => {
               <div
                 key={index}
                 data-package-card
-                className={`relative rounded-lg border ${cardBg} ${borderColor} w-77.5 min-h-113 p-6 flex flex-col transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl`}
+                className={`relative rounded-lg border ${cardBg} ${borderColor} container min-h-113 p-6 flex flex-col transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl`}
               >
                 {/* Popular Badge */}
                 {pkg.isPopular && (
