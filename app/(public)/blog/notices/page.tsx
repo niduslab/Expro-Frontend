@@ -44,49 +44,59 @@ const NoticePage = () => {
   const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
   return (
-    <section className="text-black min-h-screen pt-32 pb-24 px-6">
-      {/* Header */}
-      <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
-        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Notices of EWF
-        </h2>
+    <>
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
+        {" "}
+        <section className="text-black min-h-screen pt-20 lg:pt-24 pb-12">
+          {/* Header */}
+          <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
+            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+              Notices of EWF
+            </h2>
 
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          Notices
-        </div>
-      </div>
-
-      {/* Notice List */}
-      <div className="max-w-6xl mx-auto space-y-8 ">
-        {sampleNotices.map((notice) => (
-          <div
-            key={notice.id}
-            className="bg-white hover:bg-gray-100 p-6 rounded-2xl shadow-lg cursor-pointer border border-gray-200 hover:shadow-xl transition duration-300"
-            onClick={() => setSelectedNotice(notice)}
-          >
-            <div className="font-dm-sans flex justify-between items-center">
-              <h2 className="flex items-center gap-2 text-xl font-dm-sans  font-bold text-gray-800">
-                <Bell className="h-4 w-4 text-[#027A48]" /> {notice.title}
-              </h2>
-              <span className="text-gray-400 text-sm flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                {format(new Date(notice.date), "MMMM d, yyyy")}
-              </span>
-            </div>
-            <div className="flex w-full justify-between">
-              {" "}
-              <p className="text-gray-500 text-[13px] mt-2 ">
-                {notice.description}
-              </p>
-              <span className="font-dm-sans mt-2 flex items-center text-green-600 font-medium hover:text-green-700">
-                Read More <ArrowUpRight />
-              </span>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
+              <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+              Notices
             </div>
           </div>
-        ))}
+
+          {/* Notice List */}
+          <div className="mx-auto space-y-6 sm:space-y-8">
+            {sampleNotices.map((notice) => (
+              <div
+                key={notice.id}
+                className="bg-white hover:bg-gray-100 p-4 sm:p-6 rounded-2xl shadow-lg cursor-pointer border border-gray-200 hover:shadow-xl transition duration-300"
+                onClick={() => setSelectedNotice(notice)}
+              >
+                {/* Header */}
+                <div className="font-dm-sans flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                  <h2 className="flex items-center gap-2 text-lg sm:text-xl font-bold text-gray-800">
+                    <Bell className="h-4 w-4 text-[#027A48]" />
+                    {notice.title}
+                  </h2>
+
+                  <span className="text-gray-400 text-xs sm:text-sm flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    {format(new Date(notice.date), "MMMM d, yyyy")}
+                  </span>
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mt-2">
+                  <p className="text-gray-500 text-sm sm:text-[13px] max-w-full sm:max-w-[80%]">
+                    {notice.description}
+                  </p>
+
+                  <span className="font-dm-sans flex items-center text-green-600 font-medium hover:text-green-700 whitespace-nowrap">
+                    Read More <ArrowUpRight className="ml-1 h-4 w-4" />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
-    </section>
+    </>
   );
 };
 
