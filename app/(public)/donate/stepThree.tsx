@@ -6,8 +6,9 @@ import {
   CreditCard,
   Copy,
   CheckCircle,
+  SquareCheckBig,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function StepThree({
@@ -18,11 +19,33 @@ export default function StepThree({
   handleSubmit,
 }: any) {
   const [copied, setCopied] = useState(false);
+  const [copiedValue, setCopiedValue] = useState<string | null>(null);
 
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${label} copied! `);
+  const copyToClipboard = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedValue(text);
+      toast.success(`${label} copied!`);
+
+      // Reset copied icon after 3 seconds
+      setTimeout(() => setCopiedValue(null), 3000);
+    } catch (err) {
+      console.error("Failed to copy", err);
+    }
   };
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (copiedValue) {
+        const clipboardText = await navigator.clipboard.readText();
+        if (clipboardText !== copiedValue) {
+          setCopiedValue(null); // reset icon if clipboard changed
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [copiedValue]);
+
   return (
     <div className="space-y-6">
       <h2 className="font-semibold text-gray-950 text-lg flex items-center gap-2">
@@ -41,7 +64,7 @@ export default function StepThree({
             }`}
         >
           <Smartphone className="mx-auto mb-2" />
-          bKash
+          bKash/nagad
         </button>
 
         {/* BANK */}
@@ -68,7 +91,11 @@ export default function StepThree({
               className="text-gray-500 hover:text-green-700"
               title="Copy Account Number"
             >
-              <Copy size={14} />
+              {copiedValue === "01339321781" ? (
+                <SquareCheckBig size={14} className="text-green-700" />
+              ) : (
+                <Copy size={14} />
+              )}
             </button>
           </div>
           <p className="text-xl font-semibold text-green-700">01339-321781</p>
@@ -101,6 +128,7 @@ export default function StepThree({
               <div className="flex flex-col w-full">
                 <div className="flex pb-1 w-full items-center justify-between">
                   <p className="text-xs text-gray-500 mb-1">Account Number</p>
+
                   <button
                     onClick={() =>
                       copyToClipboard("0602302000494", "Account number")
@@ -108,7 +136,11 @@ export default function StepThree({
                     className="text-gray-500 hover:text-green-700"
                     title="Copy Account Number"
                   >
-                    <Copy size={14} />
+                    {copiedValue === "0602302000494" ? (
+                      <SquareCheckBig size={14} className="text-green-700" />
+                    ) : (
+                      <Copy size={14} />
+                    )}
                   </button>
                 </div>
                 <div className="flex w-1/2">

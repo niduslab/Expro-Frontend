@@ -14,16 +14,13 @@ export default function PublicLayout({
       <main className="flex-grow">
         {children}
         <Toaster
-          position="bottom-right" // top-left, bottom-right, etc.
-          richColors // enables richer colors for success/error/warning
+          position="bottom-right"
+          richColors
           toastOptions={{
-            duration: 2000, // time before auto-dismiss
-            style: {
-              background: "#36F293", // custom background
-              color: "#000000", // custom text color
-              fontWeight: "500",
-              borderRadius: "0.5rem",
-              padding: "1rem",
+            duration: 2500,
+            classNames: {
+              toast:
+                "relative overflow-hidden rounded-lg px-4 py-3 font-medium",
             },
           }}
         />

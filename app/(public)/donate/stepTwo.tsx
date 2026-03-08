@@ -1,4 +1,16 @@
-export default function StepTwo({ form, setStep, handleChange }: any) {
+export default function StepTwo({
+  form,
+  step,
+  handleNext,
+  setStep,
+  handleChange,
+}: {
+  form: any;
+  setStep: any;
+  handleChange: any;
+  step: number;
+  handleNext: (currentStep: number) => void;
+}) {
   return (
     <div className="space-y-5">
       <input
@@ -45,7 +57,7 @@ export default function StepTwo({ form, setStep, handleChange }: any) {
         </button>
 
         <button
-          onClick={() => setStep(3)}
+          onClick={() => handleNext(step)}
           className="px-6 py-2 bg-green-700 text-white rounded-lg"
         >
           Continue

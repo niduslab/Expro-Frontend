@@ -24,7 +24,20 @@ const causes = [
   { name: "Other", icon: Ungroup },
 ];
 
-export default function StepOne({ form, setForm, setStep, handleChange }: any) {
+export default function StepOne({
+  form,
+  setForm,
+  step,
+  handleNext,
+  handleChange,
+}: {
+  form: any;
+  setForm: any;
+  setStep: any;
+  handleChange: any;
+  step: number;
+  handleNext: (currentStep: number) => void;
+}) {
   return (
     <div className="space-y-8 ">
       {/* Donation Towards */}
@@ -83,7 +96,7 @@ export default function StepOne({ form, setForm, setStep, handleChange }: any) {
         <input
           type="number"
           name="amount"
-          placeholder="Enter Custom amount..."
+          placeholder="Enter any amount..."
           value={form.amount}
           onChange={handleChange}
           className="w-full border border-gray-300 text-gray-700 rounded-lg p-3 mt-4"
@@ -91,7 +104,7 @@ export default function StepOne({ form, setForm, setStep, handleChange }: any) {
       </div>
 
       <button
-        onClick={() => setStep(2)}
+        onClick={() => handleNext(step)}
         className="w-full bg-green-700 hover:bg-green-700 text-white py-3 rounded-lg"
       >
         Continue
