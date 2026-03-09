@@ -2,22 +2,24 @@ import Image from "next/image";
 
 const OurFounder = () => {
   return (
-    <section className="font-dm-sans py-10 md:py-14 bg-white overflow-hidden">
-      <div className="container mx-auto px-6 md:px-12 lg:px-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left Column: Content */}
-          <div className="space-y-6 order-2 lg:order-1">
+    <section className="font-dm-sans py-12 md:py-16 lg:py-20 bg-white overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-16 ">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 lg:px-2 items-center">
+          {/* Left Column */}
+          <div className="space-y-5 md:space-y-6 order-2 lg:order-1 px-2 md:px-2  ">
             {/* Tag */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#EBFDF3] text-[#00341C] text-sm font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#36F293]" />
               Our Founder
             </div>
 
-            <h2 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-gray-900 leading-[1.2]">
+            {/* Heading */}
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] whitespace-nowrap font-bold text-gray-900 leading-[1.2]">
               About Our Founder
             </h2>
 
-            <div className="space-y-4 text-gray-600 font-dm-sans leading-relaxed text-[15px] md:text-[16px]">
+            {/* Content */}
+            <div className="space-y-4 text-gray-600 leading-relaxed text-sm sm:text-[15px] md:text-base">
               <p className="font-bold text-gray-900">
                 Md. Motaher Hossain
                 <span className="font-normal text-gray-500">
@@ -51,24 +53,22 @@ const OurFounder = () => {
                   Expro Welfare Foundation
                 </span>{" "}
                 to bridge the gap between education and economic growth. He is
-                actively working toward social upliftment an poverty
+                actively working toward social upliftment and poverty
                 alleviation, believing that true progress is achieved when every
-                citizen contributes to the nation's prosperity. Under his
-                leadership, Expro foundation continues to strive for a
-                sustainable and prosperous future for Bangladesh.
+                citizen contributes to the nation's prosperity.
               </p>
             </div>
           </div>
 
-          {/* Right Column: Image */}
+          {/* Right Column */}
           <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
-            <div className="relative w-full max-w-161 h-125 md:h-150 lg:h-168.75 rounded-lg overflow-hidden bg-[#F5F5F5]">
+            <div className="relative w-full mx-2 aspect-[4/5] rounded-lg overflow-hidden bg-[#F5F5F5]">
               <Image
                 src="/images/about/our-founder.png"
                 alt="Md. Motaher Hossain - Founder Chairman"
                 fill
                 className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
           </div>

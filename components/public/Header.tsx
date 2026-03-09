@@ -317,7 +317,7 @@ export function Header() {
                 href="/donate"
                 className="hidden sm:inline-flex items-center lg:text-[13px] xl:text-[14px] font-semibold lg:whitespace-nowrap
     justify-center rounded-md bg-[#D62828] hover:bg-[#B81D1D] text-white
-     px-2 xl:px-4 py-3.5 xl:py-4 transition-colors duration-300
+     px-2 xl:px-4 py-2.5 xl:py-4 transition-colors duration-300
     focus:outline-none focus:ring-2 focus:ring-offset-2 "
               >
                 Donate Now

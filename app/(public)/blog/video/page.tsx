@@ -25,51 +25,56 @@ const videoData = [
 
 const Videos = () => {
   return (
-    <section className="bg-white min-h-screen px-6 pt-32 md:px-16 py-20">
-      {/* Header */}
-      <div className="text-center mb-10 pt-6 flex flex-col items-center gap-5">
-        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          EWF Digital Content & Videos
-        </h2>
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="font-dm-sans  h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          Our Videos
-        </div>
-      </div>
-
-      {/* Video Grid */}
-      <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {videoData.map((video) => (
-          <div
-            key={video.id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100"
-          >
-            {/* Video */}
-            <div className="aspect-video w-full">
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                title={video.title}
-                frameBorder="0"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {video.title}
-              </h3>
-              {video.description && (
-                <p className="text-gray-600 text-sm">{video.description}</p>
-              )}
+    <>
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
+        {" "}
+        <section className="bg-white min-h-screen  pt-32  py-20">
+          {/* Header */}
+          <div className="text-center mb-10 pt-6 flex flex-col items-center gap-5">
+            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+              EWF Digital Content & Videos
+            </h2>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
+              <span className="font-dm-sans  h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+              Our Videos
             </div>
           </div>
-        ))}
+
+          {/* Video Grid */}
+          <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {videoData.map((video) => (
+              <div
+                key={video.id}
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100"
+              >
+                {/* Video */}
+                <div className="aspect-video w-full">
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                    title={video.title}
+                    frameBorder="0"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {video.title}
+                  </h3>
+                  {video.description && (
+                    <p className="text-gray-600 text-sm">{video.description}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
-    </section>
+    </>
   );
 };
 

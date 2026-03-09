@@ -115,42 +115,46 @@ const MagazinePage = () => {
   ];
 
   return (
-    <section className="bg-white min-h-screen pt-32 pb-24 px-6">
-      {/* HERO */}
+    <>
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
+        <section className="bg-white min-h-screen pt-20 lg:pt-24 pb-12 ">
+          {/* HERO */}
 
-      <div className="text-center mb-5 pt-10  flex flex-col items-center gap-2">
-        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Our Magazine
-        </h2>
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4  text-sm font-medium text-[#027A48]">
-          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          Magazine
-        </div>
+          <div className="text-center mb-5 pt-10  flex flex-col items-center gap-2">
+            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+              Our Magazine
+            </h2>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4  text-sm font-medium text-[#027A48]">
+              <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+              Magazine
+            </div>
+          </div>
+
+          {/* FEATURED CARD */}
+          <div className=" font-dm-sans  mx-auto mb-24">
+            <MagazineCard
+              year="2026"
+              title="Annual Edition"
+              description="Impact highlights, pension transparency, growth roadmap and chairman’s editorial for 2026."
+              image="/images/megazine/cover-2026u.png"
+            />
+          </div>
+
+          {/* PREVIOUS EDITIONS */}
+          <div className=" mx-auto">
+            <h2 className="font-dm-sans text-3xl font-bold text-center mb-14 text-gray-800">
+              Previous Editions
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-10 font-dm-sans ">
+              {previousEditions.map((edition) => (
+                <MagazineCard key={edition.year} {...edition} />
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
-
-      {/* FEATURED CARD */}
-      <div className="max-w-6xl font-dm-sans  mx-auto mb-24">
-        <MagazineCard
-          year="2026"
-          title="Annual Edition"
-          description="Impact highlights, pension transparency, growth roadmap and chairman’s editorial for 2026."
-          image="/images/megazine/cover-2026u.png"
-        />
-      </div>
-
-      {/* PREVIOUS EDITIONS */}
-      <div className="max-w-6xl mx-auto">
-        <h2 className="font-dm-sans text-3xl font-bold text-center mb-14 text-gray-800">
-          Previous Editions
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-10 font-dm-sans ">
-          {previousEditions.map((edition) => (
-            <MagazineCard key={edition.year} {...edition} />
-          ))}
-        </div>
-      </div>
-    </section>
+    </>
   );
 };
 

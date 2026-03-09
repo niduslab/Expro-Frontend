@@ -16,41 +16,42 @@ export default function BlogPage() {
   return (
     <>
       <Hero />
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
+        <section className="bg-white py-24 ">
+          <div className=" mx-auto flex flex-col items-center gap-16">
+            {/* Header */}
+            <div className="text-center  space-y-4">
+              <div className="inline-flex items-center justify-center px-4 py-1 bg-[#D8FFEB] rounded-md gap-2">
+                <span className="text-[#36F293] text-xl leading-none">•</span>
+                <span className="font-dm-sans text-sm font-medium text-[#030712]">
+                  Blog & Media
+                </span>
+              </div>
 
-      <section className="bg-white py-24 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-16">
-          {/* Header */}
-          <div className="text-center max-w-2xl space-y-4">
-            <div className="inline-flex items-center justify-center px-4 py-1 bg-[#D8FFEB] rounded-md gap-2">
-              <span className="text-[#36F293] text-xl leading-none">•</span>
-              <span className="font-dm-sans text-sm font-medium text-[#030712]">
-                Blog & Media
-              </span>
+              <h2 className="font-dm-sans text-2xl md:text-3xl xl:text-5xl font-semibold leading-tight text-[#030712]">
+                Take a look at the latest
+                <span className="block">article and blog</span>
+              </h2>
             </div>
 
-            <h2 className="font-dm-sans text-2xl md:text-3xl xl:text-5xl font-semibold leading-tight text-[#030712]">
-              Take a look at the latest
-              <span className="block">article and blog</span>
-            </h2>
+            {/* Blog Grid */}
+            <div
+              className="font-dm-sans grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 "
+              onClick={() => router.push("/blog/blogdetails")}
+            >
+              <BlogItem1 />
+              <BlogItems2 />
+              <BlogItems3 />
+              <BlogItems4 />
+              <BlogItems5 />
+              <BlogItems6 />
+              <BlogItems7 />
+              <BlogItems8 />
+              <BlogItems9 />
+            </div>
           </div>
-
-          {/* Blog Grid */}
-          <div
-            className="font-dm-sans grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
-            onClick={() => router.push("/blog/blogdetails")}
-          >
-            <BlogItem1 />
-            <BlogItems2 />
-            <BlogItems3 />
-            <BlogItems4 />
-            <BlogItems5 />
-            <BlogItems6 />
-            <BlogItems7 />
-            <BlogItems8 />
-            <BlogItems9 />
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 }

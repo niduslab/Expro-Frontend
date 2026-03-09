@@ -161,7 +161,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
-      <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-7xl">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10">
           {/* Header */}
@@ -391,7 +391,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             className="flex items-center  px-6 py-3 bg-[#F3F4F6] text-gray-600 rounded-md font-medium hover:bg-gray-200 transition-colors opacity-50 cursor-not-allowed"
             disabled
           >
-            <ChevronLeft size={20} className="mr-2" />
+            <ChevronLeft size={20} className="" />
             Previous
           </button>
 

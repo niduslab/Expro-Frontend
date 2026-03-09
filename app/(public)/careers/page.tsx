@@ -46,56 +46,63 @@ const sampleJobs: Job[] = [
 
 const CareerPage = () => {
   return (
-    <section className="text-black min-h-screen pt-32 pb-24 px-6">
-      {/* Header */}
-      <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
-        <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-          Careers at EWF
-        </h2>
+    <>
+      {" "}
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
+        <section className="text-black min-h-screen  pt-20 lg:pt-24 pb-12">
+          {/* Header */}
+          <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
+            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+              Careers at EWF
+            </h2>
 
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-          Career
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-2 gap-10">
-        {sampleJobs.map((job) => (
-          <div
-            key={job.id}
-            className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
-          >
-            <div className="font-dm-sans p-6 flex flex-col h-full">
-              {/* Job Title */}
-              <h2 className="text-xl font-bold text-gray-950">{job.title}</h2>
-
-              {/* Job Meta Info */}
-              <div className="flex flex-wrap items-center text-gray-400 text-sm mt-2 gap-4">
-                <div className="flex items-center gap-1">
-                  <MapPinIcon className="w-4 h-4 text-gray-400" />
-                  <span>{job.location}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <BriefcaseIcon className="w-4 h-4 text-gray-400" />
-                  <span>{job.type}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <CalendarIcon className="w-4 h-4 text-gray-400" />
-                  <span>
-                    {format(new Date(job.postedDate), "MMMM d, yyyy")}
-                  </span>
-                </div>
-              </div>
-
-              {/* Job Description */}
-              <p className="text-gray-500 text-[14px] mt-4 flex-1 ">
-                {job.description}
-              </p>
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
+              <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+              Career
             </div>
           </div>
-        ))}
+
+          <div className=" mx-auto grid md:grid-cols-2 lg:grid-cols-2 gap-10">
+            {sampleJobs.map((job) => (
+              <div
+                key={job.id}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+              >
+                <div className="font-dm-sans p-6 flex flex-col h-full">
+                  {/* Job Title */}
+                  <h2 className="text-xl font-bold text-gray-950">
+                    {job.title}
+                  </h2>
+
+                  {/* Job Meta Info */}
+                  <div className="flex flex-wrap items-center text-gray-400 text-sm mt-2 gap-4">
+                    <div className="flex items-center gap-1">
+                      <MapPinIcon className="w-4 h-4 text-gray-400" />
+                      <span>{job.location}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <BriefcaseIcon className="w-4 h-4 text-gray-400" />
+                      <span>{job.type}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CalendarIcon className="w-4 h-4 text-gray-400" />
+                      <span>
+                        {format(new Date(job.postedDate), "MMMM d, yyyy")}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Job Description */}
+                  <p className="text-gray-500 text-[14px] mt-4 flex-1 ">
+                    {job.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
-    </section>
+    </>
   );
 };
 

@@ -94,7 +94,7 @@ const NewsArticles = () => {
 
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-white">
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
         <div
           data-news-header
           className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12"

@@ -87,7 +87,7 @@ export default function AdvisoryCounsil() {
 
   return (
     <section ref={sectionRef} className="py-20 bg-white">
-      <div className="container relative top-20 mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container relative top-20 mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
         <div className="text-center mb-8 flex flex-col items-center gap-5">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 ">
             Advisory Council
@@ -106,7 +106,7 @@ export default function AdvisoryCounsil() {
             <div
               key={index}
               data-leadership-card
-              className="group relative w-full max-w-105.25 h-125 bg-[#F3F4F6] rounded-lg overflow-hidden border border-b border-[#E5E7EB]"
+              className="group relative w-full  h-125 bg-[#F3F4F6] rounded-lg overflow-hidden border border-b border-[#E5E7EB]"
             >
               {/* Background Image */}
               <div className="absolute inset-0">

@@ -131,7 +131,7 @@ export default function GoverninBody() {
 
   return (
     <section ref={sectionRef} className="py-20 bg-white">
-      <div className="container relative top-20 mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container relative top-20 mx-auto px-6 md:px-12 lg:px-20 ">
         <div
           data-leadership-header
           className="text-center mb-14 flex flex-col items-center gap-5"
