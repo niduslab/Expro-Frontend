@@ -1,5 +1,8 @@
+"use client";
 import { Calendar, Plus, Users } from "lucide-react";
 import FundRaiseProgress from "./fund-raise-progress";
+import { useState } from "react";
+import NewProjectModal from "./new-project-modal";
 
 const projects = [
   {
@@ -67,6 +70,7 @@ const projects = [
 ];
 
 export default function AdminProjects() {
+  const [openModal, setOpenModal] = useState(false);
   return (
     <>
       <div className="w-[1133px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -80,7 +84,12 @@ export default function AdminProjects() {
         </div>
 
         <div className="flex justify-start sm:justify-end">
-          <button className="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#068847] text-white whitespace-nowrap">
+          <button
+            onClick={() => {
+              setOpenModal(true);
+            }}
+            className="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#068847] text-white whitespace-nowrap"
+          >
             <Plus className="h-5 w-5 shrink-0" />
             <span className="text-sm font-semibold">Add New Projects</span>
           </button>
@@ -142,6 +151,7 @@ export default function AdminProjects() {
           </div>
         ))}
       </div>
+      {openModal && <NewProjectModal setOpenModal={setOpenModal} />}
     </>
   );
 }
