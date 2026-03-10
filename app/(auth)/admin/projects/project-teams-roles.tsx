@@ -1,6 +1,15 @@
-import { ChevronDown, CircleCheck } from "lucide-react";
-
-export default function ProjectTeamsRoles() {
+import { ArrowLeft, ChevronDown, CircleCheck } from "lucide-react";
+const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
+interface NewProjectModalProps {
+  activeTab: "info" | "budget" | "teams";
+  setActiveTab: React.Dispatch<
+    React.SetStateAction<"info" | "budget" | "teams">
+  >;
+}
+export default function ProjectTeamsRoles({
+  activeTab,
+  setActiveTab,
+}: NewProjectModalProps) {
   return (
     <>
       <div className="flex flex-col relative top-[24px] w-[531px]  gap-[16px]">
@@ -75,8 +84,16 @@ export default function ProjectTeamsRoles() {
           </div>
         </div>
         <div className="flex relative justify-between w-full  gap-[16px] ">
-          <button className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
-            Cancel
+          <button
+            onClick={() => {
+              const currentIndex = tabs.indexOf(activeTab);
+              if (currentIndex > 0) {
+                setActiveTab(tabs[currentIndex - 1]);
+              }
+            }}
+            className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"
+          >
+            <ArrowLeft className="h-5 w-5" /> Back
           </button>
           <button className="bg-[#068847] gap-2 h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em]">
             <span>Complete</span>

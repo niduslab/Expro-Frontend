@@ -17,17 +17,33 @@ export default function NewProjectModal({
   const renderTabContent = () => {
     switch (activeTab) {
       case "info":
-        return <ProjectInfo />;
+        return (
+          <ProjectInfo
+            setOpenModal={setOpenModal}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        );
       case "budget":
-        return <ProjectBudgetTimeline />;
+        return (
+          <ProjectBudgetTimeline
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        );
       case "teams":
-        return <ProjectTeamsRoles />;
+        return (
+          <ProjectTeamsRoles
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        );
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="flex flex-col w-[600px] max-h-[80vh] p-6 bg-white rounded-2xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
+      <div className="flex flex-col w-[600px] h-auto p-6 bg-white rounded-2xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
         {/* Header */}
         <div className="flex flex-col gap-[6px]">
           <div className="flex justify-between items-center">

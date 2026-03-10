@@ -1,6 +1,19 @@
 import { ArrowRight, ChevronDown } from "lucide-react";
 
-export default function ProjectInfo() {
+interface NewProjectModalProps {
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  activeTab: "info" | "budget" | "teams";
+  setActiveTab: React.Dispatch<
+    React.SetStateAction<"info" | "budget" | "teams">
+  >;
+}
+const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
+
+export default function ProjectInfo({
+  setOpenModal,
+  activeTab,
+  setActiveTab,
+}: NewProjectModalProps) {
   return (
     <>
       <div className="flex flex-col relative top-[24px] w-[531px]  gap-[16px]">
@@ -68,12 +81,22 @@ export default function ProjectInfo() {
           />
         </div>{" "}
         <div className="flex relative justify-between w-full  gap-[16px] ">
-          <button className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
+          <button
+            onClick={() => setOpenModal(false)}
+            className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]"
+          >
             Cancel
           </button>
-          <button className="bg-[#068847] h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em]">
-            <span>Next</span>
-            <ArrowRight className="h- w-5 " />
+          <button
+            onClick={() => {
+              const currentIndex = tabs.indexOf(activeTab);
+              if (currentIndex < tabs.length - 1) {
+                setActiveTab(tabs[currentIndex + 1]);
+              }
+            }}
+            className="bg-[#068847] h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px]"
+          >
+            Next <ArrowRight className="h-5 w-5" />
           </button>
         </div>
       </div>
