@@ -18,7 +18,7 @@ export default function AdminLayout({
       <div className="flex-1 flex flex-col lg:pl-64">
         <AdminHeader onMenuClick={() => setOpen(true)} />
 
-        <main className="flex-1 p-4 md:p-6 overflow-auto container">
+        <main className="flex-1 p-4 md:p-6 overflow-hidden md:overflow-auto container">
           {children}
         </main>
       </div>

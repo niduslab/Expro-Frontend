@@ -49,10 +49,9 @@ const WalletBallance = () => {
               Financial overview & transaction history
             </p>
           </div>
-
           {/* Stats Cards */}
           <div className="w-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
@@ -87,8 +86,7 @@ const WalletBallance = () => {
             </div>
           </div>
 
-          {/* Transactions */}
-          <div className="w-full pt-8 sm:pt-12">
+          <div className="w-[400px] md:w-full  pt-8 sm:pt-12">
             <RecentTransactions />
           </div>
         </div>

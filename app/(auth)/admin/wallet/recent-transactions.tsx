@@ -95,74 +95,76 @@ export default function RecentTransactions() {
         Recent Transactions
       </h2>
 
-      <div className="border border-[#DEE3E7] rounded-2xl">
-        <table className="w-full  ">
-          <thead className="">
-            <tr className="text-[#030712] bg-[#EBEDF066]  border-b relative left-6 border-[#DEE3E7] rounded-4xl ">
-              <th className="text-left py-3 font-normal text-[14px]  leading-[150%] tracking-[-1%] align-middle">
-                Category Name
-              </th>
-              <th className="text-left py-3 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
-                User Name
-              </th>
-              <th className="text-left py-3 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
-                Amount
-              </th>
-              <th className="text-left py-3 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
-                Date
-              </th>
-              <th className="text-left py-3 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
-                Status
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {transactions.map((tx) => (
-              <tr
-                key={tx.id}
-                className=" rounded-2xl relative left-6  border-b last:border-none border-[] hover:bg-gray-50"
-              >
-                <td className="py-4">
-                  <p className="font-medium text-[14px] leading-[150%] tracking-[-1%] align-middle text-[#030712]">
-                    {tx.category}
-                  </p>
-                </td>
-                <td className="py-4">
-                  <p className="font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle text-[#4A5565]">
-                    {" "}
-                    {tx.user}
-                  </p>
-                </td>
-
-                <td
-                  className={`py-4 font-normal text-[14px] leading-[20px] tracking-0 align-middle ${
-                    tx.amount > 0 ? "text-[#068847]" : "text-[#F14248]"
-                  }`}
-                >
-                  {tx.amount > 0 ? "+" : "-"}৳
-                  {Math.abs(tx.amount).toLocaleString()}
-                </td>
-
-                <td className="py-4 ">
-                  {" "}
-                  <p className="font-normal text-[14px] leading-[20px] tracking-0 align-middle text-[#73808C]">
-                    {tx.date}
-                  </p>
-                </td>
-
-                <td className="py-4">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${statusConfig[tx.status].style}`}
-                  >
-                    {statusConfig[tx.status].icon}
-                    {tx.status}
-                  </span>
-                </td>
+      <div className="border border-[#DEE3E7]  rounded-2xl overflow-hidden min-w-0">
+        <div className="w-full overflow-x-auto ">
+          <table className="w-full min-w-max">
+            <thead>
+              <tr className="text-[#030712] bg-[#EBEDF066]  border-b relative  border-[#DEE3E7] rounded-4xl ">
+                <th className="text-left py-3 px-2 font-normal text-[14px]  leading-[150%] tracking-[-1%] align-middle">
+                  Category Name
+                </th>
+                <th className="text-left py-3 px-2 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                  User Name
+                </th>
+                <th className="text-left py-3 px-2 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                  Amount
+                </th>
+                <th className="text-left py-3 px-2 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                  Date
+                </th>
+                <th className="text-left py-3 px-2 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                  Status
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {transactions.map((tx) => (
+                <tr
+                  key={tx.id}
+                  className=" rounded-2xl relative   border-b last:border-none border-[] hover:bg-gray-50"
+                >
+                  <td className="py-4 px-2 ">
+                    <p className="font-medium text-[14px] leading-[150%] tracking-[-1%] align-middle text-[#030712]">
+                      {tx.category}
+                    </p>
+                  </td>
+                  <td className="py-4 px-2">
+                    <p className="font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle text-[#4A5565]">
+                      {" "}
+                      {tx.user}
+                    </p>
+                  </td>
+
+                  <td
+                    className={`py-4 px-2 font-normal text-[14px] leading-[20px] tracking-0 align-middle ${
+                      tx.amount > 0 ? "text-[#068847]" : "text-[#F14248]"
+                    }`}
+                  >
+                    {tx.amount > 0 ? "+" : "-"}৳
+                    {Math.abs(tx.amount).toLocaleString()}
+                  </td>
+
+                  <td className="py-4 px-2 ">
+                    {" "}
+                    <p className="font-normal text-[14px] leading-[20px] tracking-0 align-middle text-[#73808C]">
+                      {tx.date}
+                    </p>
+                  </td>
+
+                  <td className="py-4 px-2">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${statusConfig[tx.status].style}`}
+                    >
+                      {statusConfig[tx.status].icon}
+                      {tx.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
