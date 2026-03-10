@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { X } from "lucide-react";
+import { LogOut, Settings, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { sidebarItems } from "./sidebar-items";
@@ -59,12 +59,17 @@ export function MobileSidebar({ open, setOpen }: Props) {
                 key={item.name}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-green-600 text-white"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
+                <item.icon
+                  className={`w-5 h-5 mr-2 ${
+                    isActive ? "text-white" : "text-gray-600"
+                  }`}
+                />
                 {item.name}
               </Link>
             );
@@ -76,8 +81,10 @@ export function MobileSidebar({ open, setOpen }: Props) {
           <Link
             href="/admin/settings"
             onClick={() => setOpen(false)}
-            className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
           >
+            {" "}
+            <Settings className="w-5 h-5 text-gray-500" />
             Settings
           </Link>
 
@@ -87,8 +94,9 @@ export function MobileSidebar({ open, setOpen }: Props) {
                 "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
               router.push("/login");
             }}
-            className="w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg text-left transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg text-left transition-colors"
           >
+            <LogOut className="w-5 h-5 text-gray-500" />
             Logout
           </button>
         </div>
