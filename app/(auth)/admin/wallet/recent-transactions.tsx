@@ -121,7 +121,7 @@ export default function RecentTransactions() {
             {transactions.map((tx) => (
               <tr
                 key={tx.id}
-                className=" rounded-2xl relative left-6  border-b last:border-none border-[#DEE3E7] hover:bg-gray-50"
+                className=" rounded-2xl relative left-6  border-b last:border-none border-[] hover:bg-gray-50"
               >
                 <td className="py-4">
                   <p className="font-medium text-[14px] leading-[150%] tracking-[-1%] align-middle text-[#030712]">

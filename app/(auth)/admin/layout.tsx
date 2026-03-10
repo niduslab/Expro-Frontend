@@ -1,17 +1,24 @@
-import { AdminSidebar } from '@/components/admin/Sidebar';
-import { AdminHeader } from '@/components/admin/Header';
+"use client";
+
+import { useState } from "react";
+import { AdminSidebarWrapper } from "@/components/admin/AdminSidebarWrapper";
+import { AdminHeader } from "@/components/admin/Header";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col pl-64">
-        <AdminHeader />
-        <main className="flex-1 p-6 overflow-auto">
+      <AdminSidebarWrapper open={open} setOpen={setOpen} />
+
+      <div className="flex-1 flex flex-col lg:pl-64">
+        <AdminHeader onMenuClick={() => setOpen(true)} />
+
+        <main className="flex-1 p-4 md:p-6 overflow-auto container">
           {children}
         </main>
       </div>

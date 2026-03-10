@@ -31,7 +31,7 @@ export default function AdminPensionPackages() {
   const [openModal, setOpenModal] = useState(false);
   return (
     <>
-      <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="container flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex flex-col gap-2">
           <p className="font-semibold text-2xl sm:text-[32px] text-[#030712]">
             Pension Packages
