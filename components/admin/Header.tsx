@@ -1,10 +1,12 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { Search, Bell } from 'lucide-react';
+import React from "react";
+import Image from "next/image";
+import { Search, Bell } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function AdminHeader() {
+  const router = useRouter();
   return (
     <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 shadow-sm">
       {/* Search Bar */}
@@ -24,7 +26,12 @@ export function AdminHeader() {
       {/* Right Side Actions */}
       <div className="flex items-center gap-4">
         {/* Notifications */}
-        <button className="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none rounded-full hover:bg-gray-100 transition-colors">
+        <button
+          onClick={() => {
+            router.push("/admin/notifications");
+          }}
+          className="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none rounded-full hover:bg-gray-100 transition-colors"
+        >
           <span className="sr-only">View notifications</span>
           <Bell className="h-6 w-6" />
           {/* Notification Badge */}
@@ -32,19 +39,24 @@ export function AdminHeader() {
         </button>
 
         {/* Profile Dropdown */}
-        <div className="flex items-center gap-3 border-l border-gray-200 pl-4 ml-2">
+        <div
+          onClick={() => {
+            router.push("/admin/profile");
+          }}
+          className="flex items-center gap-3 border-l border-gray-200 pl-4 ml-2"
+        >
           <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200">
-             {/* Placeholder avatar */}
-             <Image 
-               src="/images/our-leadership/01-md-motahar-hossen.png" 
-               alt="User Avatar" 
-               fill 
-               className="object-cover"
-             />
+            {/* Placeholder avatar */}
+            <Image
+              src="/images/landing-page/our-leadership/06-md-ataur-rahman.png"
+              alt="User Avatar"
+              fill
+              className="object-cover"
+            />
           </div>
           <div className="hidden md:block text-sm">
-            <p className="font-semibold text-gray-900">WK Surid</p>
-            <p className="text-xs text-gray-500">UI/UX Designer</p>
+            <p className="font-semibold text-gray-900">Md motahar</p>
+            <p className="text-xs text-gray-500">Founder & Chairman</p>
           </div>
         </div>
       </div>
