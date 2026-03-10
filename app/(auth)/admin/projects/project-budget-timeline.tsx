@@ -14,8 +14,8 @@ export default function ProjectBudgetTimeline({
   return (
     <>
       <div className="flex flex-col relative pt-4 w-full gap-[16px]">
-        <div className="flex gap-2 w-full">
-          <div className="relative w-1/2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          <div className="relative w-full sm:w-1/2">
             <div className="  justify-between w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -31,7 +31,7 @@ export default function ProjectBudgetTimeline({
               />
             </div>
           </div>
-          <div className="relative w-1/2">
+          <div className="relative w-full sm:w-1/2">
             <div className="  justify-between w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -48,8 +48,8 @@ export default function ProjectBudgetTimeline({
             </div>
           </div>
         </div>
-        <div className="flex gap-2 w-full">
-          <div className="relative w-1/2">
+        <div className="flex flex-col sm:flex-row gap-2 ">
+          <div className="relative w-full sm:w-1/2">
             <div className="  justify-between w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -67,7 +67,7 @@ export default function ProjectBudgetTimeline({
               </button>
             </div>
           </div>
-          <div className="relative w-1/2">
+          <div className="relative w-full sm:w-1/2">
             <div className="flex flex-col  w-full">
               <span className="font-semibold pb-2 text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
                 Expected End Date

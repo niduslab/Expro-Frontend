@@ -42,8 +42,9 @@ export default function NewProjectModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="flex flex-col w-[600px] h-[90vh] p-6 bg-white rounded-2xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2">
+      <div className="flex flex-col w-full max-w-[600px] p-2 md:p-4 lg-p-6 h-[70vh] bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black">
+        {" "}
         {/* Header */}
         <div className="p-2 flex flex-col gap-[6px] ">
           <div className="flex justify-between items-center">
@@ -61,15 +62,14 @@ export default function NewProjectModal({
             Set up a new welfare initiative project for the foundation
           </p>
         </div>
-
         {/* Divider */}
-        <div className="w-full border border-[#E5E7EB] mt-4 mb-4"></div>
+        <div className="container border border-[#E5E7EB] my-4"></div>
         <div className=" overflow-y-auto">
           {/* Tabs */}
-          <div className="h-[45px] gap-[24px] flex ">
+          <div className="h-[45px] gap-[12px] md:gap-[24px] flex overflow-x-auto md:overflow-visible">
             <button
               onClick={() => setActiveTab("info")}
-              className={`p-3 rounded-[8px] gap-[8px] ${
+              className={`p-3 rounded-[8px] whitespace-nowrap ${
                 activeTab === "info"
                   ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
                   : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
@@ -77,9 +77,10 @@ export default function NewProjectModal({
             >
               Project Info
             </button>
+
             <button
               onClick={() => setActiveTab("budget")}
-              className={`p-3 rounded-[8px] gap-[8px] ${
+              className={`p-3 rounded-[8px] whitespace-nowrap ${
                 activeTab === "budget"
                   ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
                   : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
@@ -87,9 +88,10 @@ export default function NewProjectModal({
             >
               Budget & Timeline
             </button>
+
             <button
               onClick={() => setActiveTab("teams")}
-              className={`p-3 rounded-[8px] gap-[8px] ${
+              className={`p-3 rounded-[8px] whitespace-nowrap ${
                 activeTab === "teams"
                   ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
                   : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"

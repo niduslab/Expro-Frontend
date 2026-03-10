@@ -13,8 +13,8 @@ export default function ProjectTeamsRoles({
   return (
     <>
       <div className="flex flex-col relative  w-full gap-[16px] pt-4">
-        <div className="flex gap-2 w-full">
-          <div className="relative w-1/2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          <div className="relative w-full sm:w-1/2">
             <div className="  justify-between w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -30,7 +30,7 @@ export default function ProjectTeamsRoles({
               />
             </div>
           </div>
-          <div className="relative w-1/2">
+          <div className="relative w-full sm:w-1/2">
             <div className="flex flex-col  w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -49,8 +49,8 @@ export default function ProjectTeamsRoles({
             </div>
           </div>
         </div>
-        <div className="flex gap-2 w-full">
-          <div className="relative w-1/2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          <div className="relative w-full sm:w-1/2">
             <div className="  justify-between w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -66,7 +66,7 @@ export default function ProjectTeamsRoles({
               />
             </div>
           </div>
-          <div className="relative w-1/2">
+          <div className="relative w-full sm:w-1/2">
             <div className="  justify-between w-full">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
