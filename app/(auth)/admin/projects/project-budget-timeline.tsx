@@ -13,7 +13,7 @@ export default function ProjectBudgetTimeline({
 }: NewProjectModalProps) {
   return (
     <>
-      <div className="flex flex-col relative top-[24px] w-[531px]  gap-[16px]">
+      <div className="flex flex-col relative pt-4 w-full gap-[16px]">
         <div className="flex gap-2 w-full">
           <div className="relative w-1/2">
             <div className="  justify-between w-full">

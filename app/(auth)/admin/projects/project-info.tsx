@@ -16,7 +16,7 @@ export default function ProjectInfo({
 }: NewProjectModalProps) {
   return (
     <>
-      <div className="flex flex-col relative top-[24px] w-[531px]  gap-[16px]">
+      <div className="flex flex-col relative pt-4 gap-[16px]">
         <div className=" justify-between">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -28,7 +28,7 @@ export default function ProjectInfo({
           </div>
 
           <input
-            className="w-[531px] h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+            className="w-full h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
             placeholder="Healthcare Program"
           />
         </div>{" "}
@@ -76,7 +76,7 @@ export default function ProjectInfo({
           </div>
 
           <textarea
-            className="w-[531px] h-[102px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none"
+            className=" w-full h-[102px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none"
             placeholder="About Healthcare Program"
           />
         </div>{" "}
@@ -94,7 +94,7 @@ export default function ProjectInfo({
                 setActiveTab(tabs[currentIndex + 1]);
               }
             }}
-            className="bg-[#068847] h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px]"
+            className="bg-[#068847] h-[48px] w-[158px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px]"
           >
             Next <ArrowRight className="h-5 w-5" />
           </button>

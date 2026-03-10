@@ -43,9 +43,9 @@ export default function NewProjectModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="flex flex-col w-[600px] h-auto p-6 bg-white rounded-2xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
+      <div className="flex flex-col w-[600px] h-[90vh] p-6 bg-white rounded-2xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
         {/* Header */}
-        <div className="flex flex-col gap-[6px]">
+        <div className="p-2 flex flex-col gap-[6px] ">
           <div className="flex justify-between items-center">
             <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
               Create New Project
@@ -100,7 +100,7 @@ export default function NewProjectModal({
           </div>
 
           {/* Content */}
-          <div className=" max-h-[60vh]">{renderTabContent()}</div>
+          <div className="flex-1 overflow-y-auto p-2">{renderTabContent()}</div>
         </div>
       </div>
     </div>
