@@ -14,13 +14,13 @@ const Awards = () => {
   const pdfs = [
     {
       name: "EWF Registration Certificate",
-      url: "/file/about/sample_registration_certificate.pdf",
-      updated: "March 2026",
+      url: "/file/about/Reg no-RAJS-497.pdf",
+      updated: "3 november 2021",
     },
     {
       name: "EWF TIN Certificate",
-      url: "/file/about/sample_tin_certificate.pdf",
-      updated: "July 2025",
+      url: "/file/about/nbr_tin_certificate_572046139082.pdf",
+      updated: "3 February 2025",
     },
     {
       name: "EWF Tread Licensee Copy",
