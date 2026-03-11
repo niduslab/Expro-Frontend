@@ -8,6 +8,7 @@ import { useState } from "react";
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
 interface NewProjectModalProps {
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab: "info" | "budget" | "teams";
   formData: ProjectFormDataInterface;
   setFormData: React.Dispatch<React.SetStateAction<ProjectFormDataInterface>>;
@@ -21,6 +22,7 @@ export default function ProjectTeamsRoles({
   formData,
   setFormData,
   setActiveTab,
+  setOpenModal,
 }: NewProjectModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const handleSubmit = () => {
@@ -53,6 +55,7 @@ export default function ProjectTeamsRoles({
 
     setErrors({});
     toast.success("Project created successfully.");
+    setOpenModal(false);
   };
   const handleBack = () => {
     const currentIndex = tabs.indexOf(activeTab);

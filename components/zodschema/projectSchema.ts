@@ -11,14 +11,8 @@ export const projectInfoSchema = z.object({
 // Step 2: Budget & Timeline
 
 export const projectBudgetSchema = z.object({
-  totalBudget: z.preprocess(
-    (val) => Number(val),
-    z.number().min(1, "Budget must be at least 1"),
-  ),
-  initialFund: z.preprocess(
-    (val) => Number(val),
-    z.number().min(1, "Initial fund must be at least 1"),
-  ),
+  totalBudget: z.number().min(1, "Total Budget must be at least 1"),
+  initialFund: z.number().min(1, "Initial Fund must be at least 1"),
   startDate: z.string().min(1, "Start Date required"),
   endDate: z.string().min(1, "End Date required"),
 });

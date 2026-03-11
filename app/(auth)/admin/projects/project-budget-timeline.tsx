@@ -31,8 +31,13 @@ export default function ProjectBudgetTimeline({
   const handleNext = () => {
     const budgetData = {
       ...formData,
-      totalBudget: Number(formData.totalBudget),
-      initialFund: Number(formData.initialFund),
+
+      totalBudget: formData.totalBudget
+        ? Number(formData.totalBudget)
+        : undefined,
+      initialFund: formData.initialFund
+        ? Number(formData.initialFund)
+        : undefined,
     };
 
     const result = projectBudgetSchema.safeParse(budgetData);
@@ -86,6 +91,7 @@ export default function ProjectBudgetTimeline({
             <div>
               {" "}
               <input
+                type="number"
                 value={formData.totalBudget}
                 onChange={(e) => {
                   setFormData({ ...formData, totalBudget: e.target.value });
@@ -116,6 +122,7 @@ export default function ProjectBudgetTimeline({
             </div>
             <div>
               <input
+                type="number"
                 value={formData.initialFund}
                 onChange={(e) => {
                   setFormData({ ...formData, initialFund: e.target.value });

@@ -81,6 +81,7 @@ export default function NewProjectModal({
       case "teams":
         return (
           <ProjectTeamsRoles
+            setOpenModal={setOpenModal}
             activeTab={activeTab}
             formData={formData}
             setFormData={setFormData}
@@ -121,7 +122,7 @@ export default function NewProjectModal({
               className={`p-3 rounded-[8px] whitespace-nowrap  flex flex-items gap-2 ${
                 activeTab === "info"
                   ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                  : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+                  : "text-[#068847] border underline border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
               1. Project Info
@@ -135,7 +136,7 @@ export default function NewProjectModal({
                   ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
                   : activeTab === "budget"
                     ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                    : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+                    : "text-[#068847] border underline border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
               2. Budget & Timeline{" "}
@@ -154,7 +155,7 @@ export default function NewProjectModal({
                   ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
                   : activeTab === "teams"
                     ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                    : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+                    : "text-[#068847] border underline border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
               3. Team & Roles{" "}
