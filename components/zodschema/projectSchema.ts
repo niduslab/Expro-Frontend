@@ -24,7 +24,10 @@ export const projectBudgetSchema = z.object({
 });
 // Step 3: Teams & Roles
 export const projectTeamSchema = z.object({
-  projectLead: z.string().min(1, "Project lead required"),
+  projectLead: z
+    .string()
+    .min(1, "Project lead required")
+    .regex(/^[A-Za-z\s]+$/, "Project lead must contain only letters"),
   role: z.string().min(1, "Role required"),
   teamSize: z.number().min(1, "Team size must be at least 1"),
   contribution: z.number().min(1, "Contribution must be at least 1"),

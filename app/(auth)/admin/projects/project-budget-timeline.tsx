@@ -83,7 +83,7 @@ export default function ProjectBudgetTimeline({
                 *
               </span>
             </div>
-            <div className=" h-24">
+            <div>
               {" "}
               <input
                 value={formData.totalBudget}
@@ -114,7 +114,7 @@ export default function ProjectBudgetTimeline({
                 *
               </span>
             </div>
-            <div className=" h-24">
+            <div>
               <input
                 value={formData.initialFund}
                 onChange={(e) => {
@@ -179,7 +179,7 @@ export default function ProjectBudgetTimeline({
           </div>
         </div>
       </div>
-      <div className="flex relative justify-between w-full pt-[122px] gap-[16px] ">
+      <div className="flex relative justify-between w-full pt-43 gap-[16px] ">
         <button
           onClick={handleBack}
           className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"
