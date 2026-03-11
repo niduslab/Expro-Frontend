@@ -3,6 +3,21 @@ import ProjectInfo from "./project-info";
 import ProjectBudgetTimeline from "./project-budget-timeline";
 import ProjectTeamsRoles from "./project-teams-roles";
 
+export interface ProjectFormDataInterface {
+  title: string;
+  category: string;
+  priority: string;
+  description: string;
+  totalBudget: string;
+  initialFund: string;
+  startDate: string;
+  endDate: string;
+  projectLead: string;
+  role: string;
+  teamSize: string;
+  contribution: string;
+}
+
 interface NewProjectModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -14,6 +29,21 @@ export default function NewProjectModal({
     "info",
   );
 
+  const [formData, setFormData] = useState<ProjectFormDataInterface>({
+    title: "",
+    category: "",
+    priority: "",
+    description: "",
+    totalBudget: "",
+    initialFund: "",
+    startDate: "",
+    endDate: "",
+    projectLead: "",
+    role: "",
+    teamSize: "",
+    contribution: "",
+  });
+
   const renderTabContent = () => {
     switch (activeTab) {
       case "info":
@@ -22,6 +52,8 @@ export default function NewProjectModal({
             setOpenModal={setOpenModal}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            formData={formData}
+            setFormData={setFormData}
           />
         );
       case "budget":
@@ -29,12 +61,16 @@ export default function NewProjectModal({
           <ProjectBudgetTimeline
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            formData={formData}
+            setFormData={setFormData}
           />
         );
       case "teams":
         return (
           <ProjectTeamsRoles
             activeTab={activeTab}
+            formData={formData}
+            setFormData={setFormData}
             setActiveTab={setActiveTab}
           />
         );

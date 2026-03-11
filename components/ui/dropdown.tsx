@@ -9,6 +9,7 @@ type DropdownProps = {
   placeholder: string;
   options: string[];
   onChange?: (value: string) => void;
+  value: string;
 };
 
 export default function Dropdown({
@@ -17,9 +18,9 @@ export default function Dropdown({
   placeholder,
   options,
   onChange,
-}: DropdownProps) {
+  value, // new prop
+}: DropdownProps & { value: string }) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,19 +29,17 @@ export default function Dropdown({
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
-  const handleSelect = (value: string) => {
-    setSelected(value);
+  const handleSelect = (val: string) => {
     setOpen(false);
-    onChange?.(value);
+    onChange?.(val);
   };
 
   return (
-    <div ref={ref} className="relative w-full ">
+    <div ref={ref} className="relative w-full">
       {label && (
         <div className="pb-2">
           <span className="font-semibold text-[14px]">{label}</span>
@@ -54,7 +53,7 @@ export default function Dropdown({
         className="flex items-center cursor-pointer justify-between h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-white"
       >
         <span className="text-[#6A7282] text-[14px]">
-          {selected || placeholder}
+          {value || placeholder}
         </span>
         <ChevronDown size={14} className="text-[#6A7282]" />
       </button>

@@ -2,10 +2,15 @@
 import Dropdown from "@/components/ui/dropdown";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { ProjectFormDataInterface } from "./new-project-modal";
+import { projectInfoSchema } from "@/components/zodschema/projectSchema";
+import { toast } from "sonner";
 
-interface NewProjectModalProps {
+interface ProjectInfoProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab: "info" | "budget" | "teams";
+  formData: ProjectFormDataInterface;
+  setFormData: React.Dispatch<React.SetStateAction<ProjectFormDataInterface>>;
   setActiveTab: React.Dispatch<
     React.SetStateAction<"info" | "budget" | "teams">
   >;
@@ -16,9 +21,39 @@ export default function ProjectInfo({
   setOpenModal,
   activeTab,
   setActiveTab,
-}: NewProjectModalProps) {
-  const [category, setCategory] = useState("");
-  const [priority, setPriority] = useState("");
+  formData,
+  setFormData,
+}: ProjectInfoProps) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleNext = () => {
+    const result = projectInfoSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
+      });
+
+      setErrors(fieldErrors);
+
+      const lastMessage = result.error.issues.slice(-1)[0]?.message;
+      if (lastMessage) {
+        toast.error(lastMessage);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+
+      return;
+    }
+
+    setErrors({});
+
+    const currentIndex = tabs.indexOf(activeTab);
+    if (currentIndex < tabs.length - 1) {
+      setActiveTab(tabs[currentIndex + 1]);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col relative pt-4 gap-[16px]">
@@ -33,9 +68,20 @@ export default function ProjectInfo({
           </div>
 
           <input
+            value={formData.title}
+            onChange={(e) => {
+              setFormData({ ...formData, title: e.target.value });
+              // Clear the title error immediately when the user types
+              if (errors.title) {
+                setErrors((prev) => ({ ...prev, title: "" }));
+              }
+            }}
             className="w-full h-[48px] gap-[129px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
             placeholder="Healthcare Program"
           />
+          {errors.title && (
+            <span className="text-sm text-red-500 py-0.5">{errors.title}</span>
+          )}
         </div>{" "}
         <div className="flex flex-col sm:flex-row gap-2 w-full">
           <div className="relative w-full sm:w-1/2 ">
@@ -44,16 +90,39 @@ export default function ProjectInfo({
               required
               placeholder="Select Category"
               options={["Bug", "Feature", "Support"]}
-              onChange={(value) => setCategory(value)}
-            />
+              value={formData.category}
+              onChange={(value) => {
+                setFormData({ ...formData, category: value });
+                if (errors.category) {
+                  setErrors((prev) => ({ ...prev, category: "" }));
+                }
+              }}
+            />{" "}
+            {errors.category && (
+              <span className="text-sm text-red-500 py-0.5">
+                {errors.category}
+              </span>
+            )}
           </div>
           <div className="relative w-full sm:w-1/2">
             <Dropdown
               label="Priority"
+              required
               placeholder="Select Priority"
               options={["Low", "Medium", "High", "Urgent"]}
-              onChange={(value) => setPriority(value)}
+              value={formData.priority}
+              onChange={(value) => {
+                setFormData({ ...formData, priority: value });
+                if (errors.priority) {
+                  setErrors((prev) => ({ ...prev, priority: "" }));
+                }
+              }}
             />
+            {errors.priority && (
+              <span className="text-sm text-red-500 py-0.5">
+                {errors.priority}
+              </span>
+            )}
           </div>
         </div>
         <div className=" justify-between">
@@ -67,9 +136,22 @@ export default function ProjectInfo({
           </div>
 
           <textarea
+            value={formData.description}
+            onChange={(e) => {
+              setFormData({ ...formData, description: e.target.value });
+
+              if (errors.description) {
+                setErrors((prev) => ({ ...prev, description: "" }));
+              }
+            }}
             className=" w-full h-[102px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
             placeholder="About Healthcare Program"
           />
+          {errors.description && (
+            <span className="text-sm text-red-500 py-0.5">
+              {errors.description}
+            </span>
+          )}
         </div>{" "}
         <div className="flex relative justify-between w-full  gap-[16px] ">
           <button
@@ -79,12 +161,7 @@ export default function ProjectInfo({
             Cancel
           </button>
           <button
-            onClick={() => {
-              const currentIndex = tabs.indexOf(activeTab);
-              if (currentIndex < tabs.length - 1) {
-                setActiveTab(tabs[currentIndex + 1]);
-              }
-            }}
+            onClick={handleNext}
             className="bg-[#068847] h-[48px] w-[158px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px]"
           >
             Next <ArrowRight className="h-5 w-5" />

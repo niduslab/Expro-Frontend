@@ -1,4 +1,3 @@
-import ComingSoon from "@/components/coming-soon/page";
 import Image from "next/image";
 import Hero from "./hero";
 import Donationform from "./donationForm";

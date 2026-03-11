@@ -6,7 +6,7 @@ import Stepper from "@/components/ui/stepper";
 import StepOne from "./stepOne";
 import StepTwo from "./stepTwo";
 import StepThree from "./stepThree";
-import { donationSchema } from "./validation";
+import { donationSchema } from "@/components/zodschema/donateSchema";
 import { ZodError } from "zod";
 interface FormType {
   amount: string;
