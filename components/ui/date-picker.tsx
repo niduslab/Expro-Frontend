@@ -5,7 +5,7 @@ import { Calendar } from "lucide-react";
 type DatePickerProps = {
   label?: string;
   required?: boolean;
-  value?: string;
+  value?: string; // should be in 'yyyy-mm-dd' format
   onChange?: (value: string) => void;
 };
 
@@ -15,15 +15,13 @@ export default function DatePicker({
   value,
   onChange,
 }: DatePickerProps) {
+  // Handles changes in the date input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-
+    const raw = e.target.value; // 'yyyy-mm-dd' format
     if (!raw) return;
 
-    const [year, month, day] = raw.split("-");
-    const formatted = `${day}/${month}/${year.slice(2)}`;
-
-    onChange?.(formatted);
+    // Pass the raw value up to parent; parent can format for display elsewhere
+    onChange?.(raw);
   };
 
   return (
@@ -42,6 +40,7 @@ export default function DatePicker({
       <div className="relative">
         <input
           type="date"
+          value={value || ""} // important: always pass a valid value
           onChange={handleChange}
           className="
             w-full h-[42px]

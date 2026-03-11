@@ -100,7 +100,7 @@ export default function NewProjectModal({
         </div>
         {/* Divider */}
         <div className="container border border-[#E5E7EB] my-4"></div>
-        <div className=" overflow-y-auto">
+        <div className="p-2 overflow-y-auto">
           {/* Tabs */}
           <div className="h-[45px] gap-[12px] md:gap-[24px] flex overflow-x-auto md:overflow-visible">
             <button

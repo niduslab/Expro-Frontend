@@ -56,7 +56,7 @@ export default function ProjectInfo({
 
   return (
     <>
-      <div className="flex flex-col relative pt-4 gap-[16px]">
+      <div className="flex flex-col relative pt-4 gap-[12px]">
         <div className=" justify-between">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -153,7 +153,7 @@ export default function ProjectInfo({
             </span>
           )}
         </div>{" "}
-        <div className="flex relative justify-between w-full  gap-[16px] ">
+        <div className="flex relative justify-between w-full  ">
           <button
             onClick={() => setOpenModal(false)}
             className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]"

@@ -57,14 +57,16 @@ export default function ProjectTeamsRoles({
                   *
                 </span>
               </div>
-              <input
-                value={formData.projectLead}
-                onChange={(e) =>
-                  setFormData({ ...formData, projectLead: e.target.value })
-                }
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="Kamal Hossen"
-              />
+              <div className=" h-24">
+                <input
+                  value={formData.projectLead}
+                  onChange={(e) =>
+                    setFormData({ ...formData, projectLead: e.target.value })
+                  }
+                  className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+                  placeholder="Kamal Hossen"
+                />
+              </div>
             </div>
           </div>
           <div className="relative w-full sm:w-1/2">
@@ -97,14 +99,17 @@ export default function ProjectTeamsRoles({
                   *
                 </span>
               </div>
-              <input
-                value={formData.teamSize}
-                onChange={(e) =>
-                  setFormData({ ...formData, teamSize: e.target.value })
-                }
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="e.g. 15"
-              />
+              <div className=" h-24">
+                {" "}
+                <input
+                  value={formData.teamSize}
+                  onChange={(e) =>
+                    setFormData({ ...formData, teamSize: e.target.value })
+                  }
+                  className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+                  placeholder="e.g. 15"
+                />
+              </div>
             </div>
           </div>
           <div className="relative w-full sm:w-1/2">
@@ -117,18 +122,21 @@ export default function ProjectTeamsRoles({
                   *
                 </span>
               </div>
-              <input
-                value={formData.contribution}
-                onChange={(e) =>
-                  setFormData({ ...formData, contribution: e.target.value })
-                }
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="e.g. 500"
-              />
+              <div className=" h-24">
+                {" "}
+                <input
+                  value={formData.contribution}
+                  onChange={(e) =>
+                    setFormData({ ...formData, contribution: e.target.value })
+                  }
+                  className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+                  placeholder="e.g. 500"
+                />
+              </div>
             </div>
           </div>
         </div>
-        <div className="flex relative justify-between w-full pt-40 gap-[16px] ">
+        <div className="flex relative justify-between w-full pt-[57px] gap-[16px] ">
           <button
             onClick={handleBack}
             className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"
