@@ -9,6 +9,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import RecentActivity from "./recentActivity";
+import CommissionOverview from "./commission/page";
 
 export default function AdminDashboard() {
   return (
@@ -281,6 +282,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+      <CommissionOverview />
 
       <RecentActivity />
     </div>
