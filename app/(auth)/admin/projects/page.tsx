@@ -97,28 +97,29 @@ export default function AdminProjects() {
           </div>
         </div>
 
-        <div className=" grid grid-cols-1 xl:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
           {projects.map((proj, idx) => (
             <div
               key={idx}
-              className="w-[367px] h-[265px] flex flex-col border border-[#E5E7EB] rounded-[12px] relative gap-4 top-10 p-5"
+              className="flex flex-col border border-[#E5E7EB] rounded-[12px] relative gap-4 p-5 h-auto"
             >
-              <div className="h-[43px] flex items-center justify-between">
-                <div className="flex gap-[13px] items-start">
-                  <div className="flex flex-col h-[43px] w-[265px]">
-                    <p className=" text-[#030712] font-semibold text-[16px] leading-[150%] tracking-[-0.01em]">
+              <div className="flex items-center justify-between h-[43px]">
+                <div className="flex gap-3 items-start flex-1">
+                  <div className="flex flex-col">
+                    <p className="text-[#030712] font-semibold text-[16px] leading-[150%] tracking-[-0.01em]">
                       {proj.title}
                     </p>
-                    <p className=" text-[#4A5565] font-normal text-[12px] leading-[150%] tracking-[-0.01em]">
+                    <p className="text-[#4A5565] font-normal text-[12px] leading-[150%] tracking-[-0.01em]">
                       {proj.category}
                     </p>
                   </div>
                 </div>
+
                 <div
-                  className={`flex items-center justify-center rounded-full font-semibold  ${
+                  className={`flex items-center justify-center rounded-full font-semibold px-2 text-[11px] ${
                     proj.status === "Upcoming"
-                      ? "w-[80px] px-1 text-[11px] border bg-[#FEF1DA] text-[#F59F0A] border-[#FBD89C]"
-                      : "w-[72px] bg-[#DFF1E9] text-[11px] border border-[#A8DAC3] text-[#29A36A]"
+                      ? "bg-[#FEF1DA] text-[#F59F0A] border border-[#FBD89C]"
+                      : "bg-[#DFF1E9] text-[#29A36A] border border-[#A8DAC3]"
                   }`}
                   style={{ height: "22px" }}
                 >
@@ -126,23 +127,24 @@ export default function AdminProjects() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 h-[129px] w-full">
-                <span className="text-[#4A5565] w-[334px] font-normal text-[12px] leading-[160%]">
+              <div className="flex flex-col gap-4 h-auto w-full">
+                <span className="text-[#4A5565] font-normal text-[12px] leading-[160%]">
                   {proj.description}
                 </span>
+
                 <FundRaiseProgress raised={proj.raised} goal={proj.goal} />
 
-                <div className="w-[334px] border border-[#E5E7EB]"></div>
+                <div className="w-full border border-[#E5E7EB]"></div>
 
-                <div className="flex w-[210px] h-[19px] gap-[24px]">
-                  <div className="flex items-center gap-[7px] w-[100px]">
-                    <Users className="text-[#4A5565] h-[14px] w-[14px]" />
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-2">
+                    <Users className="text-[#4A5565] h-3.5 w-3.5" />
                     <span className="text-[#4A5565] font-normal text-[12px]">
                       {proj.members} members
                     </span>
                   </div>
-                  <div className="flex items-center gap-[7px] w-[86px]">
-                    <Calendar className="text-[#4A5565] h-[14px] w-[14px]" />
+                  <div className="flex items-center gap-2">
+                    <Calendar className="text-[#4A5565] h-3.5 w-3.5" />
                     <span className="text-[#4A5565] font-normal text-[11px]">
                       {proj.date}
                     </span>

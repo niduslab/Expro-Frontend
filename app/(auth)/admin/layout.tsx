@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AdminSidebarWrapper } from "@/components/admin/AdminSidebarWrapper";
 import { AdminHeader } from "@/components/admin/Header";
+import { Toaster } from "sonner";
 
 export default function AdminLayout({
   children,
@@ -20,6 +21,17 @@ export default function AdminLayout({
 
         <main className="flex-1 p-4 md:p-6 overflow-hidden md:overflow-auto container ">
           {children}
+          <Toaster
+            position="bottom-right"
+            richColors
+            toastOptions={{
+              duration: 2500,
+              classNames: {
+                toast:
+                  "relative overflow-hidden rounded-lg px-4 py-3 font-medium",
+              },
+            }}
+          />
         </main>
       </div>
     </div>

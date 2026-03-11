@@ -9,10 +9,10 @@ export default function NewPackageModal({
   setOpenModal,
 }: NewPackageModalProps) {
   return (
-    <div className="fixed inset-0   z-50 flex items-center justify-center bg-black/40">
-      <div className="flex flex-col w-[600px]  max-h-[80vh] p-6 bg-white rounded-2xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
-        <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden">
-          <div className="w-[531px] flex flex-col gap-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
+      <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
+        <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden p-2">
+          <div className=" flex flex-col gap-2">
             {" "}
             <div className="flex justify-between items-center ">
               <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
@@ -33,11 +33,11 @@ export default function NewPackageModal({
             </div>
           </div>
 
-          <div className=" w-[578px] top-[16px]  border border-[#E5E7EB] relative right-[24px]"></div>
+          <div className=" w-full top-[16px]  border border-[#E5E7EB] relative"></div>
           {/*Package details*/}
-          <div className="flex flex-col relative top-[24px] w-[531px]  gap-[16px]">
+          <div className="flex flex-col relative top-[24px]   gap-[16px]">
             <div>
-              <p className="font-dm-sans font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712] w-[531px] h-[27px] opacity-100">
+              <p className="font-dm-sans font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]  h-[27px] opacity-100">
                 Package Details
               </p>
             </div>
@@ -52,7 +52,7 @@ export default function NewPackageModal({
               </div>
 
               <input
-                className="w-[531px] h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                className="w-full h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
                 placeholder="e.g. standard pension"
               />
             </div>{" "}
@@ -87,19 +87,19 @@ export default function NewPackageModal({
                 </div>
               </div>
             </div>
-            <div className=" w-[578px] top-2  border border-[#E5E7EB] relative right-[24px]"></div>
+            <div className=" container top-2  border border-[#E5E7EB] relative "></div>
           </div>
 
           {/*duration & maturity*/}
-          <div className="flex flex-col relative top-[48px] w-[531px]  gap-[16px]">
+          <div className="flex flex-col relative top-[48px]   gap-[16px]">
             <div>
-              <p className="font-dm-sans font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712] w-[531px] h-[27px] opacity-100">
+              <p className="font-dm-sans font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]  h-[27px] opacity-100">
                 Duration & Maturity
               </p>
             </div>
 
-            <div className="flex gap-2 w-full">
-              <div className="relative w-1/3">
+            <div className="flex flex-col md:flex-row gap-2 w-full">
+              <div className="relative md:w-1/3">
                 <div className="  justify-between w-full">
                   <div className="pb-2">
                     <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -115,7 +115,7 @@ export default function NewPackageModal({
                   />
                 </div>
               </div>
-              <div className="relative w-1/3">
+              <div className="relative md:w-1/3">
                 <div className="  justify-between w-full">
                   <div className="pb-2">
                     <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -131,7 +131,7 @@ export default function NewPackageModal({
                   />
                 </div>
               </div>
-              <div className="relative w-1/3">
+              <div className="relative md:w-1/3">
                 <div className="  justify-between w-full">
                   <div className="pb-2">
                     <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -148,18 +148,18 @@ export default function NewPackageModal({
                 </div>
               </div>
             </div>
-            <div className=" w-[578px] top-[16px]  border border-[#E5E7EB] relative right-[24px]"></div>
+            <div className=" container top-[16px]  border border-[#E5E7EB] relative "></div>
           </div>
           {/*Commission Structure*/}
-          <div className="flex flex-col relative top-[86px] w-[531px]   gap-[16px]">
+          <div className="flex flex-col relative top-[86px]    gap-[16px]">
             <div>
-              <p className="font-dm-sans font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712] w-[531px] h-[27px] opacity-100">
+              <p className="font-dm-sans font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]  h-[27px] opacity-100">
                 Commission Structure
               </p>
             </div>
 
-            <div className="flex gap-2 w-full">
-              <div className="relative w-1/2">
+            <div className="flex flex-col md:flex-row gap-2 w-full">
+              <div className="relative md:w-1/2">
                 <div className="  justify-between w-full">
                   <div className="pb-2">
                     <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -178,7 +178,7 @@ export default function NewPackageModal({
                   </span>
                 </div>
               </div>
-              <div className="relative w-1/2">
+              <div className="relative md:w-1/2">
                 <div className="  justify-between w-full">
                   <div className="pb-2">
                     <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -200,7 +200,10 @@ export default function NewPackageModal({
             </div>
 
             <div className="flex relative w-[257px]  gap-[16px] ">
-              <button className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]">
+              <button
+                onClick={() => setOpenModal(false)}
+                className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]"
+              >
                 Cancel
               </button>
               <button className="bg-[#068847] h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em]">

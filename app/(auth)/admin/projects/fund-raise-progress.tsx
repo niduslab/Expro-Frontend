@@ -14,10 +14,10 @@ const FundRaiseProgress: React.FC<FundRaiseProgressProps> = ({
   const percentage = Math.min(100, (raised / goal) * 100);
 
   return (
-    <div className="w-[334px] ">
+    <div className=" ">
       {/* Title and percentage */}
 
-      <div className="flex justify-between pb-2 w-[334px]">
+      <div className="flex justify-between pb-2 ">
         <span className="text-[#4A5565] font-medium text-[12px] leading-[150%] tracking-[-0.01em] align-middle">
           Fund Raise
         </span>
