@@ -43,7 +43,7 @@ export default function NewProjectModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2">
-      <div className="flex flex-col w-full max-w-[600px] p-2 md:p-4 lg-p-6 h-[70vh] bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black">
+      <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-4 lg-p-6  bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black">
         {" "}
         {/* Header */}
         <div className="p-2 flex flex-col gap-[6px] ">
@@ -99,9 +99,8 @@ export default function NewProjectModal({
             >
               Team & Roles
             </button>
-          </div>
-
-          {/* Content */}
+            {/* Content */}
+          </div>{" "}
           <div className="flex-1 overflow-y-auto p-2">{renderTabContent()}</div>
         </div>
       </div>

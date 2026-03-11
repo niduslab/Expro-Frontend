@@ -10,7 +10,7 @@ export default function NewPackageModal({
 }: NewPackageModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
-      <div className="flex flex-col max-w-[380] sm:max-w-2xl max-h-[80vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
+      <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
         <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden p-2">
           <div className=" flex flex-col gap-2">
             {" "}

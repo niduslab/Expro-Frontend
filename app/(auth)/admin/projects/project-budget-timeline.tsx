@@ -1,3 +1,4 @@
+import DatePicker from "@/components/ui/date-picker";
 import { ArrowLeft, ArrowRight, Calendar, ChevronDown } from "lucide-react";
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 interface NewProjectModalProps {
@@ -26,7 +27,7 @@ export default function ProjectBudgetTimeline({
                 </span>
               </div>
               <input
-                className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
                 placeholder="e.g. 250000"
               />
             </div>
@@ -42,7 +43,7 @@ export default function ProjectBudgetTimeline({
                 </span>
               </div>
               <input
-                className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                className="h-[48px] w-full text-[#6A7282] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
                 placeholder="e.g. 50000"
               />
             </div>
@@ -50,38 +51,21 @@ export default function ProjectBudgetTimeline({
         </div>
         <div className="flex flex-col sm:flex-row gap-2 ">
           <div className="relative w-full sm:w-1/2">
-            <div className="  justify-between w-full">
-              <div className="pb-2">
-                <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                  Start Date
-                </span>
-                <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                  *
-                </span>
-              </div>
-              <button className="flex items-center justify-between h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
-                <span className="text-[#6A7282] font-normal text-[14px] leading-[150%] tracking-[-0.01em]">
-                  mm/dd/yyy
-                </span>
-                <Calendar className="text-[#6A7282]" size={14} />
-              </button>
-            </div>
+            <DatePicker
+              label="Start Date"
+              required
+              onChange={(date) => console.log("Selected:", date)}
+            />
           </div>
           <div className="relative w-full sm:w-1/2">
-            <div className="flex flex-col  w-full">
-              <span className="font-semibold pb-2 text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Expected End Date
-              </span>
-              <button className="flex items-center justify-between h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
-                <span className="text-[#6A7282] font-normal text-[14px] leading-[150%] tracking-[-0.01em]">
-                  mm/dd/yyy
-                </span>
-                <Calendar className="text-[#6A7282]" size={14} />
-              </button>
-            </div>
+            <DatePicker
+              label="End Date"
+              required
+              onChange={(date) => console.log("Selected:", date)}
+            />
           </div>
         </div>
-        <div className="flex relative justify-between w-full  gap-[16px] ">
+        <div className="flex relative justify-between w-full pt-40 gap-[16px] ">
           <button
             onClick={() => {
               const currentIndex = tabs.indexOf(activeTab);

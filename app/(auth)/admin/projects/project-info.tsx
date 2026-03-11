@@ -1,4 +1,7 @@
-import { ArrowRight, ChevronDown } from "lucide-react";
+"use client";
+import Dropdown from "@/components/ui/dropdown";
+import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 interface NewProjectModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,6 +17,8 @@ export default function ProjectInfo({
   activeTab,
   setActiveTab,
 }: NewProjectModalProps) {
+  const [category, setCategory] = useState("");
+  const [priority, setPriority] = useState("");
   return (
     <>
       <div className="flex flex-col relative pt-4 gap-[16px]">
@@ -28,41 +33,27 @@ export default function ProjectInfo({
           </div>
 
           <input
-            className="w-full h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+            className="w-full h-[48px] gap-[129px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
             placeholder="Healthcare Program"
           />
         </div>{" "}
         <div className="flex flex-col sm:flex-row gap-2 w-full">
-          <div className="relative w-full sm:w-1/2">
-            <div className="  justify-between w-full">
-              <div className="pb-2">
-                <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                  Category
-                </span>
-                <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                  *
-                </span>
-              </div>
-              <button className="flex items-center justify-between h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
-                <span className="text-[#6A7282] font-normal text-[14px] leading-[150%] tracking-[-0.01em]">
-                  Select Category
-                </span>
-                <ChevronDown className="text-[#6A7282]" size={14} />
-              </button>
-            </div>
+          <div className="relative w-full sm:w-1/2 ">
+            <Dropdown
+              label="Category"
+              required
+              placeholder="Select Category"
+              options={["Bug", "Feature", "Support"]}
+              onChange={(value) => setCategory(value)}
+            />
           </div>
           <div className="relative w-full sm:w-1/2">
-            <div className="flex flex-col  w-full">
-              <span className="font-semibold pb-2 text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Priority
-              </span>
-              <button className="flex items-center justify-between h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
-                <span className="text-[#6A7282] font-normal text-[14px] leading-[150%] tracking-[-0.01em]">
-                  Select Priority
-                </span>
-                <ChevronDown className="text-[#6A7282]" size={14} />
-              </button>
-            </div>
+            <Dropdown
+              label="Priority"
+              placeholder="Select Priority"
+              options={["Low", "Medium", "High", "Urgent"]}
+              onChange={(value) => setPriority(value)}
+            />
           </div>
         </div>
         <div className=" justify-between">
@@ -76,7 +67,7 @@ export default function ProjectInfo({
           </div>
 
           <textarea
-            className=" w-full h-[102px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none"
+            className=" w-full h-[102px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
             placeholder="About Healthcare Program"
           />
         </div>{" "}
