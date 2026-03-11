@@ -2,7 +2,7 @@
 import Dropdown from "@/components/ui/dropdown";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { ProjectFormDataInterface } from "./new-project-modal";
+import { CompletedTabs, ProjectFormDataInterface } from "./new-project-modal";
 import { projectInfoSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
 
@@ -14,6 +14,7 @@ interface ProjectInfoProps {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"info" | "budget" | "teams">
   >;
+  setCompletedTabs: React.Dispatch<React.SetStateAction<CompletedTabs>>;
 }
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
@@ -23,13 +24,16 @@ export default function ProjectInfo({
   setActiveTab,
   formData,
   setFormData,
+  setCompletedTabs,
 }: ProjectInfoProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleNext = () => {
     const result = projectInfoSchema.safeParse(formData);
+
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
+
       result.error.issues.forEach((issue) => {
         if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
       });
@@ -37,21 +41,20 @@ export default function ProjectInfo({
       setErrors(fieldErrors);
 
       const lastMessage = result.error.issues.slice(-1)[0]?.message;
-      if (lastMessage) {
-        toast.error(lastMessage);
-      } else {
-        toast.error("An unknown error occurred");
-      }
+      toast.error(lastMessage || "Validation failed");
 
-      return;
+      return; // stop here
     }
 
+    // ✅ validation success
     setErrors({});
 
-    const currentIndex = tabs.indexOf(activeTab);
-    if (currentIndex < tabs.length - 1) {
-      setActiveTab(tabs[currentIndex + 1]);
-    }
+    setCompletedTabs((prev) => ({
+      ...prev,
+      info: true,
+    }));
+
+    setActiveTab("budget");
   };
 
   return (

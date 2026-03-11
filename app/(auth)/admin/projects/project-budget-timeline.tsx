@@ -3,7 +3,7 @@
 import DatePicker from "@/components/ui/date-picker";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { ProjectFormDataInterface } from "./new-project-modal";
+import { CompletedTabs, ProjectFormDataInterface } from "./new-project-modal";
 import { projectBudgetSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
 
@@ -16,6 +16,7 @@ interface NewProjectModalProps {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"info" | "budget" | "teams">
   >;
+  setCompletedTabs: React.Dispatch<React.SetStateAction<CompletedTabs>>;
 }
 
 export default function ProjectBudgetTimeline({
@@ -23,6 +24,7 @@ export default function ProjectBudgetTimeline({
   setFormData,
   activeTab,
   setActiveTab,
+  setCompletedTabs,
 }: NewProjectModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -37,29 +39,29 @@ export default function ProjectBudgetTimeline({
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
+
       result.error.issues.forEach((issue) => {
         if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
       });
+
       setErrors(fieldErrors);
 
-      // Show last error as toast
       const lastMessage = result.error.issues.slice(-1)[0]?.message;
-      if (lastMessage) {
-        toast.error(lastMessage);
-      } else {
-        toast.error("An unknown error occurred");
-      }
+      toast.error(lastMessage || "Validation failed");
 
       return;
     }
 
+    // ✅ validation success
     setErrors({});
-    const currentIndex = tabs.indexOf(activeTab);
-    if (currentIndex < tabs.length - 1) {
-      setActiveTab(tabs[currentIndex + 1]);
-    }
-  };
 
+    setCompletedTabs((prev) => ({
+      ...prev,
+      budget: true,
+    }));
+
+    setActiveTab("teams");
+  };
   const handleBack = () => {
     const currentIndex = tabs.indexOf(activeTab);
     if (currentIndex > 0) {

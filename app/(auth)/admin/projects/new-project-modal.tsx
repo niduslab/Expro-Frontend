@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ProjectInfo from "./project-info";
 import ProjectBudgetTimeline from "./project-budget-timeline";
 import ProjectTeamsRoles from "./project-teams-roles";
+import { Lock } from "lucide-react";
 
 export interface ProjectFormDataInterface {
   title: string;
@@ -21,7 +22,11 @@ export interface ProjectFormDataInterface {
 interface NewProjectModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
+export type CompletedTabs = {
+  info: boolean;
+  budget: boolean;
+  teams: boolean;
+};
 export default function NewProjectModal({
   setOpenModal,
 }: NewProjectModalProps) {
@@ -44,6 +49,12 @@ export default function NewProjectModal({
     contribution: "",
   });
 
+  const [completedTabs, setCompletedTabs] = useState<CompletedTabs>({
+    info: false,
+    budget: false,
+    teams: false,
+  });
+
   const renderTabContent = () => {
     switch (activeTab) {
       case "info":
@@ -54,6 +65,7 @@ export default function NewProjectModal({
             setActiveTab={setActiveTab}
             formData={formData}
             setFormData={setFormData}
+            setCompletedTabs={setCompletedTabs}
           />
         );
       case "budget":
@@ -63,6 +75,7 @@ export default function NewProjectModal({
             setActiveTab={setActiveTab}
             formData={formData}
             setFormData={setFormData}
+            setCompletedTabs={setCompletedTabs}
           />
         );
       case "teams":
@@ -115,25 +128,41 @@ export default function NewProjectModal({
             </button>
 
             <button
-              onClick={() => setActiveTab("budget")}
-              className={`p-3 rounded-[8px] whitespace-nowrap ${
-                activeTab === "budget"
-                  ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                  : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+              disabled={!completedTabs.info}
+              onClick={() => completedTabs.info && setActiveTab("budget")}
+              className={`p-3 rounded-[8px] whitespace-nowrap flex flex-items gap-2 ${
+                !completedTabs.info
+                  ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
+                  : activeTab === "budget"
+                    ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
+                    : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
-              Budget & Timeline
+              Budget & Timeline{" "}
+              {!completedTabs.info && (
+                <>
+                  <Lock className="text-gray-500 h-4 w-4 mt-1" />
+                </>
+              )}
             </button>
 
             <button
-              onClick={() => setActiveTab("teams")}
-              className={`p-3 rounded-[8px] whitespace-nowrap ${
-                activeTab === "teams"
-                  ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                  : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+              disabled={!completedTabs.budget}
+              onClick={() => completedTabs.budget && setActiveTab("teams")}
+              className={`p-3 rounded-[8px] whitespace-nowrap flex flex-items gap-2 ${
+                !completedTabs.budget
+                  ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
+                  : activeTab === "teams"
+                    ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
+                    : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
-              Team & Roles
+              Team & Roles{" "}
+              {!completedTabs.budget && (
+                <>
+                  <Lock className="text-gray-500 h-4 w-4 mt-1" />
+                </>
+              )}
             </button>
             {/* Content */}
           </div>{" "}
