@@ -23,7 +23,7 @@ export default function MemberCommissionCard() {
   ];
 
   return (
-    <div className="w-full container  rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+    <div className="w-full   rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-[#F3F4F6] rounded-lg">
@@ -41,7 +41,7 @@ export default function MemberCommissionCard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
         <div className="bg-[#F3F4F6] border border-[#F3F4F6] rounded-xl p-3 flex flex-col gap-2">
           <p className="font-normal text-[12px] leading-[160%] tracking-[-0.01em] text-[#4A5565]">
             This Month
@@ -68,7 +68,8 @@ export default function MemberCommissionCard() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden  border border-[#F3F4F6] rounded-xl">
+      <div className="overflow-x-auto border border-[#F3F4F6] rounded-xl">
+        {" "}
         <table className="w-full ">
           <thead className=" bg-[#EBEDF066] text-[#4A5565] font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle">
             <tr>
