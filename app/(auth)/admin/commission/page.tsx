@@ -1,5 +1,5 @@
-import MemberCommission from "./memberCommission";
-import MonthlyFeeCommission from "./monthlyFeeCommission";
+import MemberCommissionCard from "./memberCommission";
+import MonthlyFeeCommissionCard from "./monthlyFeeCommission";
 
 export default function CommissionOverview() {
   return (
@@ -13,12 +13,12 @@ export default function CommissionOverview() {
           hierarchy
         </span>
       </div>
-      <div className="flex flex-col sm:flex-row items-center justify-evenly gap-6">
-        <div className="h-107 w-full ">
-          <MemberCommission />
+      <div className="flex flex-col h-full lg:flex-row items-center justify-evenly gap-6">
+        <div className=" w-full ">
+          <MemberCommissionCard />
         </div>
-        <div className="h-107   w-full">
-          <MonthlyFeeCommission />
+        <div className=" w-full">
+          <MonthlyFeeCommissionCard />
         </div>
       </div>
     </div>
