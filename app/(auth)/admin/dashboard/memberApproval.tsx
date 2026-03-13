@@ -5,7 +5,7 @@ import {
   CircleX,
   Eye,
 } from "lucide-react";
-import { statusConfig } from "./wallet/recent-transactions";
+import { statusConfig } from "../wallet/recent-transactions";
 import Image from "next/image";
 
 type Status = "Approved" | "Pending" | "Rejected";
