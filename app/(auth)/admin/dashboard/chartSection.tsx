@@ -1,184 +1,115 @@
+"use client";
+
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+
+type DataType = {
+  month: string;
+  value: number;
+};
+
+const data: DataType[] = [
+  { month: "Jul", value: 28000 },
+  { month: "Aug", value: 31000 },
+  { month: "Sep", value: 29000 },
+  { month: "Oct", value: 38000 },
+  { month: "Nov", value: 42000 },
+  { month: "Dec", value: 40000 },
+  { month: "Jan", value: 47000 },
+];
+
 export default function ChartSection() {
   return (
-    <>
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Collection Trend */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">
-                Collection Trend
-              </h3>
-              <p className="text-sm text-gray-500">
-                Monthly pension & membership collections
-              </p>
-            </div>
-            <select className="text-sm border-gray-200 rounded-md text-gray-500 focus:ring-green-500 focus:border-green-500">
-              <option>Last 7 months</option>
-              <option>Last year</option>
-            </select>
-          </div>
-
-          {/* Mock Line Chart */}
-          <div className="h-64 w-full relative">
-            <div className="absolute inset-0 flex items-end justify-between px-2">
-              {[30, 45, 40, 60, 75, 70, 85].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-full flex flex-col items-center gap-2 group"
-                >
-                  <div className="relative w-full h-full flex items-end justify-center">
-                    {/* Tooltip placeholder */}
-                    <div className="hidden group-hover:block absolute bottom-full mb-2 bg-gray-900 text-white text-xs py-1 px-2 rounded">
-                      ৳{h}k
-                    </div>
-                    {/* Point */}
-                    <div
-                      className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm z-10"
-                      style={{ marginBottom: `${h}%` }}
-                    />
-                    {/* Line segment (simplified visualization) */}
-                    <div
-                      className="absolute bottom-0 w-full bg-green-50 opacity-20 rounded-t-sm"
-                      style={{ height: `${h}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-gray-400">
-                    {["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"][i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-            {/* SVG Line for better look */}
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M20 200 C 50 180, 100 170, 150 175 C 200 180, 250 140, 300 120 C 350 100, 400 90, 450 95 C 500 100, 550 70, 600 50"
-                fill="none"
-                stroke="#22c55e"
-                strokeWidth="3"
-                vectorEffect="non-scaling-stroke"
-              />
-              <defs>
-                <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#22c55e" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M20 200 C 50 180, 100 170, 150 175 C 200 180, 250 140, 300 120 C 350 100, 400 90, 450 95 C 500 100, 550 70, 600 50 L 600 250 L 20 250 Z"
-                fill="url(#gradient)"
-                stroke="none"
-              />
-            </svg>
-
-            {/* Y-axis labels mock */}
-            <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-300 -ml-6 pointer-events-none">
-              <span>60k</span>
-              <span>45k</span>
-              <span>30k</span>
-              <span>15k</span>
-              <span>0k</span>
-            </div>
-          </div>
+    <div className="w-full bg-white rounded-xl border border-gray-200 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Collection Trend
+          </h2>
+          <p className="text-sm text-gray-500">
+            Monthly pension & membership collections
+          </p>
         </div>
 
-        {/* Package Distribution */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-gray-900">
-              Package Distribution
-            </h3>
-            <p className="text-sm text-gray-500">Members by pension package</p>
-          </div>
-
-          <div className="flex flex-col items-center justify-center h-64">
-            {/* Mock Donut Chart */}
-            <div className="relative w-48 h-48">
-              <svg
-                viewBox="0 0 36 36"
-                className="w-full h-full transform -rotate-90"
-              >
-                {/* Ring 1 */}
-                <path
-                  className="text-green-600"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  strokeDasharray="40, 100"
-                />
-                {/* Ring 2 */}
-                <path
-                  className="text-blue-500"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  strokeDasharray="20, 100"
-                  strokeDashoffset="-40"
-                />
-                {/* Ring 3 */}
-                <path
-                  className="text-yellow-400"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  strokeDasharray="25, 100"
-                  strokeDashoffset="-60"
-                />
-                {/* Ring 4 */}
-                <path
-                  className="text-emerald-500"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  strokeDasharray="15, 100"
-                  strokeDashoffset="-85"
-                />
-              </svg>
-              {/* Center hole is transparent (donut) */}
-            </div>
-
-            {/* Legend */}
-            <div className="w-full mt-6 space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span className="text-gray-600">৳300/mo</span>
-                </div>
-                <span className="font-medium">320</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-600"></span>
-                  <span className="text-gray-600">৳700/mo</span>
-                </div>
-                <span className="font-medium">480</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
-                  <span className="text-gray-600">৳1000/mo</span>
-                </div>
-                <span className="font-medium">290</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                  <span className="text-gray-600">৳1500/mo</span>
-                </div>
-                <span className="font-medium">150</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <select className="text-sm bg-gray-100 rounded-full px-4 py-2 text-gray-600 outline-none">
+          <option>Last 7 months</option>
+          <option>Last 12 months</option>
+        </select>
       </div>
-    </>
+
+      {/* Chart */}
+      <div className="w-full" style={{ height: 260, minWidth: 0 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={data}
+            margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
+          >
+            {/* Gradient */}
+            <defs>
+              <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#22c55e" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            {/* Grid */}
+            <CartesianGrid
+              strokeDasharray="4 4"
+              vertical={true}
+              stroke="#E5E7EB"
+            />
+
+            {/* X Axis */}
+            <XAxis
+              dataKey="month"
+              tick={{ fill: "#6B7280", fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+            />
+
+            {/* Y Axis */}
+            <YAxis
+              tickFormatter={(v) => `${v / 1000}k`}
+              tick={{ fill: "#6B7280", fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+            />
+
+            {/* Tooltip */}
+            <Tooltip
+              formatter={(value) => {
+                const num = Number(value ?? 0);
+                return [`${num.toLocaleString()}`, "Collection"];
+              }}
+              labelStyle={{ color: "#111827" }}
+              contentStyle={{
+                borderRadius: "8px",
+                border: "1px solid #E5E7EB",
+                fontSize: "12px",
+              }}
+            />
+
+            {/* Area */}
+            <Area
+              type="monotone"
+              dataKey="value"
+              stroke="#22c55e"
+              strokeWidth={3}
+              fill="url(#trendFill)"
+              dot={false}
+              activeDot={{ r: 5 }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }

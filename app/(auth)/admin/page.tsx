@@ -7,6 +7,7 @@ import CommissionOverview from "./dashboard/commission/page";
 import MemberApproval from "./dashboard/memberApproval";
 import StatsCard from "./dashboard/statsCard";
 import ChartSection from "./dashboard/chartSection";
+import PackageDistribution from "./dashboard/chartDistribution";
 
 export default function AdminDashboard() {
   return (
@@ -24,8 +25,9 @@ export default function AdminDashboard() {
         <div>
           <StatsCard />
         </div>
-        <div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
           <ChartSection />
+          <PackageDistribution />
         </div>
 
         <div className="overflow-x-auto w-full pb-2">
