@@ -78,6 +78,7 @@ html {
   }
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
   opacity: 0;
   position: absolute;
   right: 0;

@@ -8,6 +8,7 @@ import { useState } from "react";
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
 interface NewProjectModalProps {
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab: "info" | "budget" | "teams";
   formData: ProjectFormDataInterface;
   setFormData: React.Dispatch<React.SetStateAction<ProjectFormDataInterface>>;
@@ -21,6 +22,7 @@ export default function ProjectTeamsRoles({
   formData,
   setFormData,
   setActiveTab,
+  setOpenModal,
 }: NewProjectModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const handleSubmit = () => {
@@ -53,6 +55,7 @@ export default function ProjectTeamsRoles({
 
     setErrors({});
     toast.success("Project created successfully.");
+    setOpenModal(false);
   };
   const handleBack = () => {
     const currentIndex = tabs.indexOf(activeTab);
@@ -74,8 +77,9 @@ export default function ProjectTeamsRoles({
                 *
               </span>
             </div>
-            <div className="h-24">
+            <div>
               <input
+                type="text"
                 value={formData.projectLead}
                 onChange={(e) => {
                   setFormData({ ...formData, projectLead: e.target.value });
@@ -131,7 +135,7 @@ export default function ProjectTeamsRoles({
                 *
               </span>
             </div>
-            <div className="h-24">
+            <div>
               <input
                 type="number"
                 value={formData.teamSize}
@@ -164,7 +168,7 @@ export default function ProjectTeamsRoles({
                 *
               </span>
             </div>
-            <div className="h-24">
+            <div>
               <input
                 type="number"
                 value={formData.contribution}
@@ -188,7 +192,7 @@ export default function ProjectTeamsRoles({
         </div>
       </div>
 
-      <div className="flex relative justify-between w-full pt-[48px] gap-[16px]">
+      <div className="flex relative justify-between w-full pt-36 gap-[16px]">
         <button
           onClick={handleBack}
           className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"
