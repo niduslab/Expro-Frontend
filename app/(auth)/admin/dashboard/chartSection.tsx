@@ -27,20 +27,20 @@ const data: DataType[] = [
 
 export default function ChartSection() {
   return (
-    <div className="w-full bg-white rounded-xl border border-gray-200 p-6">
+    <div className="w-full  bg-white rounded-xl border border-gray-200 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-[#131C20] font-semibold text-[20px] leading-[120%] tracking-[-1%] align-middle">
             Collection Trend
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-[#73808C] font-normal text-[12px] leading-[160%] tracking-[-1%] align-middle">
             Monthly pension & membership collections
           </p>
         </div>
 
-        <select className="text-sm bg-gray-100 rounded-full px-4 py-2 text-gray-600 outline-none">
-          <option>Last 7 months</option>
+        <select className="text-[#030712] text-[12px] bg-[#F3F4F6] rounded-full leading-[150%] tracking-[-1%] px-1.5 py-3 font-medium outline-none">
+          <option className="">Last 7 months</option>
           <option>Last 12 months</option>
         </select>
       </div>
@@ -77,10 +77,13 @@ export default function ChartSection() {
 
             {/* Y Axis */}
             <YAxis
-              tickFormatter={(v) => `${v / 1000}k`}
-              tick={{ fill: "#6B7280", fontSize: 12 }}
+              tickFormatter={(v) => `${v / 1000}k`} // Format as thousands with 'k'
+              tick={{ fill: "#6E7D91", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
+              domain={[0, 60000]} // Set the max value to 60k for the upper bound
+              tickCount={5} // This will display 5 ticks along the Y-axis (0k, 15k, 30k, 45k, 60k)
+              interval="preserveStartEnd" // Ensure ticks are evenly spaced from 0k to 60k
             />
 
             {/* Tooltip */}

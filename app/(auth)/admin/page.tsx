@@ -26,8 +26,13 @@ export default function AdminDashboard() {
           <StatsCard />
         </div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
-          <ChartSection />
-          <PackageDistribution />
+          <div className="h-[376px]">
+            <ChartSection />
+          </div>
+          <div className="h-[376px]">
+            {" "}
+            <PackageDistribution />
+          </div>
         </div>
 
         <div className="overflow-x-auto w-full pb-2">

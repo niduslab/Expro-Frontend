@@ -69,7 +69,7 @@ export default function StatsCard() {
 
                 <div className="mt-4 w-full border border-dashed border-[#E5E7EB]" />
 
-                <div className="mt-3 sm:mt-4 text-sm  ">
+                <div className="mt-3  sm:mt-4 text-sm  ">
                   <span className={`${stat.color} flex items-center `}>
                     {stat.subicon && (
                       <>
