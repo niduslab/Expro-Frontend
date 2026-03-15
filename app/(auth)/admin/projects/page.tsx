@@ -73,7 +73,7 @@ export default function AdminProjects() {
   const [openModal, setOpenModal] = useState(false);
   return (
     <>
-      <div className="container">
+      <div className="w-full  items-center ">
         <div className=" flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-2xl sm:text-[32px] text-[#030712]">
@@ -97,7 +97,7 @@ export default function AdminProjects() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-2 gap-4 mt-4">
           {projects.map((proj, idx) => (
             <div
               key={idx}
