@@ -66,7 +66,7 @@ const transactions: Transaction[] = [
   {
     id: 7,
     category: "Pension Installment",
-    user: "Multiple Members",
+    user: "John Doe",
     amount: 700,
     date: "11 Feb 2026",
     status: "Approved",

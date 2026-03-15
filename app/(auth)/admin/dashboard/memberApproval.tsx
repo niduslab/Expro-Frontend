@@ -202,8 +202,12 @@ export default function MemberApproval() {
 
                     <td className="py-4 px-2 font-normal text-[14px] leading-[20px] tracking-0 align-middle ">
                       <div className="flex items-center gap-[16px] h-[16px]">
-                        <CircleCheck className="text-[#29A36A] h-[16px] w-[16px]" />
-                        <CircleX className="text-[#DC2828] h-[16px] w-[16px]" />
+                        {tx.status !== "Approved" && (
+                          <>
+                            <CircleCheck className="text-[#29A36A] h-[16px] w-[16px]" />
+                            <CircleX className="text-[#DC2828] h-[16px] w-[16px]" />
+                          </>
+                        )}
                         <Eye className="text-[#73808C] h-[16px] w-[16px]" />
                       </div>
                     </td>
