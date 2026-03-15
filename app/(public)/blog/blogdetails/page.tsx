@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Hero from "./hero";
 import Image from "next/image";
 
 export default function BlogDetails() {
+  const router = useRouter();
   return (
     <>
       <Hero />
@@ -139,7 +141,10 @@ export default function BlogDetails() {
               ].map((post, idx) => (
                 <div
                   key={idx}
-                  className="flex gap-4 items-start border-b border-gray-200 pb-4 last:border-b-0"
+                  onClick={() => {
+                    router.push("#");
+                  }}
+                  className="flex gap-4 cursor-pointer items-start border-b border-gray-200 pb-4 last:border-b-0"
                 >
                   <div className="relative w-28 h-28 flex-shrink-0 rounded-md overflow-hidden">
                     <Image
