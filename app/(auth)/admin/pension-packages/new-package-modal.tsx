@@ -1,5 +1,9 @@
-import { ArrowDown, ChevronDown, Plus } from "lucide-react";
-import React from "react";
+"use client";
+import Dropdown from "@/components/ui/dropdown";
+import { pensionpackageSchema } from "@/components/zodschema/pensionpackageSchema";
+import { Plus } from "lucide-react";
+import React, { useState } from "react";
+import { toast } from "sonner";
 
 interface NewPackageModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,6 +12,43 @@ interface NewPackageModalProps {
 export default function NewPackageModal({
   setOpenModal,
 }: NewPackageModalProps) {
+  const [formData, setFormData] = useState({
+    packageName: "",
+    monthlyFee: "",
+    status: "",
+
+    duration: "",
+    installments: "",
+    maturity: "",
+
+    joiningCommission: "",
+    installmentCommission: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const handleSubmit = () => {
+    const result = pensionpackageSchema.safeParse(formData);
+
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+
+      result.error.issues.forEach((issue: any) => {
+        if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
+      });
+
+      setErrors(fieldErrors);
+
+      const lastMessage = result.error.issues.slice(-1)[0]?.message;
+      toast.error(lastMessage || "Validation failed");
+
+      return;
+    }
+
+    setErrors({});
+
+    toast.success("Pension Package added successfully.");
+    setOpenModal(false);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
       <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative">
@@ -52,9 +93,22 @@ export default function NewPackageModal({
               </div>
 
               <input
-                className="w-full h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                className="w-full h-[48px] gap-[129px] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
                 placeholder="e.g. standard pension"
+                value={formData.packageName}
+                onChange={(e) => {
+                  setFormData({ ...formData, packageName: e.target.value });
+
+                  if (errors.packageName) {
+                    setErrors((prev) => ({ ...prev, packageName: "" }));
+                  }
+                }}
               />
+              {errors.packageName && (
+                <span className="text-sm text-red-500">
+                  {errors.packageName}
+                </span>
+              )}
             </div>{" "}
             <div className="flex gap-2 w-full">
               <div className="relative w-1/2">
@@ -68,23 +122,43 @@ export default function NewPackageModal({
                     </span>
                   </div>
                   <input
-                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                    type="number"
+                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
                     placeholder="e.g. 1000"
+                    value={formData.monthlyFee}
+                    onChange={(e) => {
+                      setFormData({ ...formData, monthlyFee: e.target.value });
+
+                      if (errors.monthlyFee) {
+                        setErrors((prev) => ({ ...prev, monthlyFee: "" }));
+                      }
+                    }}
                   />
+                  {errors.monthlyFee && (
+                    <span className="text-sm text-red-500">
+                      {errors.monthlyFee}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="relative w-1/2">
-                <div className="flex flex-col  w-full">
-                  <span className="font-semibold pb-2 text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                    Status
-                  </span>
-                  <button className="flex items-center justify-between h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
-                    <span className="text-[#6A7282] font-normal text-[14px] leading-[150%] tracking-[-0.01em]">
-                      Running
-                    </span>
-                    <ChevronDown className="text-[#6A7282]" size={14} />
-                  </button>
-                </div>
+                <Dropdown
+                  label="Status"
+                  required
+                  placeholder="Select status"
+                  options={["Running", "Expired", "Upcoming"]}
+                  value={formData.status}
+                  onChange={(value) => {
+                    setFormData({ ...formData, status: value });
+
+                    if (errors.status) {
+                      setErrors((prev) => ({ ...prev, status: "" }));
+                    }
+                  }}
+                />{" "}
+                {errors.status && (
+                  <span className="text-sm text-red-500">{errors.status}</span>
+                )}
               </div>
             </div>
             <div className=" container top-2  border border-[#E5E7EB] relative "></div>
@@ -110,9 +184,23 @@ export default function NewPackageModal({
                     </span>
                   </div>
                   <input
-                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                    type="number"
+                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
                     placeholder="e.g. 9"
+                    value={formData.duration}
+                    onChange={(e) => {
+                      setFormData({ ...formData, duration: e.target.value });
+
+                      if (errors.duration) {
+                        setErrors((prev) => ({ ...prev, duration: "" }));
+                      }
+                    }}
                   />
+                  {errors.duration && (
+                    <span className="text-sm text-red-500">
+                      {errors.duration}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="relative md:w-1/3">
@@ -126,9 +214,26 @@ export default function NewPackageModal({
                     </span>
                   </div>
                   <input
-                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                    type="number"
+                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
                     placeholder="e.g. 108"
+                    value={formData.installments}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        installments: e.target.value,
+                      });
+
+                      if (errors.installments) {
+                        setErrors((prev) => ({ ...prev, installments: "" }));
+                      }
+                    }}
                   />
+                  {errors.installments && (
+                    <span className="text-sm text-red-500">
+                      {errors.installments}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="relative md:w-1/3">
@@ -142,9 +247,23 @@ export default function NewPackageModal({
                     </span>
                   </div>
                   <input
-                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
+                    type="number"
+                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
                     placeholder="e.g. 180000"
+                    value={formData.maturity}
+                    onChange={(e) => {
+                      setFormData({ ...formData, maturity: e.target.value });
+
+                      if (errors.maturity) {
+                        setErrors((prev) => ({ ...prev, maturity: "" }));
+                      }
+                    }}
                   />
+                  {errors.maturity && (
+                    <span className="text-sm text-red-500">
+                      {errors.maturity}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -169,13 +288,36 @@ export default function NewPackageModal({
                       *
                     </span>
                   </div>
-                  <input
-                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
-                    placeholder="e.g. 500"
-                  />
-                  <span className="text-[#6A7282] font-normal text-[12px] leading-[160%] tracking-[-0.01em]">
-                    One-time on new enrollment
-                  </span>
+                  <div>
+                    <input
+                      type="number"
+                      className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
+                      placeholder="e.g. 500"
+                      value={formData.joiningCommission}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          joiningCommission: e.target.value,
+                        });
+
+                        if (errors.joiningCommission) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            joiningCommission: "",
+                          }));
+                        }
+                      }}
+                    />
+
+                    <span className="text-[#6A7282] font-normal text-[12px] leading-[160%] tracking-[-0.01em]">
+                      One-time on new enrollment
+                    </span>
+                  </div>
+                  {errors.joiningCommission && (
+                    <span className="text-sm text-red-500">
+                      {errors.joiningCommission}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="relative md:w-1/2">
@@ -188,13 +330,37 @@ export default function NewPackageModal({
                       *
                     </span>
                   </div>
-                  <input
-                    className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]"
-                    placeholder="e.g. 30"
-                  />
-                  <span className="text-[#6A7282] font-normal text-[12px] leading-[160%] tracking-[-0.01em]">
-                    Per monthly installment
-                  </span>
+                  <div>
+                    <input
+                      type="number"
+                      className="h-[48px] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
+                      placeholder="e.g. 30"
+                      value={formData.installmentCommission}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          installmentCommission: e.target.value,
+                        });
+
+                        if (errors.installmentCommission) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            installmentCommission: "",
+                          }));
+                        }
+                      }}
+                    />
+                    <span className="text-[#6A7282] font-normal text-[12px] leading-[160%] tracking-[-0.01em]">
+                      Per monthly installment
+                    </span>
+                  </div>
+                  <div>
+                    {errors.installmentCommission && (
+                      <span className="text-sm text-red-500">
+                        {errors.installmentCommission}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -206,7 +372,10 @@ export default function NewPackageModal({
               >
                 Cancel
               </button>
-              <button className="bg-[#068847] h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em]">
+              <button
+                onClick={handleSubmit}
+                className="bg-[#068847] h-[48px] w-[158px] rounded-xl  px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em]"
+              >
                 <Plus className="h-5 w-5 " /> <span>Add Package</span>
               </button>
             </div>

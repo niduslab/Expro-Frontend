@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 const Profile = () => {
-  const pdfUrl = "/file/about/sample_blog_profile.pdf";
+  const pdfUrl = "/file/about/EWF Profile Final_21 Nov2025.pdf";
 
   return (
     <>
@@ -43,7 +43,7 @@ const Profile = () => {
                     <div className="space-y-2 ">
                       <div className="flex flex-col justify-between md:flex-row ">
                         <h2 className="font-dm-sans text-xl font-semibold text-gray-900">
-                          EWF Blog Profile 2026
+                          EWF Profile Final 2026
                         </h2>
                       </div>
 
@@ -53,7 +53,8 @@ const Profile = () => {
                         </span>
 
                         <span className="font-dm-sans flex items-center text-xs gap-1">
-                          <TimerIcon className="h-3 w-3 " /> Updated: March 2026
+                          <TimerIcon className="h-3 w-3 " /> Updated: 21st
+                          November 2025
                         </span>
                       </div>
                     </div>

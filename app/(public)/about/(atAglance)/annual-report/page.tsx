@@ -13,7 +13,7 @@ const AnnualReport = () => {
   const pdfs = [
     {
       name: "EWF Annual Reports-2019 (2018-19)",
-      url: "/file/about/Annual-Reports-2019-(2018-19).pdf",
+      url: "/file/about/Annual Report 2019 (18-19).pdf",
       updated: "March 2019",
     },
     {

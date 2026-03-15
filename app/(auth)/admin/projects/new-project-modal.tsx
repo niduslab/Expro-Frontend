@@ -81,6 +81,7 @@ export default function NewProjectModal({
       case "teams":
         return (
           <ProjectTeamsRoles
+            setOpenModal={setOpenModal}
             activeTab={activeTab}
             formData={formData}
             setFormData={setFormData}
@@ -118,13 +119,13 @@ export default function NewProjectModal({
           <div className="h-[45px] gap-[12px] md:gap-[24px] flex overflow-x-auto md:overflow-visible">
             <button
               onClick={() => setActiveTab("info")}
-              className={`p-3 rounded-[8px] whitespace-nowrap ${
+              className={`p-3 rounded-[8px] whitespace-nowrap  flex flex-items gap-2 ${
                 activeTab === "info"
                   ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                  : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+                  : "text-[#068847] border underline border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
-              Project Info
+              1. Project Info
             </button>
 
             <button
@@ -135,10 +136,10 @@ export default function NewProjectModal({
                   ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
                   : activeTab === "budget"
                     ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                    : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+                    : "text-[#068847] border underline border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
-              Budget & Timeline{" "}
+              2. Budget & Timeline{" "}
               {!completedTabs.info && (
                 <>
                   <Lock className="text-gray-500 h-4 w-4 mt-1" />
@@ -154,10 +155,10 @@ export default function NewProjectModal({
                   ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
                   : activeTab === "teams"
                     ? "bg-[#068847] font-semibold text-[13px] leading-[150%] tracking-[-0.01em] text-[#FFFFFF]"
-                    : "text-[#4A5565] border border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
+                    : "text-[#068847] border underline border-[#E5E7EB] font-normal text-[14px] leading-[150%] tracking-[-0.01em]"
               }`}
             >
-              Team & Roles{" "}
+              3. Team & Roles{" "}
               {!completedTabs.budget && (
                 <>
                   <Lock className="text-gray-500 h-4 w-4 mt-1" />

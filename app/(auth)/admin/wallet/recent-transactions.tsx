@@ -73,7 +73,10 @@ const transactions: Transaction[] = [
   },
 ];
 
-const statusConfig: Record<Status, { style: string; icon: React.ReactNode }> = {
+export const statusConfig: Record<
+  Status,
+  { style: string; icon: React.ReactNode }
+> = {
   Approved: {
     style: "bg-[#29A36A26] border border-[#29A36A4D] text-[#29A36A]",
     icon: <CheckCircle size={14} />,
@@ -122,7 +125,7 @@ export default function RecentTransactions() {
               {transactions.map((tx) => (
                 <tr
                   key={tx.id}
-                  className=" rounded-2xl relative   border-b last:border-none border-[] hover:bg-gray-50"
+                  className=" rounded-2xl relative   border-b last:border-none border-[#F3F4F6] hover:bg-gray-50"
                 >
                   <td className="py-4 px-2 ">
                     <p className="font-medium text-[14px] leading-[150%] tracking-[-1%] align-middle text-[#030712]">
