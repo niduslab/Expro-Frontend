@@ -27,10 +27,10 @@ export default function PackageDistribution() {
       </div>
 
       {/* Chart */}
-      <div className=" flex items-center h-48 w-full">
+      <div className=" flex items-center w-full">
         {/* Chart */}
-        <div className="w-full" style={{ height: 220 }}>
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="w-full h-[200px]">
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={data}

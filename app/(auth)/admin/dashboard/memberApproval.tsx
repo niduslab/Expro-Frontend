@@ -148,7 +148,7 @@ export default function MemberApproval() {
                         {tx.memberId}
                       </p>
                     </td>
-                    <td className="py-4 px-8 sm:px-6">
+                    <td className="py-4 px-8 xl:px-6">
                       <div className="flex items-center gap-3 ">
                         <div className="flex-shrink-0">
                           <Image
