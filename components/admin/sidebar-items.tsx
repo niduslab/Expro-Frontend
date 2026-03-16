@@ -5,6 +5,7 @@ import {
   FolderKanban,
   UserCheck,
   Wallet,
+  BanknoteArrowDown,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -14,4 +15,5 @@ export const sidebarItems = [
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Board Members", href: "/admin/board-members", icon: UserCheck },
   { name: "Wallet Balance", href: "/admin/wallet", icon: Wallet },
+  { name: "Donation", href: "/admin/donation", icon: BanknoteArrowDown },
 ];

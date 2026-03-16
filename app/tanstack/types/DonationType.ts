@@ -1,5 +1,6 @@
 export interface DonationDataType {
   id?: number;
+
   project_id: number;
   user_id?: number | null;
 
@@ -9,11 +10,13 @@ export interface DonationDataType {
 
   amount: number;
   currency: string;
+
   type: "one_time" | "recurring";
   status: "pending" | "completed" | "failed";
 
   purpose?: string;
   message?: string;
+
   is_anonymous?: boolean;
 
   payment_id?: number | null;
@@ -21,8 +24,25 @@ export interface DonationDataType {
 
   receipt_number?: string;
   metadata?: string;
+
+  created_at?: string;
+  updated_at?: string;
 }
 
-export type CreateDonationInput = Omit<DonationDataType, "id">;
+export type CreateDonationInput = Omit<
+  DonationDataType,
+  "id" | "created_at" | "updated_at"
+>;
 
-export type UpdateDonationInput = Partial<Omit<DonationDataType, "id">>;
+export type UpdateDonationInput = Partial<
+  Omit<DonationDataType, "id" | "created_at" | "updated_at">
+>;
+export interface DonationListResponse {
+  data: DonationDataType[];
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+  };
+}

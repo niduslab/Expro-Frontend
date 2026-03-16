@@ -12,10 +12,10 @@ import { UpdateDonationInput } from "@/app/tanstack/types/DonationType";
 // ---------------------------
 // Queries
 // ---------------------------
-export const useDonations = () => {
+export const useDonations = (page: number) => {
   return useQuery({
     queryKey: queryKeys.donation(),
-    queryFn: fetchDonations,
+    queryFn: () => fetchDonations(page),
   });
 };
 

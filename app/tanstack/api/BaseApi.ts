@@ -5,9 +5,7 @@ import { QueryClient } from "@tanstack/react-query";
 // Axios client
 // ---------------------------
 export const apiClient = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://jsonplaceholder.typicode.com",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 10000, // 10 seconds
 });
@@ -37,8 +35,8 @@ export const queryKeys: Record<Entity, (id?: number) => readonly unknown[]> =
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 2,
-      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: true,
     },
   },
 });

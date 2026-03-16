@@ -1,41 +1,49 @@
 import {
   CreateDonationInput,
   DonationDataType,
+  DonationListResponse,
   UpdateDonationInput,
 } from "@/app/tanstack/types/DonationType";
 import { apiClient } from "../../BaseApi";
 
 //get all
-export const fetchDonations = async () => {
-  const { data } = await apiClient.get("/donations");
-  return data;
+export const fetchDonations = async (
+  page: number = 1,
+): Promise<DonationListResponse> => {
+  const { data } = await apiClient.get(`/donations?page=${page}`);
+  return {
+    data: data.data,
+    pagination: data.pagination,
+  };
 };
 
-//get by ID
-export const fetchDonationByID = async (id: number) => {
-  const { data } = await apiClient.get(`/donation/${id}`);
-  return data;
-};
-
-//store
-export const addDonation = async (
-  data: CreateDonationInput,
+// get by ID
+export const fetchDonationByID = async (
+  id: number,
 ): Promise<DonationDataType> => {
-  const { data: responseData } = await apiClient.post("/donation", data);
-  return responseData;
+  const { data } = await apiClient.get(`/donation/${id}`);
+  return data.data;
+};
+
+// store
+export const addDonation = async (
+  payload: CreateDonationInput,
+): Promise<DonationDataType> => {
+  const { data } = await apiClient.post("/donation", payload);
+  return data.data;
 };
 
 // update
 export const updateDonation = async (
   id: number,
-  data: UpdateDonationInput,
+  payload: UpdateDonationInput,
 ): Promise<DonationDataType> => {
-  const response = await apiClient.put(`/donation/${id}`, data);
-  return response.data;
+  const { data } = await apiClient.put(`/donation/${id}`, payload);
+  return data.data;
 };
 
-//delete
+// delete
 export const deleteDonation = async (id: number) => {
-  const response = await apiClient.delete(`/donation/${id}`);
-  return response.data;
+  const { data } = await apiClient.delete(`/donation/${id}`);
+  return data;
 };
