@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, DM_Sans, Playfair_Display, Noto_Sans_Bengali } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  DM_Sans,
+  Playfair_Display,
+  Noto_Sans_Bengali,
+} from "next/font/google";
 import "./globals.css";
+import QueryProvider from "./tanstack/provider/TanstackQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,16 +43,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} ${playfairDisplay.variable} ${notoSansBengali.variable} antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        {/* Wrap children in client-side QueryProvider */}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
