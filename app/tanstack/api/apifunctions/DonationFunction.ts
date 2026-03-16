@@ -4,7 +4,7 @@ import {
   DonationListResponse,
   UpdateDonationInput,
 } from "@/app/tanstack/types/DonationType";
-import { apiClient } from "../../BaseApi";
+import { apiClient } from "../BaseApi";
 
 //get all
 export const fetchDonations = async (

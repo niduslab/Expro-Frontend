@@ -1,12 +1,12 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryKeys, invalidateQueries } from "../../BaseApi";
+import { queryKeys, invalidateQueries } from "../BaseApi";
 import {
   addDonation,
   deleteDonation,
   fetchDonationByID,
   fetchDonations,
   updateDonation,
-} from "../../apifunctions/Donation/DonationFunction";
+} from "../apifunctions/DonationFunction";
 import { UpdateDonationInput } from "@/app/tanstack/types/DonationType";
 
 // ---------------------------

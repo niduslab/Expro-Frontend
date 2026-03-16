@@ -7,7 +7,7 @@ import {
   Noto_Sans_Bengali,
 } from "next/font/google";
 import "./globals.css";
-import QueryProvider from "./tanstack/provider/TanstackQueryProvider";
+import QueryProvider from "./tanstack/provider/tanstackQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
