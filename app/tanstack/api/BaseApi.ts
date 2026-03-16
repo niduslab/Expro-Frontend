@@ -15,7 +15,7 @@ export const apiClient = axios.create({
 // ---------------------------
 // Entity configuration
 // ---------------------------
-const entityConfig = ["smartphone"] as const;
+const entityConfig = ["donation"] as const;
 export type Entity = (typeof entityConfig)[number];
 
 // ---------------------------
