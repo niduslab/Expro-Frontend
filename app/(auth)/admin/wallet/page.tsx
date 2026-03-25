@@ -38,7 +38,7 @@ const stats = [
 const WalletBallance = () => {
   return (
     <>
-      <div className="container mx-auto ">
+      <div className="w-full mx-auto ">
         <div className="flex flex-col gap-6 ">
           {/* Header */}
           <div className="flex flex-col gap-2">

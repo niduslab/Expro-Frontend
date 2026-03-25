@@ -148,7 +148,7 @@ export default function MemberApproval() {
                         {tx.memberId}
                       </p>
                     </td>
-                    <td className="py-4 px-8">
+                    <td className="py-4 px-8 xl:px-6">
                       <div className="flex items-center gap-3 ">
                         <div className="flex-shrink-0">
                           <Image
@@ -201,10 +201,14 @@ export default function MemberApproval() {
                     </td>
 
                     <td className="py-4 px-2 font-normal text-[14px] leading-[20px] tracking-0 align-middle ">
-                      <div className="flex gap-[16px] h-[16px]">
-                        <CircleCheck className="text-[#29A36A] h-[3px] w-[4px]" />
-                        <CircleX className="text-[#DC2828] h-[3px] w-[4px]" />
-                        <Eye className="text-[#73808C] h-[5px] w-[4px]" />
+                      <div className="flex items-center gap-[16px] h-[16px]">
+                        {tx.status !== "Approved" && (
+                          <>
+                            <CircleCheck className="text-[#29A36A] h-[16px] w-[16px]" />
+                            <CircleX className="text-[#DC2828] h-[16px] w-[16px]" />
+                          </>
+                        )}
+                        <Eye className="text-[#73808C] h-[16px] w-[16px]" />
                       </div>
                     </td>
                   </tr>

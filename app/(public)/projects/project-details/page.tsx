@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Hero from "./hero";
 import Image from "next/image";
 
 export default function ProjectDetails() {
+  const router = useRouter();
   return (
     <>
       <Hero />
@@ -116,7 +118,10 @@ export default function ProjectDetails() {
               ].map((project, idx) => (
                 <div
                   key={idx}
-                  className="font-dm-sans flex gap-4 items-start border-b border-gray-200 pb-4 last:border-b-0"
+                  onClick={() => {
+                    router.push("#");
+                  }}
+                  className="font-dm-sans cursor-pointer flex gap-4 items-start border-b border-gray-200 pb-4 last:border-b-0"
                 >
                   <div className="relative w-28 h-28 flex-shrink-0 rounded-md overflow-hidden ">
                     <Image

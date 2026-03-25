@@ -46,13 +46,12 @@ export default function ChartSection() {
       </div>
 
       {/* Chart */}
-      <div className="w-full" style={{ height: 260, minWidth: 0 }}>
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full h-[261px]">
+        <ResponsiveContainer width="100%" height={261}>
           <AreaChart
             data={data}
             margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
           >
-            {/* Gradient */}
             <defs>
               <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#22c55e" stopOpacity={0.35} />
@@ -60,38 +59,31 @@ export default function ChartSection() {
               </linearGradient>
             </defs>
 
-            {/* Grid */}
             <CartesianGrid
               strokeDasharray="4 4"
               vertical={true}
               stroke="#E5E7EB"
             />
-
-            {/* X Axis */}
             <XAxis
               dataKey="month"
               tick={{ fill: "#6B7280", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
-
-            {/* Y Axis */}
             <YAxis
-              tickFormatter={(v) => `${v / 1000}k`} // Format as thousands with 'k'
+              tickFormatter={(v) => `${v / 1000}k`}
               tick={{ fill: "#6E7D91", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
-              domain={[0, 60000]} // Set the max value to 60k for the upper bound
-              tickCount={5} // This will display 5 ticks along the Y-axis (0k, 15k, 30k, 45k, 60k)
-              interval="preserveStartEnd" // Ensure ticks are evenly spaced from 0k to 60k
+              domain={[0, 60000]}
+              tickCount={5}
+              interval="preserveStartEnd"
             />
-
-            {/* Tooltip */}
             <Tooltip
-              formatter={(value) => {
-                const num = Number(value ?? 0);
-                return [`${num.toLocaleString()}`, "Collection"];
-              }}
+              formatter={(value) => [
+                `${Number(value ?? 0).toLocaleString()}`,
+                "Collection",
+              ]}
               labelStyle={{ color: "#111827" }}
               contentStyle={{
                 borderRadius: "8px",
@@ -99,8 +91,6 @@ export default function ChartSection() {
                 fontSize: "12px",
               }}
             />
-
-            {/* Area */}
             <Area
               type="monotone"
               dataKey="value"
