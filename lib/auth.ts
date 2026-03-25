@@ -1,4 +1,5 @@
-// Mock authentication utilities
+import axios from 'axios';
+import { apiClient } from '@/app/tanstack/api/BaseApi';
 
 export interface User {
   id: string;
@@ -10,38 +11,55 @@ export interface User {
 // Helper to check if code is running on server or client
 export const isServer = typeof window === 'undefined';
 
-// Mock function to simulate login
+// Get CSRF cookie from Laravel Sanctum
+async function getCsrfCookie(): Promise<void> {
+  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '');
+  await axios.get(`${baseURL}/sanctum/csrf-cookie`, {
+    withCredentials: true,
+  });
+}
+
+// Real login function that connects to Laravel backend
 export async function login(email: string, password: string): Promise<{ user: User; token: string }> {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  
-  if (email === 'admin@example.com' && password === 'admin') {
+  try {
+    // Step 1: Get CSRF cookie first (required for Laravel Sanctum)
+    await getCsrfCookie();
+    
+    // Step 2: Login with credentials
+    const response = await apiClient.post('/public/login', {
+      email,
+      password,
+    });
+    
+    // Laravel will set HTTP-only cookies automatically
+    // Return user data and token (if provided)
     return {
-      user: { id: '1', name: 'Admin User', email, role: 'admin' },
-      token: 'mock-admin-token',
+      user: response.data.user,
+      token: response.data.token || '',
     };
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error('Login failed. Please check your credentials.');
   }
-  
-  if (email === 'user@example.com' && password === 'user') {
-    return {
-      user: { id: '2', name: 'Regular User', email, role: 'user' },
-      token: 'mock-user-token',
-    };
-  }
-  
-  throw new Error('Invalid credentials');
 }
 
-// Mock function to simulate logout
+// Logout function
 export async function logout() {
-  // Clear cookies/tokens
-  document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  try {
+    await apiClient.post('/logout');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 }
 
-// Helper to get auth token from cookies (client-side)
-export function getAuthToken(): string | null {
-  if (isServer) return null;
-  const match = document.cookie.match(new RegExp('(^| )auth-token=([^;]+)'));
-  if (match) return match[2];
-  return null;
+// Get current user profile
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    const response = await apiClient.get('/myprofile');
+    return response.data;
+  } catch (error) {
+    return null;
+  }
 }

@@ -21,8 +21,8 @@ export default function LoginPage() {
 
     try {
       const result = await login(email, password);
-      // Set cookie (for middleware)
-      document.cookie = `auth-token=${result.token}; path=/; max-age=3600`;
+      // Laravel Sanctum handles cookies automatically (HTTP-only)
+      // No need to manually set cookies
       
       // Redirect to dashboard or admin based on role
       if (result.user.role === 'admin') {

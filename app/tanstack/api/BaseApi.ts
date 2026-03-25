@@ -6,7 +6,11 @@ import { QueryClient } from "@tanstack/react-query";
 // ---------------------------
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  withCredentials: true, // IMPORTANT: Enable credentials for cookie-based auth
+  headers: { 
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  },
   timeout: 10000, // 10 seconds
 });
 
