@@ -1,0 +1,12 @@
+{
+  "name": "Contact Form Submission",
+  "version": "1.0.0",
+  "description": "Validates and processes contact form submissions",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Verify the contact form submission is properly validated and the API call is successful"
+  }
+}

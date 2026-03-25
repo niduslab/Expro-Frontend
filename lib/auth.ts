@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiClient } from '@/app/tanstack/api/BaseApi';
+import { apiClient } from '@/lib/api/BaseApi';
 
 export interface User {
   id: string;

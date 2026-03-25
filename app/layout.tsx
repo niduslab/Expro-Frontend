@@ -7,7 +7,7 @@ import {
   Noto_Sans_Bengali,
 } from "next/font/google";
 import "./globals.css";
-import QueryProvider from "./tanstack/provider/tanstackQueryProvider";
+import { AppProviders } from "@/lib/providers/AppProviders";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,8 +52,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} ${playfairDisplay.variable} ${notoSansBengali.variable} antialiased`}
         suppressHydrationWarning
       >
-        {/* Wrap children in client-side QueryProvider */}
-        <QueryProvider>{children}</QueryProvider>
+        {/* Wrap children with all providers (React Query, Auth, Notifications, Cart, Toast) */}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

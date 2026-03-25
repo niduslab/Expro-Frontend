@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useDonations } from "@/app/tanstack/api/apihooks/DonationHook";
+import { useDonations } from "@/lib/hooks/admin/useDonations";
 
 export default function DonationList() {
   const [page, setPage] = useState(1);

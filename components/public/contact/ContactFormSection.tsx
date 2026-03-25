@@ -1,8 +1,153 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { publicApiRequest } from '@/lib/api/axios';
+import { toast } from 'sonner';
+
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  contact: string;
+  address: string;
+  message: string;
+}
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  contact?: string;
+  address?: string;
+  message?: string;
+}
 
 const ContactFormSection = () => {
+  const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    contact: '',
+    address: '',
+    message: '',
+  });
+
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.contact.trim()) {
+      newErrors.contact = 'Contact number is required';
+    } else if (!/^[\d\s\-\+\(\)]+$/.test(formData.contact)) {
+      newErrors.contact = 'Please enter a valid phone number';
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters long';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+    // Clear error for this field when user starts typing
+    if (errors[id as keyof FormErrors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [id]: undefined,
+      }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields correctly');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await publicApiRequest.post('/public/contactmessage', {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.contact,
+        subject: 'Contact Form Inquiry',
+        message: formData.message,
+        address: formData.address,
+        priority: 'normal',
+        status: 'new',
+      });
+
+      if (response.data.success) {
+        setSubmitStatus('success');
+        const successMsg = 'Thank you for your message! We will get back to you soon.';
+        setSubmitMessage(successMsg);
+        toast.success(successMsg);
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          contact: '',
+          address: '',
+          message: '',
+        });
+      }
+    } catch (error: any) {
+      setSubmitStatus('error');
+      let errorMsg = 'Failed to send message. Please try again.';
+      
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.response?.data?.errors) {
+        const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
+        errorMsg = errorMessages;
+      }
+      
+      setSubmitMessage(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
@@ -21,8 +166,20 @@ const ContactFormSection = () => {
           {/* Left Column - Contact Form */}
           <div className="lg:col-span-7 bg-[#F6F6F6] p-6 md:p-8 lg:p-10 rounded-xl">
             <h3 className="text-2xl font-bold text-[#111111] mb-6">Get In Touch</h3>
+
+            {submitStatus === 'success' && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-800 font-medium">{submitMessage}</p>
+              </div>
+            )}
+
+            {submitStatus === 'error' && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800 font-medium">{submitMessage}</p>
+              </div>
+            )}
             
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="firstName" className="block text-sm font-medium text-[#111111]">
@@ -32,8 +189,17 @@ const ContactFormSection = () => {
                     type="text"
                     id="firstName"
                     placeholder="Abdul"
-                    className="w-full px-4 py-3 rounded-lg border border-transparent bg-white focus:border-[#00A651] focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
+                      errors.firstName
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-transparent focus:border-[#00A651]'
+                    }`}
                   />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-xs font-medium">{errors.firstName}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="block text-sm font-medium text-[#111111]">
@@ -43,8 +209,17 @@ const ContactFormSection = () => {
                     type="text"
                     id="lastName"
                     placeholder="Rahman"
-                    className="w-full px-4 py-3 rounded-lg border border-transparent bg-white focus:border-[#00A651] focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
+                      errors.lastName
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-transparent focus:border-[#00A651]'
+                    }`}
                   />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-xs font-medium">{errors.lastName}</p>
+                  )}
                 </div>
               </div>
 
@@ -57,8 +232,17 @@ const ContactFormSection = () => {
                     type="email"
                     id="email"
                     placeholder="example@gmail.com"
-                    className="w-full px-4 py-3 rounded-lg border border-transparent bg-white focus:border-[#00A651] focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
+                      errors.email
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-transparent focus:border-[#00A651]'
+                    }`}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs font-medium">{errors.email}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="contact" className="block text-sm font-medium text-[#111111]">
@@ -68,8 +252,17 @@ const ContactFormSection = () => {
                     type="tel"
                     id="contact"
                     placeholder="+8801764XXXXXXX"
-                    className="w-full px-4 py-3 rounded-lg border border-transparent bg-white focus:border-[#00A651] focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
+                      errors.contact
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-transparent focus:border-[#00A651]'
+                    }`}
                   />
+                  {errors.contact && (
+                    <p className="text-red-500 text-xs font-medium">{errors.contact}</p>
+                  )}
                 </div>
               </div>
 
@@ -81,8 +274,17 @@ const ContactFormSection = () => {
                   type="text"
                   id="address"
                   placeholder="Bogura Town"
-                  className="w-full px-4 py-3 rounded-lg border border-transparent bg-white focus:border-[#00A651] focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
+                    errors.address
+                      ? 'border-red-500 focus:border-red-500'
+                      : 'border-transparent focus:border-[#00A651]'
+                  }`}
                 />
+                {errors.address && (
+                  <p className="text-red-500 text-xs font-medium">{errors.address}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -93,15 +295,25 @@ const ContactFormSection = () => {
                   id="message"
                   rows={6}
                   placeholder="Enter your message here..."
-                  className="w-full px-4 py-3 rounded-lg border border-transparent bg-white focus:border-[#00A651] focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 resize-none"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 resize-none ${
+                    errors.message
+                      ? 'border-red-500 focus:border-red-500'
+                      : 'border-transparent focus:border-[#00A651]'
+                  }`}
                 />
+                {errors.message && (
+                  <p className="text-red-500 text-xs font-medium">{errors.message}</p>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 px-6 bg-[#0E8B44] hover:bg-[#0b7036] text-white font-bold rounded-lg transition-colors duration-300 text-center"
+                disabled={isSubmitting}
+                className="w-full py-4 px-6 bg-[#0E8B44] hover:bg-[#0b7036] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors duration-300 text-center"
               >
-                Submit Now
+                {isSubmitting ? 'Submitting...' : 'Submit Now'}
               </button>
             </form>
           </div>
