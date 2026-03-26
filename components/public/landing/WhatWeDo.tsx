@@ -205,51 +205,57 @@ const WhatWeDo = () => {
           data-whatwedo-grid
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
         >
-          {data &&
-            data?.data.map((project: any, index: number) => (
-              <div
-                key={project.id || index}
-                data-whatwedo-card
-                className="bg-white rounded-[8px] p-[24px] shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 flex flex-col h-[538px] w-full max-w-[421px] mx-auto group"
-              >
-                <div className="mb-6">
-                  <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg font-bold">
-                    {project.title?.charAt(0)}
+          {data && (
+            <>
+              {data?.data.map((service: any, index: any) => (
+                <div
+                  key={index}
+                  data-whatwedo-card
+                  className="bg-white rounded-[8px] p-[24px]  shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 flex flex-col h-[538px] w-full max-w-[421px] mx-auto group"
+                >
+                  <div className="mb-6">
+                    {/* <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white">
+                      <service.icon size={24} strokeWidth={1.5} />
+                    </div> */}
+                    <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg font-bold">
+                      {service.title?.charAt(0)}
+                    </div>
                   </div>
-                </div>
 
-                <h3 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-gray-600 mb-6 flex-grow leading-relaxed line-clamp-4">
-                  {project.short_description || project.description}
-                </p>
-                {project.featured_image && (
+                  <h3 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 mb-6 flex-grow leading-relaxed line-clamp-4">
+                    {service.description}
+                  </p>
+
+                  <Link
+                    href={service.title}
+                    className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 mb-8 transition-colors group/link"
+                  >
+                    Learn More
+                    <ArrowUpRight
+                      size={16}
+                      className="ml-1 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"
+                    />
+                  </Link>
+
                   <div className="relative h-[192px] w-full rounded-[4px] overflow-hidden mt-auto shrink-0">
                     <Image
-                      src={project.featured_image}
-                      alt={project.title}
+                      src={service.featured_image}
+                      alt={service.title}
                       fill
                       className="object-cover transform group-hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
-                )}
-                <Link
-                  href={`/projects/${project.slug}`}
-                  className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 mb-8 transition-colors group/link"
-                >
-                  Learn More
-                  <ArrowUpRight
-                    size={16}
-                    className="ml-1 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"
-                  />
-                </Link>
-              </div>
-            ))}
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
-        <div className="text-center font-dm-sans">
+        <div className="text-center font-dm-sans ">
           <div data-whatwedo-button>
             <Link
               href="/projects/project"

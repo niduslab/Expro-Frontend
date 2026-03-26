@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import {
   fetchProjectById,
   fetchProjects,
-} from "@/lib/api/functions/public/projects";
+} from "@/lib/api/functions/public/projectsApi";
 import { Project, PaginatedResponse } from "@/lib/types/projectType";
 
 export const useProjects = (page: number, per_page: number = 6) => {
