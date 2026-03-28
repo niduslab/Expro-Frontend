@@ -5,66 +5,19 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { usePensionPackages } from "@/lib/hooks/public/pensionPackagesHook";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const packages = [
-  {
-    name: "Basic",
-    price: "300",
-    isPopular: false,
-    features: [
-      "Total Months 100",
-      "Maturity Amount ৳50,000",
-      "Status Closed",
-      "Join Commission Closed",
-    ],
-  },
-  {
-    name: "Standard",
-    price: "500",
-    isPopular: true,
-    features: [
-      "Total Months 100",
-      "Maturity Amount ৳85,000",
-      "Status Closed",
-      "Join Commission ৳500",
-    ],
-  },
-  {
-    name: "Advanced",
-    price: "1000",
-    isPopular: false,
-    features: [
-      "Total Months 100",
-      "Maturity Amount ৳172,000",
-      "Status Closed",
-      "Join Commission ৳600",
-    ],
-  },
-  {
-    name: "Premium",
-    price: "1500",
-    isPopular: false,
-    features: [
-      "Total Months 100",
-      "Maturity Amount ৳260,000",
-      "Status Running",
-      "Join Commission ৳700",
-    ],
-  },
-];
 
 const PensionPackages = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
+  const { data, isLoading, error } = usePensionPackages(1, 4);
+
   useEffect(() => {
-    if (!sectionRef.current) {
-      return;
-    }
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Header Animation
       gsap.from("[data-packages-header]", {
         opacity: 0,
         y: 20,
@@ -77,14 +30,10 @@ const PensionPackages = () => {
         },
       });
 
-      // Cards Animation
       const cards = gsap.utils.toArray("[data-package-card]");
       gsap.fromTo(
         cards,
-        {
-          opacity: 0,
-          y: 50,
-        },
+        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
@@ -103,6 +52,20 @@ const PensionPackages = () => {
     return () => ctx.revert();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="text-center mt-8">
+        <div className="spinner" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const packages = data?.data || [];
+
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
@@ -117,13 +80,27 @@ const PensionPackages = () => {
           </h2>
         </div>
 
-        {/* Packages Grid */}
+        {/* Grid */}
         <div
           data-packages-grid
           className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center"
         >
           {packages.map((pkg, index) => {
-            const isDark = pkg.isPopular;
+            const isDark = pkg.status === "running";
+
+            const features = [
+              `Total Months ${pkg.total_installments}`,
+              `Maturity Amount ৳${Number(
+                pkg.maturity_amount,
+              ).toLocaleString()}`,
+              `Status ${pkg.status}`,
+              `Join Commission ${
+                pkg.joining_commission === "0.00"
+                  ? "Closed"
+                  : `৳${Number(pkg.joining_commission).toLocaleString()}`
+              }`,
+            ];
+
             const cardBg = isDark ? "bg-[#003923]" : "bg-white";
             const borderColor = isDark
               ? "border-[#068847]"
@@ -147,41 +124,42 @@ const PensionPackages = () => {
 
             return (
               <div
-                key={index}
+                key={pkg.id}
                 data-package-card
                 className={`relative rounded-lg border ${cardBg} ${borderColor} container min-h-113 p-6 flex flex-col transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl`}
               >
-                {/* Popular Badge */}
-                {pkg.isPopular && (
+                {/* Running Badge */}
+                {isDark && (
                   <div className="absolute top-6 right-6 bg-[#36F293] text-[#003923] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                    Popular
+                    Running
                   </div>
                 )}
-                {/* Package Name */}
+
+                {/* Name */}
                 <h3 className={`text-lg font-semibold mb-3 ${titleColor}`}>
                   {pkg.name}
                 </h3>
+
                 {/* Price */}
                 <div className="flex items-baseline gap-1 mb-6">
                   <span
                     className={`text-[48px] font-bold leading-none ${priceColor}`}
                   >
-                    ৳{pkg.price}
+                    ৳{Number(pkg.monthly_amount)}
                   </span>
-                  <span className={`text-base font-normal ${monthColor}`}>
-                    /month
-                  </span>
+                  <span className={`text-base ${monthColor}`}>/month</span>
                 </div>
-                {/* Action Button */}
+
+                {/* Button */}
                 <Link href="/membership">
                   <button
-                    className={`w-full py-2.5 px-4 rounded-lg text-sm cursor-pointer  font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
+                    className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold border ${buttonBg} ${buttonText} ${buttonBorder} ${buttonHover} transition-colors duration-200 mb-6`}
                   >
                     Choose {pkg.name} Package
                   </button>
                 </Link>
 
-                {/* Features List */}
+                {/* Features */}
                 <div className="flex-1">
                   <p
                     className={`text-sm font-semibold mb-3 ${featureTitleColor}`}
@@ -189,23 +167,15 @@ const PensionPackages = () => {
                     Core Feature
                   </p>
                   <ul className="space-y-3">
-                    {pkg.features.map((feature, idx) => (
+                    {features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <div className={`mt-0.5 shrink-0 ${checkColor}`}>
+                        <div className={`mt-0.5 ${checkColor}`}>
                           <Check size={16} strokeWidth={2.5} />
                         </div>
                         <span
-                          className={`text-sm font-normal leading-relaxed ${featureTextColor}`}
+                          className={`text-sm leading-relaxed ${featureTextColor}`}
                         >
-                          {feature.split(/(৳[\d,]+)/).map((part, i) =>
-                            part.match(/৳[\d,]+/) ? (
-                              <span key={i} className="font-semibold">
-                                {part}
-                              </span>
-                            ) : (
-                              part
-                            ),
-                          )}
+                          {feature}
                         </span>
                       </li>
                     ))}
