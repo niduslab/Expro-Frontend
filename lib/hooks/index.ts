@@ -4,6 +4,7 @@
  */
 
 // Public hooks (no authentication required)
+export * from './public/useAuth';
 export * from './public/useMembership';
 export * from './public/usePublicData';
 

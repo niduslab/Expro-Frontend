@@ -1,44 +1,77 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { login } from "@/lib/auth";
+import { useLogin } from "@/lib/hooks";
+import { toast, Toaster } from "sonner";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { mutate: login, isPending, error: loginError } = useLogin();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    try {
-      const result = await login(email, password);
-      // Laravel Sanctum handles cookies automatically (HTTP-only)
-      // No need to manually set cookies
-
-      // Redirect to dashboard or admin based on role
-      if (result.user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setLoading(false);
+    // Basic validation
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
     }
+
+    if (!password.trim()) {
+      toast.error("Please enter your password");
+      return;
+    }
+
+    // Call login mutation
+    login(
+      { email, password },
+      {
+        onSuccess: () => {
+          toast.success("Login successful! Redirecting...");
+        },
+        onError: (error: any) => {
+          // Extract error message similar to contact form
+          let errorMsg = "Login failed. Please check your credentials.";
+          
+          if (error.message) {
+            errorMsg = error.message;
+          } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+          } else if (error.response?.data?.errors) {
+            const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
+            errorMsg = errorMessages;
+          }
+          
+          toast.error(errorMsg);
+        },
+      }
+    );
   };
+
+  // Extract error message for display
+  const errorMessage = loginError
+    ? loginError instanceof Error
+      ? loginError.message
+      : (loginError as any)?.response?.data?.message || "Login failed. Please check your credentials."
+    : "";
 
   return (
     <div className="flex min-h-screen bg-white">
+      {/* Toaster for notifications */}
+      <Toaster
+        position="bottom-right"
+        richColors
+        toastOptions={{
+          duration: 2500,
+          classNames: {
+            toast: "relative overflow-hidden rounded-lg px-4 py-3 font-medium",
+          },
+        }}
+      />
       {/* Left side - Image Section */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900">
         <div className="absolute inset-0 z-0">
@@ -159,7 +192,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {error && (
+              {errorMessage && (
                 <div className="rounded-md bg-red-50 p-4">
                   <div className="flex">
                     <div className="flex-shrink-0">
@@ -180,7 +213,7 @@ export default function LoginPage() {
                     </div>
                     <div className="ml-3">
                       <h3 className="text-sm font-medium text-red-800">
-                        {error}
+                        {errorMessage}
                       </h3>
                     </div>
                   </div>
@@ -190,10 +223,10 @@ export default function LoginPage() {
               <div>
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={isPending}
                   className="w-full flex justify-center py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition-all duration-200"
                 >
-                  {loading ? "Signing in..." : "Sign in"}
+                  {isPending ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
             </form>

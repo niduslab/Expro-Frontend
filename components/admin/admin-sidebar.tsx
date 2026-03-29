@@ -4,8 +4,9 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Settings, LogOut } from "lucide-react";
+import { Settings } from "lucide-react";
 import { sidebarItems } from "./sidebar-items";
+import { LogoutButton } from "./LogoutButton";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -65,16 +66,7 @@ export function AdminSidebar() {
           Settings
         </Link>
 
-        <button
-          onClick={() => {
-            document.cookie =
-              "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-          }}
-          className="flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
-        >
-          <LogOut className="w-5 h-5 text-gray-500" />
-          Logout
-        </button>
+        <LogoutButton />
       </div>
     </aside>
   );
