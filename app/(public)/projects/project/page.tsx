@@ -64,7 +64,7 @@ import Pagination from "@/components/pagination/page";
 
 export default function Project() {
   const [page, setPage] = useState(1); // Initial page is 1
-  const perPage = 6; // Items per page
+  const perPage = 10; // Items per page
 
   const { data, isLoading, isError } = useProjects(page, perPage);
 

@@ -1,48 +1,51 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useEvents } from "@/lib/hooks/public/useEventHooks";
+import EventDateTime from "@/components/formateDateTime/page";
+import Pagination from "@/components/pagination/page";
 
-const events = [
-  {
-    title: "Green Earth Initiative",
-    description:
-      "Join our massive tree plantation drive. Goal: Plant 10,000 trees to combat climate change and restore natural habitats.",
-    date: "06 February, 2026",
-    location: "Gulshan-1, Dhaka",
-    time: "11.30 AM - 2.30 PM",
-    image:
-      "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg", // Placeholder, using first available
-    link: "events/event-details",
-  },
-  {
-    title: "Disaster Relief Training",
-    description:
-      "Training volunteers for emergency response and disaster relief operations. Learn essential skills to help communities during crises.",
-    date: "06 February, 2026",
-    location: "National Training Center",
-    time: "11.30 AM - 2.30 PM",
-    image:
-      "/images/landing-page/events/45cfcb47c1850f33fb81de1fcbb9c346e53f1581.jpg", // Placeholder, using second available
-    link: "events/event-details",
-  },
-  {
-    title: "Women Business Workshop",
-    description:
-      "Empowering women entrepreneurs with business skills, financial literacy, and networking opportunities to build sustainable livelihoods.",
-    date: "06 February, 2026",
-    location: "Community Center, Chittagong",
-    time: "11.30 AM - 2.30 PM",
-    image:
-      "/images/landing-page/events/9d28340008ab0f8b020c34003fa1a49fdbe7cda1.jpg",
-    link: "events/event-details",
-  },
-];
+// const events = [
+//   {
+//     title: "Green Earth Initiative",
+//     description:
+//       "Join our massive tree plantation drive. Goal: Plant 10,000 trees to combat climate change and restore natural habitats.",
+//     date: "06 February, 2026",
+//     location: "Gulshan-1, Dhaka",
+//     time: "11.30 AM - 2.30 PM",
+//     image:
+//       "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg", // Placeholder, using first available
+//     link: "events/event-details",
+//   },
+//   {
+//     title: "Disaster Relief Training",
+//     description:
+//       "Training volunteers for emergency response and disaster relief operations. Learn essential skills to help communities during crises.",
+//     date: "06 February, 2026",
+//     location: "National Training Center",
+//     time: "11.30 AM - 2.30 PM",
+//     image:
+//       "/images/landing-page/events/45cfcb47c1850f33fb81de1fcbb9c346e53f1581.jpg", // Placeholder, using second available
+//     link: "events/event-details",
+//   },
+//   {
+//     title: "Women Business Workshop",
+//     description:
+//       "Empowering women entrepreneurs with business skills, financial literacy, and networking opportunities to build sustainable livelihoods.",
+//     date: "06 February, 2026",
+//     location: "Community Center, Chittagong",
+//     time: "11.30 AM - 2.30 PM",
+//     image:
+//       "/images/landing-page/events/9d28340008ab0f8b020c34003fa1a49fdbe7cda1.jpg",
+//     link: "events/event-details",
+//   },
+// ];
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -89,6 +92,22 @@ const Events = () => {
 
     return () => ctx.revert();
   }, []);
+  const [page, setPage] = useState(1); // Initial page is 1
+  const perPage = 10; // Items per page
+  const { data, isLoading, error } = useEvents(page, perPage);
+  const events = data?.data ?? [];
+
+  const nextPage = () => {
+    if (events.length === perPage) {
+      setPage((p) => p + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (page > 1) {
+      setPage((p) => p - 1);
+    }
+  };
 
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
@@ -110,7 +129,7 @@ const Events = () => {
         {/* Header */}
 
         {/* Events List */}
-        <div className="space-y-8">
+        {/* <div className="space-y-8">
           {events.map((event, index) => (
             <div
               key={index}
@@ -119,7 +138,7 @@ const Events = () => {
                 index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
               } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
             >
-              {/* Image */}
+       
               <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
                 <Image
                   src={event.image}
@@ -130,7 +149,6 @@ const Events = () => {
                 />
               </div>
 
-              {/* Content */}
               <div className="w-full lg:w-1/2 flex flex-col justify-center">
                 <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
                   {event.title}
@@ -139,7 +157,7 @@ const Events = () => {
                   {event.description}
                 </p>
 
-                {/* Meta Info */}
+         
                 <div className="flex flex-wrap gap-3 mb-8">
                   <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
                     <Calendar size={16} className="text-[#667085]" />
@@ -155,7 +173,7 @@ const Events = () => {
                   </div>
                 </div>
 
-                {/* Button */}
+              
                 <div>
                   <Link href={event.link}>
                     <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
@@ -166,8 +184,84 @@ const Events = () => {
               </div>
             </div>
           ))}
+        </div> */}
+
+        {/* Events List */}
+        <div className="space-y-8">
+          {data && (
+            <>
+              {data?.data.map((event: any, index: any) => (
+                <div
+                  key={index}
+                  data-event-card
+                  className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
+                    index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                  } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
+                >
+                  {/* Image */}
+                  <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      className="object-cover hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="w-full lg:w-1/2 flex flex-col justify-center">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
+                      {event.title}
+                    </h3>
+                    <p className="text-[#475467] text-base leading-relaxed mb-6">
+                      {event.description}
+                    </p>
+
+                    {/* Meta Info */}
+                    <div className="flex flex-wrap gap-3 mb-8">
+                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                        <EventDateTime
+                          datetime={event.start_date}
+                          type="date"
+                          icon="calendar"
+                        />
+                      </div>
+                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                        <MapPin size={16} className="text-[#667085]" />
+                        {event.location}
+                      </div>
+                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                        <EventDateTime
+                          datetime={event.start_date}
+                          type="time"
+                          icon="clock"
+                        />
+                      </div>
+                      {/* Button */}
+
+                      <Link href={event.title}>
+                        <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                          Learn More
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
+      <Pagination
+        page={page}
+        perPage={perPage}
+        total={data?.pagination?.total}
+        dataLength={events.length}
+        onNext={nextPage}
+        onPrev={prevPage}
+        onPageChange={(p) => setPage(p)}
+      />
     </section>
   );
 };
