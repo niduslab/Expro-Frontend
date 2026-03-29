@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { useBlogs } from "@/lib/hooks/public/blogsHook";
+import { useBlogs } from "@/lib/hooks/public/useBlogsHook";
 
 const featuredArticle = {
   title: "Empowering Rural Communities Through Digital Education",

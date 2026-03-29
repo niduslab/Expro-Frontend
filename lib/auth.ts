@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiClient } from "@/lib/api/BaseApi";
+import { apiClient } from "@/lib/api/axios";
 
 export interface User {
   id: string;

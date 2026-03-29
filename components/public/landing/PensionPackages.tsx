@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Check } from "lucide-react";
 import Link from "next/link";
-import { usePensionPackages } from "@/lib/hooks/public/pensionPackagesHook";
+import { usePensionPackages } from "@/lib/hooks/public/usePensionPackagesHook";
 
 gsap.registerPlugin(ScrollTrigger);
 

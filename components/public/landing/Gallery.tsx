@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { useGalleryImages } from "@/lib/hooks/public/galleriesHook";
+import { useGalleryImages } from "@/lib/hooks/public/useGalleriesHook";
 
 type GalleryProps = {
   header2: string;
