@@ -117,19 +117,19 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     date_of_birth: formatDate(data.personalInfo.dateOfBirth),
     nid_number: data.personalInfo.nid || "",
 
-    academic_qualification: data.personalInfo.qualification?.[0],
+    academic_qualification: data.personalInfo.qualification?.[0]?.toLowerCase() || "",
 
     permanent_address: data.addressInfo.permanentAddress || "",
     present_address: data.addressInfo.presentAddress || "",
     religion: data.addressInfo.religion || "",
-    gender: data.addressInfo.gender || "",
+    gender: data.addressInfo.gender?.toLowerCase() || "",
 
     mobile: data.addressInfo.mobileNumber,
     email: data.addressInfo.email,
 
     membership_type: "general", // or dynamic
 
-    sponsor_id: Number(data.sponsorInfo.sponsorMemberId), // ⚠️ ensure valid DB id
+    sponsor_id: data.sponsorInfo.sponsorMemberId ? Number(data.sponsorInfo.sponsorMemberId) : "",
     pension_package_id: mapPackageToId(data.pensionInfo.selectedPackage),
 
     nominees: [
@@ -145,13 +145,35 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
   const handleSubmit = () => {
     setErrors({});
 
+    // Log payload data before submission for backend verification
+    console.log("=".repeat(80));
+    console.log("📋 MEMBERSHIP APPLICATION PAYLOAD - READY FOR SUBMISSION");
+    console.log("=".repeat(80));
+    
+    console.log("\n📦 Complete Form Data (Raw):");
+    console.log(JSON.stringify(data, null, 2));
+    
+    console.log("\n🔄 Mapped Payload (Sent to Backend):");
+    console.log(JSON.stringify(mappedPayload, null, 2));
+    
+    console.log("\n💰 Payment Summary:");
+    console.log(`  - Membership Fee: ৳${membershipFee}`);
+    console.log(`  - Pension Package: ${pensionDetails.name} (৳${pensionDetails.price})`);
+    console.log(`  - Total Due: ৳${totalDue}`);
+    
+    console.log("\n" + "=".repeat(80));
+    console.log("✅ Payload logged successfully. Submitting to backend...");
+    console.log("=".repeat(80) + "\n");
+
     toast.loading("Submitting...", { id: "submit" });
 
     mutate(mappedPayload, {
       onSuccess: (res) => {
+        console.log("✅ Backend Response (Success):", res);
         toast.success(res.message || "Submitted!", { id: "submit" });
       },
       onError: (err: any) => {
+        console.error("❌ Backend Response (Error):", err?.response?.data);
         toast.error(err?.response?.data?.message || "Failed!", {
           id: "submit",
         });

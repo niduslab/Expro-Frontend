@@ -148,14 +148,13 @@ export interface ApiResponse<T = any> {
 
 export interface PaginatedResponse<T = any> {
   success: boolean;
-  data: {
-    current_page: number;
-    data: T[];
+  message?: string;
+  data: T[];
+  pagination: {
     total: number;
     per_page: number;
+    current_page: number;
     last_page: number;
-    from: number;
-    to: number;
   };
 }
 
