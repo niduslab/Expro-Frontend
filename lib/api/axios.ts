@@ -6,7 +6,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
  */
 
 // Environment-based API URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
 
 /**
  * Main Axios Instance
@@ -33,8 +33,12 @@ const getCsrfToken = async (): Promise<void> => {
     return csrfTokenPromise;
   }
 
+  // Properly construct the base URL by removing /api/v1
+  const baseURL = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+  const csrfUrl = `${baseURL}/sanctum/csrf-cookie`;
+
   csrfTokenPromise = axios
-    .get(`${API_BASE_URL.replace('/api/v1', '')}/sanctum/csrf-cookie`, {
+    .get(csrfUrl, {
       withCredentials: true,
     })
     .then(() => {
@@ -42,7 +46,7 @@ const getCsrfToken = async (): Promise<void> => {
     })
     .catch((error) => {
       csrfTokenPromise = null;
-      console.error('Failed to fetch CSRF token:', error);
+      console.error('Failed to fetch CSRF token from:', csrfUrl, error);
       throw error;
     });
 
@@ -210,6 +214,8 @@ export const authUtils = {
   setToken: (token: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_token', token);
+      // Also set as cookie for middleware access
+      document.cookie = `auth_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
     }
   },
   
@@ -223,6 +229,8 @@ export const authUtils = {
   removeToken: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
+      // Also remove cookie
+      document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
   },
   

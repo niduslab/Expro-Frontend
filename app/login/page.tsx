@@ -1,44 +1,118 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { login } from "@/lib/auth";
+import { useLogin } from "@/lib/hooks";
+import { toast, Toaster } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const { mutate: login, isPending, error: loginError } = useLogin();
+
+  // Validate email format
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Validate form
+  const validateForm = (): boolean => {
+    const newErrors: { email?: string; password?: string } = {};
+
+    // Email validation
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!validateEmail(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // Password validation
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    try {
-      const result = await login(email, password);
-      // Laravel Sanctum handles cookies automatically (HTTP-only)
-      // No need to manually set cookies
+    // Validate form
+    if (!validateForm()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
 
-      // Redirect to dashboard or admin based on role
-      if (result.user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/dashboard");
+    // Call login mutation
+    login(
+      { email, password },
+      {
+        onSuccess: () => {
+          toast.success("Login successful! Redirecting...");
+        },
+        onError: (error: any) => {
+          // Extract error message similar to contact form
+          let errorMsg = "Login failed. Please check your credentials.";
+          
+          if (error.message) {
+            errorMsg = error.message;
+          } else if (error.response?.data?.message) {
+            errorMsg = error.response.data.message;
+          } else if (error.response?.data?.errors) {
+            const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
+            errorMsg = errorMessages;
+          }
+          
+          toast.error(errorMsg);
+        },
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setLoading(false);
+    );
+  };
+
+  // Clear error when user starts typing
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (errors.email) {
+      setErrors({ ...errors, email: undefined });
     }
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (errors.password) {
+      setErrors({ ...errors, password: undefined });
+    }
+  };
+
+  // Extract error message for display
+  const errorMessage = loginError
+    ? loginError instanceof Error
+      ? loginError.message
+      : (loginError as any)?.response?.data?.message || "Login failed. Please check your credentials."
+    : "";
+
   return (
     <div className="flex min-h-screen bg-white">
+      {/* Toaster for notifications */}
+      <Toaster
+        position="bottom-right"
+        richColors
+        toastOptions={{
+          duration: 2500,
+          classNames: {
+            toast: "relative overflow-hidden rounded-lg px-4 py-3 font-medium",
+          },
+        }}
+      />
       {/* Left side - Image Section */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900">
         <div className="absolute inset-0 z-0">
@@ -106,9 +180,17 @@ export default function LoginPage() {
                     autoComplete="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    onChange={handleEmailChange}
+                    className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
+                      errors.email
+                        ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                    placeholder="admin@gmail.com"
                   />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  )}
                 </div>
               </div>
 
@@ -119,17 +201,36 @@ export default function LoginPage() {
                 >
                   Password
                 </label>
-                <div className="mt-1">
+                <div className="mt-1 relative">
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    onChange={handlePasswordChange}
+                    className={`appearance-none block w-full px-3 py-2 pr-10 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
+                      errors.password
+                        ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                    placeholder="Enter your password"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  )}
                 </div>
               </div>
 
@@ -159,7 +260,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {error && (
+              {errorMessage && (
                 <div className="rounded-md bg-red-50 p-4">
                   <div className="flex">
                     <div className="flex-shrink-0">
@@ -180,7 +281,7 @@ export default function LoginPage() {
                     </div>
                     <div className="ml-3">
                       <h3 className="text-sm font-medium text-red-800">
-                        {error}
+                        {errorMessage}
                       </h3>
                     </div>
                   </div>
@@ -190,10 +291,10 @@ export default function LoginPage() {
               <div>
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={isPending}
                   className="w-full flex justify-center py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition-all duration-200"
                 >
-                  {loading ? "Signing in..." : "Sign in"}
+                  {isPending ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
             </form>

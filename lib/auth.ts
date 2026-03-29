@@ -1,3 +1,23 @@
+/**
+ * Authentication Utilities
+ * 
+ * DEPRECATED: This file is maintained for backward compatibility.
+ * 
+ * RECOMMENDED: Use the new authentication hooks instead:
+ * - useLogin() for login functionality
+ * - useLogout() for logout functionality
+ * - useCurrentUser() for fetching user profile
+ * - useAuthStatus() for checking authentication status
+ * 
+ * Import from: @/lib/hooks
+ * 
+ * @example
+ * import { useLogin, useLogout } from '@/lib/hooks';
+ * 
+ * const { mutate: login, isPending } = useLogin();
+ * const { mutate: logout } = useLogout();
+ */
+
 import axios from "axios";
 import { apiClient } from "@/lib/api/axios";
 
@@ -19,7 +39,19 @@ async function getCsrfCookie(): Promise<void> {
   });
 }
 
-// Real login function that connects to Laravel backend
+/**
+ * Login function
+ * 
+ * @deprecated Use useLogin() hook instead for better error handling and state management
+ * 
+ * @example
+ * // Old way (deprecated)
+ * const result = await login(email, password);
+ * 
+ * // New way (recommended)
+ * const { mutate: login } = useLogin();
+ * login({ email, password });
+ */
 export async function login(
   email: string,
   password: string,
@@ -48,7 +80,19 @@ export async function login(
   }
 }
 
-// Logout function
+/**
+ * Logout function
+ * 
+ * @deprecated Use useLogout() hook instead
+ * 
+ * @example
+ * // Old way (deprecated)
+ * await logout();
+ * 
+ * // New way (recommended)
+ * const { mutate: logout } = useLogout();
+ * logout();
+ */
 export async function logout() {
   try {
     await apiClient.post("/logout");
@@ -57,7 +101,18 @@ export async function logout() {
   }
 }
 
-// Get current user profile
+/**
+ * Get current user profile
+ * 
+ * @deprecated Use useCurrentUser() hook instead
+ * 
+ * @example
+ * // Old way (deprecated)
+ * const user = await getCurrentUser();
+ * 
+ * // New way (recommended)
+ * const { data: user, isLoading } = useCurrentUser();
+ */
 export async function getCurrentUser(): Promise<User | null> {
   try {
     const response = await apiClient.get("/myprofile");
