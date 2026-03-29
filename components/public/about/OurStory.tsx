@@ -5,7 +5,7 @@ const OurStory = () => {
   return (
     <section className="py-14 md:py-20 lg:py-24 md:px-2 lg:px-4  bg-white overflow-hidden font-dm-sans">
       <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center px-2 md:px-0 xl:px-4 2xl:px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center px-2 md:px-0">
           {/* Left Column: Image */}
           <div className="relative w-full">
             <div className="relative w-full aspect-[4/5] md:aspect-[5/6] px-24 rounded-lg overflow-hidden">

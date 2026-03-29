@@ -12,53 +12,71 @@ import {
 import Hero from "./hero";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useProjects } from "@/lib/hooks/public/useProjects";
+import Link from "next/link";
+import { useState } from "react";
 
-const projects = [
-  {
-    title: "Agriculture Development",
-    description:
-      "Supporting sustainable farming practices, providing resources and training for rural farmers.",
-    icon: <Sprout className="text-white h-9 w-7" />,
-    image: "/images/projects/project/project-one.jpg",
-  },
-  {
-    title: "Health Programs",
-    description:
-      "Providing accessible healthcare services, medical camps, and health awareness programs to underserved communities.",
-    icon: <HeartPulse className="text-white h-9 w-7" />,
-    image: "/images/projects/project/project-two.jpg",
-  },
-  {
-    title: "Education Support",
-    description:
-      "Empowering through knowledge with scholarships, schools, and educational resources for children and adults.",
-    icon: <GraduationCap className="text-white h-9 w-7" />,
-    image: "/images/projects/project/project-three.jpg",
-  },
-  {
-    title: "Women Entrepreneurship",
-    description:
-      "Providing resources and mentorship to empower women-led businesses and entrepreneurship.",
-    icon: <Users className="text-white h-9 w-7" />,
-    image: "/images/projects/project/project-four.jpg",
-  },
-  {
-    title: "Humanity Initiatives",
-    description:
-      "Disaster relief, humanitarian aid, and support for families in crisis situations.",
-    icon: <HandHeart className="text-white h-9 w-7" />,
-    image: "/images/projects/project/project-five.jpg",
-  },
-  {
-    title: "Media & Awareness",
-    description:
-      "Spreading awareness, sharing stories of impact, and promoting transparency through media initiatives.",
-    icon: <Tv className="text-white h-9 w-7" />,
-    image: "/images/projects/project/project-six.jpg",
-  },
-];
+// const projects = [
+//   {
+//     title: "Agriculture Development",
+//     description:
+//       "Supporting sustainable farming practices, providing resources and training for rural farmers.",
+//     icon: <Sprout className="text-white h-9 w-7" />,
+//     image: "/images/projects/project/project-one.jpg",
+//   },
+//   {
+//     title: "Health Programs",
+//     description:
+//       "Providing accessible healthcare services, medical camps, and health awareness programs to underserved communities.",
+//     icon: <HeartPulse className="text-white h-9 w-7" />,
+//     image: "/images/projects/project/project-two.jpg",
+//   },
+//   {
+//     title: "Education Support",
+//     description:
+//       "Empowering through knowledge with scholarships, schools, and educational resources for children and adults.",
+//     icon: <GraduationCap className="text-white h-9 w-7" />,
+//     image: "/images/projects/project/project-three.jpg",
+//   },
+//   {
+//     title: "Women Entrepreneurship",
+//     description:
+//       "Providing resources and mentorship to empower women-led businesses and entrepreneurship.",
+//     icon: <Users className="text-white h-9 w-7" />,
+//     image: "/images/projects/project/project-four.jpg",
+//   },
+//   {
+//     title: "Humanity Initiatives",
+//     description:
+//       "Disaster relief, humanitarian aid, and support for families in crisis situations.",
+//     icon: <HandHeart className="text-white h-9 w-7" />,
+//     image: "/images/projects/project/project-five.jpg",
+//   },
+//   {
+//     title: "Media & Awareness",
+//     description:
+//       "Spreading awareness, sharing stories of impact, and promoting transparency through media initiatives.",
+//     icon: <Tv className="text-white h-9 w-7" />,
+//     image: "/images/projects/project/project-six.jpg",
+//   },
+// ];
 
 export default function Project() {
+  const [page, setPage] = useState(1); // Initial page is 1
+  const perPage = 6; // Items per page
+
+  const { data, isLoading, isError } = useProjects(page, perPage);
+
+  const nextPage = () => {
+    if (data?.data?.length === perPage) {
+      setPage(page + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
   const router = useRouter();
   return (
     <>
@@ -76,8 +94,9 @@ export default function Project() {
               Our Impact Areas – “What We Do”
             </h2>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 container">
+          {isLoading && <div>Loading...</div>}
+          {isError && <div>Error loading projects.</div>}
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 container">
             {projects.map((project, idx) => (
               <div
                 key={idx}
@@ -109,6 +128,83 @@ export default function Project() {
                 </div>
               </div>
             ))}
+          </div> */}
+
+          <div
+            data-whatwedo-grid
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+          >
+            {data?.data ? (
+              <>
+                {data?.data.map((service: any, index: any) => (
+                  <div
+                    key={index}
+                    data-whatwedo-card
+                    className="bg-white rounded-[8px] p-[24px]  shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 flex flex-col h-[538px] w-full max-w-[421px] mx-auto group"
+                  >
+                    <div className="mb-6">
+                      {/* <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white">
+                      <service.icon size={24} strokeWidth={1.5} />
+                    </div> */}
+                      <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white text-lg font-bold">
+                        {service.title?.charAt(0)}
+                      </div>
+                    </div>
+
+                    <h3 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-600 mb-6 flex-grow leading-relaxed line-clamp-4">
+                      {service.description}
+                    </p>
+
+                    <Link
+                      href={service.title}
+                      className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 mb-8 transition-colors group/link"
+                    >
+                      Learn More
+                      <ArrowUpRight
+                        size={16}
+                        className="ml-1 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"
+                      />
+                    </Link>
+
+                    <div className="relative h-[192px] w-full rounded-[4px] overflow-hidden mt-auto shrink-0">
+                      <Image
+                        src={service.featured_image}
+                        alt={service.title}
+                        fill
+                        className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {" "}
+                <div>No projects available.</div>
+              </>
+            )}
+          </div>
+          {/* Pagination Controls */}
+          <div className="flex justify-center gap-4 mt-8">
+            <button
+              onClick={prevPage}
+              disabled={page === 1}
+              className="bg-gray-300 text-gray-700 p-2 rounded-md disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-lg font-semibold">Page {page}</span>
+            <button
+              onClick={nextPage}
+              disabled={(data?.data?.length ?? 0) < perPage}
+              className="bg-gray-300 text-gray-700 p-2 rounded-md disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
