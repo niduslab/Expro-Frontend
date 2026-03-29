@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useProjects } from "@/lib/hooks/public/useProjects";
 import Link from "next/link";
 import { useState } from "react";
+import Pagination from "@/components/pagination/page";
 
 // const projects = [
 //   {
@@ -67,14 +68,18 @@ export default function Project() {
 
   const { data, isLoading, isError } = useProjects(page, perPage);
 
+  const projects = data?.data ?? [];
+
   const nextPage = () => {
-    if (data?.data?.length === perPage) {
-      setPage(page + 1);
+    if (projects.length === perPage) {
+      setPage((p) => p + 1);
     }
   };
 
   const prevPage = () => {
-    if (page > 1) setPage(page - 1);
+    if (page > 1) {
+      setPage((p) => p - 1);
+    }
   };
 
   const router = useRouter();
@@ -129,11 +134,7 @@ export default function Project() {
               </div>
             ))}
           </div> */}
-
-          <div
-            data-whatwedo-grid
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 xl:gap-16 mb-16 xl:container  ">
             {data?.data ? (
               <>
                 {data?.data.map((service: any, index: any) => (
@@ -189,23 +190,15 @@ export default function Project() {
             )}
           </div>
           {/* Pagination Controls */}
-          <div className="flex justify-center gap-4 mt-8">
-            <button
-              onClick={prevPage}
-              disabled={page === 1}
-              className="bg-gray-300 text-gray-700 p-2 rounded-md disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="text-lg font-semibold">Page {page}</span>
-            <button
-              onClick={nextPage}
-              disabled={(data?.data?.length ?? 0) < perPage}
-              className="bg-gray-300 text-gray-700 p-2 rounded-md disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
+          <Pagination
+            page={page}
+            perPage={perPage}
+            total={data?.pagination?.total}
+            dataLength={projects.length}
+            onNext={nextPage}
+            onPrev={prevPage}
+            onPageChange={(p) => setPage(p)}
+          />
         </div>
       </div>
     </>
