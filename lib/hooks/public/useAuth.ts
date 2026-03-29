@@ -136,6 +136,8 @@ export const useLogin = () => {
         address: user.address,
       };
 
+      console.log('Storing token and user data:', { token, userData }); // Debug log
+
       // Store token in localStorage
       authUtils.setToken(token);
 
@@ -145,12 +147,12 @@ export const useLogin = () => {
       // Invalidate all queries to refresh data
       queryClient.invalidateQueries();
 
-      // Redirect based on role
-      if (userRole === 'admin' || userRole === 'chairman') {
-        router.push('/admin');
-      } else {
-        router.push('/dashboard');
-      }
+      // Redirect based on role using router.push (client-side navigation)
+      const redirectPath = userRole === 'admin' || userRole === 'chairman' ? '/admin' : '/dashboard';
+      console.log('Redirecting to:', redirectPath); // Debug log
+      
+      // Use router.push for smooth client-side navigation
+      router.push(redirectPath);
     },
     onError: (error: any) => {
       console.error('Login error:', error);

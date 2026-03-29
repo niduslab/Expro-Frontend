@@ -214,6 +214,8 @@ export const authUtils = {
   setToken: (token: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_token', token);
+      // Also set as cookie for middleware access
+      document.cookie = `auth_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
     }
   },
   
@@ -227,6 +229,8 @@ export const authUtils = {
   removeToken: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
+      // Also remove cookie
+      document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
   },
   
