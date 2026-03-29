@@ -2,20 +2,20 @@
 
 import React from "react";
 import Image from "next/image";
+import { useGalleryImages } from "@/lib/hooks/public/galleriesHook";
 
 type GalleryProps = {
   header2: string;
+  galleryId: number; // specify which gallery to display
 };
 
-const galleryImages = [
-  "/images/landing-page/gallery/75078fcca13640498f537bb1ed99fec6fdf3bbff.jpg",
-  "/images/landing-page/gallery/29b8f955feee723d75cdfbde39b8f13c16cf3517.jpg",
-  "/images/landing-page/gallery/a8e7ad2df1a93ece6fa17575882ece9001a367af.jpg",
-  "/images/landing-page/gallery/7c8e0916f9f2764fde3c5c3298b7c1a2e8be3374.jpg",
-  "/images/landing-page/gallery/a7b8440868a04a45cc452a7925eb10e54e747be6.jpg",
-];
+const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
+  const { data: images, isLoading } = useGalleryImages(galleryId);
 
-const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
+  if (isLoading) return <p className="text-center py-10">Loading gallery...</p>;
+  if (!images || images.length === 0)
+    return <p className="text-center py-10">No images found</p>;
+
   return (
     <section className="font-dm-sans py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
@@ -33,53 +33,63 @@ const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-150">
           {/* Column 1 - Large Image */}
-          <div className="relative w-full h-75 md:h-full rounded-2xl overflow-hidden group">
-            <Image
-              src={galleryImages[0]}
-              alt="Gallery Image 1"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
+          {images[0] && (
+            <div className="relative w-full h-75 md:h-full rounded-2xl overflow-hidden group">
+              <Image
+                src={images[0].image_path}
+                alt={images[0].title || "Gallery Image 1"}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          )}
 
           {/* Column 2 */}
           <div className="flex flex-col gap-6 h-full">
-            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-              <Image
-                src={galleryImages[1]}
-                alt="Gallery Image 2"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-              <Image
-                src={galleryImages[2]}
-                alt="Gallery Image 3"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
+            {images[1] && (
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                <Image
+                  src={images[1].image_path}
+                  alt={images[1].title || "Gallery Image 2"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            )}
+            {images[2] && (
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                <Image
+                  src={images[2].image_path}
+                  alt={images[2].title || "Gallery Image 3"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            )}
           </div>
 
           {/* Column 3 */}
           <div className="flex flex-col gap-6 h-full">
-            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-              <Image
-                src={galleryImages[3]}
-                alt="Gallery Image 4"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-              <Image
-                src={galleryImages[4]}
-                alt="Gallery Image 5"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
+            {images[3] && (
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                <Image
+                  src={images[3].image_path}
+                  alt={images[3].title || "Gallery Image 4"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            )}
+            {images[4] && (
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                <Image
+                  src={images[4].image_path}
+                  alt={images[4].title || "Gallery Image 5"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -88,3 +98,10 @@ const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
 };
 
 export default Gallery;
+// const galleryImages = [
+//   "/images/landing-page/gallery/75078fcca13640498f537bb1ed99fec6fdf3bbff.jpg",
+//   "/images/landing-page/gallery/29b8f955feee723d75cdfbde39b8f13c16cf3517.jpg",
+//   "/images/landing-page/gallery/a8e7ad2df1a93ece6fa17575882ece9001a367af.jpg",
+//   "/images/landing-page/gallery/7c8e0916f9f2764fde3c5c3298b7c1a2e8be3374.jpg",
+//   "/images/landing-page/gallery/a7b8440868a04a45cc452a7925eb10e54e747be6.jpg",
+// ];
