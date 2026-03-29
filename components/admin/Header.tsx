@@ -4,8 +4,13 @@ import React from "react";
 import Image from "next/image";
 import { Search, Bell, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useMyProfile } from "@/lib/hooks/admin/useMemberProfile";
 
 export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
+  const { data } = useMyProfile();
+
+  const profile = data;
+  console.log(profile);
   const router = useRouter();
 
   return (
@@ -54,8 +59,10 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
           </div>
 
           <div className="hidden md:block text-sm">
-            <p className="font-semibold text-gray-900">Md motahar</p>
-            <p className="text-xs text-gray-500">Founder</p>
+            <p className="font-semibold text-gray-900">
+              {profile?.member?.name_english}
+            </p>
+            <p className="text-xs text-gray-500">{profile?.roles[0]}</p>
           </div>
         </div>
       </div>
