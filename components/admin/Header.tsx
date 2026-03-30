@@ -10,7 +10,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const { data } = useMyProfile();
 
   const profile = data;
-  console.log(profile);
+
   const router = useRouter();
 
   return (
