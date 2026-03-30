@@ -3,7 +3,7 @@ import MonthlyFeeCommissionCard from "./monthlyFeeCommission";
 
 export default function CommissionOverview() {
   return (
-    <div className=" bg-white rounded-xl p-6 border flex flex-col gap-[16px]">
+    <div className=" bg-white rounded-xl p-6 shadow border border-gray-200 flex flex-col gap-[16px]">
       <div className="flex flex-col">
         <h2 className=" font-semibold text-[24px] leading-[120%] tracking-[-0.01em] align-middle mb-2 text-[#030712]">
           Commission Overview

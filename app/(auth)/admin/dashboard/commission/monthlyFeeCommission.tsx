@@ -23,7 +23,7 @@ export default function MonthlyFeeCommissionCard() {
   ];
 
   return (
-    <div className="w-full  rounded-2xl border bg-white p-6 shadow-sm">
+    <div className="w-full  rounded-2xl  border border-gray-200 bg-white p-6 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-[#F3F4F6] rounded-lg">
@@ -82,7 +82,7 @@ export default function MonthlyFeeCommissionCard() {
 
           <tbody>
             {data.map((item, i) => (
-              <tr key={i} className="border-t">
+              <tr key={i} className="border-t  border-gray-200">
                 <td className="px-4 py-3 font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle text-[#030712]">
                   {item.role}
                 </td>

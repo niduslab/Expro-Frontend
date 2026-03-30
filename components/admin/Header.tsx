@@ -14,7 +14,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b h-16 flex items-center justify-between px-4 md:px-6 shadow-sm">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 md:px-6 shadow-sm">
       {/* Left section */}
       <div className="flex items-center gap-4 w-full max-w-md">
         {/* Hamburger (mobile + tablet) */}
@@ -51,7 +51,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
         >
           <div className="relative w-9 h-9 rounded-full overflow-hidden border">
             <Image
-              src="/images/landing-page/our-leadership/06-md-ataur-rahman.png"
+              src={profile?.member?.photo || "/images/default-avatar.png"}
               alt="avatar"
               fill
               className="object-cover"

@@ -82,7 +82,7 @@ export default function MemberCommissionCard() {
 
           <tbody>
             {data.map((item, i) => (
-              <tr key={i} className="border-t">
+              <tr key={i} className="border-t  border-gray-200">
                 <td className="px-4 py-3 font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle text-[#030712]">
                   {item.role}
                 </td>

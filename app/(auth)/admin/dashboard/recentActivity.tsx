@@ -43,12 +43,12 @@ const activities: Activity[] = [
 
 export default function RecentActivity() {
   return (
-    <div className="w-full bg-white rounded-xl p-6 border">
+    <div className="w-full bg-white rounded-xl p-6 border border-gray-200">
       <h2 className=" font-semibold text-[24px] leading-[120%] tracking-[-0.01em] align-middle mb-4 text-[#030712]">
         Recent Activity
       </h2>
 
-      <div className="divide-y">
+      <div className="divide-y divide-gray-200">
         {activities.map((activity) => (
           <div
             key={activity.id}
