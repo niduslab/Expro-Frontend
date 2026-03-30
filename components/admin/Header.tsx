@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Search, Bell, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMyProfile } from "@/lib/hooks/admin/useMemberProfile";
+import { useMyProfile } from "@/lib/hooks/admin/useUsers";
 
 export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const { data } = useMyProfile();

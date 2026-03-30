@@ -1,7 +1,4 @@
-import {
-  MemberProfileResponse,
-  ProfileData,
-} from "@/lib/types/admin/memberProfileType";
+import { ProfileData } from "@/lib/types/admin/userType";
 import apiClient, { ApiResponse } from "../../axios";
 
 export const fetchMyProfile = async (): Promise<ProfileData> => {

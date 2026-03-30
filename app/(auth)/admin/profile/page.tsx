@@ -1,166 +1,190 @@
 "use client";
 
-import SimpleDateTime from "@/components/simpleDateTime/page";
-import { useMyProfile } from "@/lib/hooks/admin/useMemberProfile";
+import { ReactNode, useState } from "react";
+import { useMyProfile } from "@/lib/hooks/admin/useUsers";
+import ProfileHeader from "./ProfileHeader";
+import ProfileCard from "./ProfileCard";
 
-const InfoItem = ({ label, value }: { label: string; value?: any }) => (
-  <div className="flex flex-col">
-    <span className="text-xs text-gray-500">{label}</span>
-    <span className="text-sm font-medium text-gray-900">{value || "-"}</span>
-  </div>
-);
+import { Edit, Check, X } from "lucide-react";
+import AccountSection from "./AccountSection";
+import PersonalInfoSection from "./personalInfo";
+import MembershipSection from "./MembershipSection";
 
-const Section = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) => (
-  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
-    <h2 className="text-lg font-semibold mb-4 text-gray-800">{title}</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {children}
-    </div>
-  </div>
-);
+import DateDisplay from "@/components/DateTimeDisplay";
+import EditableSection from "./Section";
+
+type Field = {
+  label: string;
+  value: ReactNode;
+  rawValue: any;
+  key: string;
+  type?: "text" | "date" | "select" | "boolean";
+  options?: { label: string; value: any }[];
+};
 
 const Profile = () => {
   const { data, isLoading } = useMyProfile();
   const profile = data;
 
-  if (isLoading) {
-    return <p className="p-6">Loading...</p>;
-  }
+  if (isLoading) return <p className="p-6">Loading...</p>;
+
+  const handleSectionSave = (section: string, updated: Record<string, any>) => {
+    console.log("Save section:", section, updated);
+    // TODO: call API to update this section
+  };
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-          Profile
-        </h1>
-        <p className="text-sm text-gray-500">Manage your profile information</p>
-      </div>
+      <ProfileHeader />
+      <ProfileCard profile={profile} />
 
-      {/* Top Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col sm:flex-row items-center gap-6">
-        <div className="w-20 h-20 rounded-full bg-gray-100 overflow-hidden">
-          {profile?.member?.photo ? (
-            <img
-              src={profile.member.photo}
-              alt="profile"
-              className="w-full h-full object-cover"
-            />
-          ) : null}
-        </div>
+      <AccountSection
+        email={profile?.email}
+        status={profile?.status}
+        lastLogin={
+          profile?.last_login_at
+            ? new Date(profile.last_login_at).toLocaleDateString()
+            : "-"
+        }
+        onStatusSave={(updatedStatus: string) => {
+          console.log("Update Status:", updatedStatus);
+          // call your status update API here
+        }}
+      />
 
-        <div className="flex flex-col text-center sm:text-left">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {profile?.member?.name_english}
-          </h2>
-          <p className="text-sm text-gray-500">{profile?.email}</p>
+      <PersonalInfoSection
+        fields={[
+          {
+            label: "Bangla Name",
+            value: profile?.member?.name_bangla,
+            rawValue: profile?.member?.name_bangla,
+            key: "name_bangla",
+          },
+          {
+            label: "English Name",
+            value: profile?.member?.name_english,
+            rawValue: profile?.member?.name_english,
+            key: "name_english",
+          },
+          {
+            label: "Father/Husband",
+            value: profile?.member?.father_husband_name,
+            rawValue: profile?.member?.father_husband_name,
+            key: "father_husband_name",
+          },
+          {
+            label: "Mother",
+            value: profile?.member?.mother_name,
+            rawValue: profile?.member?.mother_name,
+            key: "mother_name",
+          },
+          {
+            label: "DOB",
+            value: <DateDisplay date={new Date()} />,
+            rawValue: profile?.member?.user_date_of_birth,
+            key: "user_date_of_birth",
+            type: "date",
+          },
+          {
+            label: "Gender",
+            value: profile?.member?.gender || "-",
+            rawValue: profile?.member?.gender,
+            key: "gender",
+            type: "select",
+            options: [
+              { label: "Male", value: "male" },
+              { label: "Female", value: "female" },
+              { label: "Other", value: "other" },
+            ],
+          },
+          {
+            label: "Religion",
+            value: profile?.member?.religion,
+            rawValue: profile?.member?.religion,
+            key: "religion",
+          },
+          {
+            label: "Mobile",
+            value: profile?.member?.mobile,
+            rawValue: profile?.member?.mobile,
+            key: "mobile",
+          },
+          {
+            label: "Alt Mobile",
+            value: profile?.member?.alternate_mobile,
+            rawValue: profile?.member?.alternate_mobile,
+            key: "alternate_mobile",
+          },
+        ]}
+        onSave={(updated) => handleSectionSave("personal", updated)}
+      />
 
-          <div className="flex gap-2 mt-2 flex-wrap justify-center sm:justify-start">
-            {profile?.roles?.map((role) => (
-              <span
-                key={role}
-                className="text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded-full"
-              >
-                {role}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      <EditableSection
+        title="Address"
+        fields={[
+          {
+            label: "Permanent",
+            value: profile?.member?.permanent_address,
+            rawValue: profile?.member?.permanent_address,
+            key: "permanent_address",
+          },
+          {
+            label: "Present",
+            value: profile?.member?.present_address,
+            rawValue: profile?.member?.present_address,
+            key: "present_address",
+          },
+        ]}
+        onSave={(updated) => handleSectionSave("address", updated)}
+      />
 
-      {/* Account Info */}
-      <Section title="Account Information">
-        <InfoItem label="Email" value={profile?.email} />
-        <InfoItem label="Status" value={profile?.status} />
-        <InfoItem
-          label="Last Login"
-          value={
-            profile?.last_login_at ? (
-              <SimpleDateTime datetime={profile.last_login_at} type="date" />
-            ) : null
-          }
-        />
-      </Section>
+      <MembershipSection
+        fields={[
+          {
+            label: "Member ID",
+            value: profile?.member?.member_id,
+            rawValue: profile?.member?.member_id,
 
-      {/* Personal Info */}
-      <Section title="Personal Information">
-        <InfoItem label="Bangla Name" value={profile?.member?.name_bangla} />
-        <InfoItem label="English Name" value={profile?.member?.name_english} />
-        <InfoItem
-          label="Father/Husband"
-          value={profile?.member?.father_husband_name}
-        />
-        <InfoItem label="Mother" value={profile?.member?.mother_name} />
-        <InfoItem
-          label="DOB"
-          value={
-            profile?.member?.user_date_of_birth ? (
-              <SimpleDateTime
-                datetime={profile.member.user_date_of_birth}
-                type="date"
-              />
-            ) : null
-          }
-        />
-        <InfoItem label="Gender" value={profile?.member?.gender} />
-        <InfoItem label="Religion" value={profile?.member?.religion} />
-        <InfoItem label="Mobile" value={profile?.member?.mobile} />
-        <InfoItem
-          label="Alt Mobile"
-          value={profile?.member?.alternate_mobile}
-        />
-      </Section>
+            key: "member_id",
+          },
+          {
+            label: "SL No",
+            value: profile?.member?.sl_no,
+            rawValue: profile?.member?.sl_no,
+            key: "sl_no",
+          },
+          {
+            label: "Fee Paid",
+            value: profile?.member?.member_fee_paid ? "Yes" : "No",
+            rawValue: profile?.member?.member_fee_paid,
+            key: "member_fee_paid",
+          },
+          {
+            label: "Start Date",
+            value: <DateDisplay date={profile?.member?.membership_date} />,
+            rawValue: profile?.member?.membership_date,
+            key: "membership_date",
+            type: "date",
+          },
+          {
+            label: "Expire Date",
+            value: (
+              <DateDisplay date={profile?.member?.membership_expiry_date} />
+            ),
+            rawValue: profile?.member?.membership_expiry_date,
+            key: "membership_expiry_date",
+            type: "date",
+          },
 
-      {/* Address */}
-      <Section title="Address">
-        <InfoItem
-          label="Permanent"
-          value={profile?.member?.permanent_address}
-        />
-        <InfoItem label="Present" value={profile?.member?.present_address} />
-      </Section>
-
-      {/* Membership */}
-      <Section title="Membership">
-        <InfoItem label="Member ID" value={profile?.member?.member_id} />
-        <InfoItem label="SL No" value={profile?.member?.sl_no} />
-        <InfoItem
-          label="Fee Paid"
-          value={profile?.member?.member_fee_paid ? "Yes" : "No"}
-        />
-        <InfoItem
-          label="Start Date"
-          value={
-            profile?.member?.membership_date ? (
-              <SimpleDateTime
-                datetime={profile.member.membership_date}
-                type="date"
-              />
-            ) : null
-          }
-        />
-        <InfoItem
-          label="Expiry Date"
-          value={
-            profile?.member?.membership_expiry_date ? (
-              <SimpleDateTime
-                datetime={profile.member.membership_expiry_date}
-                type="date"
-              />
-            ) : null
-          }
-        />
-        <InfoItem
-          label="Missed Payments"
-          value={profile?.member?.consecutive_missed_payments}
-        />
-      </Section>
+          {
+            label: "Missed Payments",
+            value: profile?.member?.consecutive_missed_payments,
+            rawValue: profile?.member?.consecutive_missed_payments,
+            key: "consecutive_missed_payments",
+          },
+        ]}
+        onSave={(updated) => handleSectionSave("membership", updated)}
+      />
     </div>
   );
 };

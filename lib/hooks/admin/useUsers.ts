@@ -1,5 +1,5 @@
-import { fetchMyProfile } from "@/lib/api/functions/admin/memberProfileApi";
-import { ProfileData } from "@/lib/types/admin/memberProfileType";
+import { fetchMyProfile } from "@/lib/api/functions/admin/userApi";
+import { ProfileData } from "@/lib/types/admin/userType";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 export const useMyProfile = (options?: UseQueryOptions<ProfileData, Error>) => {
