@@ -16,7 +16,6 @@ interface ProjectInfoProps {
   >;
   setCompletedTabs: React.Dispatch<React.SetStateAction<CompletedTabs>>;
 }
-const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
 export default function ProjectInfo({
   setOpenModal,
@@ -43,10 +42,9 @@ export default function ProjectInfo({
       const lastMessage = result.error.issues.slice(-1)[0]?.message;
       toast.error(lastMessage || "Validation failed");
 
-      return; // stop here
+      return;
     }
 
-    // ✅ validation success
     setErrors({});
 
     setCompletedTabs((prev) => ({
@@ -92,15 +90,22 @@ export default function ProjectInfo({
               label="Category"
               required
               placeholder="Select Category"
-              options={["Bug", "Feature", "Support"]}
+              options={[
+                "health",
+                "education",
+                "agriculture",
+                "media",
+                "women_entrepreneurship",
+                "other",
+                "humanity",
+              ]}
               value={formData.category}
               onChange={(value) => {
                 setFormData({ ...formData, category: value });
-                if (errors.category) {
+                if (errors.category)
                   setErrors((prev) => ({ ...prev, category: "" }));
-                }
               }}
-            />{" "}
+            />
             {errors.category && (
               <span className="text-sm text-red-500 py-0.5">
                 {errors.category}
@@ -109,21 +114,27 @@ export default function ProjectInfo({
           </div>
           <div className="relative w-full sm:w-1/2">
             <Dropdown
-              label="Priority"
+              label="Status" // was "Priority"
               required
-              placeholder="Select Priority"
-              options={["Low", "Medium", "High", "Urgent"]}
-              value={formData.priority}
+              placeholder="Select Status"
+              options={[
+                "planned",
+                "upcoming",
+                "ongoing",
+                "completed",
+                "cancelled",
+              ]}
+              // ↑ must match your ProjectStatusEnum values on the backend
+              value={formData.status} // was formData.priority
               onChange={(value) => {
-                setFormData({ ...formData, priority: value });
-                if (errors.priority) {
-                  setErrors((prev) => ({ ...prev, priority: "" }));
-                }
+                setFormData({ ...formData, status: value }); // was priority
+                if (errors.status)
+                  setErrors((prev) => ({ ...prev, status: "" }));
               }}
             />
-            {errors.priority && (
+            {errors.status && (
               <span className="text-sm text-red-500 py-0.5">
-                {errors.priority}
+                {errors.status}
               </span>
             )}
           </div>
