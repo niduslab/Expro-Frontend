@@ -1,36 +1,70 @@
 "use client";
 
-import { ReactNode, useState } from "react";
 import { useMyProfile } from "@/lib/hooks/admin/useUsers";
+
 import ProfileHeader from "./ProfileHeader";
 import ProfileCard from "./ProfileCard";
-
-import { Edit, Check, X } from "lucide-react";
 import AccountSection from "./AccountSection";
 import PersonalInfoSection from "./personalInfo";
 import MembershipSection from "./MembershipSection";
 
 import DateDisplay from "@/components/DateTimeDisplay";
+import { useUpdateMyProfile } from "@/lib/hooks/admin/useMemberProfilehook";
 import EditableSection from "./Section";
-
-type Field = {
-  label: string;
-  value: ReactNode;
-  rawValue: any;
-  key: string;
-  type?: "text" | "date" | "select" | "boolean";
-  options?: { label: string; value: any }[];
-};
+import { MemberProfile } from "@/lib/types/admin/memberType";
 
 const Profile = () => {
   const { data, isLoading } = useMyProfile();
   const profile = data;
 
-  if (isLoading) return <p className="p-6">Loading...</p>;
+  const memberId = profile?.member?.id;
+  const { mutate: updateProfile } = useUpdateMyProfile(memberId!);
+  const userId = profile?.id;
 
-  const handleSectionSave = (section: string, updated: Record<string, any>) => {
-    console.log("Save section:", section, updated);
-    // TODO: call API to update this section
+  if (isLoading) return <p className="p-6 text-sm text-gray-400">Loading...</p>;
+  if (!profile) return null;
+
+  console.log(userId, "before handlesave");
+
+  const handleSectionSave = (updated: Record<string, any>) => {
+    const m = profile.member;
+    console.log(userId, "after handlesave");
+    const fullPayload: Partial<MemberProfile> = {
+      sl_no: m.sl_no,
+
+      name_english: m.name_english,
+      user_date_of_birth: m.user_date_of_birth,
+      nid_number: m.nid_number,
+      permanent_address: m.permanent_address,
+      present_address: m.present_address,
+      gender: m.gender,
+      mobile: m.mobile,
+      member_fee_paid: Number(m.member_fee_paid),
+      membership_date: m.membership_date,
+
+      name_bangla: m.name_bangla,
+      father_husband_name: m.father_husband_name,
+      mother_name: m.mother_name,
+      religion: m.religion,
+      membership_expiry_date: m.membership_expiry_date,
+      consecutive_missed_payments: m.consecutive_missed_payments,
+
+      ...updated,
+
+      alternate_mobile:
+        updated.alternate_mobile !== undefined
+          ? updated.alternate_mobile === ""
+            ? null
+            : String(updated.alternate_mobile)
+          : (m.alternate_mobile ?? null),
+      user_id: userId ? String(userId) : undefined,
+
+      ...(updated.member_fee_paid !== undefined && {
+        member_fee_paid: Number(updated.member_fee_paid),
+      }),
+    };
+    console.log(userId, "finally handlesave");
+    updateProfile(fullPayload);
   };
 
   return (
@@ -39,56 +73,59 @@ const Profile = () => {
       <ProfileCard profile={profile} />
 
       <AccountSection
-        email={profile?.email}
-        status={profile?.status}
+        email={profile.email}
+        status={profile.status}
         lastLogin={
-          profile?.last_login_at
-            ? new Date(profile.last_login_at).toLocaleDateString()
-            : "-"
+          profile.last_login_at
+            ? new Date(profile.last_login_at).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })
+            : undefined
         }
-        onStatusSave={(updatedStatus: string) => {
-          console.log("Update Status:", updatedStatus);
-          // call your status update API here
-        }}
+        onStatusSave={(updatedStatus) =>
+          updateProfile({ status: updatedStatus } as any)
+        }
       />
 
       <PersonalInfoSection
         fields={[
           {
             label: "Bangla Name",
-            value: profile?.member?.name_bangla,
-            rawValue: profile?.member?.name_bangla,
+            value: profile.member?.name_bangla,
+            rawValue: profile.member?.name_bangla,
             key: "name_bangla",
           },
           {
             label: "English Name",
-            value: profile?.member?.name_english,
-            rawValue: profile?.member?.name_english,
+            value: profile.member?.name_english,
+            rawValue: profile.member?.name_english,
             key: "name_english",
           },
           {
             label: "Father/Husband",
-            value: profile?.member?.father_husband_name,
-            rawValue: profile?.member?.father_husband_name,
+            value: profile.member?.father_husband_name,
+            rawValue: profile.member?.father_husband_name,
             key: "father_husband_name",
           },
           {
             label: "Mother",
-            value: profile?.member?.mother_name,
-            rawValue: profile?.member?.mother_name,
+            value: profile.member?.mother_name,
+            rawValue: profile.member?.mother_name,
             key: "mother_name",
           },
           {
             label: "DOB",
-            value: <DateDisplay date={new Date()} />,
-            rawValue: profile?.member?.user_date_of_birth,
+            value: <DateDisplay date={profile.member?.user_date_of_birth} />,
+            rawValue: profile.member?.user_date_of_birth,
             key: "user_date_of_birth",
             type: "date",
           },
           {
             label: "Gender",
-            value: profile?.member?.gender || "-",
-            rawValue: profile?.member?.gender,
+            value: profile.member?.gender || "—",
+            rawValue: profile.member?.gender,
             key: "gender",
             type: "select",
             options: [
@@ -99,24 +136,30 @@ const Profile = () => {
           },
           {
             label: "Religion",
-            value: profile?.member?.religion,
-            rawValue: profile?.member?.religion,
+            value: profile.member?.religion,
+            rawValue: profile.member?.religion,
             key: "religion",
           },
           {
+            label: "NID Number",
+            value: profile.member?.nid_number,
+            rawValue: profile.member?.nid_number,
+            key: "nid_number",
+          },
+          {
             label: "Mobile",
-            value: profile?.member?.mobile,
-            rawValue: profile?.member?.mobile,
+            value: profile.member?.mobile,
+            rawValue: profile.member?.mobile,
             key: "mobile",
           },
           {
             label: "Alt Mobile",
-            value: profile?.member?.alternate_mobile,
-            rawValue: profile?.member?.alternate_mobile,
+            value: profile.member?.alternate_mobile,
+            rawValue: profile.member?.alternate_mobile,
             key: "alternate_mobile",
           },
         ]}
-        onSave={(updated) => handleSectionSave("personal", updated)}
+        onSave={handleSectionSave}
       />
 
       <EditableSection
@@ -124,66 +167,65 @@ const Profile = () => {
         fields={[
           {
             label: "Permanent",
-            value: profile?.member?.permanent_address,
-            rawValue: profile?.member?.permanent_address,
+            value: profile.member?.permanent_address,
+            rawValue: profile.member?.permanent_address,
             key: "permanent_address",
           },
           {
             label: "Present",
-            value: profile?.member?.present_address,
-            rawValue: profile?.member?.present_address,
+            value: profile.member?.present_address,
+            rawValue: profile.member?.present_address,
             key: "present_address",
           },
         ]}
-        onSave={(updated) => handleSectionSave("address", updated)}
+        onSave={handleSectionSave}
       />
 
       <MembershipSection
         fields={[
           {
             label: "Member ID",
-            value: profile?.member?.member_id,
-            rawValue: profile?.member?.member_id,
-
+            value: profile.member?.member_id,
+            rawValue: profile.member?.member_id,
             key: "member_id",
           },
           {
             label: "SL No",
-            value: profile?.member?.sl_no,
-            rawValue: profile?.member?.sl_no,
+            value: profile.member?.sl_no,
+            rawValue: profile.member?.sl_no,
             key: "sl_no",
           },
           {
             label: "Fee Paid",
-            value: profile?.member?.member_fee_paid ? "Yes" : "No",
-            rawValue: profile?.member?.member_fee_paid,
+            value: profile.member?.member_fee_paid ? "Yes" : "No",
+            rawValue: profile.member?.member_fee_paid,
             key: "member_fee_paid",
+            type: "boolean",
           },
           {
             label: "Start Date",
-            value: <DateDisplay date={profile?.member?.membership_date} />,
-            rawValue: profile?.member?.membership_date,
+            value: <DateDisplay date={profile.member?.membership_date} />,
+            rawValue: profile.member?.membership_date,
             key: "membership_date",
             type: "date",
           },
           {
             label: "Expire Date",
             value: (
-              <DateDisplay date={profile?.member?.membership_expiry_date} />
+              <DateDisplay date={profile.member?.membership_expiry_date} />
             ),
-            rawValue: profile?.member?.membership_expiry_date,
+            rawValue: profile.member?.membership_expiry_date,
             key: "membership_expiry_date",
             type: "date",
           },
-
           {
             label: "Missed Payments",
-            value: profile?.member?.consecutive_missed_payments,
-            rawValue: profile?.member?.consecutive_missed_payments,
+            value: profile.member?.consecutive_missed_payments,
+            rawValue: profile.member?.consecutive_missed_payments,
             key: "consecutive_missed_payments",
           },
         ]}
-        onSave={(updated) => handleSectionSave("membership", updated)}
+        onSave={handleSectionSave}
       />
     </div>
   );

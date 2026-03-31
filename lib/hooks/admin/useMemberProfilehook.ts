@@ -9,7 +9,7 @@ export const useUpdateMyProfile = (userId: number) => {
     mutationFn: (payload: Partial<MemberProfile>) =>
       updateMyProfile(userId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["member-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
     },
   });
 };

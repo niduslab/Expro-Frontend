@@ -125,7 +125,7 @@ const MembershipSection = ({ fields, onSave, title = "Membership" }: Props) => {
               )
             ) : (
               <span className="text-sm font-medium text-gray-900">
-                {f.value || "—"}
+                {f.value ?? "—"}
               </span>
             )}
           </div>

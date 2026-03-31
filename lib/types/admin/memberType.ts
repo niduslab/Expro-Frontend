@@ -6,6 +6,7 @@ export interface User {
 export interface MemberProfile {
   id: number;
   user?: User;
+  user_id: string;
   sl_no: string;
   member_id: string;
   name_bangla?: string;
