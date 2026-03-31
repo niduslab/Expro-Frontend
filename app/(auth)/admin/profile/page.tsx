@@ -12,6 +12,7 @@ import DateDisplay from "@/components/DateTimeDisplay";
 import { useUpdateMyProfile } from "@/lib/hooks/admin/useMemberProfilehook";
 import EditableSection from "./Section";
 import { MemberProfile } from "@/lib/types/admin/memberType";
+import { toast } from "sonner";
 
 const Profile = () => {
   const { data, isLoading } = useMyProfile();
@@ -19,16 +20,15 @@ const Profile = () => {
 
   const memberId = profile?.member?.id;
   const { mutate: updateProfile } = useUpdateMyProfile(memberId!);
+
   const userId = profile?.id;
 
   if (isLoading) return <p className="p-6 text-sm text-gray-400">Loading...</p>;
   if (!profile) return null;
 
-  console.log(userId, "before handlesave");
-
   const handleSectionSave = (updated: Record<string, any>) => {
     const m = profile.member;
-    console.log(userId, "after handlesave");
+
     const fullPayload: Partial<MemberProfile> = {
       sl_no: m.sl_no,
 
@@ -63,8 +63,20 @@ const Profile = () => {
         member_fee_paid: Number(updated.member_fee_paid),
       }),
     };
-    console.log(userId, "finally handlesave");
-    updateProfile(fullPayload);
+    toast.loading("Updating...", { id: "profile-update" });
+
+    updateProfile(fullPayload, {
+      onSuccess: () => {
+        toast.success("My profile Updated successfully", {
+          id: "profile-update",
+        });
+      },
+      onError: () => {
+        toast.error("Failed to update profile", {
+          id: "profile-update",
+        });
+      },
+    });
   };
 
   return (
@@ -179,6 +191,19 @@ const Profile = () => {
           },
         ]}
         onSave={handleSectionSave}
+        validate={(data) => {
+          const errors: Record<string, string> = {};
+
+          if (!data.permanent_address?.trim()) {
+            errors.permanent_address = "Permanent address is required";
+          }
+
+          if (!data.present_address?.trim()) {
+            errors.present_address = "Present address is required";
+          }
+
+          return errors;
+        }}
       />
 
       <MembershipSection

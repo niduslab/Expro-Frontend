@@ -1,29 +1,60 @@
+"use client";
+
 import { useState } from "react";
 import { Check, X, Pencil } from "lucide-react";
 import InfoItem from "./InfoItem";
 
 const inputCls =
-  "w-full text-sm border border-gray-200 rounded-lg px-2.5 py-1.5 bg-white text-gray-800 outline-none focus:ring-1 focus:ring-blue-400 mt-1";
+  "w-full text-sm border rounded-lg px-2.5 py-1.5 bg-white text-gray-800 outline-none focus:ring-1 mt-1";
+
+type Field = {
+  label: string;
+  value: any;
+  rawValue?: any;
+  key: string;
+};
 
 const EditableSection = ({
   title,
   fields,
   onSave,
+  validate, // ✅ add validation prop
 }: {
   title: string;
-  fields: { label: string; value: any; rawValue?: any; key: string }[];
+  fields: Field[];
   onSave: (updated: Record<string, any>) => void;
+  validate?: (data: Record<string, any>) => Record<string, string>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(
     Object.fromEntries(fields.map((f) => [f.key, f.rawValue ?? f.value])),
   );
+  const [errors, setErrors] = useState<Record<string, string>>({}); // ✅ errors state
 
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
+
+    // clear field error
+    if (errors[key]) {
+      setErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[key];
+        return copy;
+      });
+    }
   };
 
   const handleSave = () => {
+    if (validate) {
+      const validationErrors = validate(formData);
+
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+    }
+
+    setErrors({});
     onSave(formData);
     setIsEditing(false);
   };
@@ -32,6 +63,7 @@ const EditableSection = ({
     setFormData(
       Object.fromEntries(fields.map((f) => [f.key, f.rawValue ?? f.value])),
     );
+    setErrors({});
     setIsEditing(false);
   };
 
@@ -79,12 +111,22 @@ const EditableSection = ({
               <span className="text-[11px] font-semibold tracking-widest uppercase text-gray-400">
                 {f.label}
               </span>
+
               <input
                 type="text"
                 value={formData[f.key] || ""}
                 onChange={(e) => handleChange(f.key, e.target.value)}
-                className={inputCls}
+                className={`${inputCls} ${
+                  errors[f.key]
+                    ? "border-red-500"
+                    : "border-gray-200 focus:ring-blue-400"
+                }`}
               />
+
+              {/* ✅ inline error */}
+              {errors[f.key] && (
+                <p className="text-xs text-red-500 mt-1">{errors[f.key]}</p>
+              )}
             </div>
           ) : (
             <InfoItem

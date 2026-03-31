@@ -24,19 +24,71 @@ const inputCls =
 
 const MembershipSection = ({ fields, onSave, title = "Membership" }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState(
     Object.fromEntries(fields.map((f) => [f.key, f.rawValue])),
   );
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Member ID
+    if (!formData.member_id?.toString().trim()) {
+      newErrors.member_id = "Member ID is required";
+    }
+
+    // SL No
+    if (!formData.sl_no?.toString().trim()) {
+      newErrors.sl_no = "SL No is required";
+    } else if (isNaN(Number(formData.sl_no))) {
+      newErrors.sl_no = "SL No must be a number";
+    }
+
+    // Start Date
+    if (!formData.membership_date) {
+      newErrors.membership_date = "Start date is required";
+    }
+
+    // Expiry Date
+    if (!formData.membership_expiry_date) {
+      newErrors.membership_expiry_date = "Expire date is required";
+    } else if (formData.membership_date) {
+      const start = new Date(formData.membership_date);
+      const end = new Date(formData.membership_expiry_date);
+
+      if (end <= start) {
+        newErrors.membership_expiry_date =
+          "Expire date must be after start date";
+      }
+    }
+
+    // Missed Payments
+    if (formData.consecutive_missed_payments !== undefined) {
+      const val = Number(formData.consecutive_missed_payments);
+
+      if (isNaN(val) || val < 0) {
+        newErrors.consecutive_missed_payments = "Must be a non-negative number";
+      }
+    }
+
+    return newErrors;
+  };
 
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
+    const validationErrors = validate();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     onSave(formData);
     setIsEditing(false);
   };
-
   const handleCancel = () => {
     setFormData(Object.fromEntries(fields.map((f) => [f.key, f.rawValue])));
     setIsEditing(false);
@@ -116,12 +168,30 @@ const MembershipSection = ({ fields, onSave, title = "Membership" }: Props) => {
                   <option value="false">No</option>
                 </select>
               ) : (
-                <input
-                  type="text"
-                  value={formData[f.key] || ""}
-                  onChange={(e) => handleChange(f.key, e.target.value)}
-                  className={inputCls}
-                />
+                <>
+                  <input
+                    type="text"
+                    value={formData[f.key] || ""}
+                    onChange={(e) => {
+                      handleChange(f.key, e.target.value);
+
+                      // clear error on change
+                      if (errors[f.key]) {
+                        setErrors((prev) => {
+                          const copy = { ...prev };
+                          delete copy[f.key];
+                          return copy;
+                        });
+                      }
+                    }}
+                    className={`${inputCls} ${errors[f.key] ? "border-red-500" : ""}`}
+                  />
+                  {errors[f.key] && (
+                    <span className="text-xs text-red-500 mt-1">
+                      {errors[f.key]}
+                    </span>
+                  )}
+                </>
               )
             ) : (
               <span className="text-sm font-medium text-gray-900">

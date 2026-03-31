@@ -312,7 +312,7 @@ export default function BranchModal({
             </div>
 
             {/* Actions */}
-            <div className="flex gap-[16px] w-fit">
+            <div className="flex  ml-auto  gap-[16px] w-fit">
               <button
                 onClick={onClose}
                 disabled={isPending}

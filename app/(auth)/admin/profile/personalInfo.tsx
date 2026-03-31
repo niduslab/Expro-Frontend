@@ -28,15 +28,41 @@ const PersonalInfoSection = ({
   title = "Personal Information",
 }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState(
     Object.fromEntries(fields.map((f) => [f.key, f.rawValue])),
   );
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name_english?.trim()) {
+      newErrors.name_english = "English name is required";
+    }
+
+    if (!formData.mobile?.match(/^01\d{9}$/)) {
+      newErrors.mobile = "Invalid mobile number";
+    }
+
+    if (formData.nid_number && formData.nid_number.length < 10) {
+      newErrors.nid_number = "NID must be at least 10 digits";
+    }
+
+    return newErrors;
+  };
 
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
+    const validationErrors = validate();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     onSave(formData);
     setIsEditing(false);
   };
@@ -123,13 +149,30 @@ const PersonalInfoSection = ({
                   <option value="false">No</option>
                 </select>
               ) : (
-                <input
-                  type="text"
-                  value={formData[f.key] || ""}
-                  onChange={(e) => handleChange(f.key, e.target.value)}
-                  className={inputCls}
-                  autoFocus={false}
-                />
+                <>
+                  <input
+                    type="text"
+                    value={formData[f.key] || ""}
+                    onChange={(e) => {
+                      handleChange(f.key, e.target.value);
+
+                      // clear error on change
+                      if (errors[f.key]) {
+                        setErrors((prev) => {
+                          const copy = { ...prev };
+                          delete copy[f.key];
+                          return copy;
+                        });
+                      }
+                    }}
+                    className={`${inputCls} ${errors[f.key] ? "border-red-500" : ""}`}
+                  />
+                  {errors[f.key] && (
+                    <span className="text-xs text-red-500 mt-1">
+                      {errors[f.key]}
+                    </span>
+                  )}
+                </>
               )
             ) : (
               <span className="text-sm font-medium text-gray-900">
