@@ -15,6 +15,8 @@ interface NewProjectModalProps {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"info" | "budget" | "teams">
   >;
+  onSubmit: () => void; // ← new
+  isPending: boolean; // ← new
 }
 
 export default function ProjectTeamsRoles({
@@ -23,8 +25,11 @@ export default function ProjectTeamsRoles({
   setFormData,
   setActiveTab,
   setOpenModal,
+  onSubmit,
+  isPending,
 }: NewProjectModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = () => {
     const finalData = {
       ...formData,
@@ -38,30 +43,22 @@ export default function ProjectTeamsRoles({
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
-
       result.error.issues.forEach((issue) => {
-        if (issue.path[0]) {
-          fieldErrors[issue.path[0] as string] = issue.message;
-        }
+        if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
       });
-
       setErrors(fieldErrors);
-
       const lastMessage = result.error.issues.slice(-1)[0]?.message;
       toast.error(lastMessage || "Validation failed");
-
       return;
     }
 
     setErrors({});
-    toast.success("Project created successfully.");
-    setOpenModal(false);
+    onSubmit(); // ← delegate to parent; toast + close handled by mutation
   };
+
   const handleBack = () => {
     const currentIndex = tabs.indexOf(activeTab);
-    if (currentIndex > 0) {
-      setActiveTab(tabs[currentIndex - 1]);
-    }
+    if (currentIndex > 0) setActiveTab(tabs[currentIndex - 1]);
   };
 
   return (
@@ -73,9 +70,7 @@ export default function ProjectTeamsRoles({
               <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
                 Project Lead
               </span>
-              <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                *
-              </span>
+              <span className="text-[#FB2C36] font-medium text-[16px]">*</span>
             </div>
             <div>
               <input
@@ -83,10 +78,8 @@ export default function ProjectTeamsRoles({
                 value={formData.projectLead}
                 onChange={(e) => {
                   setFormData({ ...formData, projectLead: e.target.value });
-
-                  if (errors.projectLead) {
+                  if (errors.projectLead)
                     setErrors((prev) => ({ ...prev, projectLead: "" }));
-                  }
                 }}
                 className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
                 placeholder="Kamal Hossen"
@@ -99,6 +92,7 @@ export default function ProjectTeamsRoles({
             </div>
           </div>
         </div>
+
         <div className="relative w-full sm:w-1/2">
           <Dropdown
             label="Lead Role / Designation"
@@ -113,9 +107,7 @@ export default function ProjectTeamsRoles({
             value={formData.role}
             onChange={(value) => {
               setFormData({ ...formData, role: value });
-              if (errors.role) {
-                setErrors((prev) => ({ ...prev, role: "" }));
-              }
+              if (errors.role) setErrors((prev) => ({ ...prev, role: "" }));
             }}
           />
           {errors.role && (
@@ -131,9 +123,7 @@ export default function ProjectTeamsRoles({
               <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
                 Team Size (estimated)
               </span>
-              <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                *
-              </span>
+              <span className="text-[#FB2C36] font-medium text-[16px]">*</span>
             </div>
             <div>
               <input
@@ -141,10 +131,8 @@ export default function ProjectTeamsRoles({
                 value={formData.teamSize}
                 onChange={(e) => {
                   setFormData({ ...formData, teamSize: e.target.value });
-
-                  if (errors.teamSize) {
+                  if (errors.teamSize)
                     setErrors((prev) => ({ ...prev, teamSize: "" }));
-                  }
                 }}
                 className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
                 placeholder="e.g. 15"
@@ -164,9 +152,7 @@ export default function ProjectTeamsRoles({
               <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
                 Member Contribution (৳/mo)
               </span>
-              <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                *
-              </span>
+              <span className="text-[#FB2C36] font-medium text-[16px]">*</span>
             </div>
             <div>
               <input
@@ -174,10 +160,8 @@ export default function ProjectTeamsRoles({
                 value={formData.contribution}
                 onChange={(e) => {
                   setFormData({ ...formData, contribution: e.target.value });
-
-                  if (errors.contribution) {
+                  if (errors.contribution)
                     setErrors((prev) => ({ ...prev, contribution: "" }));
-                  }
                 }}
                 className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
                 placeholder="e.g. 500"
@@ -192,7 +176,8 @@ export default function ProjectTeamsRoles({
         </div>
       </div>
 
-      <div className="flex relative justify-between w-full pt-36 gap-[16px]">
+      <div className="flex relative justify-between w-full pt-8 gap-[16px]">
+        {/* pt-36 → pt-8: pt-36 is not a standard Tailwind class */}
         <button
           onClick={handleBack}
           className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"
@@ -201,9 +186,10 @@ export default function ProjectTeamsRoles({
         </button>
         <button
           onClick={handleSubmit}
-          className="bg-[#068847] gap-2 h-[48px] w-[158px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em]"
+          disabled={isPending}
+          className="bg-[#068847] gap-2 h-[48px] w-[158px] rounded-xl px-[16px] text-white flex items-center justify-center font-semibold text-[16px] disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <span>Complete</span>
+          <span>{isPending ? "Saving..." : "Complete"}</span>
           <CircleCheck className="h-5 w-5" />
         </button>
       </div>

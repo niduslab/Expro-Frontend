@@ -4,7 +4,7 @@ import { z } from "zod";
 export const projectInfoSchema = z.object({
   title: z.string().min(3, "Project title is required"),
   category: z.string().min(1, "Category is required"),
-  priority: z.string().min(1, "Priority is required"),
+  status: z.string().min(1, "Priority is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
 });
 

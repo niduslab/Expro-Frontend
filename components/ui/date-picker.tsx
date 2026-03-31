@@ -1,11 +1,12 @@
 "use client";
 
 import { Calendar } from "lucide-react";
+import { useRef } from "react";
 
 type DatePickerProps = {
   label?: string;
   required?: boolean;
-  value?: string; // should be in 'yyyy-mm-dd' format
+  value?: string;
   onChange?: (value: string) => void;
 };
 
@@ -15,12 +16,11 @@ export default function DatePicker({
   value,
   onChange,
 }: DatePickerProps) {
-  // Handles changes in the date input
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value; // 'yyyy-mm-dd' format
-    if (!raw) return;
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    // Pass the raw value up to parent; parent can format for display elsewhere
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (!raw) return;
     onChange?.(raw);
   };
 
@@ -37,10 +37,14 @@ export default function DatePicker({
         </div>
       )}
 
-      <div className="relative">
+      <div
+        className="relative cursor-pointer"
+        onClick={() => inputRef.current?.showPicker()}
+      >
         <input
+          ref={inputRef}
           type="date"
-          value={value || ""} // important: always pass a valid value
+          value={value || ""}
           onChange={handleChange}
           className="
             w-full h-[42px]
@@ -51,8 +55,9 @@ export default function DatePicker({
             text-[14px]
             text-[#6A7282]
             bg-white
-            appearance-none
             cursor-pointer
+            pointer-events-none
+            [&::-webkit-calendar-picker-indicator]:hidden
           "
         />
 

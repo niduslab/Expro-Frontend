@@ -1,5 +1,3 @@
-// lib/types/projectType.ts
-
 export interface Project {
   id: number;
   title: string;
@@ -13,9 +11,9 @@ export interface Project {
   status?: string;
   start_date?: string;
   end_date?: string;
-  budget?: string;
-  funds_raised?: string;
-  funds_utilized?: string;
+  budget?: number; // was string — backend stores numeric
+  funds_raised?: number; // was string
+  funds_utilized?: number; // was string
   project_lead_id?: number;
   is_featured?: boolean;
   is_published?: boolean;
@@ -23,9 +21,6 @@ export interface Project {
   updated_at?: string;
 }
 
-/**
- * Pagination object returned by the API
- */
 export interface Pagination {
   total: number;
   per_page: number;
@@ -33,9 +28,6 @@ export interface Pagination {
   last_page: number;
 }
 
-/**
- * API response when it includes pagination
- */
 export interface ApiResponseWithPagination<T> {
   success: boolean;
   message: string;
@@ -43,19 +35,34 @@ export interface ApiResponseWithPagination<T> {
   pagination: Pagination;
 }
 
-/**
- * Generic paginated response for frontend usage
- */
 export interface PaginatedResponse<T> {
   data: T[];
   pagination: Pagination;
 }
 
-/**
- * API response without pagination
- */
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
 }
+
+// ── Mutation payloads ──────────────────────────────────────────────
+export interface CreateProjectPayload {
+  title: string;
+  title_bangla?: string;
+  slug?: string;
+  category: string;
+  short_description?: string;
+  description?: string;
+  status: string;
+  start_date?: string;
+  end_date?: string;
+  budget?: number;
+  funds_raised?: number;
+  funds_utilized?: number;
+  project_lead_id?: number;
+  is_featured?: boolean;
+  is_published?: boolean;
+}
+
+export type UpdateProjectPayload = Partial<CreateProjectPayload>;
