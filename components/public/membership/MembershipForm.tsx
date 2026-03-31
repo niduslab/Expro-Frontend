@@ -161,9 +161,35 @@ const MembershipForm = () => {
   };
 
   const handleSubmit = () => {
+    // Log payload data before submission for backend verification
+    console.log("=".repeat(80));
+    console.log("📋 MEMBERSHIP FORM PAYLOAD - READY FOR SUBMISSION");
+    console.log("=".repeat(80));
+    
+    console.log("\n👤 Personal Information:");
+    console.log(JSON.stringify(formData.personalInfo, null, 2));
+    
+    console.log("\n📍 Address Information:");
+    console.log(JSON.stringify(formData.addressInfo, null, 2));
+    
+    console.log("\n👥 Nominee Information:");
+    console.log(JSON.stringify(formData.nomineeInfo, null, 2));
+    
+    console.log("\n🤝 Sponsor Information:");
+    console.log(JSON.stringify(formData.sponsorInfo, null, 2));
+    
+    console.log("\n💰 Pension Information:");
+    console.log(JSON.stringify(formData.pensionInfo, null, 2));
+    
+    console.log("\n📦 Complete Payload (JSON):");
+    console.log(JSON.stringify(formData, null, 2));
+    
+    console.log("\n" + "=".repeat(80));
+    console.log("✅ Payload logged successfully. Check console for details.");
+    console.log("=".repeat(80) + "\n");
+    
     // Here you would typically submit the formData to your API
-    console.log("Submitting Membership Data:", formData);
-    alert("Application Submitted! Proceeding to Payment...");
+    alert("Application Submitted! Check console for payload details.\n\nProceeding to Payment...");
     // Redirect to payment gateway or success page
   };
 

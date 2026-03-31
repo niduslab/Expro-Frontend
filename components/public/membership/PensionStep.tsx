@@ -1,60 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, ShieldCheck, Wallet, Check, Circle, CheckCircle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ShieldCheck, Wallet, Check, Circle, CheckCircle, Loader2 } from 'lucide-react';
 import StepsNavigation from './StepsNavigation';
+import { usePensionPackages } from '@/lib/hooks/public/pensionPackagesHook';
 
 export type PensionInfoState = {
-  selectedPackage: 'skip' | 'basic' | 'standard' | 'advanced' | 'premium';
+  selectedPackage: 'skip' | number;
 };
-
-const packages = [
-  {
-    id: 'basic',
-    name: 'Basic',
-    price: 300,
-    features: [
-      'Total Months 100',
-      'Maturity Amount ৳50,000',
-      'Status Closed',
-      'Join Commission Closed'
-    ]
-  },
-  {
-    id: 'standard',
-    name: 'Standard',
-    price: 500,
-    isPopular: true,
-    features: [
-      'Total Months 100',
-      'Maturity Amount ৳85,000',
-      'Status Closed',
-      'Join Commission Closed'
-    ]
-  },
-  {
-    id: 'advanced',
-    name: 'Advanced',
-    price: 1000,
-    features: [
-      'Total Months 100',
-      'Maturity Amount ৳172,000',
-      'Status Closed',
-      'Join Commission ৳600'
-    ]
-  },
-  {
-    id: 'premium',
-    name: 'Premium',
-    price: 1500,
-    features: [
-      'Total Months 100',
-      'Maturity Amount ৳260,000',
-      'Status Running',
-      'Join Commission ৳700'
-    ]
-  }
-];
 
 interface PensionStepProps {
   data: PensionInfoState;
@@ -78,17 +31,22 @@ const PensionStep: React.FC<PensionStepProps> = ({
   onStepClick,
 }) => {
   const [membershipFee] = useState(400);
+  
+  // Fetch pension packages from API
+  const { data: packagesData, isLoading, error } = usePensionPackages(1, 100);
+  const packages = packagesData?.data || [];
 
   const handlePackageSelect = (packageId: PensionInfoState['selectedPackage']) => {
     onUpdate({ selectedPackage: packageId });
   };
 
   const getSelectedPackageDetails = () => {
+    if (data.selectedPackage === 'skip') return null;
     return packages.find(p => p.id === data.selectedPackage);
   };
 
   const selectedPackageDetails = getSelectedPackageDetails();
-  const totalDue = membershipFee + (selectedPackageDetails?.price || 0);
+  const totalDue = membershipFee + (selectedPackageDetails ? parseFloat(selectedPackageDetails.monthly_amount) : 0);
 
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
@@ -196,67 +154,101 @@ const PensionStep: React.FC<PensionStepProps> = ({
             </div>
 
             {/* Packages Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              {packages.map((pkg) => {
-                const isSelected = data.selectedPackage === pkg.id;
-                
-                return (
-                  <div 
-                    key={pkg.id}
-                    onClick={() => handlePackageSelect(pkg.id as any)}
-                    className={`border rounded-xl p-5 cursor-pointer transition-all flex flex-col h-full relative ${
-                      isSelected 
-                        ? 'bg-[#00341C] text-white border-[#00341C] shadow-lg transform scale-[1.02]' 
-                        : 'bg-white text-gray-900 border-gray-200 hover:border-[#008543]'
-                    }`}
-                  >
-                    {pkg.isPopular && (
-                      <span className="absolute top-4 right-4 bg-[#36F293] text-[#00341C] text-[10px] font-bold px-2 py-0.5 rounded">
-                        POPULAR
-                      </span>
-                    )}
-                    
-                    <h3 className={`text-lg font-bold mb-1 ${isSelected ? 'text-white' : 'text-[#00341C]'}`}>
-                      {pkg.name}
-                    </h3>
-                    
-                    <div className="flex items-baseline mb-4">
-                      <span className={`text-2xl font-bold ${isSelected ? 'text-white' : 'text-[#00341C]'}`}>
-                        ৳{pkg.price}
-                      </span>
-                      <span className={`text-xs ml-1 ${isSelected ? 'text-gray-300' : 'text-gray-500'}`}>
-                        /month
-                      </span>
-                    </div>
-
-                    <button 
-                      className={`w-full py-2 rounded border text-sm font-medium mb-6 transition-colors ${
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="animate-spin text-[#008543]" size={40} />
+              </div>
+            ) : error ? (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <p className="text-red-600">Failed to load pension packages. Please try again later.</p>
+              </div>
+            ) : packages.length === 0 ? (
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                <p className="text-gray-600">No pension packages available at the moment.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {packages.map((pkg, index) => {
+                  const isSelected = data.selectedPackage === pkg.id;
+                  const monthlyAmount = parseFloat(pkg.monthly_amount);
+                  const maturityAmount = parseFloat(pkg.maturity_amount);
+                  const joiningCommission = parseFloat(pkg.joining_commission);
+                  const isPopular = index === 1; // Mark second package as popular
+                  
+                  return (
+                    <div 
+                      key={pkg.id}
+                      onClick={() => handlePackageSelect(pkg.id)}
+                      className={`border rounded-xl p-5 cursor-pointer transition-all flex flex-col h-full relative ${
                         isSelected 
-                          ? 'bg-[#008543] border-[#008543] text-white' 
-                          : 'bg-white border-gray-300 text-[#00341C] hover:border-[#00341C]'
+                          ? 'bg-[#00341C] text-white border-[#00341C] shadow-lg transform scale-[1.02]' 
+                          : 'bg-white text-gray-900 border-gray-200 hover:border-[#008543]'
                       }`}
                     >
-                      {isSelected ? `Selected ${pkg.name}` : `Choose ${pkg.name} Package`}
-                    </button>
+                      {isPopular && (
+                        <span className="absolute top-4 right-4 bg-[#36F293] text-[#00341C] text-[10px] font-bold px-2 py-0.5 rounded">
+                          POPULAR
+                        </span>
+                      )}
+                      
+                      <h3 className={`text-lg font-bold mb-1 ${isSelected ? 'text-white' : 'text-[#00341C]'}`}>
+                        {pkg.name}
+                      </h3>
+                      
+                      <div className="flex items-baseline mb-4">
+                        <span className={`text-2xl font-bold ${isSelected ? 'text-white' : 'text-[#00341C]'}`}>
+                          ৳{monthlyAmount.toLocaleString()}
+                        </span>
+                        <span className={`text-xs ml-1 ${isSelected ? 'text-gray-300' : 'text-gray-500'}`}>
+                          /month
+                        </span>
+                      </div>
 
-                    <p className={`text-xs font-bold mb-3 ${isSelected ? 'text-gray-300' : 'text-[#00341C]'}`}>
-                      Core Feature
-                    </p>
+                      <button 
+                        className={`w-full py-2 rounded border text-sm font-medium mb-6 transition-colors ${
+                          isSelected 
+                            ? 'bg-[#008543] border-[#008543] text-white' 
+                            : 'bg-white border-gray-300 text-[#00341C] hover:border-[#00341C]'
+                        }`}
+                      >
+                        {isSelected ? `Selected ${pkg.name}` : `Choose ${pkg.name} Package`}
+                      </button>
 
-                    <div className="space-y-2 flex-grow">
-                      {pkg.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
+                      <p className={`text-xs font-bold mb-3 ${isSelected ? 'text-gray-300' : 'text-[#00341C]'}`}>
+                        Core Features
+                      </p>
+
+                      <div className="space-y-2 flex-grow">
+                        <div className="flex items-start gap-2">
                           <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
                           <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
-                            {feature}
+                            Total Months: {pkg.total_installments}
                           </span>
                         </div>
-                      ))}
+                        <div className="flex items-start gap-2">
+                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
+                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
+                            Maturity Amount: ৳{maturityAmount.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
+                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
+                            Status: {pkg.status === 'running' ? 'Running' : 'Closed'}
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
+                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
+                            Join Commission: {joiningCommission > 0 ? `৳${joiningCommission.toLocaleString()}` : 'Closed'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Selected Indicator */}
             {data.selectedPackage !== 'skip' && selectedPackageDetails && (
@@ -265,7 +257,7 @@ const PensionStep: React.FC<PensionStepProps> = ({
                 <div>
                   <h4 className="font-bold text-[#00341C] text-sm">{selectedPackageDetails.name} Package Selected</h4>
                   <p className="text-xs text-gray-600">
-                    ৳{selectedPackageDetails.price}/month • Maturity: {selectedPackageDetails.features[1].split('৳')[1]}
+                    ৳{parseFloat(selectedPackageDetails.monthly_amount).toLocaleString()}/month • Maturity: ৳{parseFloat(selectedPackageDetails.maturity_amount).toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -287,7 +279,7 @@ const PensionStep: React.FC<PensionStepProps> = ({
           {data.selectedPackage !== 'skip' && selectedPackageDetails && (
              <div className="flex justify-between items-center text-sm text-gray-300 mb-6 border-b border-white/10 pb-6">
                <span>{selectedPackageDetails.name} Package (1st Month)</span>
-               <span>৳{selectedPackageDetails.price}</span>
+               <span>৳{parseFloat(selectedPackageDetails.monthly_amount).toLocaleString()}</span>
              </div>
           )}
 
