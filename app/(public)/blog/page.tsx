@@ -1,17 +1,33 @@
 "use client";
+import { useBlogs } from "@/lib/hooks/public/useBlogsHook";
 import Hero from "./hero";
-import BlogItem1 from "./blogitems/blogitems1";
-import BlogItems2 from "./blogitems/blogitems2";
-import BlogItems3 from "./blogitems/blogitems3";
-import BlogItems4 from "./blogitems/blogitems4";
-import BlogItems5 from "./blogitems/blogitems5";
-import BlogItems6 from "./blogitems/blogitems6";
-import BlogItems7 from "./blogitems/blogitems7";
-import BlogItems8 from "./blogitems/blogitems8";
-import BlogItems9 from "./blogitems/blogitems9";
+
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
+import Pagination from "@/components/pagination/page";
 
 export default function BlogPage() {
+  const [page, setPage] = useState(1); // Initial page is 1
+  const perPage = 10; // Items per page
+
+  const { data, isLoading, isError } = useBlogs(page, perPage);
+
+  const projects = data?.data ?? [];
+
+  const nextPage = () => {
+    if (projects.length === perPage) {
+      setPage((p) => p + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (page > 1) {
+      setPage((p) => p - 1);
+    }
+  };
+
   const router = useRouter();
   return (
     <>
@@ -34,22 +50,66 @@ export default function BlogPage() {
               </h2>
             </div>
 
+            {isLoading && <div>Loading...</div>}
+            {isError && <div>Error loading projects.</div>}
+
             {/* Blog Grid */}
             <div
               className="font-dm-sans grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 "
               onClick={() => router.push("/blog/blogdetails")}
             >
-              <BlogItem1 />
-              <BlogItems2 />
-              <BlogItems3 />
-              <BlogItems4 />
-              <BlogItems5 />
-              <BlogItems6 />
-              <BlogItems7 />
-              <BlogItems8 />
-              <BlogItems9 />
+              {data && (
+                <>
+                  {data?.data.map((blog: any, index: any) => (
+                    <div
+                      key={index}
+                      className="w-full rounded-lg border border-gray-200 p-6 shadow-md hover:shadow-xl transition cursor-pointer bg-white"
+                    >
+                      {/* Image */}
+                      <div className="relative w-full h-64 rounded-md overflow-hidden">
+                        <Image
+                          src={blog.featured_image}
+                          alt="Blog Item image"
+                          fill
+                          sizes=""
+                          className="object-cover"
+                          priority
+                        />
+                      </div>
+
+                      {/* Content */}
+                      <div className="mt-6 space-y-4">
+                        <div className="space-y-3">
+                          <h3 className="text-xl font-semibold text-gray-900 leading-tight">
+                            {blog.title}
+                          </h3>
+
+                          <p className="text-gray-600 text-sm leading-relaxed">
+                            {blog.content}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-[#068847] font-semibold">
+                          <span>Learn More</span>
+                          <ArrowUpRight className="h-4 w-4" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           </div>
+          {/* Pagination Controls */}
+          <Pagination
+            page={page}
+            perPage={perPage}
+            total={data?.pagination?.total}
+            dataLength={projects.length}
+            onNext={nextPage}
+            onPrev={prevPage}
+            onPageChange={(p) => setPage(p)}
+          />
         </section>
       </div>
     </>

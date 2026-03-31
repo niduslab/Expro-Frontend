@@ -265,11 +265,12 @@ export function Header() {
         { name: "Video", href: "/blog/video" },
         { name: "Magazine", href: "/blog/magazine" },
         { name: "Calendar", href: "/blog/calendar" },
+        { name: "Events", href: "/events" },
         { name: "Notices", href: "/blog/notices" },
         { name: "Careers", href: "/careers" },
       ],
     },
-    { name: "Contracts", href: "/contract", hasDropdown: false },
+    { name: "Contracts", href: "/contact", hasDropdown: false },
   ];
 
   return (

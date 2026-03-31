@@ -6,6 +6,7 @@ import {
   UserCheck,
   Wallet,
   BanknoteArrowDown,
+  Split,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -16,4 +17,5 @@ export const sidebarItems = [
   { name: "Board Members", href: "/admin/board-members", icon: UserCheck },
   { name: "Wallet Balance", href: "/admin/wallet", icon: Wallet },
   { name: "Donation", href: "/admin/donation", icon: BanknoteArrowDown },
+  { name: "Branch", href: "/admin/branch", icon: Split },
 ];

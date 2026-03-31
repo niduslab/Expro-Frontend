@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { useEvents } from "@/lib/hooks/public/eventHooks";
+import { useEvents } from "@/lib/hooks/public/useEventHooks";
 import EventDateTime from "@/components/formateDateTime/page";
 
 const events = [

@@ -5,7 +5,7 @@ import {
 } from "@/lib/api/functions/public/projectsApi";
 import { Project, PaginatedResponse } from "@/lib/types/projectType";
 
-export const useProjects = (page: number, per_page: number = 6) => {
+export const useProjects = (page: number, per_page: number) => {
   const options: UseQueryOptions<
     PaginatedResponse<Project>, // data returned by queryFn
     Error, // error type

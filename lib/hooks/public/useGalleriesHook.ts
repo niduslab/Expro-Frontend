@@ -1,6 +1,6 @@
 // lib/hooks/public/galleryHooks.ts
 
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   Gallery,
   GalleryImage,

@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api/BaseApi";
+import { apiClient } from "@/lib/api/axios";
 import {
   CreateMembershipApplicationInput,
   MembershipApplicationResponse,
