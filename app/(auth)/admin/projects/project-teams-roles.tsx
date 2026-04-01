@@ -34,7 +34,7 @@ export default function ProjectTeamsRoles({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const filtered = users.filter((u) =>
-    u.email.toLowerCase().includes(search.toLowerCase()),
+    u.member?.name_english.toLowerCase().includes(search.toLowerCase()),
   );
 
   const selectedUser = users.find((u) => u.id === formData.projectLeadId);
@@ -89,7 +89,9 @@ export default function ProjectTeamsRoles({
             <span
               className={`text-[14px] truncate ${selectedUser ? "text-[#030712]" : "text-[#6A7282]"}`}
             >
-              {selectedUser ? selectedUser.email : "Select a member"}
+              {selectedUser?.member?.name_english ||
+                selectedUser?.email ||
+                "Select a member"}
             </span>
             <ChevronDown
               className={`h-4 w-4 text-[#6A7282] shrink-0 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
@@ -107,7 +109,7 @@ export default function ProjectTeamsRoles({
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by email..."
+                  placeholder="Search by name/email..."
                   className="flex-1 text-[13px] text-[#030712] outline-none bg-transparent"
                 />
               </div>
@@ -135,7 +137,9 @@ export default function ProjectTeamsRoles({
                           : "text-[#030712]"
                       }`}
                     >
-                      <span className="truncate">{user.email}</span>
+                      <span className="truncate">
+                        {user.member?.name_english || user.email}
+                      </span>
                       <span className="text-[11px] text-[#6A7282] ml-2 shrink-0">
                         {user.roles[0] ?? ""}
                       </span>

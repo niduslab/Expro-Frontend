@@ -1,3 +1,5 @@
+import { MemberProfile } from "./memberType";
+
 // User (lightweight)
 export interface UserListItem {
   id: number;
@@ -6,6 +8,7 @@ export interface UserListItem {
   last_login_at: string | null;
   roles: string[];
   permissions: string[];
+  member: MemberProfile;
 }
 
 // Pagination

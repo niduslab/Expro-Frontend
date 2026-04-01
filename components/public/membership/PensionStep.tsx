@@ -1,12 +1,21 @@
 "use client";
 
-import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, ShieldCheck, Wallet, Check, Circle, CheckCircle, Loader2 } from 'lucide-react';
-import StepsNavigation from './StepsNavigation';
-import { usePensionPackages } from '@/lib/hooks/public/pensionPackagesHook';
+import React, { useState } from "react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  ShieldCheck,
+  Wallet,
+  Check,
+  Circle,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
+import StepsNavigation from "./StepsNavigation";
+import { usePensionPackages } from "@/lib/hooks/public/usePensionPackagesHook";
 
 export type PensionInfoState = {
-  selectedPackage: 'skip' | number;
+  selectedPackage: "skip" | number;
 };
 
 interface PensionStepProps {
@@ -31,38 +40,46 @@ const PensionStep: React.FC<PensionStepProps> = ({
   onStepClick,
 }) => {
   const [membershipFee] = useState(400);
-  
+
   // Fetch pension packages from API
   const { data: packagesData, isLoading, error } = usePensionPackages(1, 100);
   const packages = packagesData?.data || [];
 
-  const handlePackageSelect = (packageId: PensionInfoState['selectedPackage']) => {
+  const handlePackageSelect = (
+    packageId: PensionInfoState["selectedPackage"],
+  ) => {
     onUpdate({ selectedPackage: packageId });
   };
 
   const getSelectedPackageDetails = () => {
-    if (data.selectedPackage === 'skip') return null;
-    return packages.find(p => p.id === data.selectedPackage);
+    if (data.selectedPackage === "skip") return null;
+    return packages.find((p) => p.id === data.selectedPackage);
   };
 
   const selectedPackageDetails = getSelectedPackageDetails();
-  const totalDue = membershipFee + (selectedPackageDetails ? parseFloat(selectedPackageDetails.monthly_amount) : 0);
+  const totalDue =
+    membershipFee +
+    (selectedPackageDetails
+      ? parseFloat(selectedPackageDetails.monthly_amount)
+      : 0);
 
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-7xl">
-        
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10 mb-8">
-          
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-[#00341C] text-3xl font-bold mb-2">Membership Fee</h2>
-            <p className="text-gray-500 text-sm md:text-base">One-time registration fee</p>
+            <h2 className="text-[#00341C] text-3xl font-bold mb-2">
+              Membership Fee
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              One-time registration fee
+            </p>
           </div>
 
           {/* Steps Navigation */}
-          <StepsNavigation 
+          <StepsNavigation
             steps={steps}
             currentStep={currentStep}
             maxStepReached={maxStepReached}
@@ -72,18 +89,24 @@ const PensionStep: React.FC<PensionStepProps> = ({
           {/* Membership Fee Info Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-12">
             {/* Foundation Membership Card */}
-            <div 
+            <div
               className="rounded-xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
-              style={{ background: 'linear-gradient(90deg, #F0F4F2 0%, #F2F2E7 100%)' }}
+              style={{
+                background: "linear-gradient(90deg, #F0F4F2 0%, #F2F2E7 100%)",
+              }}
             >
               <div className="flex items-start gap-4">
                 <div className="bg-[#E8F5E9] p-3 rounded-full text-[#008543]">
                   <ShieldCheck size={32} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#00341C] mb-2">Foundation Membership</h3>
-                  <p className="text-gray-600 text-sm mb-4">Get access to all foundation benefits and programs</p>
-                  
+                  <h3 className="text-xl font-bold text-[#00341C] mb-2">
+                    Foundation Membership
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Get access to all foundation benefits and programs
+                  </p>
+
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-700">
                       <CheckCircle size={16} className="text-[#008543]" />
@@ -107,14 +130,22 @@ const PensionStep: React.FC<PensionStepProps> = ({
             </div>
 
             {/* Secure Payment Info */}
-            <div className="rounded-xl p-6 flex items-start gap-4" style={{ background: 'linear-gradient(90deg, #F0F4F2 0%, #F2F2E7 100%)' }}>
+            <div
+              className="rounded-xl p-6 flex items-start gap-4"
+              style={{
+                background: "linear-gradient(90deg, #F0F4F2 0%, #F2F2E7 100%)",
+              }}
+            >
               <div className="bg-[#E8F5E9] p-3 rounded-full text-[#008543]">
                 <Wallet size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-[#00341C] mb-1">Secure Payment via SSLCommerz</h3>
+                <h3 className="font-bold text-[#00341C] mb-1">
+                  Secure Payment via SSLCommerz
+                </h3>
                 <p className="text-sm text-gray-600">
-                  Payment will be processed after form submission using SSLCommerz secure gateway
+                  Payment will be processed after form submission using
+                  SSLCommerz secure gateway
                 </p>
               </div>
             </div>
@@ -122,34 +153,53 @@ const PensionStep: React.FC<PensionStepProps> = ({
 
           {/* Pension Package Section */}
           <div className="mb-8">
-            <h2 className="text-[#00341C] text-3xl font-bold mb-2">Pension Package</h2>
-            <p className="text-gray-500 text-sm md:text-base mb-6">Choose a package or skip for now</p>
+            <h2 className="text-[#00341C] text-3xl font-bold mb-2">
+              Pension Package
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base mb-6">
+              Choose a package or skip for now
+            </p>
 
             {/* Note */}
             <div className="bg-red-50 border border-red-100 rounded-lg p-4 mb-8">
               <p className="text-sm text-gray-700">
-                <span className="font-bold">Note:</span> you can choose a pension package now or enroll later from your member dashboard. Pension payments will be managed separately after your membership is confirmed.
+                <span className="font-bold">Note:</span> you can choose a
+                pension package now or enroll later from your member dashboard.
+                Pension payments will be managed separately after your
+                membership is confirmed.
               </p>
             </div>
 
             {/* Skip Option */}
-            <div 
-              onClick={() => handlePackageSelect('skip')}
-              style={{ background: 'linear-gradient(90deg, #F0F4F2 0%, #F2F2E7 100%)' }}
+            <div
+              onClick={() => handlePackageSelect("skip")}
+              style={{
+                background: "linear-gradient(90deg, #F0F4F2 0%, #F2F2E7 100%)",
+              }}
               className={`border rounded-lg p-4 mb-8 cursor-pointer transition-all flex items-center gap-4 ${
-                data.selectedPackage === 'skip' 
-                  ? 'border-[#00341C]' 
-                  : 'border-transparent hover:border-gray-300'
+                data.selectedPackage === "skip"
+                  ? "border-[#00341C]"
+                  : "border-transparent hover:border-gray-300"
               }`}
             >
-              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                data.selectedPackage === 'skip' ? 'border-[#00341C]' : 'border-gray-400'
-              }`}>
-                {data.selectedPackage === 'skip' && <div className="w-3 h-3 bg-[#00341C] rounded-full" />}
+              <div
+                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                  data.selectedPackage === "skip"
+                    ? "border-[#00341C]"
+                    : "border-gray-400"
+                }`}
+              >
+                {data.selectedPackage === "skip" && (
+                  <div className="w-3 h-3 bg-[#00341C] rounded-full" />
+                )}
               </div>
               <div>
-                <h4 className="font-bold text-[#00341C]">Skip Pension Package for Now</h4>
-                <p className="text-sm text-gray-500">You can enroll in a pension package later from your dashboard</p>
+                <h4 className="font-bold text-[#00341C]">
+                  Skip Pension Package for Now
+                </h4>
+                <p className="text-sm text-gray-500">
+                  You can enroll in a pension package later from your dashboard
+                </p>
               </div>
             </div>
 
@@ -160,11 +210,15 @@ const PensionStep: React.FC<PensionStepProps> = ({
               </div>
             ) : error ? (
               <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                <p className="text-red-600">Failed to load pension packages. Please try again later.</p>
+                <p className="text-red-600">
+                  Failed to load pension packages. Please try again later.
+                </p>
               </div>
             ) : packages.length === 0 ? (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-gray-600">No pension packages available at the moment.</p>
+                <p className="text-gray-600">
+                  No pension packages available at the moment.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -174,15 +228,15 @@ const PensionStep: React.FC<PensionStepProps> = ({
                   const maturityAmount = parseFloat(pkg.maturity_amount);
                   const joiningCommission = parseFloat(pkg.joining_commission);
                   const isPopular = index === 1; // Mark second package as popular
-                  
+
                   return (
-                    <div 
+                    <div
                       key={pkg.id}
                       onClick={() => handlePackageSelect(pkg.id)}
                       className={`border rounded-xl p-5 cursor-pointer transition-all flex flex-col h-full relative ${
-                        isSelected 
-                          ? 'bg-[#00341C] text-white border-[#00341C] shadow-lg transform scale-[1.02]' 
-                          : 'bg-white text-gray-900 border-gray-200 hover:border-[#008543]'
+                        isSelected
+                          ? "bg-[#00341C] text-white border-[#00341C] shadow-lg transform scale-[1.02]"
+                          : "bg-white text-gray-900 border-gray-200 hover:border-[#008543]"
                       }`}
                     >
                       {isPopular && (
@@ -190,57 +244,91 @@ const PensionStep: React.FC<PensionStepProps> = ({
                           POPULAR
                         </span>
                       )}
-                      
-                      <h3 className={`text-lg font-bold mb-1 ${isSelected ? 'text-white' : 'text-[#00341C]'}`}>
+
+                      <h3
+                        className={`text-lg font-bold mb-1 ${isSelected ? "text-white" : "text-[#00341C]"}`}
+                      >
                         {pkg.name}
                       </h3>
-                      
+
                       <div className="flex items-baseline mb-4">
-                        <span className={`text-2xl font-bold ${isSelected ? 'text-white' : 'text-[#00341C]'}`}>
+                        <span
+                          className={`text-2xl font-bold ${isSelected ? "text-white" : "text-[#00341C]"}`}
+                        >
                           ৳{monthlyAmount.toLocaleString()}
                         </span>
-                        <span className={`text-xs ml-1 ${isSelected ? 'text-gray-300' : 'text-gray-500'}`}>
+                        <span
+                          className={`text-xs ml-1 ${isSelected ? "text-gray-300" : "text-gray-500"}`}
+                        >
                           /month
                         </span>
                       </div>
 
-                      <button 
+                      <button
                         className={`w-full py-2 rounded border text-sm font-medium mb-6 transition-colors ${
-                          isSelected 
-                            ? 'bg-[#008543] border-[#008543] text-white' 
-                            : 'bg-white border-gray-300 text-[#00341C] hover:border-[#00341C]'
+                          isSelected
+                            ? "bg-[#008543] border-[#008543] text-white"
+                            : "bg-white border-gray-300 text-[#00341C] hover:border-[#00341C]"
                         }`}
                       >
-                        {isSelected ? `Selected ${pkg.name}` : `Choose ${pkg.name} Package`}
+                        {isSelected
+                          ? `Selected ${pkg.name}`
+                          : `Choose ${pkg.name} Package`}
                       </button>
 
-                      <p className={`text-xs font-bold mb-3 ${isSelected ? 'text-gray-300' : 'text-[#00341C]'}`}>
+                      <p
+                        className={`text-xs font-bold mb-3 ${isSelected ? "text-gray-300" : "text-[#00341C]"}`}
+                      >
                         Core Features
                       </p>
 
                       <div className="space-y-2 flex-grow">
                         <div className="flex items-start gap-2">
-                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
-                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
+                          <Check
+                            size={14}
+                            className={`mt-0.5 ${isSelected ? "text-[#36F293]" : "text-[#008543]"}`}
+                          />
+                          <span
+                            className={`text-xs ${isSelected ? "text-gray-200" : "text-gray-600"}`}
+                          >
                             Total Months: {pkg.total_installments}
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
-                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
+                          <Check
+                            size={14}
+                            className={`mt-0.5 ${isSelected ? "text-[#36F293]" : "text-[#008543]"}`}
+                          />
+                          <span
+                            className={`text-xs ${isSelected ? "text-gray-200" : "text-gray-600"}`}
+                          >
                             Maturity Amount: ৳{maturityAmount.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
-                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
-                            Status: {pkg.status === 'running' ? 'Running' : 'Closed'}
+                          <Check
+                            size={14}
+                            className={`mt-0.5 ${isSelected ? "text-[#36F293]" : "text-[#008543]"}`}
+                          />
+                          <span
+                            className={`text-xs ${isSelected ? "text-gray-200" : "text-gray-600"}`}
+                          >
+                            Status:{" "}
+                            {pkg.status === "running" ? "Running" : "Closed"}
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <Check size={14} className={`mt-0.5 ${isSelected ? 'text-[#36F293]' : 'text-[#008543]'}`} />
-                          <span className={`text-xs ${isSelected ? 'text-gray-200' : 'text-gray-600'}`}>
-                            Join Commission: {joiningCommission > 0 ? `৳${joiningCommission.toLocaleString()}` : 'Closed'}
+                          <Check
+                            size={14}
+                            className={`mt-0.5 ${isSelected ? "text-[#36F293]" : "text-[#008543]"}`}
+                          />
+                          <span
+                            className={`text-xs ${isSelected ? "text-gray-200" : "text-gray-600"}`}
+                          >
+                            Join Commission:{" "}
+                            {joiningCommission > 0
+                              ? `৳${joiningCommission.toLocaleString()}`
+                              : "Closed"}
                           </span>
                         </div>
                       </div>
@@ -251,13 +339,22 @@ const PensionStep: React.FC<PensionStepProps> = ({
             )}
 
             {/* Selected Indicator */}
-            {data.selectedPackage !== 'skip' && selectedPackageDetails && (
+            {data.selectedPackage !== "skip" && selectedPackageDetails && (
               <div className="bg-[#E8F5E9] rounded-lg p-4 flex items-center gap-3 border border-[#008543]/20">
                 <Check size={20} className="text-[#008543]" />
                 <div>
-                  <h4 className="font-bold text-[#00341C] text-sm">{selectedPackageDetails.name} Package Selected</h4>
+                  <h4 className="font-bold text-[#00341C] text-sm">
+                    {selectedPackageDetails.name} Package Selected
+                  </h4>
                   <p className="text-xs text-gray-600">
-                    ৳{parseFloat(selectedPackageDetails.monthly_amount).toLocaleString()}/month • Maturity: ৳{parseFloat(selectedPackageDetails.maturity_amount).toLocaleString()}
+                    ৳
+                    {parseFloat(
+                      selectedPackageDetails.monthly_amount,
+                    ).toLocaleString()}
+                    /month • Maturity: ৳
+                    {parseFloat(
+                      selectedPackageDetails.maturity_amount,
+                    ).toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -275,12 +372,17 @@ const PensionStep: React.FC<PensionStepProps> = ({
             <span>Membership Fee (Required)</span>
             <span>৳{membershipFee}</span>
           </div>
-          
-          {data.selectedPackage !== 'skip' && selectedPackageDetails && (
-             <div className="flex justify-between items-center text-sm text-gray-300 mb-6 border-b border-white/10 pb-6">
-               <span>{selectedPackageDetails.name} Package (1st Month)</span>
-               <span>৳{parseFloat(selectedPackageDetails.monthly_amount).toLocaleString()}</span>
-             </div>
+
+          {data.selectedPackage !== "skip" && selectedPackageDetails && (
+            <div className="flex justify-between items-center text-sm text-gray-300 mb-6 border-b border-white/10 pb-6">
+              <span>{selectedPackageDetails.name} Package (1st Month)</span>
+              <span>
+                ৳
+                {parseFloat(
+                  selectedPackageDetails.monthly_amount,
+                ).toLocaleString()}
+              </span>
+            </div>
           )}
 
           <div className="flex justify-between items-center mb-2">
@@ -302,7 +404,7 @@ const PensionStep: React.FC<PensionStepProps> = ({
             <ChevronLeft size={20} className="mr-2" />
             Previous
           </button>
-          
+
           <button
             type="button"
             onClick={onNext}
@@ -312,7 +414,6 @@ const PensionStep: React.FC<PensionStepProps> = ({
             <ChevronRight size={20} className="ml-2" />
           </button>
         </div>
-
       </div>
     </div>
   );

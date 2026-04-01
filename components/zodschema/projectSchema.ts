@@ -14,12 +14,17 @@ export const projectInfoSchema = z.object({
 
 // Step 2: Budget & Timeline
 
-export const projectBudgetSchema = z.object({
-  totalBudget: z.number().min(1, "Total Budget must be at least 1"),
-  initialFund: z.number().min(1, "Initial Fund must be at least 1"),
-  startDate: z.string().min(1, "Start Date required"),
-  endDate: z.string().min(1, "End Date required"),
-});
+export const projectBudgetSchema = z
+  .object({
+    totalBudget: z.number().min(1, "Total Budget must be at least 1"),
+    initialFund: z.number().min(1, "Initial Fund must be at least 1"),
+    startDate: z.string().min(1, "Start Date required"),
+    endDate: z.string().min(1, "End Date required"),
+  })
+  .refine((data) => new Date(data.endDate) >= new Date(data.startDate), {
+    message: "End date cannot be before start date",
+    path: ["endDate"], // show error on endDate field
+  });
 // Step 3: Teams & Roles
 export const projectTeamSchema = z.object({
   projectLeadId: z.number().nullable().optional(),

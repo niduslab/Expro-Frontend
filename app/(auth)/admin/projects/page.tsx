@@ -1,17 +1,41 @@
 "use client";
-import { AlertCircle, Calendar, Loader2, Plus, Users } from "lucide-react";
+import {
+  AlertCircle,
+  Calendar,
+  Loader2,
+  Plus,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import FundRaiseProgress from "./fund-raise-progress";
 import { useState } from "react";
 import NewProjectModal from "./new-project-modal";
-import { useProjects } from "@/lib/hooks/admin/useProjectHook";
+
+import {
+  useProjects,
+  useDeleteProject,
+} from "@/lib/hooks/admin/useProjectHook";
 import { Project } from "@/lib/types/projectType";
 import FormateDateTime from "@/components/formateDateTime/page";
+import EditProjectModal from "./edit-project-modal";
+import DeleteConfirmDialog from "./delete-confirmation";
 
 export default function AdminProjects() {
-  const [openModal, setOpenModal] = useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [deletingProject, setDeletingProject] = useState<Project | null>(null);
+
   const { data, isLoading, isError } = useProjects();
+  const { mutate: deleteProject, isPending: isDeleting } = useDeleteProject();
 
   const projects = data?.data ?? [];
+
+  const handleDeleteConfirm = () => {
+    if (!deletingProject) return;
+    deleteProject(deletingProject.id, {
+      onSuccess: () => setDeletingProject(null),
+    });
+  };
 
   return (
     <>
@@ -28,7 +52,7 @@ export default function AdminProjects() {
 
           <div className="flex justify-start sm:justify-end">
             <button
-              onClick={() => setOpenModal(true)}
+              onClick={() => setOpenCreateModal(true)}
               className="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#068847] text-white whitespace-nowrap"
             >
               <Plus className="h-5 w-5 shrink-0" />
@@ -81,15 +105,35 @@ export default function AdminProjects() {
                     </div>
                   </div>
 
-                  <div
-                    className={`flex items-center justify-center rounded-full font-semibold px-2 text-[11px] ${
-                      proj.status === "upcoming"
-                        ? "bg-[#FEF1DA] text-[#F59F0A] border border-[#FBD89C]"
-                        : "bg-[#DFF1E9] text-[#29A36A] border border-[#A8DAC3]"
-                    }`}
-                    style={{ height: "22px" }}
-                  >
-                    {proj.status}
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`flex items-center justify-center rounded-full font-semibold px-2 text-[11px] ${
+                        proj.status === "upcoming"
+                          ? "bg-[#FEF1DA] text-[#F59F0A] border border-[#FBD89C]"
+                          : "bg-[#DFF1E9] text-[#29A36A] border border-[#A8DAC3]"
+                      }`}
+                      style={{ height: "22px" }}
+                    >
+                      {proj.status}
+                    </div>
+
+                    {/* Edit button */}
+                    <button
+                      onClick={() => setEditingProject(proj)}
+                      className="flex items-center justify-center h-[28px] w-[28px] rounded-md border border-[#E5E7EB] text-[#4A5565] hover:border-[#068847] hover:text-[#068847] transition-colors"
+                      title="Edit project"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+
+                    {/* Delete button */}
+                    <button
+                      onClick={() => setDeletingProject(proj)}
+                      className="flex items-center justify-center h-[28px] w-[28px] rounded-md border border-[#E5E7EB] text-[#4A5565] hover:border-[#FB2C36] hover:text-[#FB2C36] transition-colors"
+                      title="Delete project"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
 
@@ -107,7 +151,7 @@ export default function AdminProjects() {
 
                   <div className="flex flex-col lg:flex-row items-start xl:items-center sm:justify-between gap-2 w-full">
                     {/* Start Date */}
-                    <div className="flex items-center gap-2 bg-gray-50 rounded-md  py-1 sm:justify-start">
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-md py-1 sm:justify-start">
                       <Calendar className="text-gray-500 h-4 w-4" />
                       <span className="text-gray-600 text-xs font-medium">
                         Start:
@@ -121,7 +165,7 @@ export default function AdminProjects() {
                     </div>
 
                     {/* End Date */}
-                    <div className="flex items-center gap-2 bg-gray-50 rounded-md  py-1 sm:justify-end">
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-md py-1 sm:justify-end">
                       <Calendar className="text-gray-500 h-4 w-4" />
                       <span className="text-gray-600 text-xs font-medium">
                         End:
@@ -140,72 +184,29 @@ export default function AdminProjects() {
           </div>
         )}
 
-        {openModal && <NewProjectModal setOpenModal={setOpenModal} />}
+        {/* Modals */}
+        {openCreateModal && (
+          <NewProjectModal setOpenModal={setOpenCreateModal} />
+        )}
+
+        {editingProject && (
+          <EditProjectModal
+            project={editingProject}
+            setOpenModal={(open) => {
+              if (!open) setEditingProject(null);
+            }}
+          />
+        )}
+
+        {deletingProject && (
+          <DeleteConfirmDialog
+            projectTitle={deletingProject.title}
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setDeletingProject(null)}
+            isPending={isDeleting}
+          />
+        )}
       </div>
     </>
   );
 }
-// const projects = [
-//   {
-//     title: "Health Initiative",
-//     category: "health",
-//     status: "Ongoing",
-//     description: "Comprehensive health program for rural communities",
-//     members: 340,
-//     date: "2024-01-15",
-//     raised: 18.5,
-//     goal: 25,
-//   },
-//   {
-//     title: "Education For All",
-//     category: "education",
-//     status: "Ongoing",
-//     description:
-//       "Scholarship and tutoring programs for underprivileged students",
-//     members: 210,
-//     date: "2024-03-01",
-//     raised: 12,
-//     goal: 25,
-//   },
-//   {
-//     title: "Green Agriculture",
-//     category: "agriculture",
-//     status: "Upcoming",
-//     description: "Sustainable farming practices and microfinance for farmers",
-//     members: 0,
-//     date: "2025-04-01",
-//     raised: 4.5,
-//     goal: 30,
-//   },
-//   {
-//     title: "Women Entrepreneurship",
-//     category: "women entrepreneurship",
-//     status: "Ongoing",
-//     description: "Skill development and seed funding for women entrepreneurs",
-//     members: 0,
-//     date: "2025-06-01",
-//     raised: 0,
-//     goal: 20,
-//   },
-//   {
-//     title: "Digital Media Hub",
-//     category: "media",
-//     status: "Ongoing",
-//     description: "Community media training and content creation center",
-//     members: 95,
-//     date: "2024-06-15",
-//     raised: 6.8,
-//     goal: 8,
-//   },
-//   {
-//     title: "Humanity First",
-//     category: "humanity",
-//     status: "Upcoming",
-//     description:
-//       "Emergency relief and rehabilitation for flood-affected regions",
-//     members: 520,
-//     date: "2023-01-01",
-//     raised: 50,
-//     goal: 50,
-//   },
-// ];
