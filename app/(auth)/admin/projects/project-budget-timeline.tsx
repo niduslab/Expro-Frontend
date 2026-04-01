@@ -3,9 +3,10 @@
 import DatePicker from "@/components/ui/date-picker";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { CompletedTabs, ProjectFormDataInterface } from "./new-project-modal";
+import { CompletedTabs } from "./new-project-modal";
 import { projectBudgetSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
+import { ProjectFormDataInterface } from "@/lib/types/projectType";
 
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 

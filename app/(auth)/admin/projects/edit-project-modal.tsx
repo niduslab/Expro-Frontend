@@ -1,16 +1,16 @@
+"use client";
 import React, { useState } from "react";
 import ProjectInfo from "./project-info";
 import ProjectBudgetTimeline from "./project-budget-timeline";
 import ProjectTeamsRoles from "./project-teams-roles";
 import { Lock } from "lucide-react";
-import { ProjectFormDataInterface } from "@/lib/types/projectType";
-import { CreateProjectPayload } from "@/lib/types/projectType";
-import { useCreateProject } from "@/lib/hooks/admin/useProjectHook";
+import {
+  Project,
+  ProjectFormDataInterface,
+  UpdateProjectPayload,
+} from "@/lib/types/projectType";
+import { useUpdateProject } from "@/lib/hooks/admin/useProjectHook";
 import { useUsers } from "@/lib/hooks/admin/useUsers";
-
-interface NewProjectModalProps {
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 export type CompletedTabs = {
   info: boolean;
@@ -18,38 +18,53 @@ export type CompletedTabs = {
   teams: boolean;
 };
 
-export default function NewProjectModal({
+interface EditProjectModalProps {
+  project: Project;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function EditProjectModal({
+  project,
   setOpenModal,
-}: NewProjectModalProps) {
+}: EditProjectModalProps) {
   const [activeTab, setActiveTab] = useState<"info" | "budget" | "teams">(
     "info",
   );
-  const { mutate: createProject, isPending } = useCreateProject();
+  const { mutate: updateProject, isPending } = useUpdateProject();
   const { data: usersData } = useUsers();
+
+  const formatDate = (date?: string) => {
+    if (!date) return "";
+    return date.split("T")[0]; // converts ISO → YYYY-MM-DD
+  };
+  // Pre-fill form with existing project data
   const [formData, setFormData] = useState<ProjectFormDataInterface>({
-    title: "",
-    category: "",
-    status: "",
-    shortDescription: "",
-    description: "",
-    totalBudget: "",
-    initialFund: "",
-    fundsUtilized: "", // ← new
-    startDate: "",
-    endDate: "",
-    projectLeadId: null,
-    isFeatured: false, // ← new
-    isPublished: false, // ← new
+    title: project.title ?? "",
+    category: project.category ?? "",
+    status: project.status ?? "",
+    shortDescription: project.short_description ?? "",
+    description: project.description ?? "",
+    totalBudget: project.budget != null ? String(project.budget) : "",
+    initialFund:
+      project.funds_raised != null ? String(project.funds_raised) : "",
+    fundsUtilized:
+      project.funds_utilized != null ? String(project.funds_utilized) : "",
+    startDate: formatDate(project.start_date),
+    endDate: formatDate(project.end_date),
+    projectLeadId: project.project_lead_id ?? null,
+    isFeatured: project.is_featured ?? false,
+    isPublished: project.is_published ?? false,
   });
 
-  const [completedTabs, setCompletedTabs] = useState<CompletedTabs>({
-    info: false,
-    budget: false,
-    teams: false,
+  // All tabs unlocked when editing
+  const [, setCompletedTabs] = useState<CompletedTabs>({
+    info: true,
+    budget: true,
+    teams: true,
   });
 
   const handleFinalSubmit = () => {
-    const payload: CreateProjectPayload = {
+    const payload: UpdateProjectPayload = {
       title: formData.title,
       category: formData.category,
       status: formData.status,
@@ -66,9 +81,13 @@ export default function NewProjectModal({
       end_date: formData.endDate || undefined,
       is_featured: formData.isFeatured,
       is_published: formData.isPublished,
-      project_lead_id: formData.projectLeadId ?? undefined, // ← now sends real ID
+      project_lead_id: formData.projectLeadId ?? undefined,
     };
-    createProject(payload, { onSuccess: () => setOpenModal(false) });
+
+    updateProject(
+      { id: project.id, payload },
+      { onSuccess: () => setOpenModal(false) },
+    );
   };
 
   const renderTabContent = () => {
@@ -116,7 +135,7 @@ export default function NewProjectModal({
         <div className="p-2 flex flex-col gap-[6px]">
           <div className="flex justify-between items-center">
             <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
-              Create New Project
+              Edit Project
             </p>
             <button
               onClick={() => setOpenModal(false)}
@@ -126,7 +145,10 @@ export default function NewProjectModal({
             </button>
           </div>
           <p className="font-normal text-[12px] leading-[160%] tracking-[-0.01em] text-[#4A5565]">
-            Set up a new welfare initiative project for the foundation
+            Update details for{" "}
+            <span className="font-semibold text-[#030712]">
+              {project.title}
+            </span>
           </p>
         </div>
 
@@ -146,37 +168,25 @@ export default function NewProjectModal({
             </button>
 
             <button
-              disabled={!completedTabs.info}
-              onClick={() => completedTabs.info && setActiveTab("budget")}
+              onClick={() => setActiveTab("budget")}
               className={`p-3 rounded-[8px] whitespace-nowrap flex items-center gap-2 ${
-                !completedTabs.info
-                  ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
-                  : activeTab === "budget"
-                    ? "bg-[#068847] font-semibold text-[13px] text-white"
-                    : "text-[#068847] border underline border-[#E5E7EB] text-[14px]"
+                activeTab === "budget"
+                  ? "bg-[#068847] font-semibold text-[13px] text-white"
+                  : "text-[#068847] border underline border-[#E5E7EB] text-[14px]"
               }`}
             >
               2. Budget & Timeline
-              {!completedTabs.info && (
-                <Lock className="text-gray-500 h-4 w-4" />
-              )}
             </button>
 
             <button
-              disabled={!completedTabs.budget}
-              onClick={() => completedTabs.budget && setActiveTab("teams")}
+              onClick={() => setActiveTab("teams")}
               className={`p-3 rounded-[8px] whitespace-nowrap flex items-center gap-2 ${
-                !completedTabs.budget
-                  ? "opacity-30 cursor-not-allowed border border-[#6c6d6e]"
-                  : activeTab === "teams"
-                    ? "bg-[#068847] font-semibold text-[13px] text-white"
-                    : "text-[#068847] border underline border-[#E5E7EB] text-[14px]"
+                activeTab === "teams"
+                  ? "bg-[#068847] font-semibold text-[13px] text-white"
+                  : "text-[#068847] border underline border-[#E5E7EB] text-[14px]"
               }`}
             >
               3. Team & Roles
-              {!completedTabs.budget && (
-                <Lock className="text-gray-500 h-4 w-4" />
-              )}
             </button>
           </div>
 

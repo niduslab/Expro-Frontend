@@ -4,25 +4,37 @@ import { z } from "zod";
 export const projectInfoSchema = z.object({
   title: z.string().min(3, "Project title is required"),
   category: z.string().min(1, "Category is required"),
-  priority: z.string().min(1, "Priority is required"),
+  status: z.string().min(1, "Priority is required"),
+  shortDescription: z
+    .string()
+    .min(1, "Short description is required")
+    .max(500, "Short description must be under 500 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
 });
 
 // Step 2: Budget & Timeline
 
-export const projectBudgetSchema = z.object({
-  totalBudget: z.number().min(1, "Total Budget must be at least 1"),
-  initialFund: z.number().min(1, "Initial Fund must be at least 1"),
-  startDate: z.string().min(1, "Start Date required"),
-  endDate: z.string().min(1, "End Date required"),
-});
+export const projectBudgetSchema = z
+  .object({
+    totalBudget: z.number().min(1, "Total Budget must be at least 1"),
+    initialFund: z.number().min(1, "Initial Fund must be at least 1"),
+    startDate: z.string().min(1, "Start Date required"),
+    endDate: z.string().min(1, "End Date required"),
+  })
+  .refine((data) => new Date(data.endDate) >= new Date(data.startDate), {
+    message: "End date cannot be before start date",
+    path: ["endDate"], // show error on endDate field
+  });
 // Step 3: Teams & Roles
 export const projectTeamSchema = z.object({
-  projectLead: z
+  projectLeadId: z.number().nullable().optional(),
+  fundsUtilized: z
     .string()
-    .min(1, "Project lead required")
-    .regex(/^[A-Za-z\s]+$/, "Project lead must contain only letters"),
-  role: z.string().min(1, "Role required"),
-  teamSize: z.number().min(1, "Team size must be at least 1"),
-  contribution: z.number().min(1, "Contribution must be at least 1"),
+    .optional()
+    .refine(
+      (val) => !val || Number(val) >= 0,
+      "Funds utilized must be 0 or more",
+    ),
+  isFeatured: z.boolean().optional(),
+  isPublished: z.boolean().optional(),
 });

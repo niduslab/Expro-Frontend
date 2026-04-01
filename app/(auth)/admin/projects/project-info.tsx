@@ -2,9 +2,10 @@
 import Dropdown from "@/components/ui/dropdown";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { CompletedTabs, ProjectFormDataInterface } from "./new-project-modal";
+import { CompletedTabs } from "./new-project-modal";
 import { projectInfoSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
+import { ProjectFormDataInterface } from "@/lib/types/projectType";
 
 interface ProjectInfoProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +17,6 @@ interface ProjectInfoProps {
   >;
   setCompletedTabs: React.Dispatch<React.SetStateAction<CompletedTabs>>;
 }
-const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
 export default function ProjectInfo({
   setOpenModal,
@@ -43,10 +43,9 @@ export default function ProjectInfo({
       const lastMessage = result.error.issues.slice(-1)[0]?.message;
       toast.error(lastMessage || "Validation failed");
 
-      return; // stop here
+      return;
     }
 
-    // ✅ validation success
     setErrors({});
 
     setCompletedTabs((prev) => ({
@@ -92,15 +91,22 @@ export default function ProjectInfo({
               label="Category"
               required
               placeholder="Select Category"
-              options={["Bug", "Feature", "Support"]}
+              options={[
+                "health",
+                "education",
+                "agriculture",
+                "media",
+                "women_entrepreneurship",
+                "other",
+                "humanity",
+              ]}
               value={formData.category}
               onChange={(value) => {
                 setFormData({ ...formData, category: value });
-                if (errors.category) {
+                if (errors.category)
                   setErrors((prev) => ({ ...prev, category: "" }));
-                }
               }}
-            />{" "}
+            />
             {errors.category && (
               <span className="text-sm text-red-500 py-0.5">
                 {errors.category}
@@ -109,23 +115,60 @@ export default function ProjectInfo({
           </div>
           <div className="relative w-full sm:w-1/2">
             <Dropdown
-              label="Priority"
+              label="Status" // was "Priority"
               required
-              placeholder="Select Priority"
-              options={["Low", "Medium", "High", "Urgent"]}
-              value={formData.priority}
+              placeholder="Select Status"
+              options={[
+                "planned",
+                "upcoming",
+                "ongoing",
+                "completed",
+                "cancelled",
+              ]}
+              // ↑ must match your ProjectStatusEnum values on the backend
+              value={formData.status} // was formData.priority
               onChange={(value) => {
-                setFormData({ ...formData, priority: value });
-                if (errors.priority) {
-                  setErrors((prev) => ({ ...prev, priority: "" }));
-                }
+                setFormData({ ...formData, status: value }); // was priority
+                if (errors.status)
+                  setErrors((prev) => ({ ...prev, status: "" }));
               }}
             />
-            {errors.priority && (
+            {errors.status && (
               <span className="text-sm text-red-500 py-0.5">
-                {errors.priority}
+                {errors.status}
               </span>
             )}
+          </div>
+        </div>
+        <div className="justify-between">
+          <div className="pb-2">
+            <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+              Short Description
+            </span>
+            <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
+              *
+            </span>
+          </div>
+          <textarea
+            value={formData.shortDescription}
+            maxLength={500}
+            onChange={(e) => {
+              setFormData({ ...formData, shortDescription: e.target.value });
+              if (errors.shortDescription)
+                setErrors((prev) => ({ ...prev, shortDescription: "" }));
+            }}
+            className="w-full h-[80px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
+            placeholder="Brief summary shown on project cards (max 500 chars)"
+          />
+          <div className="flex justify-between items-start">
+            {errors.shortDescription && (
+              <span className="text-sm text-red-500 py-0.5">
+                {errors.shortDescription}
+              </span>
+            )}
+            <span className="text-xs text-[#9CA3AF] ml-auto">
+              {formData.shortDescription.length}/500
+            </span>
           </div>
         </div>
         <div className=" justify-between">

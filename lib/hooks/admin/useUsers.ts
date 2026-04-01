@@ -1,13 +1,25 @@
-import { fetchMyProfile } from "@/lib/api/functions/admin/userApi";
-import { ProfileData } from "@/lib/types/admin/userType";
+import {
+  fetchAllusers,
+  fetchMyProfile,
+} from "@/lib/api/functions/admin/userApi";
+import { UserListItem, UsersResponse } from "@/lib/types/admin/userType";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-export const useMyProfile = (options?: UseQueryOptions<ProfileData, Error>) => {
-  return useQuery<ProfileData, Error>({
+export const useMyProfile = (
+  options?: UseQueryOptions<UserListItem, Error>,
+) => {
+  return useQuery<UserListItem, Error>({
     queryKey: ["my-profile"],
     queryFn: fetchMyProfile,
     staleTime: 1000 * 60 * 5,
     retry: 1,
     ...options,
+  });
+};
+export const useUsers = (params?: { page?: number; per_page?: number }) => {
+  return useQuery({
+    queryKey: ["all-users", params],
+    queryFn: () => fetchAllusers(params?.page ?? 1),
+    placeholderData: (prev) => prev,
   });
 };

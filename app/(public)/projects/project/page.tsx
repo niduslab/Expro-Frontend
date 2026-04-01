@@ -172,7 +172,7 @@ export default function Project() {
 
                     <div className="relative h-[192px] w-full rounded-[4px] overflow-hidden mt-auto shrink-0">
                       <Image
-                        src={service.featured_image}
+                        src={service.featured_image || "/fallback.jpg"}
                         alt={service.title}
                         fill
                         className="object-cover transform group-hover:scale-105 transition-transform duration-500"

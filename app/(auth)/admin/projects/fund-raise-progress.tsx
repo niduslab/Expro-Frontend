@@ -36,13 +36,13 @@ const FundRaiseProgress: React.FC<FundRaiseProgressProps> = ({
 
       {/* Amounts */}
       <div className="text-[#4A5565] h-[19px] pt-1 flex justify-between ">
-        <span className="w-[64px] text-[#4A5565] font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle">
+        <span className=" text-[#4A5565] font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle">
           {currencySymbol}
-          {raised.toFixed(1)}L
+          {raised.toFixed(1)} BDT
         </span>
-        <span className="w-[64px] text-end text-[#4A5565] font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle">
+        <span className=" text-end text-[#4A5565] font-normal text-[12px] leading-[160%] tracking-[-0.01em] align-middle">
           {currencySymbol}
-          {goal.toFixed(1)}L
+          {goal.toFixed(1)} BDT
         </span>
       </div>
     </div>

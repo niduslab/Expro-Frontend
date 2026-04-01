@@ -5,10 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useEvents } from "@/lib/hooks/public/useEventHooks";
-import EventDateTime from "@/components/formateDateTime/page";
+import FormateDateTime from "@/components/formateDateTime/page";
 
 const events = [
   {
@@ -169,7 +169,7 @@ const Events = () => {
                     {/* Meta Info */}
                     <div className="flex flex-wrap gap-3 mb-8">
                       <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <EventDateTime
+                        <FormateDateTime
                           datetime={event.start_date}
                           type="date"
                           icon="calendar"
@@ -180,7 +180,7 @@ const Events = () => {
                         {event.location}
                       </div>
                       <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <EventDateTime
+                        <FormateDateTime
                           datetime={event.start_date}
                           type="time"
                           icon="clock"

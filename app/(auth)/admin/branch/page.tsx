@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import BranchModal from "./branchModal";
 import BranchDetailModal from "./branchDetails";
+import Pagination from "@/components/pagination/page";
 
 export default function BranchesPage() {
   const [page, setPage] = useState(1);
@@ -263,35 +264,15 @@ export default function BranchesPage() {
 
         {/* Pagination */}
         {pagination && pagination.last_page > 1 && (
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-[#8a8780]">
-              Page {pagination.current_page} of {pagination.last_page} —{" "}
-              <span className="font-medium text-[#4a4845]">
-                {pagination.total}
-              </span>{" "}
-              results
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={pagination.current_page === 1}
-                className="flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium bg-white border border-[#e8e6e0] text-[#4a4845] hover:border-[#1a1a2e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Prev
-              </button>
-              <button
-                onClick={() =>
-                  setPage((p) => Math.min(pagination.last_page, p + 1))
-                }
-                disabled={pagination.current_page === pagination.last_page}
-                className="flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium bg-white border border-[#e8e6e0] text-[#4a4845] hover:border-[#1a1a2e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Next
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          <Pagination
+            page={pagination.current_page}
+            perPage={pagination.per_page} // if your API returns per_page
+            total={pagination.total}
+            dataLength={branches.length}
+            onPrev={() => setPage((p) => Math.max(1, p - 1))}
+            onNext={() => setPage((p) => Math.min(pagination.last_page, p + 1))}
+            onPageChange={(p) => setPage(p)}
+          />
         )}
       </div>
 

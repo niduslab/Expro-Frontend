@@ -15,13 +15,13 @@ const formatDateTime = (isoString: string) => {
 
   return { date: formattedDate, time: formattedTime };
 };
-interface EventDateTimeProps {
+interface FormateDateTimeProps {
   datetime: string;
   type?: "date" | "time"; // Optional: "date" to show date, "time" to show time only
   icon?: "calendar" | "clock"; // Optional: show icon
 }
 
-const EventDateTime: React.FC<EventDateTimeProps> = ({
+const FormateDateTime: React.FC<FormateDateTimeProps> = ({
   datetime,
   type = "date",
   icon,
@@ -29,7 +29,7 @@ const EventDateTime: React.FC<EventDateTimeProps> = ({
   const { date, time } = formatDateTime(datetime);
 
   return (
-    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+    <div className="inline-flex items-center gap-2 text-[#344054]">
       {icon === "calendar" && <Calendar size={16} className="text-[#667085]" />}
       {icon === "clock" && <Clock size={16} className="text-[#667085]" />}
       {type === "date" ? date : time}
@@ -37,4 +37,4 @@ const EventDateTime: React.FC<EventDateTimeProps> = ({
   );
 };
 
-export default EventDateTime;
+export default FormateDateTime;
