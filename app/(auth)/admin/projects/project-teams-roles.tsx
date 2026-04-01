@@ -1,9 +1,8 @@
-import Dropdown from "@/components/ui/dropdown";
 import { ArrowLeft, CircleCheck } from "lucide-react";
-import { ProjectFormDataInterface } from "./new-project-modal";
 import { projectTeamSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
 import { useState } from "react";
+import { ProjectFormDataInterface } from "@/lib/types/projectType";
 
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
@@ -24,22 +23,18 @@ export default function ProjectTeamsRoles({
   formData,
   setFormData,
   setActiveTab,
-  setOpenModal,
   onSubmit,
   isPending,
 }: NewProjectModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = () => {
-    const finalData = {
-      ...formData,
-      teamSize: formData.teamSize ? Number(formData.teamSize) : undefined,
-      contribution: formData.contribution
-        ? Number(formData.contribution)
-        : undefined,
-    };
-
-    const result = projectTeamSchema.safeParse(finalData);
+    const result = projectTeamSchema.safeParse({
+      projectLead: formData.projectLead,
+      fundsUtilized: formData.fundsUtilized,
+      isFeatured: formData.isFeatured,
+      isPublished: formData.isPublished,
+    });
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -47,13 +42,14 @@ export default function ProjectTeamsRoles({
         if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
       });
       setErrors(fieldErrors);
-      const lastMessage = result.error.issues.slice(-1)[0]?.message;
-      toast.error(lastMessage || "Validation failed");
+      toast.error(
+        result.error.issues.slice(-1)[0]?.message || "Validation failed",
+      );
       return;
     }
 
     setErrors({});
-    onSubmit(); // ← delegate to parent; toast + close handled by mutation
+    onSubmit();
   };
 
   const handleBack = () => {
@@ -63,121 +59,108 @@ export default function ProjectTeamsRoles({
 
   return (
     <div className="flex flex-col relative w-full gap-[16px] pt-4">
+      {/* Row 1: Project Lead + Funds Utilized */}
       <div className="flex flex-col sm:flex-row gap-2 w-full">
+        {/* Project Lead */}
         <div className="relative w-full sm:w-1/2">
-          <div className="justify-between w-full">
-            <div className="pb-2">
-              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Project Lead
-              </span>
-              <span className="text-[#FB2C36] font-medium text-[16px]">*</span>
-            </div>
-            <div>
-              <input
-                type="text"
-                value={formData.projectLead}
-                onChange={(e) => {
-                  setFormData({ ...formData, projectLead: e.target.value });
-                  if (errors.projectLead)
-                    setErrors((prev) => ({ ...prev, projectLead: "" }));
-                }}
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="Kamal Hossen"
-              />
-              {errors.projectLead && (
-                <span className="text-sm text-red-500 py-0.5">
-                  {errors.projectLead}
-                </span>
-              )}
-            </div>
+          <div className="pb-2">
+            <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+              Project Lead
+            </span>
           </div>
+          <input
+            type="text"
+            value={formData.projectLead}
+            onChange={(e) => {
+              setFormData({ ...formData, projectLead: e.target.value });
+              if (errors.projectLead)
+                setErrors((prev) => ({ ...prev, projectLead: "" }));
+            }}
+            className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+            placeholder="Kamal Hossen"
+          />
+          {errors.projectLead && (
+            <span className="text-sm text-red-500 py-0.5">
+              {errors.projectLead}
+            </span>
+          )}
         </div>
 
+        {/* Funds Utilized */}
         <div className="relative w-full sm:w-1/2">
-          <Dropdown
-            label="Lead Role / Designation"
-            required
-            placeholder="Select Role"
-            options={[
-              "Executive",
-              "Project Presenter",
-              "Associate Project Presenter",
-              "General Member",
-            ]}
-            value={formData.role}
-            onChange={(value) => {
-              setFormData({ ...formData, role: value });
-              if (errors.role) setErrors((prev) => ({ ...prev, role: "" }));
+          <div className="pb-2">
+            <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+              Funds Utilized (৳)
+            </span>
+          </div>
+          <input
+            type="number"
+            value={formData.fundsUtilized}
+            onChange={(e) => {
+              setFormData({ ...formData, fundsUtilized: e.target.value });
+              if (errors.fundsUtilized)
+                setErrors((prev) => ({ ...prev, fundsUtilized: "" }));
             }}
+            className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+            placeholder="e.g. 5000"
           />
-          {errors.role && (
-            <span className="text-sm text-red-500 py-0.5">{errors.role}</span>
+          {errors.fundsUtilized && (
+            <span className="text-sm text-red-500 py-0.5">
+              {errors.fundsUtilized}
+            </span>
           )}
         </div>
       </div>
 
+      {/* Row 2: is_featured + is_published toggles */}
       <div className="flex flex-col sm:flex-row gap-2 w-full">
-        <div className="relative w-full sm:w-1/2">
-          <div className="justify-between w-full">
-            <div className="pb-2">
-              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Team Size (estimated)
-              </span>
-              <span className="text-[#FB2C36] font-medium text-[16px]">*</span>
-            </div>
-            <div>
-              <input
-                type="number"
-                value={formData.teamSize}
-                onChange={(e) => {
-                  setFormData({ ...formData, teamSize: e.target.value });
-                  if (errors.teamSize)
-                    setErrors((prev) => ({ ...prev, teamSize: "" }));
-                }}
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="e.g. 15"
-              />
-              {errors.teamSize && (
-                <span className="text-sm text-red-500 py-0.5">
-                  {errors.teamSize}
-                </span>
-              )}
-            </div>
-          </div>
+        {/* is_featured */}
+        <div className="w-full sm:w-1/2 flex items-center justify-between h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
+          <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] text-[#030712]">
+            Featured Project
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData({ ...formData, isFeatured: !formData.isFeatured })
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none ${
+              formData.isFeatured ? "bg-[#068847]" : "bg-[#D1D5DC]"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                formData.isFeatured ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
         </div>
 
-        <div className="relative w-full sm:w-1/2">
-          <div className="justify-between w-full">
-            <div className="pb-2">
-              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Member Contribution (৳/mo)
-              </span>
-              <span className="text-[#FB2C36] font-medium text-[16px]">*</span>
-            </div>
-            <div>
-              <input
-                type="number"
-                value={formData.contribution}
-                onChange={(e) => {
-                  setFormData({ ...formData, contribution: e.target.value });
-                  if (errors.contribution)
-                    setErrors((prev) => ({ ...prev, contribution: "" }));
-                }}
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="e.g. 500"
-              />
-              {errors.contribution && (
-                <span className="text-sm text-red-500 py-0.5">
-                  {errors.contribution}
-                </span>
-              )}
-            </div>
-          </div>
+        {/* is_published */}
+        <div className="w-full sm:w-1/2 flex items-center justify-between h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF]">
+          <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] text-[#030712]">
+            Publish Project
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData({ ...formData, isPublished: !formData.isPublished })
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none ${
+              formData.isPublished ? "bg-[#068847]" : "bg-[#D1D5DC]"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${
+                formData.isPublished ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
         </div>
       </div>
 
+      {/* Footer */}
       <div className="flex relative justify-between w-full pt-8 gap-[16px]">
-        {/* pt-36 → pt-8: pt-36 is not a standard Tailwind class */}
         <button
           onClick={handleBack}
           className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"

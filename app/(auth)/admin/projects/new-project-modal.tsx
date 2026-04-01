@@ -3,24 +3,9 @@ import ProjectInfo from "./project-info";
 import ProjectBudgetTimeline from "./project-budget-timeline";
 import ProjectTeamsRoles from "./project-teams-roles";
 import { Lock } from "lucide-react";
-
+import { ProjectFormDataInterface } from "@/lib/types/projectType";
 import { CreateProjectPayload } from "@/lib/types/projectType";
 import { useCreateProject } from "@/lib/hooks/admin/useProjectHook";
-
-export interface ProjectFormDataInterface {
-  title: string;
-  category: string;
-  status: string;
-  description: string;
-  totalBudget: string;
-  initialFund: string;
-  startDate: string;
-  endDate: string;
-  projectLead: string;
-  role: string;
-  teamSize: string;
-  contribution: string;
-}
 
 interface NewProjectModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,15 +29,16 @@ export default function NewProjectModal({
     title: "",
     category: "",
     status: "",
+    shortDescription: "",
     description: "",
     totalBudget: "",
     initialFund: "",
+    fundsUtilized: "", // ← new
     startDate: "",
     endDate: "",
     projectLead: "",
-    role: "",
-    teamSize: "",
-    contribution: "",
+    isFeatured: false, // ← new
+    isPublished: false, // ← new
   });
 
   const [completedTabs, setCompletedTabs] = useState<CompletedTabs>({
@@ -66,18 +52,21 @@ export default function NewProjectModal({
       title: formData.title,
       category: formData.category,
       status: formData.status,
-      description: formData.description,
+      short_description: formData.shortDescription || undefined,
+      description: formData.description || undefined,
       budget: formData.totalBudget ? Number(formData.totalBudget) : undefined,
       funds_raised: formData.initialFund
         ? Number(formData.initialFund)
         : undefined,
+      funds_utilized: formData.fundsUtilized
+        ? Number(formData.fundsUtilized)
+        : undefined, // ← new
       start_date: formData.startDate || undefined,
       end_date: formData.endDate || undefined,
+      is_featured: formData.isFeatured, // ← new
+      is_published: formData.isPublished, // ← new
     };
-
-    createProject(payload, {
-      onSuccess: () => setOpenModal(false),
-    });
+    createProject(payload, { onSuccess: () => setOpenModal(false) });
   };
 
   const renderTabContent = () => {

@@ -5,6 +5,7 @@ import { useState } from "react";
 import NewProjectModal from "./new-project-modal";
 import { useProjects } from "@/lib/hooks/admin/useProjectHook";
 import { Project } from "@/lib/types/projectType";
+import FormateDateTime from "@/components/formateDateTime/page";
 
 export default function AdminProjects() {
   const [openModal, setOpenModal] = useState(false);
@@ -99,16 +100,37 @@ export default function AdminProjects() {
 
                   <FundRaiseProgress
                     raised={Number(proj.funds_raised ?? 0)}
-                    goal={Number(proj.budget ?? 0)}
+                    goal={Number(proj.budget ?? 1)}
                   />
 
                   <div className="w-full border border-[#E5E7EB]" />
 
-                  <div className="flex flex-wrap gap-6">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="text-[#4A5565] h-3.5 w-3.5" />
-                      <span className="text-[#4A5565] font-normal text-[11px]">
-                        {proj.start_date ?? "—"}
+                  <div className="flex flex-col lg:flex-row items-start xl:items-center sm:justify-between gap-2 w-full">
+                    {/* Start Date */}
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-md  py-1 sm:justify-start">
+                      <Calendar className="text-gray-500 h-4 w-4" />
+                      <span className="text-gray-600 text-xs font-medium">
+                        Start:
+                      </span>
+                      <span className="text-gray-800 text-xs">
+                        <FormateDateTime
+                          datetime={proj.start_date ?? ""}
+                          type="date"
+                        />
+                      </span>
+                    </div>
+
+                    {/* End Date */}
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-md  py-1 sm:justify-end">
+                      <Calendar className="text-gray-500 h-4 w-4" />
+                      <span className="text-gray-600 text-xs font-medium">
+                        End:
+                      </span>
+                      <span className="text-gray-800 text-xs">
+                        <FormateDateTime
+                          datetime={proj.end_date ?? ""}
+                          type="date"
+                        />
                       </span>
                     </div>
                   </div>

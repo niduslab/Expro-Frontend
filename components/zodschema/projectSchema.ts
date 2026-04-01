@@ -5,6 +5,10 @@ export const projectInfoSchema = z.object({
   title: z.string().min(3, "Project title is required"),
   category: z.string().min(1, "Category is required"),
   status: z.string().min(1, "Priority is required"),
+  shortDescription: z
+    .string()
+    .min(1, "Short description is required")
+    .max(500, "Short description must be under 500 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
 });
 
@@ -18,11 +22,14 @@ export const projectBudgetSchema = z.object({
 });
 // Step 3: Teams & Roles
 export const projectTeamSchema = z.object({
-  projectLead: z
+  projectLead: z.string().optional(),
+  fundsUtilized: z
     .string()
-    .min(1, "Project lead required")
-    .regex(/^[A-Za-z\s]+$/, "Project lead must contain only letters"),
-  role: z.string().min(1, "Role required"),
-  teamSize: z.number().min(1, "Team size must be at least 1"),
-  contribution: z.number().min(1, "Contribution must be at least 1"),
+    .optional()
+    .refine(
+      (val) => !val || Number(val) >= 0,
+      "Funds utilized must be 0 or more",
+    ),
+  isFeatured: z.boolean().optional(),
+  isPublished: z.boolean().optional(),
 });

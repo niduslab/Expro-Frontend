@@ -2,9 +2,10 @@
 import Dropdown from "@/components/ui/dropdown";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { CompletedTabs, ProjectFormDataInterface } from "./new-project-modal";
+import { CompletedTabs } from "./new-project-modal";
 import { projectInfoSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
+import { ProjectFormDataInterface } from "@/lib/types/projectType";
 
 interface ProjectInfoProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -137,6 +138,37 @@ export default function ProjectInfo({
                 {errors.status}
               </span>
             )}
+          </div>
+        </div>
+        <div className="justify-between">
+          <div className="pb-2">
+            <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+              Short Description
+            </span>
+            <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
+              *
+            </span>
+          </div>
+          <textarea
+            value={formData.shortDescription}
+            maxLength={500}
+            onChange={(e) => {
+              setFormData({ ...formData, shortDescription: e.target.value });
+              if (errors.shortDescription)
+                setErrors((prev) => ({ ...prev, shortDescription: "" }));
+            }}
+            className="w-full h-[80px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
+            placeholder="Brief summary shown on project cards (max 500 chars)"
+          />
+          <div className="flex justify-between items-start">
+            {errors.shortDescription && (
+              <span className="text-sm text-red-500 py-0.5">
+                {errors.shortDescription}
+              </span>
+            )}
+            <span className="text-xs text-[#9CA3AF] ml-auto">
+              {formData.shortDescription.length}/500
+            </span>
           </div>
         </div>
         <div className=" justify-between">

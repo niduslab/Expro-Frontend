@@ -64,5 +64,19 @@ export interface CreateProjectPayload {
   is_featured?: boolean;
   is_published?: boolean;
 }
-
+export interface ProjectFormDataInterface {
+  title: string;
+  category: string;
+  status: string;
+  shortDescription: string;
+  description: string;
+  totalBudget: string;
+  initialFund: string;
+  fundsUtilized: string; // ← replaces role
+  startDate: string;
+  endDate: string;
+  projectLead: string;
+  isFeatured: boolean; // ← replaces teamSize
+  isPublished: boolean; // ← replaces contribution
+}
 export type UpdateProjectPayload = Partial<CreateProjectPayload>;
