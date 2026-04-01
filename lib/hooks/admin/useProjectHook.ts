@@ -12,11 +12,13 @@ import {
 } from "@/lib/types/projectType";
 import { toast } from "sonner";
 
+// In useProjectHook.ts — update the params type
 export const useProjects = (params?: {
   page?: number;
   per_page?: number;
   status?: string;
   category?: string;
+  q?: string; // ← add this
 }) => {
   return useQuery({
     queryKey: ["projects", params],

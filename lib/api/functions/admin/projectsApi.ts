@@ -8,11 +8,13 @@ import {
 } from "@/lib/types/projectType";
 import { apiClient } from "@/lib/api/axios";
 
+// In projectsApi.ts — update the params type
 export const getProjects = async (params?: {
   page?: number;
   per_page?: number;
   status?: string;
   category?: string;
+  q?: string; // ← add this
 }): Promise<PaginatedResponse<Project>> => {
   const res = await apiClient.get<ApiResponseWithPagination<Project>>(
     "/projects",
