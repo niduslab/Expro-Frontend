@@ -35,10 +35,21 @@ export const useCreateProject = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateProjectPayload) => createProject(payload),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["projects"] });
+    onMutate: () => {
+      toast.loading("Creating project...", { id: "create-project" });
     },
-    onError: () => toast.error("Failed to create project"),
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      toast.success(`"${data.title}" created successfully`, {
+        id: "create-project",
+      });
+    },
+    onError: () => {
+      toast.error("Failed to create project", { id: "create-project" });
+    },
+    onSettled: () => {
+      toast.dismiss("create-project");
+    },
   });
 };
 
