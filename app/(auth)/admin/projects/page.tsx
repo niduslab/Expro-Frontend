@@ -31,7 +31,16 @@ const STATUS_OPTIONS = [
   "cancelled",
   "completed",
 ] as const;
-const CATEGORY_OPTIONS = ["", "education", "health", "environment", "welfare"]; // adjust to your real categories
+const CATEGORY_OPTIONS = [
+  "",
+  "health",
+  "education",
+  "agriculture",
+  "media",
+  "women_entrepreneurship",
+  "other",
+  "humanity",
+];
 
 export default function AdminProjects() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
