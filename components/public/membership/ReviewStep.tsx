@@ -95,8 +95,20 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
 
   const formatDate = (date?: string) => {
     if (!date) return "";
-    const [d, m, y] = date.split("/");
-    return `${y}-${m}-${d}`;
+    
+    // If it's already in YYYY-MM-DD format (from native date picker), return as is
+    if (date.includes("-")) {
+      return date;
+    }
+    
+    // Fallback for any old MM/DD/YYYY formats
+    const parts = date.split("/");
+    if (parts.length === 3) {
+      const [m, d, y] = parts;
+      return `${y}-${m}-${d}`;
+    }
+    
+    return date;
   };
 
   const mapPackageToId = (pkg: string) => {
@@ -114,7 +126,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     name_english: data.personalInfo.nameEnglish,
     father_husband_name: data.personalInfo.fatherHusbandName || "",
     mother_name: data.personalInfo.motherName || "",
-    date_of_birth: formatDate(data.personalInfo.dateOfBirth),
+    date_of_birth: formatDate(data.personalInfo.memberDateOfBirth),
     nid_number: data.personalInfo.nid || "",
 
     academic_qualification: data.personalInfo.qualification?.[0]?.toLowerCase() || "",
@@ -136,7 +148,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
       {
         name: data.nomineeInfo.nomineeNameEnglish,
         relation: data.nomineeInfo.relation,
-        dob: formatDate(data.nomineeInfo.dateOfBirth),
+        dob: formatDate(data.nomineeInfo.nomineeDob),
       },
     ],
 
@@ -218,7 +230,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
               />
               <SectionRow
                 label="Date of Birth"
-                value={data.personalInfo.dateOfBirth}
+                value={data.personalInfo.memberDateOfBirth}
               />
               <SectionRow
                 label="Academic Qualification"
@@ -273,7 +285,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
               />
               <SectionRow
                 label="Date of Birth"
-                value={data.nomineeInfo.dateOfBirth}
+                value={data.nomineeInfo.nomineeDob}
               />
             </div>
             <div className="space-y-3">

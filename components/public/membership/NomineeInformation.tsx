@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, ChangeEvent, useRef } from 'react';
-import { Camera, ChevronRight, ChevronLeft, Upload } from 'lucide-react';
+import { Camera, ChevronRight, ChevronLeft, Upload, Calendar } from 'lucide-react';
 
 export type NomineeInfoState = {
   nomineeNameBangla: string;
   nomineeNameEnglish: string;
-  dateOfBirth: string;
+  nomineeDob: string;
   relation: string;
   nid: string;
   photo: File | null;
@@ -32,6 +32,13 @@ interface NomineeInformationProps {
   maxStepReached: number;
   onStepClick: (index: number) => void;
 }
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const [year, month, day] = dateString.split("-");
+  if (!year || !month || !day) return dateString;
+  return `${month}/${day}/${year}`;
+};
 
 const NomineeInformation: React.FC<NomineeInformationProps> = ({
   data,
@@ -87,12 +94,12 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
       nextErrors.nomineeNameEnglish = "Nominee Name (English) is required";
     }
 
-    if (!data.dateOfBirth.trim()) {
-      nextErrors.dateOfBirth = "Date of Birth is required";
+    if (!data.nomineeDob.trim()) {
+      nextErrors.nomineeDob = "Date of Birth is required";
     } else {
-      const dobPattern = /^\d{2}\/\d{2}\/\d{4}$/;
-      if (!dobPattern.test(data.dateOfBirth.trim())) {
-        nextErrors.dateOfBirth = "Use mm/dd/yyyy format";
+      const dobPattern = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dobPattern.test(data.nomineeDob.trim())) {
+        nextErrors.nomineeDob = "Use valid date format";
       }
     }
 
@@ -193,18 +200,38 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
               <label className="block text-sm font-medium text-gray-900">
                 Date of Birth <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                value={data.dateOfBirth}
-                onChange={handleChange("dateOfBirth")}
-                placeholder={dateOfBirthPlaceholder}
-                aria-invalid={Boolean(errors.dateOfBirth)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.dateOfBirth ? "border-red-500" : "border-gray-200"
-                }`}
-              />
-              {errors.dateOfBirth && (
-                <p className="text-xs text-red-500">{errors.dateOfBirth}</p>
+              <div className="relative bg-white rounded-md">
+                <input
+                  type="date"
+                  value={data.nomineeDob}
+                  onChange={handleChange("nomineeDob")}
+                  onClick={(e) => {
+                    try {
+                      if (typeof (e.target as any).showPicker === "function") {
+                        (e.target as any).showPicker();
+                      }
+                    } catch (error) {
+                      // ignore
+                    }
+                  }}
+                  aria-invalid={Boolean(errors.nomineeDob)}
+                  className={`peer relative z-10 w-full pl-4 pr-12 py-3 bg-transparent rounded-md border focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all cursor-pointer text-transparent focus:text-gray-900 ${
+                    errors.nomineeDob ? "border-red-500" : "border-gray-200"
+                  } [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
+                />
+                {/* Custom Display */}
+                <div className="absolute inset-0 pl-4 pr-12 py-3 pointer-events-none flex items-center peer-focus:opacity-0">
+                  <span className={data.nomineeDob ? "text-gray-900" : "text-gray-400"}>
+                    {data.nomineeDob ? formatDate(data.nomineeDob) : "mm/dd/yyyy"}
+                  </span>
+                </div>
+                <Calendar 
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20" 
+                  size={20} 
+                />
+              </div>
+              {errors.nomineeDob && (
+                <p className="text-xs text-red-500">{errors.nomineeDob}</p>
               )}
             </div>
 
