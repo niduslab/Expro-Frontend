@@ -75,7 +75,7 @@ export interface ProjectFormDataInterface {
   fundsUtilized: string; // ← replaces role
   startDate: string;
   endDate: string;
-  projectLead: string;
+  projectLeadId: number | null;
   isFeatured: boolean; // ← replaces teamSize
   isPublished: boolean; // ← replaces contribution
 }

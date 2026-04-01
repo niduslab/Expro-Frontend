@@ -22,7 +22,7 @@ export const projectBudgetSchema = z.object({
 });
 // Step 3: Teams & Roles
 export const projectTeamSchema = z.object({
-  projectLead: z.string().optional(),
+  projectLeadId: z.number().nullable().optional(),
   fundsUtilized: z
     .string()
     .optional()

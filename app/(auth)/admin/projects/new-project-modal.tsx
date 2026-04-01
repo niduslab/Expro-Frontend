@@ -6,6 +6,7 @@ import { Lock } from "lucide-react";
 import { ProjectFormDataInterface } from "@/lib/types/projectType";
 import { CreateProjectPayload } from "@/lib/types/projectType";
 import { useCreateProject } from "@/lib/hooks/admin/useProjectHook";
+import { useUsers } from "@/lib/hooks/admin/useUsers";
 
 interface NewProjectModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +25,7 @@ export default function NewProjectModal({
     "info",
   );
   const { mutate: createProject, isPending } = useCreateProject();
-
+  const { data: usersData } = useUsers();
   const [formData, setFormData] = useState<ProjectFormDataInterface>({
     title: "",
     category: "",
@@ -36,7 +37,7 @@ export default function NewProjectModal({
     fundsUtilized: "", // ← new
     startDate: "",
     endDate: "",
-    projectLead: "",
+    projectLeadId: null,
     isFeatured: false, // ← new
     isPublished: false, // ← new
   });
@@ -60,11 +61,12 @@ export default function NewProjectModal({
         : undefined,
       funds_utilized: formData.fundsUtilized
         ? Number(formData.fundsUtilized)
-        : undefined, // ← new
+        : undefined,
       start_date: formData.startDate || undefined,
       end_date: formData.endDate || undefined,
-      is_featured: formData.isFeatured, // ← new
-      is_published: formData.isPublished, // ← new
+      is_featured: formData.isFeatured,
+      is_published: formData.isPublished,
+      project_lead_id: formData.projectLeadId ?? undefined, // ← now sends real ID
     };
     createProject(payload, { onSuccess: () => setOpenModal(false) });
   };
@@ -102,6 +104,7 @@ export default function NewProjectModal({
             setActiveTab={setActiveTab}
             onSubmit={handleFinalSubmit}
             isPending={isPending}
+            users={usersData?.data ?? []}
           />
         );
     }

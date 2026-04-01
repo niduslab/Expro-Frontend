@@ -1,8 +1,9 @@
-import { ArrowLeft, CircleCheck } from "lucide-react";
+import { ArrowLeft, CircleCheck, ChevronDown, Search } from "lucide-react";
 import { projectTeamSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
 import { useState } from "react";
 import { ProjectFormDataInterface } from "@/lib/types/projectType";
+import { UserListItem } from "@/lib/types/admin/userType";
 
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
@@ -16,6 +17,7 @@ interface NewProjectModalProps {
   >;
   onSubmit: () => void; // ← new
   isPending: boolean; // ← new
+  users: UserListItem[];
 }
 
 export default function ProjectTeamsRoles({
@@ -25,12 +27,21 @@ export default function ProjectTeamsRoles({
   setActiveTab,
   onSubmit,
   isPending,
+  users,
 }: NewProjectModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [search, setSearch] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const filtered = users.filter((u) =>
+    u.email.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const selectedUser = users.find((u) => u.id === formData.projectLeadId);
 
   const handleSubmit = () => {
     const result = projectTeamSchema.safeParse({
-      projectLead: formData.projectLead,
+      projectLeadId: formData.projectLeadId,
       fundsUtilized: formData.fundsUtilized,
       isFeatured: formData.isFeatured,
       isPublished: formData.isPublished,
@@ -59,29 +70,85 @@ export default function ProjectTeamsRoles({
 
   return (
     <div className="flex flex-col relative w-full gap-[16px] pt-4">
-      {/* Row 1: Project Lead + Funds Utilized */}
+      {/* Row 1: Project Lead dropdown + Funds Utilized */}
       <div className="flex flex-col sm:flex-row gap-2 w-full">
-        {/* Project Lead */}
+        {/* Project Lead — searchable dropdown */}
         <div className="relative w-full sm:w-1/2">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Project Lead
             </span>
           </div>
-          <input
-            type="text"
-            value={formData.projectLead}
-            onChange={(e) => {
-              setFormData({ ...formData, projectLead: e.target.value });
-              if (errors.projectLead)
-                setErrors((prev) => ({ ...prev, projectLead: "" }));
-            }}
-            className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-            placeholder="Kamal Hossen"
-          />
-          {errors.projectLead && (
+
+          {/* Trigger */}
+          <button
+            type="button"
+            onClick={() => setDropdownOpen((v) => !v)}
+            className="h-[48px] w-full flex items-center justify-between border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-left"
+          >
+            <span
+              className={`text-[14px] truncate ${selectedUser ? "text-[#030712]" : "text-[#6A7282]"}`}
+            >
+              {selectedUser ? selectedUser.email : "Select a member"}
+            </span>
+            <ChevronDown
+              className={`h-4 w-4 text-[#6A7282] shrink-0 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {/* Dropdown panel */}
+          {dropdownOpen && (
+            <div className="absolute z-50 mt-1 w-full bg-white border border-[#D1D5DC] rounded-[8px] shadow-lg">
+              {/* Search */}
+              <div className="flex items-center gap-2 px-3 py-2 border-b border-[#E5E7EB]">
+                <Search className="h-4 w-4 text-[#6A7282] shrink-0" />
+                <input
+                  autoFocus
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by email..."
+                  className="flex-1 text-[13px] text-[#030712] outline-none bg-transparent"
+                />
+              </div>
+
+              {/* Options */}
+              <ul className="max-h-[160px] overflow-y-auto py-1">
+                {filtered.length === 0 ? (
+                  <li className="px-4 py-2 text-[13px] text-[#6A7282]">
+                    No members found
+                  </li>
+                ) : (
+                  filtered.map((user) => (
+                    <li
+                      key={user.id}
+                      onClick={() => {
+                        setFormData({ ...formData, projectLeadId: user.id });
+                        setDropdownOpen(false);
+                        setSearch("");
+                        if (errors.projectLeadId)
+                          setErrors((prev) => ({ ...prev, projectLeadId: "" }));
+                      }}
+                      className={`flex items-center justify-between px-4 py-2 text-[13px] cursor-pointer hover:bg-[#F3F4F6] ${
+                        formData.projectLeadId === user.id
+                          ? "bg-[#DFF1E9] text-[#068847] font-semibold"
+                          : "text-[#030712]"
+                      }`}
+                    >
+                      <span className="truncate">{user.email}</span>
+                      <span className="text-[11px] text-[#6A7282] ml-2 shrink-0">
+                        {user.roles[0] ?? ""}
+                      </span>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          )}
+
+          {errors.projectLeadId && (
             <span className="text-sm text-red-500 py-0.5">
-              {errors.projectLead}
+              {errors.projectLeadId}
             </span>
           )}
         </div>
