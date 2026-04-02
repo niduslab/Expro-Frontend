@@ -63,7 +63,10 @@ export default function CategoriesTab() {
           active={showFilters || filterActive !== ""}
           onClick={() => setShowFilters((s) => !s)}
         />
-        <AddButton label="New Category" onClick={() => setCreateOpen(true)} />
+        <AddButton
+          label="Add New Category"
+          onClick={() => setCreateOpen(true)}
+        />
       </div>
 
       {showFilters && (

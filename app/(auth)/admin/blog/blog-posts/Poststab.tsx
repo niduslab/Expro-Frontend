@@ -74,7 +74,7 @@ export default function PostsTab() {
           active={showFilters || hasFilters}
           onClick={() => setShowFilters((s) => !s)}
         />
-        <AddButton label="New Post" onClick={() => setCreateOpen(true)} />
+        <AddButton label="Add New Post" onClick={() => setCreateOpen(true)} />
       </div>
 
       {showFilters && (

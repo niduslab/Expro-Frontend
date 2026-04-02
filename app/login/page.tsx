@@ -12,7 +12,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
   const { mutate: login, isPending, error: loginError } = useLogin();
 
   // Validate email format
@@ -62,19 +64,21 @@ export default function LoginPage() {
         onError: (error: any) => {
           // Extract error message similar to contact form
           let errorMsg = "Login failed. Please check your credentials.";
-          
+
           if (error.message) {
             errorMsg = error.message;
           } else if (error.response?.data?.message) {
             errorMsg = error.response.data.message;
           } else if (error.response?.data?.errors) {
-            const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
+            const errorMessages = Object.values(error.response.data.errors)
+              .flat()
+              .join(", ");
             errorMsg = errorMessages;
           }
-          
+
           toast.error(errorMsg);
         },
-      }
+      },
     );
   };
 
@@ -97,7 +101,8 @@ export default function LoginPage() {
   const errorMessage = loginError
     ? loginError instanceof Error
       ? loginError.message
-      : (loginError as any)?.response?.data?.message || "Login failed. Please check your credentials."
+      : (loginError as any)?.response?.data?.message ||
+        "Login failed. Please check your credentials."
     : "";
 
   return (
@@ -172,7 +177,7 @@ export default function LoginPage() {
                 >
                   Email address
                 </label>
-                <div className="mt-1">
+                <div className="mt-1 ">
                   <input
                     id="email"
                     name="email"
@@ -181,7 +186,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={handleEmailChange}
-                    className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
+                    className={`appearance-none text-slate-600 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
                       errors.email
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -210,7 +215,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={handlePasswordChange}
-                    className={`appearance-none block w-full px-3 py-2 pr-10 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
+                    className={`appearance-none text-slate-500 block w-full px-3 py-2 pr-10 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
                       errors.password
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -229,7 +234,9 @@ export default function LoginPage() {
                     )}
                   </button>
                   {errors.password && (
-                    <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.password}
+                    </p>
                   )}
                 </div>
               </div>

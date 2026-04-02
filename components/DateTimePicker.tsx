@@ -36,8 +36,7 @@ export const DateTimePicker = ({ value, onChange }: DateTimePickerProps) => {
         timeIntervals={15}
         dateFormat="dd MMM yyyy, HH:mm"
         placeholderText="Select date and time"
-        className="w-full border border-gray-200 rounded-lg text-sm pl-9 pr-3 py-1.5 bg-white text-gray-800 cursor-pointer outline-none focus:ring-1 focus:ring-blue-400 placeholder:text-gray-400"
-        portalId="root-portal"
+        className="w-full border border-gray-200 rounded-lg text-sm pl-9 pr-3 py-3 bg-white text-gray-800 cursor-pointer outline-none focus:ring-1 focus:ring-green-400 placeholder:text-gray-400"
         popperPlacement="bottom-start"
         showMonthDropdown
         showYearDropdown

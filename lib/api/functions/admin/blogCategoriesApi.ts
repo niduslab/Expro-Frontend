@@ -32,7 +32,7 @@ export const fetchBlogCategoryById = async (
 export const createBlogCategory = async (
   payload: BlogCategoryPayload,
 ): Promise<SingleBlogCategoryResponse> => {
-  const { data } = await apiClient.post("/blogcategories", payload);
+  const { data } = await apiClient.post("/blogcategory", payload);
   return data;
 };
 
