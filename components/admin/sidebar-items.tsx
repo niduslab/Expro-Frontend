@@ -5,9 +5,10 @@ import {
   FolderKanban,
   UserCheck,
   Wallet,
-  BanknoteArrowDown,
+  Banknote, // ✅ replaces BanknoteArrowDown
   Split,
   NotebookPen,
+  Notebook,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -17,7 +18,7 @@ export const sidebarItems = [
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Board Members", href: "/admin/board-members", icon: UserCheck },
   { name: "Wallet Balance", href: "/admin/wallet", icon: Wallet },
-  { name: "Donation", href: "/admin/donation", icon: BanknoteArrowDown },
+  { name: "Donation", href: "/admin/donation", icon: Banknote }, // ✅
   { name: "Branch", href: "/admin/branch", icon: Split },
-  { name: "Blog", href: "/admin/blog", icon: NotebookPen },
+  { name: "Blog", href: "/admin/blogfeature", icon: NotebookPen },
 ];

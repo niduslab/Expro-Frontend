@@ -11,7 +11,7 @@ const TABS = [
 ] as const;
 type TabKey = (typeof TABS)[number]["key"];
 
-export default function BlogPage() {
+export default function BlogPageAdmin() {
   const [activeTab, setActiveTab] = useState<TabKey>("posts");
 
   return (
