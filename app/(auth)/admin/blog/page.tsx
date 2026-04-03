@@ -46,7 +46,7 @@ export default function BlogPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto py-6">
+      <div className="max-w-7xl mx-auto py-6 ">
         {activeTab === "posts" ? <PostsTab /> : <CategoriesTab />}
       </div>
     </div>

@@ -73,7 +73,7 @@ export function FilterToggle({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+      className={`flex items-center gap-2 px-4  cursor-pointer py-2.5 rounded-xl text-sm font-medium border transition-colors ${
         active
           ? "bg-[#068847] text-white border-[#068847]"
           : "bg-white text-[#4a4845] border-[#e8e6e0] hover:border-[#1a1a2e]"
@@ -96,7 +96,7 @@ export function AddButton({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#068847] text-white text-sm font-semibold whitespace-nowrap"
+      className="cursor-pointer flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#068847] text-white text-sm font-semibold whitespace-nowrap"
     >
       <Plus className="h-4 w-4" /> {label}
     </button>

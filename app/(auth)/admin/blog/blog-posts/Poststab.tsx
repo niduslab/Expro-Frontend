@@ -67,8 +67,8 @@ export default function PostsTab() {
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2">
             {/* Search input with icons inside */}
-            <div className="relative flex items-center">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8780] pointer-events-none" />
+            <div className="relative flex items-center ">
+              <Search className="absolute  left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8780] pointer-events-none" />
               <input
                 value={inputSearch}
                 onChange={(e) => setInputSearch(e.target.value)}
@@ -79,7 +79,7 @@ export default function PostsTab() {
                   }
                 }}
                 placeholder="Search posts..."
-                className="pl-9 pr-8 h-9 w-64 rounded-lg border border-[#e8e6e0] bg-white text-sm text-[#1a1a2e] placeholder:text-[#8a8780] focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
+                className="pl-9 pr-8 h-9 w-64  cursor-pointer  rounded-lg border border-[#e8e6e0] bg-white text-sm text-[#1a1a2e] placeholder:text-[#8a8780] focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-colors"
               />
               {inputSearch && (
                 <button
@@ -88,7 +88,7 @@ export default function PostsTab() {
                     setSearch("");
                     setPage(1);
                   }}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e] transition-colors"
+                  className="absolute  cursor-pointer right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e] transition-colors"
                   title="Clear"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -102,7 +102,7 @@ export default function PostsTab() {
                 setSearch(inputSearch);
                 setPage(1);
               }}
-              className="flex items-center gap-1.5 px-4 h-9 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors whitespace-nowrap"
+              className="flex items-center  cursor-pointer gap-1.5 px-4 h-9 rounded-lg bg-[#068847] hover:bg-green-700 text-white text-sm font-medium transition-colors whitespace-nowrap"
             >
               <Search className="w-3.5 h-3.5" />
               Search
@@ -236,21 +236,21 @@ export default function PostsTab() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setDetailPost(post)}
-                          className="p-1.5 rounded-lg hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e]"
+                          className="p-1.5  cursor-pointer rounded-lg hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e]"
                           title="View"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setEditPost(post)}
-                          className="p-1.5 rounded-lg hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e]"
+                          className="p-1.5  cursor-pointer rounded-lg hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e]"
                           title="Edit"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setDeletePost(post)}
-                          className="p-1.5 rounded-lg hover:bg-red-50 text-[#8a8780] hover:text-red-500 transition-colors"
+                          className="p-1.5  cursor-pointer rounded-lg hover:bg-red-50 text-[#8a8780] hover:text-red-500 transition-colors"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
