@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import React, { useState } from "react";
+import { ChevronRight, ChevronLeft, X } from "lucide-react";
 import StepsNavigation from "./StepsNavigation";
 import { MembershipData } from "./MembershipForm";
 import { useCreateMembershipApplication } from "@/lib/hooks/public/useMembershipApplicationHook";
+import { usePensionPackages } from "@/lib/hooks/public/usePensionPackagesHook";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ReviewStepProps {
   data: MembershipData;
@@ -26,15 +28,24 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
   maxStepReached,
   onStepClick,
 }) => {
-  const getPensionPackageDetails = (packageId: string) => {
-    const packages: Record<string, { name: string; price: number }> = {
-      basic: { name: "Basic", price: 300 },
-      standard: { name: "Standard", price: 500 },
-      advanced: { name: "Advanced", price: 1000 },
-      premium: { name: "Premium", price: 1500 },
-      skip: { name: "Skipped", price: 0 },
-    };
-    return packages[packageId] || { name: "Unknown", price: 0 };
+  // Fetch pension packages from API
+  const { data: packagesData } = usePensionPackages(1, 100);
+  const packages = packagesData?.data || [];
+
+  const getPensionPackageDetails = (packageId: "skip" | number) => {
+    if (packageId === "skip") {
+      return { name: "Skipped", price: 0 };
+    }
+    
+    const selectedPackage = packages.find((p) => p.id === packageId);
+    if (selectedPackage) {
+      return {
+        name: selectedPackage.name,
+        price: parseFloat(selectedPackage.monthly_amount),
+      };
+    }
+    
+    return { name: "Unknown", price: 0 };
   };
 
   const pensionDetails = getPensionPackageDetails(
@@ -92,21 +103,26 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
 
   const { mutate, isPending } = useCreateMembershipApplication();
   const [errors, setErrors] = React.useState<Record<string, string[]>>({});
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [applicationId, setApplicationId] = useState<number | null>(null);
+  const router = useRouter();
 
   const formatDate = (date?: string) => {
     if (!date) return "";
-    const [d, m, y] = date.split("/");
-    return `${y}-${m}-${d}`;
-  };
-
-  const mapPackageToId = (pkg: string) => {
-    const map: Record<string, number> = {
-      basic: 1,
-      standard: 2,
-      advanced: 3,
-      premium: 4,
-    };
-    return map[pkg];
+    
+    // If it's already in YYYY-MM-DD format (from native date picker), return as is
+    if (date.includes("-")) {
+      return date;
+    }
+    
+    // Fallback for any old MM/DD/YYYY formats
+    const parts = date.split("/");
+    if (parts.length === 3) {
+      const [m, d, y] = parts;
+      return `${y}-${m}-${d}`;
+    }
+    
+    return date;
   };
 
   const mappedPayload = {
@@ -114,7 +130,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     name_english: data.personalInfo.nameEnglish,
     father_husband_name: data.personalInfo.fatherHusbandName || "",
     mother_name: data.personalInfo.motherName || "",
-    date_of_birth: formatDate(data.personalInfo.dateOfBirth),
+    date_of_birth: formatDate(data.personalInfo.memberDateOfBirth),
     nid_number: data.personalInfo.nid || "",
 
     academic_qualification: data.personalInfo.qualification?.[0]?.toLowerCase() || "",
@@ -129,18 +145,22 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
 
     membership_type: "general", // or dynamic
 
-    sponsor_id: data.sponsorInfo.sponsorMemberId ? Number(data.sponsorInfo.sponsorMemberId) : "",
-    pension_package_id: mapPackageToId(data.pensionInfo.selectedPackage),
+    sponsor_id: data.sponsorInfo.sponsorMemberId ? Number(data.sponsorInfo.sponsorMemberId) : undefined,
+    // Use the actual package ID from the API (or undefined if skipped)
+    pension_package_id: data.pensionInfo.selectedPackage === "skip" ? undefined : data.pensionInfo.selectedPackage,
 
     nominees: [
       {
         name: data.nomineeInfo.nomineeNameEnglish,
         relation: data.nomineeInfo.relation,
-        dob: formatDate(data.nomineeInfo.dateOfBirth),
+        dob: formatDate(data.nomineeInfo.nomineeDob),
       },
     ],
 
     photo: data.personalInfo.photo || null,
+    
+    // Payment method selection
+    payment_method: "bkash", // or "sslcommerz"
   };
   const handleSubmit = () => {
     setErrors({});
@@ -170,7 +190,43 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     mutate(mappedPayload, {
       onSuccess: (res) => {
         console.log("✅ Backend Response (Success):", res);
-        toast.success(res.message || "Submitted!", { id: "submit" });
+        console.log("📦 Payment Data:", res.data?.payment);
+        toast.success(res.message || "Application submitted successfully!", { id: "submit" });
+        
+        // Backend returns payment data in response
+        if (res.data?.payment) {
+          const paymentData = res.data.payment;
+          
+          // Store application and payment details
+          setApplicationId(res.data.application?.id || null);
+          localStorage.setItem('application_id', res.data.application?.id?.toString() || '');
+          localStorage.setItem('payment_id', paymentData.payment_id?.toString() || '');
+          
+          // Clear form data since application is created
+          localStorage.removeItem('membership_form_data');
+          localStorage.removeItem('membership_max_step');
+          
+          console.log("🔗 Redirecting to payment URL:", paymentData.bkashURL);
+          
+          // Redirect to payment gateway directly
+          if (paymentData.payment_method === 'bkash' && paymentData.bkashURL) {
+            // Direct redirect to bKash payment page
+            // bKash will redirect back to /payment/bkash/callback after payment
+            window.location.href = paymentData.bkashURL;
+          } else if (paymentData.gateway_url) {
+            // For SSLCommerz, redirect directly
+            window.location.href = paymentData.gateway_url;
+          } else {
+            console.error("❌ No payment URL found in response");
+            toast.error("Payment URL not found. Please contact support.");
+            setShowPaymentModal(true);
+          }
+        } else {
+          console.error("❌ No payment data in response");
+          // Fallback: show payment modal
+          setApplicationId(res.data?.application?.id || null);
+          setShowPaymentModal(true);
+        }
       },
       onError: (err: any) => {
         console.error("❌ Backend Response (Error):", err?.response?.data);
@@ -182,6 +238,24 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
       },
     });
   };
+
+  const handlePaymentSuccess = (payment: any) => {
+    console.log("✅ Payment successful:", payment);
+    toast.success("Payment completed successfully!");
+    
+    // Clear form data from localStorage
+    localStorage.removeItem('membership_form_data');
+    localStorage.removeItem('membership_max_step');
+    
+    // Redirect to success page or dashboard
+    router.push('/membership/success?payment=success');
+  };
+
+  const handlePaymentError = (error: any) => {
+    console.error("❌ Payment error:", error);
+    toast.error("Payment failed. Please try again.");
+  };
+
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-7xl">
@@ -218,7 +292,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
               />
               <SectionRow
                 label="Date of Birth"
-                value={data.personalInfo.dateOfBirth}
+                value={data.personalInfo.memberDateOfBirth}
               />
               <SectionRow
                 label="Academic Qualification"
@@ -273,7 +347,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
               />
               <SectionRow
                 label="Date of Birth"
-                value={data.nomineeInfo.dateOfBirth}
+                value={data.nomineeInfo.nomineeDob}
               />
             </div>
             <div className="space-y-3">
@@ -357,6 +431,95 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
             <ChevronRight size={20} className="ml-2" />
           </button>
         </div>
+
+        {/* Payment Modal */}
+        {showPaymentModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-[#00341C]">Payment in Progress</h3>
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              
+              <div className="p-6">
+                <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                  <p className="text-sm text-green-800">
+                    <strong>Application Submitted!</strong> A payment window has been opened. Please complete the payment to activate your membership.
+                  </p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                  <h4 className="font-semibold text-blue-900 mb-3">Payment Instructions:</h4>
+                  <ul className="space-y-2 text-sm text-blue-800">
+                    <li className="flex items-start">
+                      <span className="mr-2">1.</span>
+                      <span>Complete the payment in the opened bKash window</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2">2.</span>
+                      <span>You will be redirected back after payment completion</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-2">3.</span>
+                      <span>If the window closed, you can retry payment from the link sent to your email</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Membership Fee:</span>
+                    <span className="text-lg font-bold text-[#008543]">৳{membershipFee}</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Pension Package ({pensionDetails.name}):</span>
+                    <span className="text-lg font-bold text-[#008543]">৳{pensionDetails.price}</span>
+                  </div>
+                  <div className="border-t border-gray-300 pt-2 mt-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-900 font-semibold">Total Amount:</span>
+                      <span className="text-2xl font-bold text-[#008543]">৳{totalDue}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center space-y-3">
+                  <p className="text-sm text-gray-600">
+                    Payment window didn't open?
+                  </p>
+                  <button
+                    onClick={() => {
+                      const paymentId = localStorage.getItem('payment_id');
+                      if (applicationId) {
+                        router.push(`/membership/payment-retry?application_id=${applicationId}`);
+                      }
+                    }}
+                    className="text-[#008543] hover:underline font-medium"
+                  >
+                    Click here to retry payment
+                  </button>
+                </div>
+
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => {
+                      setShowPaymentModal(false);
+                      router.push('/');
+                    }}
+                    className="text-sm text-gray-600 hover:text-gray-800 underline"
+                  >
+                    I'll complete payment later
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
