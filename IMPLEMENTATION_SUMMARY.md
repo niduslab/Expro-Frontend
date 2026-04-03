@@ -1,306 +1,315 @@
-# Implementation Summary
+# bKash Payment Integration - Implementation Summary
 
-## ✅ What Was Created
+## ✅ What Was Implemented
 
-A professional, enterprise-grade frontend API architecture following senior-level best practices.
+### Core Integration
+The bKash payment system has been fully integrated into the membership registration flow, following the backend API specification.
 
-## 📁 Complete Structure
+## 📁 Files Created/Modified
+
+### New Files Created (8)
+1. `lib/services/bkash.service.ts` - Payment API service
+2. `lib/hooks/useBkashPayment.ts` - Payment management hook
+3. `components/payment/BkashPayment.tsx` - Standalone payment component
+4. `components/payment/PaymentMethodSelector.tsx` - Payment method chooser
+5. `app/payment/bkash/callback/page.tsx` - Payment callback handler
+6. `app/(public)/membership/success/page.tsx` - Success page
+7. `app/(public)/membership/payment-retry/page.tsx` - Payment retry page
+8. `MEMBERSHIP_PAYMENT_INTEGRATION.md` - Complete documentation
+
+### Modified Files (1)
+1. `components/public/membership/ReviewStep.tsx` - Added payment flow
+
+## 🔄 Payment Flow
 
 ```
-lib/
-├── api/
-│   ├── axios.ts                    # Axios configuration with interceptors
-│   └── examples.ts                 # Usage examples and patterns
-│
-├── hooks/
-│   ├── index.ts                    # Central export point
-│   ├── public/
-│   │   ├── useMembership.ts       # Membership application hooks
-│   │   └── usePublicData.ts       # Public data (branches, etc.)
-│   ├── user/
-│   │   ├── useProfile.ts          # User profile management
-│   │   └── useWallet.ts           # Wallet & transactions
-│   ├── admin/
-│   │   ├── useMembers.ts          # Member management
-│   │   └── useDashboard.ts        # Dashboard statistics
-│   ├── useGSAPInit.ts             # GSAP initialization
-│   ├── usePageContent.ts          # Page content management
-│   └── useTrackOrder.ts           # Order tracking
-│
-├── components/
-│   ├── AuthGuard.tsx              # Route protection
-│   ├── CountdownTimer.tsx         # Countdown component
-│   ├── NotificationBell.tsx       # Notification icon
-│   ├── OtpInput.tsx               # OTP input component
-│   └── ToastProvider.tsx          # Toast notifications
-│
-├── context/
-│   ├── AuthContext.tsx            # Authentication state
-│   ├── NotificationContext.tsx    # Notification management
-│   └── CartContext.tsx            # Shopping cart state
-│
-├── providers/
-│   ├── AppProviders.tsx           # Combined providers
-│   ├── QueryProvider.tsx          # React Query provider
-│   └── index.ts                   # Provider exports
-│
-└── README.md                       # Comprehensive documentation
+┌─────────────────────────────────────────────────────────────────┐
+│ 1. User fills membership form (6 steps)                         │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 2. User reviews application and clicks "Proceed to Payment"     │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 3. Frontend submits application to backend with payment_method  │
+│    POST /api/v1/public/membership-application                   │
+│    { ...formData, payment_method: "bkash" }                     │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 4. Backend creates application (status: payment_pending)        │
+│    Backend initiates bKash payment                              │
+│    Returns: { application, payment: { bkashURL, payment_id } }  │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 5. Frontend opens bKash payment window (popup)                  │
+│    Stores payment_id and application_id in localStorage         │
+│    Shows instructions modal                                     │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 6. User completes payment in bKash window                       │
+│    bKash redirects to: /payment/bkash/callback?status=success   │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 7. Callback page confirms payment with backend                  │
+│    POST /api/v1/public/membership-application/payment-success   │
+│    { payment_id, gateway_transaction_id }                       │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 8. Backend updates application status to "submitted"            │
+│    Returns success confirmation                                 │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 9. User redirected to success page                              │
+│    /membership/success?payment=success                          │
+│    Form data cleared from localStorage                          │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Key Features Implemented
+## 🎯 Key Features
 
-### 1. Axios Configuration (`lib/api/axios.ts`)
-- ✅ Environment-based API URL
-- ✅ Request interceptor for automatic token attachment
-- ✅ Response interceptor for error handling
-- ✅ 401 handling with automatic redirect
-- ✅ 429 rate limiting detection
-- ✅ Type-safe API request wrapper
-- ✅ Authentication utilities
+### 1. Seamless Integration
+- Payment initiated automatically on form submission
+- No separate payment step needed
+- Backend handles all payment gateway communication
 
-### 2. Membership Registration Hooks (`lib/hooks/public/useMembership.ts`)
-- ✅ `useMembershipApplications()` - Get paginated applications
-- ✅ `useMembershipApplication(id)` - Get single application
-- ✅ `useSubmitMembershipApplication()` - Submit new application
-- ✅ `useUpdateMembershipApplication()` - Update application (admin)
-- ✅ `useDeleteMembershipApplication()` - Delete application (admin)
-- ✅ `useRegisterUser()` - User registration
-- ✅ Full TypeScript interfaces
-- ✅ Automatic cache invalidation
-- ✅ Error handling
+### 2. User Experience
+- Clear payment instructions
+- Payment window opens in popup
+- Progress indicators
+- Success/failure messaging
+- Payment retry option
 
-### 3. User Profile Hooks (`lib/hooks/user/useProfile.ts`)
-- ✅ `useMyProfile()` - Get authenticated user profile
-- ✅ `useCreateProfile()` - Create member profile
-- ✅ `useUpdateProfile()` - Update profile
-- ✅ `useDeleteProfile()` - Delete profile
+### 3. Error Handling
+- Payment cancellation
+- Network errors
+- Timeout scenarios
+- Invalid payment data
+- Window close detection
 
-### 4. Wallet Hooks (`lib/hooks/user/useWallet.ts`)
-- ✅ `useMyWallet()` - Get wallet information
-- ✅ `useMyWalletTransactions()` - Get transactions with filtering
+### 4. Payment Retry
+- Dedicated retry page
+- Maintains application data
+- Supports multiple payment methods
+- Clear retry instructions
 
-### 5. Admin Hooks (`lib/hooks/admin/`)
-- ✅ `useMembers()` - Get all members
-- ✅ `useMember(id)` - Get single member
-- ✅ `useUpdateMemberStatus()` - Update member status
-- ✅ `useDashboardStats()` - Dashboard statistics
+## 🔧 Technical Implementation
 
-### 6. Context Providers
-- ✅ `AuthContext` - Authentication state management
-- ✅ `NotificationContext` - Notification system
-- ✅ `CartContext` - Shopping cart management
-- ✅ `AppProviders` - Combined provider wrapper
+### Backend API Endpoints Used
 
-### 7. Reusable Components
-- ✅ `AuthGuard` - Route protection with role checking
-- ✅ `OtpInput` - Multi-digit OTP input
-- ✅ `CountdownTimer` - Countdown to target date
-- ✅ `NotificationBell` - Notification icon with badge
-- ✅ `ToastProvider` - Toast notification system
+1. **Create Application with Payment**
+   ```
+   POST /api/v1/public/membership-application
+   ```
+   - Creates application (payment_pending)
+   - Initiates payment
+   - Returns bkashURL
 
-### 8. Documentation
-- ✅ `lib/README.md` - Comprehensive usage guide
-- ✅ `API_ARCHITECTURE.md` - Architecture documentation
-- ✅ `MIGRATION_GUIDE.md` - Migration from old structure
-- ✅ `IMPLEMENTATION_SUMMARY.md` - This file
+2. **Confirm Payment Success**
+   ```
+   POST /api/v1/public/membership-application/payment-success
+   ```
+   - Verifies payment
+   - Updates status to submitted
 
-## 🔧 Technical Stack
+3. **Report Payment Failure**
+   ```
+   POST /api/v1/public/membership-application/payment-failed
+   ```
+   - Records failure
+   - Keeps application in payment_pending
 
-- **HTTP Client**: Axios with interceptors
-- **State Management**: TanStack Query (React Query)
-- **Type Safety**: Full TypeScript support
-- **Authentication**: JWT token-based
-- **Notifications**: React Hot Toast
-- **Animations**: GSAP support
+4. **Retry Payment**
+   ```
+   POST /api/v1/public/membership-application/{id}/retry-payment
+   ```
+   - Initiates new payment
+   - Returns new bkashURL
 
-## 📊 API Endpoints Covered
+### Frontend Services
 
-### Public Endpoints (No Auth)
-- ✅ GET `/public/membership-applications` - List applications
-- ✅ GET `/public/membership-applications/{id}` - Get application
-- ✅ POST `/public/membership-application` - Submit application
-- ✅ POST `/public/register` - User registration
-- ✅ POST `/public/login` - User login
+**bkashService** (`lib/services/bkash.service.ts`)
+- `confirmPaymentSuccess()` - Confirm payment completion
+- `reportPaymentFailure()` - Report payment failure
+- `retryPayment()` - Retry payment for application
 
-### User Endpoints (Auth Required)
-- ✅ GET `/myprofile` - Get user profile
-- ✅ POST `/memberprofile` - Create profile
-- ✅ PUT `/memberprofile/{id}` - Update profile
-- ✅ DELETE `/memberprofile/{id}` - Delete profile
-- ✅ GET `/mywallet` - Get wallet
-- ✅ GET `/mywallettransactions` - Get transactions
+**useBkashPayment Hook** (`lib/hooks/useBkashPayment.ts`)
+- `openPaymentGateway()` - Open payment window
+- `confirmPaymentSuccess()` - Confirm with backend
+- `reportPaymentFailure()` - Report failure
+- `retryPayment()` - Retry payment
+- `cancelPayment()` - Cancel payment
 
-### Admin Endpoints
-- ✅ GET `/admin/members` - List members
-- ✅ GET `/admin/member/{id}` - Get member
-- ✅ PUT `/admin/member/{id}` - Update member
-- ✅ PUT `/membership-application/{id}` - Update application
-- ✅ DELETE `/membership-application/{id}` - Delete application
+## 📊 Application Status Flow
 
-## 🎨 Code Quality Features
+```
+payment_pending → submitted → under_review → approved/rejected
+```
 
-1. **Type Safety**
-   - Full TypeScript interfaces for all data types
-   - Type-safe API calls
-   - Proper error typing
+## 🧪 Testing Checklist
 
-2. **Error Handling**
-   - Centralized error handling in interceptors
-   - User-friendly error messages
-   - Automatic retry logic
+### ✅ Completed
+- [x] File structure created
+- [x] TypeScript types defined
+- [x] No compilation errors
+- [x] Payment flow implemented
+- [x] Callback handling implemented
+- [x] Retry functionality implemented
+- [x] Success page created
+- [x] Documentation written
 
-3. **Performance**
-   - Automatic request caching
-   - Request deduplication
-   - Optimistic updates support
-   - Stale-while-revalidate pattern
+### ⏳ Pending (Requires Backend)
+- [ ] Test application submission
+- [ ] Test payment window opening
+- [ ] Test payment success flow
+- [ ] Test payment failure flow
+- [ ] Test payment retry
+- [ ] Test callback handling
+- [ ] Test with bKash sandbox
 
-4. **Developer Experience**
-   - Comprehensive JSDoc comments
-   - Usage examples in every hook
-   - React Query Devtools integration
-   - Clear file organization
+## 🚀 Deployment Checklist
 
-5. **Best Practices**
-   - Separation of concerns
-   - Domain-driven structure
-   - Reusable components
-   - Context for global state
-   - Custom hooks for logic reuse
+### Development
+- [x] Code implementation complete
+- [x] TypeScript errors resolved
+- [x] Documentation created
+- [ ] Backend API integration tested
+- [ ] Sandbox testing completed
 
-## 🚀 Usage Example
+### Production
+- [ ] Environment variables configured
+- [ ] bKash production credentials set
+- [ ] HTTPS enabled
+- [ ] Payment monitoring configured
+- [ ] Email notifications set up
+- [ ] Error tracking enabled
 
+## 📝 Environment Variables
+
+Required in `.env.local`:
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+```
+
+## 🎨 User Interface
+
+### Payment Instructions Modal
+- Shows after application submission
+- Displays payment amount breakdown
+- Provides clear instructions
+- Offers retry option
+- "Pay later" option available
+
+### Payment Callback Page
+- Processing state with spinner
+- Success state with checkmark
+- Failure state with error icon
+- Auto-redirect after 2-3 seconds
+
+### Success Page
+- Confirmation message
+- Next steps information
+- Contact support links
+- Navigation buttons
+
+### Retry Page
+- Payment method selection
+- Application ID display
+- Retry button
+- Support information
+
+## 📚 Documentation
+
+### Created Documents
+1. `MEMBERSHIP_PAYMENT_INTEGRATION.md` - Complete integration guide
+2. `BKASH_INTEGRATION_GUIDE.md` - General bKash guide
+3. `BKASH_QUICK_START.md` - Quick start guide
+4. `BKASH_IMPLEMENTATION_CHECKLIST.md` - Implementation checklist
+5. `IMPLEMENTATION_SUMMARY.md` - This document
+
+## 🔐 Security Features
+
+1. **Payment Validation**: Backend validates all payment data
+2. **Transaction Verification**: Backend verifies with bKash
+3. **Status Management**: Proper status transitions
+4. **Data Cleanup**: localStorage cleared after completion
+5. **Error Logging**: All errors logged for debugging
+
+## 🎯 Next Steps
+
+### Immediate
+1. Test with backend API in development
+2. Verify all endpoints are working
+3. Test payment flow end-to-end
+4. Test error scenarios
+
+### Short Term
+1. Configure bKash sandbox credentials
+2. Complete sandbox testing
+3. Fix any integration issues
+4. Optimize user experience
+
+### Long Term
+1. Add SSLCommerz integration
+2. Add payment history tracking
+3. Add receipt generation
+4. Add payment reminders
+5. Add refund support
+
+## 💡 Usage in Other Pages
+
+The payment components can be reused for:
+- Monthly pension payments
+- Donation payments
+- Project funding
+- Any other payment scenarios
+
+Example:
 ```tsx
-'use client';
+import { useBkashPayment } from '@/lib/hooks/useBkashPayment';
 
-import { useSubmitMembershipApplication } from '@/lib/hooks';
-import { toast } from 'react-hot-toast';
+const { retryPayment } = useBkashPayment({
+  onSuccess: (payment) => {
+    console.log('Payment successful:', payment);
+  }
+});
 
-export default function MembershipForm() {
-  const { mutate, isLoading } = useSubmitMembershipApplication();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    mutate({
-      full_name: 'John Doe',
-      email: 'john@example.com',
-      phone: '8801712345678',
-      branch_id: 1,
-      membership_type: 'general',
-      nid_number: '1234567890'
-    }, {
-      onSuccess: (response) => {
-        toast.success('Application submitted successfully!');
-        console.log('Application ID:', response.data.data.id);
-      },
-      onError: (error) => {
-        toast.error('Failed to submit application');
-        console.error(error);
-      }
-    });
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* Form fields */}
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Submitting...' : 'Submit Application'}
-      </button>
-    </form>
-  );
-}
+// For existing applications
+await retryPayment(applicationId, 'bkash');
 ```
 
-## 📦 Installation Steps
+## 📞 Support
 
-1. **Install Dependencies**
-   ```bash
-   npm install @tanstack/react-query @tanstack/react-query-devtools axios react-hot-toast
-   ```
+- **Email**: support@exprowelfare.org
+- **Documentation**: See `MEMBERSHIP_PAYMENT_INTEGRATION.md`
+- **Backend API**: See backend documentation
+- **bKash Docs**: https://developer.bka.sh/
 
-2. **Setup Environment**
-   ```env
-   NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
-   ```
+## ✨ Summary
 
-3. **Add Providers to Layout**
-   ```tsx
-   import { AppProviders } from '@/lib/providers/AppProviders';
+The bKash payment integration is **complete and ready for testing** with the backend API. The implementation follows the backend specification exactly, with proper error handling, user feedback, and retry mechanisms.
 
-   export default function RootLayout({ children }) {
-     return (
-       <html lang="en">
-         <body>
-           <AppProviders>
-             {children}
-           </AppProviders>
-         </body>
-       </html>
-     );
-   }
-   ```
+**Key Achievements:**
+- ✅ Seamless payment flow integrated into registration
+- ✅ Automatic payment initiation on form submission
+- ✅ Proper callback handling for success/failure
+- ✅ Payment retry functionality
+- ✅ Clear user feedback and instructions
+- ✅ Comprehensive error handling
+- ✅ Complete documentation
 
-4. **Start Using Hooks**
-   ```tsx
-   import { useMembershipApplications } from '@/lib/hooks';
-   
-   const { data, isLoading } = useMembershipApplications();
-   ```
-
-## 🎯 Benefits Over Old Structure
-
-| Feature | Old Structure | New Structure |
-|---------|--------------|---------------|
-| Organization | Single file | Domain-separated |
-| Type Safety | Partial | Full TypeScript |
-| Caching | Manual | Automatic |
-| Error Handling | Per-component | Centralized |
-| Loading States | Manual | Built-in |
-| Code Reuse | Limited | High |
-| Maintainability | Low | High |
-| Scalability | Limited | Excellent |
-| Documentation | Minimal | Comprehensive |
-| Testing | Difficult | Easy |
-
-## 🔄 Migration Path
-
-The old `app/tanstack/api/BaseApi.ts` has been marked as deprecated but kept for backward compatibility. Follow the `MIGRATION_GUIDE.md` for step-by-step migration instructions.
-
-## 📚 Documentation Files
-
-1. **lib/README.md** - Main documentation with usage examples
-2. **API_ARCHITECTURE.md** - Architecture diagrams and data flow
-3. **MIGRATION_GUIDE.md** - Migration from old structure
-4. **lib/api/examples.ts** - Code examples and patterns
-
-## ✨ Next Steps
-
-1. Review the documentation in `lib/README.md`
-2. Check `lib/api/examples.ts` for usage patterns
-3. Start migrating existing components using `MIGRATION_GUIDE.md`
-4. Add more domain-specific hooks as needed
-5. Customize components to match your design system
-
-## 🎓 Learning Resources
-
-- [TanStack Query Docs](https://tanstack.com/query/latest)
-- [Axios Documentation](https://axios-http.com/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [React Context API](https://react.dev/reference/react/useContext)
-
-## 🤝 Contributing
-
-When adding new endpoints:
-1. Create appropriate hook in the correct domain folder
-2. Add TypeScript interfaces
-3. Include JSDoc comments with examples
-4. Export from `lib/hooks/index.ts`
-5. Update documentation
-
----
-
-**Created by**: Senior Frontend Engineer  
-**Date**: 2024  
-**Architecture**: Professional, Enterprise-Grade  
-**Status**: ✅ Production Ready
+**Status: Ready for Backend Integration Testing! 🎉**

@@ -26,7 +26,7 @@ const initialPersonalInfo: PersonalInfoState = {
   nameEnglish: "",
   fatherHusbandName: "",
   motherName: "",
-  dateOfBirth: "",
+  memberDateOfBirth: "",
   nid: "",
   qualification: [],
   photo: null,
@@ -44,7 +44,7 @@ const initialAddressInfo: AddressFormState = {
 const initialNomineeInfo: NomineeInfoState = {
   nomineeNameBangla: "",
   nomineeNameEnglish: "",
-  dateOfBirth: "",
+  nomineeDob: "",
   relation: "",
   nid: "",
   photo: null,
@@ -91,13 +91,36 @@ const MembershipForm = () => {
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
+        
+        // Convert old date format (mm/dd/yyyy) to new format (yyyy-mm-dd)
+        const convertDateFormat = (dateStr: string) => {
+          if (!dateStr) return '';
+          // Check if it's in old format (mm/dd/yyyy)
+          const oldFormatMatch = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+          if (oldFormatMatch) {
+            const [, month, day, year] = oldFormatMatch;
+            return `${year}-${month}-${day}`;
+          }
+          return dateStr; // Already in correct format or empty
+        };
+        
         // We need to merge with initial state to ensure all fields exist
         // Note: File objects (photo) cannot be stored in localStorage, so they will be null
         setFormData(prev => ({
           ...prev,
-          personalInfo: { ...prev.personalInfo, ...parsedData.personalInfo, photo: null },
+          personalInfo: { 
+            ...prev.personalInfo, 
+            ...parsedData.personalInfo, 
+            memberDateOfBirth: convertDateFormat(parsedData.personalInfo?.memberDateOfBirth || parsedData.personalInfo?.dateOfBirth || ''),
+            photo: null 
+          },
           addressInfo: { ...prev.addressInfo, ...parsedData.addressInfo },
-          nomineeInfo: { ...prev.nomineeInfo, ...parsedData.nomineeInfo, photo: null },
+          nomineeInfo: { 
+            ...prev.nomineeInfo, 
+            ...parsedData.nomineeInfo, 
+            nomineeDob: convertDateFormat(parsedData.nomineeInfo?.nomineeDob || parsedData.nomineeInfo?.dateOfBirth || ''),
+            photo: null 
+          },
           sponsorInfo: { ...prev.sponsorInfo, ...parsedData.sponsorInfo },
           pensionInfo: { ...prev.pensionInfo, ...parsedData.pensionInfo },
         }));
