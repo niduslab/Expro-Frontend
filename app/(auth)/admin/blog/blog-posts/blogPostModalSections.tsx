@@ -9,6 +9,9 @@ import {
   STATUS_OPTIONS,
 } from "./blogPostModalShared";
 import { DateTimePicker } from "@/components/DateTimePicker";
+import { UserListItem } from "@/lib/types/admin/userType";
+import { useState } from "react";
+import { ChevronDown, Search } from "lucide-react";
 
 // ─── Post Details Section ──────────────────────────────────────
 interface PostDetailsSectionProps {
@@ -106,53 +109,62 @@ interface PublishingSettingsSectionProps {
   formData: BlogPostPayload;
   categories: { id: number; name: string }[];
   set: (field: keyof BlogPostPayload, value: unknown) => void;
+  users: UserListItem[];
 }
 
 export function PublishingSettingsSection({
   formData,
   categories,
   set,
+  users,
 }: PublishingSettingsSectionProps) {
+  const [search, setSearch] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const filtered = users.filter((u) =>
+    (u.member?.name_english ?? u.email ?? "")
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
+  const selectedUser = users.find(
+    (u) => Number(u.id) === Number(formData.author_id),
+  );
   return (
     <div className="flex flex-col relative top-[48px] gap-[16px]">
       <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
         Publishing Settings
       </p>
 
-      <div className="flex gap-2 w-full">
-        <div className="w-1/2">
-          <FieldLabel label="Category" />
-          <select
-            className={inputClass}
-            value={formData.category_id ?? ""}
-            onChange={(e) =>
-              set("category_id", e.target.value ? Number(e.target.value) : null)
-            }
-          >
-            <option value="">Select a category</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="w-1/2">
-          <FieldLabel label="Status" />
-          <select
-            className={inputClass}
-            value={String(formData.status)}
-            onChange={(e) => set("status", e.target.value as BlogPostStatus)}
-          >
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
+      <select
+        className={inputClass}
+        value={formData.category_id != null ? String(formData.category_id) : ""}
+        onChange={(e) =>
+          set("category_id", e.target.value ? Number(e.target.value) : null)
+        }
+      >
+        <option value="">Select a category</option>
+        {categories.map((c) => (
+          <option key={c.id} value={String(c.id)}>
+            {c.name}
+          </option>
+        ))}
+      </select>
+      <div>
+        <FieldLabel label="Status" required />
+        <select
+          className={inputClass}
+          value={formData.status}
+          onChange={(e) =>
+            set("status", e.target.value as BlogPostPayload["status"])
+          }
+        >
+          {STATUS_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
       </div>
-
       {/* ✅ Replaced datetime-local with DateTimePicker */}
       <div>
         <FieldLabel label="Published At" />
@@ -162,6 +174,71 @@ export function PublishingSettingsSection({
         />
       </div>
 
+      <div className="relative">
+        <FieldLabel label="Author" required />
+        <button
+          type="button"
+          onClick={() => setDropdownOpen((v) => !v)}
+          className="h-[48px] w-full flex items-center justify-between border border-[#D1D5DC] rounded-[8px] px-[16px] bg-white focus:outline-none focus:ring focus:ring-green-500 text-left"
+        >
+          <span
+            className={`text-[14px] truncate ${selectedUser ? "text-[#6A7282]" : "text-[#6A7282]"}`}
+          >
+            {selectedUser?.member?.name_english ||
+              selectedUser?.email ||
+              "Select an author"}
+          </span>
+          <ChevronDown
+            className={`h-4 w-4 text-[#6A7282] shrink-0 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute z-50 mt-1 w-full bg-white border border-[#D1D5DC] rounded-[8px] shadow-lg">
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-[#E5E7EB]">
+              <Search className="h-4 w-4 text-[#6A7282] shrink-0" />
+              <input
+                autoFocus
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name..."
+                className="flex-1 text-[13px] text-[#030712] outline-none bg-transparent"
+              />
+            </div>
+            <ul className="max-h-[160px] overflow-y-auto py-1">
+              {filtered.length === 0 ? (
+                <li className="px-4 py-2 text-[13px] text-[#6A7282]">
+                  No users found
+                </li>
+              ) : (
+                filtered.map((user) => (
+                  <li
+                    key={user.id}
+                    onClick={() => {
+                      set("author_id", user.id);
+                      setDropdownOpen(false);
+                      setSearch("");
+                    }}
+                    className={`flex items-center justify-between px-4 py-2 text-[13px] cursor-pointer hover:bg-[#F3F4F6] ${
+                      Number(formData.author_id) === Number(user.id)
+                        ? "bg-[#DFF1E9] text-[#068847] font-semibold"
+                        : "text-[#030712]"
+                    }`}
+                  >
+                    <span className="truncate">
+                      {user.member?.name_english || user.email}
+                    </span>
+                    <span className="text-[11px] text-[#6A7282] ml-2 shrink-0">
+                      {user.roles?.[0] ?? ""}
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
       <div>
         <FieldLabel label="Featured Post" />
         <div className="flex items-center gap-3 h-[48px]">
@@ -179,7 +256,6 @@ export function PublishingSettingsSection({
           </span>
         </div>
       </div>
-
       <Divider />
     </div>
   );

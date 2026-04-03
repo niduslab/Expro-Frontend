@@ -51,6 +51,7 @@ export default function PostsTab() {
 
   const { data, isLoading, isError } = useBlogPosts(params);
   const posts = data?.data ?? [];
+  console.log(posts);
   const pagination = data?.pagination;
   const hasFilters = filterStatus !== "" || filterFeatured !== "";
 
@@ -168,7 +169,9 @@ export default function PostsTab() {
                       {post.category?.name ?? "—"}
                     </td>
                     <td className="px-5 py-4 text-sm text-[#4a4845] whitespace-nowrap">
-                      {post.author?.name ?? "—"}
+                      {post.author?.member?.name_english ??
+                        post.author?.email ??
+                        "—"}
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <span

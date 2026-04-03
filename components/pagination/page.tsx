@@ -63,7 +63,7 @@ export default function Pagination({
         <button
           onClick={onPrev}
           disabled={page === 1}
-          className="px-3 py-2 flex items-center rounded-lg border text-sm font-medium bg-white hover:bg-gray-100 transition disabled:opacity-40"
+          className="px-3 py-2 flex text-slate-700  items-center rounded-lg border text-sm font-medium bg-white hover:bg-gray-100 transition disabled:opacity-40"
         >
           <ChevronLeftIcon className="h-4 w-4" /> Prev
         </button>
@@ -91,7 +91,7 @@ export default function Pagination({
         <button
           onClick={onNext}
           disabled={!hasNext}
-          className="px-3 py-2 flex items-center rounded-lg border text-sm font-medium bg-white hover:bg-gray-100 transition disabled:opacity-40"
+          className="px-3 py-2 text-slate-700 flex items-center rounded-lg border text-sm font-medium bg-white hover:bg-gray-100 transition disabled:opacity-40"
         >
           Next <ChevronRightIcon className="h-4 w-4" />
         </button>

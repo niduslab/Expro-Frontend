@@ -56,6 +56,15 @@ export interface BlogPostAuthor {
   id: number;
   name: string;
   email: string;
+  member?: BlogPostAuthorMember | null;
+}
+export interface BlogPostAuthorMember {
+  id: number;
+  name_english: string;
+  name_bangla?: string | null;
+  photo?: string | null;
+  mobile?: string | null;
+  // add other fields as needed
 }
 
 export interface BlogPost {
@@ -99,13 +108,14 @@ export interface SingleBlogPostResponse {
 }
 
 export interface BlogPostPayload {
+  id: number | null;
   title: string;
   title_bangla?: string | null;
   slug: string;
   excerpt?: string | null;
   content: string;
   featured_image?: string | null;
-  author_id: number;
+  author_id: number | null;
   category_id?: number | null;
   status?: BlogPostStatus;
   published_at?: string | null;

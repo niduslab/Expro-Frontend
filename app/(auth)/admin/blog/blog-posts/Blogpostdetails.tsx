@@ -164,7 +164,12 @@ export default function BlogPostDetailModal({
 
               <div className="flex gap-4 w-full">
                 <div className="w-1/2">
-                  <DetailField label="Author" value={post.author?.name} />
+                  <DetailField
+                    label="Author"
+                    value={
+                      post.author?.member?.name_english ?? post.author?.email
+                    }
+                  />
                 </div>
                 <div className="w-1/2">
                   <DetailField label="Category" value={post.category?.name} />

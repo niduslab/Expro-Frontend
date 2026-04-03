@@ -32,7 +32,7 @@ export const fetchBlogPostById = async (
 export const createBlogPost = async (
   payload: BlogPostPayload,
 ): Promise<SingleBlogPostResponse> => {
-  const { data } = await apiClient.post("/blogposts", payload);
+  const { data } = await apiClient.post("/blogpost", payload);
   return data;
 };
 

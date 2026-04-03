@@ -17,7 +17,7 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen font-['DM_Sans',sans-serif]">
       <div className="bg-white border-b border-[#e8e6e0]">
-        <div className="max-w-7xl mx-auto pt-6">
+        <div className="max-w-7xl mx-auto ">
           <p className="font-semibold text-2xl sm:text-[32px] text-[#030712]">
             Blog
           </p>

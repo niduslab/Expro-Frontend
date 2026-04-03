@@ -15,6 +15,7 @@ import {
   PublishingSettingsSection,
   TagsSection,
 } from "./blogPostModalSections";
+import { useUsers } from "@/lib/hooks/admin/useUsers";
 
 interface BlogPostModalProps {
   open: boolean;
@@ -34,18 +35,21 @@ export default function BlogPostModal({
 
   const { data: categoriesData } = useBlogCategories();
   const categories = categoriesData?.data ?? [];
+  const { data: usersData } = useUsers();
+  const users = usersData?.data ?? [];
 
   useEffect(() => {
     if (open && post) {
       setFormData({
+        id: post.id,
         title: post.title,
         title_bangla: post.title_bangla ?? "",
         slug: post.slug,
         excerpt: post.excerpt ?? "",
         content: post.content,
         featured_image: post.featured_image ?? "",
-        author_id: post.author_id,
-        category_id: post.category_id ?? null,
+        author_id: post.author?.id ?? post.author_id ?? null, // ← fix
+        category_id: post.category?.id ?? post.category_id ?? null, // ← fix
         status: String(post.status) as BlogPostPayload["status"],
         published_at: post.published_at ?? null,
         is_featured: post.is_featured,
@@ -90,9 +94,12 @@ export default function BlogPostModal({
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = "Title is required";
-    if (!formData.slug.trim()) newErrors.slug = "Slug is required";
-    if (!formData.content.trim()) newErrors.content = "Content is required";
+    if (!formData.id) newErrors.title = "Id is required";
+    if (!formData.title?.trim()) newErrors.title = "Title is required";
+    if (!formData.slug?.trim()) newErrors.slug = "Slug is required";
+    if (!formData.content?.trim()) newErrors.content = "Content is required";
+    if (formData.author_id === null || formData.author_id === undefined)
+      newErrors.author_id = "Author is required";
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       toast.error(Object.values(newErrors)[0]);
@@ -110,7 +117,7 @@ export default function BlogPostModal({
   });
 
   const { mutate: update, isPending: updating } = useUpdateBlogPost(
-    post?.id ?? 0,
+    Number(post?.id), // undefined when no post — safe
     {
       onSuccess: () => {
         toast.success("Post updated successfully");
@@ -124,8 +131,20 @@ export default function BlogPostModal({
 
   const handleSubmit = () => {
     if (!validate()) return;
-    if (isEdit) update(formData);
-    else create(formData);
+
+    const payload: BlogPostPayload = {
+      ...formData,
+      published_at: formData.published_at
+        ? new Date(formData.published_at)
+            .toISOString()
+            .replace("T", " ")
+            .replace(".000Z", "")
+        : null,
+      featured_image: formData.featured_image || null,
+    };
+
+    if (isEdit) update(payload);
+    else create(payload);
   };
 
   if (!open) return null;
@@ -168,6 +187,7 @@ export default function BlogPostModal({
             formData={formData}
             categories={categories}
             set={set}
+            users={users}
           />
 
           <TagsSection
