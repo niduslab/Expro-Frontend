@@ -1,8 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useBkashPayment } from '@/lib/hooks/useBkashPayment';
-import { BkashPaymentRequest } from '@/lib/services/bkash.service';
+import { useState } from "react";
+import { useBkashPayment } from "@/lib/hooks/useBkashPayment";
+import {
+  CreatePaymentRequest,
+  bkashService,
+} from "@/lib/services/bkash.service";
 
 interface BkashPaymentProps {
   amount: number;
@@ -30,12 +33,12 @@ export default function BkashPayment({
   hideCustomerForm = false,
 }: BkashPaymentProps) {
   const [customerInfo, setCustomerInfo] = useState({
-    name: initialCustomerInfo?.name || '',
-    email: initialCustomerInfo?.email || '',
-    phone: initialCustomerInfo?.phone || '',
+    name: initialCustomerInfo?.name || "",
+    email: initialCustomerInfo?.email || "",
+    phone: initialCustomerInfo?.phone || "",
   });
 
-  const { initiatePayment, cancelPayment, loading } = useBkashPayment({
+  const { openPaymentGateway, cancelPayment, loading } = useBkashPayment({
     onSuccess,
     onError,
   });
@@ -43,11 +46,10 @@ export default function BkashPayment({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
+    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone)
       return;
-    }
 
-    const paymentData: BkashPaymentRequest = {
+    const paymentData: CreatePaymentRequest = {
       amount,
       payment_type: paymentType,
       customer_name: customerInfo.name,
@@ -57,7 +59,24 @@ export default function BkashPayment({
       reference_id: referenceId,
     };
 
-    await initiatePayment(paymentData);
+    try {
+      // Step 1: create payment on backend → receive bkashURL + payment_id
+      const result = await bkashService.createPayment(paymentData);
+
+      if (!result.success || !result.data?.bkashURL) {
+        onError?.({ message: result.message || "Failed to create payment" });
+        return;
+      }
+
+      // Step 2: open bKash gateway with server-returned data
+      await openPaymentGateway({
+        bkashURL: result.data.bkashURL,
+        payment_id: result.data.payment_id,
+        paymentID: result.data.paymentID,
+      });
+    } catch (error: any) {
+      onError?.(error);
+    }
   };
 
   return (
@@ -72,7 +91,9 @@ export default function BkashPayment({
       <div className="mb-6 p-4 bg-pink-50 rounded-lg">
         <div className="flex justify-between items-center">
           <span className="text-gray-600">Amount:</span>
-          <span className="text-2xl font-bold text-pink-600">৳{amount.toFixed(2)}</span>
+          <span className="text-2xl font-bold text-pink-600">
+            ৳{amount.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between items-center mt-2">
           <span className="text-sm text-gray-500">Payment Type:</span>
@@ -170,7 +191,7 @@ export default function BkashPayment({
                 Processing...
               </>
             ) : (
-              'Pay Now'
+              "Pay Now"
             )}
           </button>
 
@@ -188,8 +209,8 @@ export default function BkashPayment({
 
       <div className="mt-4 p-3 bg-blue-50 rounded-md">
         <p className="text-xs text-blue-800">
-          <strong>Note:</strong> You will be redirected to bKash payment gateway.
-          Please complete the payment within 5 minutes.
+          <strong>Note:</strong> You will be redirected to bKash payment
+          gateway. Please complete the payment within 5 minutes.
         </p>
       </div>
     </div>

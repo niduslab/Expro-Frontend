@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useRef, KeyboardEvent, ClipboardEvent } from 'react';
+import { useState, useRef, KeyboardEvent, ClipboardEvent } from "react";
 
 /**
  * OTP Input Component
  * Multi-digit OTP input with auto-focus
- * 
+ *
  * @param length - Number of OTP digits
  * @param onComplete - Callback when OTP is complete
- * 
+ *
  * @example
  * <OtpInput length={6} onComplete={(otp) => console.log('OTP:', otp)} />
  */
@@ -18,12 +18,12 @@ interface OtpInputProps {
   onChange?: (otp: string) => void;
 }
 
-export const OtpInput: React.FC<OtpInputProps> = ({ 
-  length = 6, 
+export const OtpInput: React.FC<OtpInputProps> = ({
+  length = 6,
   onComplete,
-  onChange 
+  onChange,
 }) => {
-  const [otp, setOtp] = useState<string[]>(new Array(length).fill(''));
+  const [otp, setOtp] = useState<string[]>(new Array(length).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (index: number, value: string) => {
@@ -33,7 +33,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
 
-    const otpString = newOtp.join('');
+    const otpString = newOtp.join("");
     onChange?.(otpString);
 
     // Move to next input
@@ -48,21 +48,21 @@ export const OtpInput: React.FC<OtpInputProps> = ({
   };
 
   const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text/plain').slice(0, length);
-    
+    const pastedData = e.clipboardData.getData("text/plain").slice(0, length);
+
     if (isNaN(Number(pastedData))) return;
 
-    const newOtp = pastedData.split('');
-    setOtp([...newOtp, ...new Array(length - newOtp.length).fill('')]);
-    
-    const otpString = newOtp.join('');
+    const newOtp = pastedData.split("");
+    setOtp([...newOtp, ...new Array(length - newOtp.length).fill("")]);
+
+    const otpString = newOtp.join("");
     onChange?.(otpString);
 
     if (otpString.length === length) {
@@ -75,7 +75,9 @@ export const OtpInput: React.FC<OtpInputProps> = ({
       {otp.map((digit, index) => (
         <input
           key={index}
-          ref={(el) => (inputRefs.current[index] = el)}
+          ref={(el) => {
+            inputRefs.current[index] = el;
+          }}
           type="text"
           inputMode="numeric"
           maxLength={1}

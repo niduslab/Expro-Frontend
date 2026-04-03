@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /**
  * Hook: Initialize GSAP
  * Registers GSAP plugins and sets up global configuration
- * 
+ *
  * @example
  * function App() {
  *   useGSAPInit();
@@ -15,15 +15,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 export const useGSAPInit = () => {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
+
     // Global GSAP configuration
     gsap.config({
       nullTargetWarn: false,
-      trialWarn: false,
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
 };

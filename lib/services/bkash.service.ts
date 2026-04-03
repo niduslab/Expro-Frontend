@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
 
 export interface PaymentSuccessRequest {
   payment_id: number;
@@ -13,7 +14,7 @@ export interface PaymentFailedRequest {
 }
 
 export interface RetryPaymentRequest {
-  payment_method: 'bkash' | 'sslcommerz';
+  payment_method: "bkash" | "sslcommerz";
 }
 
 export interface PaymentResponse {
@@ -22,47 +23,76 @@ export interface PaymentResponse {
   data?: any;
 }
 
+export interface CreatePaymentRequest {
+  amount: number;
+  payment_type: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  user_id?: number;
+  reference_id?: string;
+}
+
+export interface CreatePaymentResponse {
+  success: boolean;
+  message: string;
+  data: {
+    bkashURL: string;
+    payment_id: number;
+    paymentID?: string;
+  };
+}
+
 class BkashService {
   private getAuthHeaders() {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem("auth_token");
     return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     };
   }
 
-  /**
-   * Confirm payment success after user completes payment in gateway
-   */
-  async confirmPaymentSuccess(data: PaymentSuccessRequest): Promise<PaymentResponse> {
+  async createPayment(
+    data: CreatePaymentRequest,
+  ): Promise<CreatePaymentResponse> {
+    const response = await axios.post(
+      `${API_URL}/public/payment/bkash/create`, // ← adjust to your actual endpoint
+      data,
+      { headers: this.getAuthHeaders() },
+    );
+    return response.data;
+  }
+
+  async confirmPaymentSuccess(
+    data: PaymentSuccessRequest,
+  ): Promise<PaymentResponse> {
     const response = await axios.post(
       `${API_URL}/public/membership-application/payment-success`,
       data,
-      { headers: this.getAuthHeaders() }
+      { headers: this.getAuthHeaders() },
     );
     return response.data;
   }
 
-  /**
-   * Report payment failure
-   */
-  async reportPaymentFailure(data: PaymentFailedRequest): Promise<PaymentResponse> {
+  async reportPaymentFailure(
+    data: PaymentFailedRequest,
+  ): Promise<PaymentResponse> {
     const response = await axios.post(
       `${API_URL}/public/membership-application/payment-failed`,
       data,
-      { headers: this.getAuthHeaders() }
+      { headers: this.getAuthHeaders() },
     );
     return response.data;
   }
 
-  /**
-   * Retry payment for an existing application
-   */
-  async retryPayment(applicationId: number, data: RetryPaymentRequest): Promise<PaymentResponse> {
+  async retryPayment(
+    applicationId: number,
+    data: RetryPaymentRequest,
+  ): Promise<PaymentResponse> {
     const response = await axios.post(
       `${API_URL}/public/membership-application/${applicationId}/retry-payment`,
       data,
-      { headers: this.getAuthHeaders() }
+      { headers: this.getAuthHeaders() },
     );
     return response.data;
   }
