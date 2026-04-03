@@ -89,7 +89,7 @@ export interface BlogPost {
   updated_at?: string;
 }
 
-export interface BlogPostListResponse {
+export type BlogPostListResponse = {
   success: boolean;
   message: string;
   data: BlogPost[];
@@ -99,7 +99,7 @@ export interface BlogPostListResponse {
     current_page: number;
     last_page: number;
   };
-}
+};
 
 export interface SingleBlogPostResponse {
   success: boolean;

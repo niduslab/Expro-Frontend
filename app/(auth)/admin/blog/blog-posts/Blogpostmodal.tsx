@@ -94,7 +94,7 @@ export default function BlogPostModal({
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.id) newErrors.title = "Id is required";
+
     if (!formData.title?.trim()) newErrors.title = "Title is required";
     if (!formData.slug?.trim()) newErrors.slug = "Slug is required";
     if (!formData.content?.trim()) newErrors.content = "Content is required";
