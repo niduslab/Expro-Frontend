@@ -9,6 +9,7 @@ import {
   Split,
   NotebookPen,
   Balloon,
+  UsersRound,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -22,4 +23,9 @@ export const sidebarItems = [
   { name: "Branch", href: "/admin/branch", icon: Split },
   { name: "Blog", href: "/admin/blogfeature", icon: NotebookPen },
   { name: "Event", href: "/admin/events", icon: Balloon },
+  {
+    name: "Expro Team Members",
+    href: "/admin/exproTeamMembers",
+    icon: UsersRound,
+  },
 ];
