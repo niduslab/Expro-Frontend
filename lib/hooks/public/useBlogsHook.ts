@@ -21,6 +21,15 @@ export const useBlogs = (page: number, per_page: number = 10) => {
     queryKey: ["blogs", page, per_page],
     queryFn: () => fetchBlogs(page, per_page),
     placeholderData: (prev) => prev,
+    retry: (failureCount, error: any) => {
+      // Retry up to 3 times for rate limit errors
+      if (error?.response?.status === 429 && failureCount < 3) {
+        return true;
+      }
+      // Don't retry for other errors
+      return false;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   };
 
   return useQuery(options);
@@ -34,4 +43,12 @@ export const useBlog = (slug: string) =>
     queryKey: ["blog", slug],
     queryFn: () => fetchBlogBySlug(slug),
     enabled: !!slug,
+    retry: (failureCount, error: any) => {
+      // Retry up to 3 times for rate limit errors
+      if (error?.response?.status === 429 && failureCount < 3) {
+        return true;
+      }
+      return false;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
