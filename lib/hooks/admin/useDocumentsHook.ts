@@ -42,7 +42,7 @@ const documentApi = {
 // useDocuments — paginated list with filters
 // ─────────────────────────────────────────────
 
-export function useDocuments(initialParams: DocumentIndexParams = {}) {
+export function useDocuments(params: DocumentIndexParams = {}) {
   const [state, setState] = useState<UseDocumentsState>({
     documents: [],
     pagination: null,
@@ -50,9 +50,6 @@ export function useDocuments(initialParams: DocumentIndexParams = {}) {
     error: null,
   });
 
-  const [params, setParams] = useState<DocumentIndexParams>(initialParams);
-
-  // Stable ref so the fetch function never captures stale params
   const paramsRef = useRef(params);
   paramsRef.current = params;
 
@@ -75,25 +72,13 @@ export function useDocuments(initialParams: DocumentIndexParams = {}) {
     }
   }, []);
 
+  const paramsKey = JSON.stringify(params);
   useEffect(() => {
     fetch();
-  }, [fetch, params]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsKey]);
 
-  const updateParams = useCallback((next: Partial<DocumentIndexParams>) => {
-    setParams((prev) => ({ ...prev, ...next, page: 1 }));
-  }, []);
-
-  const goToPage = useCallback((page: number) => {
-    setParams((prev) => ({ ...prev, page }));
-  }, []);
-
-  return {
-    ...state,
-    params,
-    updateParams,
-    goToPage,
-    refetch: fetch,
-  };
+  return { ...state, refetch: fetch };
 }
 
 // ─────────────────────────────────────────────
@@ -347,6 +332,7 @@ export function useDownloadDocument() {
       setError(null);
       try {
         await documentApi.download(id, fileName);
+
         setIsLoading(false);
         options?.onSuccess?.();
       } catch (err) {
@@ -361,4 +347,107 @@ export function useDownloadDocument() {
   );
 
   return { isLoading, error, download };
+}
+
+// ─────────────────────────────────────────────
+// useDocumentsWithMutations — combined hook
+// Use this in your page/component instead of
+// wiring useDocuments + mutations separately.
+// All mutations auto-refetch the list on success.
+// ─────────────────────────────────────────────
+
+export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
+  const list = useDocuments(params);
+  const creator = useCreateDocument();
+  const updater = useUpdateDocument();
+  const deleter = useDeleteDocument();
+  const downloader = useDownloadDocument();
+
+  const create = useCallback(
+    async (
+      payload: DocumentStorePayload,
+      options?: {
+        onSuccess?: (doc: Document) => void;
+        onError?: (msg: string) => void;
+      },
+    ) => {
+      return creator.create(payload, {
+        ...options,
+        onSuccess: async (doc) => {
+          await list.refetch();
+          options?.onSuccess?.(doc);
+        },
+      });
+    },
+    [creator.create, list.refetch],
+  );
+
+  const update = useCallback(
+    async (
+      id: number,
+      payload: DocumentUpdatePayload,
+      options?: {
+        onSuccess?: (doc: Document) => void;
+        onError?: (msg: string) => void;
+      },
+    ) => {
+      return updater.update(id, payload, {
+        ...options,
+        onSuccess: async (doc) => {
+          await list.refetch();
+          options?.onSuccess?.(doc);
+        },
+      });
+    },
+    [updater.update, list.refetch],
+  );
+
+  const remove = useCallback(
+    async (
+      id: number,
+      options?: { onSuccess?: () => void; onError?: (msg: string) => void },
+    ) => {
+      return deleter.remove(id, {
+        ...options,
+        onSuccess: async () => {
+          await list.refetch();
+          options?.onSuccess?.();
+        },
+      });
+    },
+    [deleter.remove, list.refetch],
+  );
+
+  return {
+    // list state
+    documents: list.documents,
+    pagination: list.pagination,
+    isLoading: list.isLoading,
+    error: list.error,
+    refetch: list.refetch,
+
+    // mutations
+    create,
+    update,
+    remove,
+    download: downloader.download,
+
+    // mutation states
+    createState: {
+      isLoading: creator.isLoading,
+      error: creator.error,
+      isSuccess: creator.isSuccess,
+    },
+    updateState: {
+      isLoading: updater.isLoading,
+      error: updater.error,
+      isSuccess: updater.isSuccess,
+    },
+    deleteState: {
+      isLoading: deleter.isLoading,
+      error: deleter.error,
+      isSuccess: deleter.isSuccess,
+    },
+    downloadState: { isLoading: downloader.isLoading, error: downloader.error },
+  };
 }

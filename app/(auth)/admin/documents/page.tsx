@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
+import { useDocumentsWithMutations } from "@/lib/hooks/admin/useDocumentsHook";
 import {
-  useDocuments,
-  useDeleteDocument,
-  useDownloadDocument,
-} from "@/lib/hooks/admin/useDocumentsHook";
-import { Document, DocumentType, DocumentStatus } from "@/lib/types/admin/documentType";
+  Document,
+  DocumentIndexParams,
+  DocumentType,
+  DocumentStatus,
+} from "@/lib/types/admin/documentType";
 
 import DocumentSearchBar from "./documentSearchBar";
 import DocumentFilterPanel from "./documentFilterPanel";
@@ -17,6 +18,77 @@ import DocumentTable from "./documentTable";
 import DocumentModal from "./documentModal";
 import DocumentDetailModal from "./documentDetails";
 import Pagination from "@/components/pagination/page";
+
+// ── Delete Confirmation Dialog ─────────────────────────────────────────────
+
+interface DeleteConfirmDialogProps {
+  documentName: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isPending: boolean;
+}
+
+function DeleteConfirmDialog({
+  documentName,
+  onConfirm,
+  onCancel,
+  isPending,
+}: DeleteConfirmDialogProps) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="flex flex-col w-full max-w-[420px] bg-white rounded-2xl border border-[#E5E7EB] shadow-lg p-6 gap-5">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-red-50 border border-red-100">
+            <AlertTriangle className="h-6 w-6 text-[#FB2C36]" />
+          </div>
+          <div>
+            <p className="font-semibold text-[18px] text-[#030712] leading-[130%]">
+              Delete Document
+            </p>
+            <p className="text-[13px] text-[#4A5565] mt-1 leading-[160%]">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-[#030712]">
+                "{documentName}"
+              </span>
+              ? This action cannot be undone.
+            </p>
+          </div>
+        </div>
+
+        <div className="border border-[#E5E7EB]" />
+
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            disabled={isPending}
+            className="flex-1 cursor-pointer h-[44px] rounded-xl border border-[#E5E7EB] text-[#6A7282] font-normal text-[15px] hover:bg-gray-50 transition-colors disabled:opacity-60"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={isPending}
+            className="flex-1 h-[44px] cursor-pointer rounded-xl bg-[#FB2C36] text-white font-semibold text-[15px] flex items-center justify-center gap-2 hover:bg-red-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              <>
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function DocumentsPage() {
   // ── Search ─────────────────────────────────────────────────────────────────
@@ -36,7 +108,7 @@ export default function DocumentsPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editDocument, setEditDocument] = useState<Document | null>(null);
   const [detailDocument, setDetailDocument] = useState<Document | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Document | null>(null);
 
   // ── Search helpers ─────────────────────────────────────────────────────────
   const commitSearch = () => {
@@ -59,33 +131,43 @@ export default function DocumentsPage() {
     setPage(1);
   };
 
-  const handleFilterChange = (
-    setter: (v: string) => void,
-  ) => (v: string) => {
+  const handleFilterChange = (setter: (v: string) => void) => (v: string) => {
     setter(v);
     setPage(1);
   };
 
-  // ── Query params ───────────────────────────────────────────────────────────
-  const queryParams: Record<string, unknown> = { page };
+  // ── Build query params — typed, no `Record<string, unknown>` ───────────────
+  const queryParams: DocumentIndexParams = { page };
   if (search) queryParams.search = search;
   if (filterType) queryParams.type = filterType as DocumentType;
   if (filterStatus) queryParams.status = filterStatus as DocumentStatus;
-  if (filterFeatured !== "") queryParams.is_featured = filterFeatured === "true";
+  if (filterFeatured !== "")
+    queryParams.is_featured = filterFeatured === "true";
 
-  const { documents, pagination, isLoading, error } = useDocuments(queryParams);
+  const {
+    documents,
+    pagination,
+    isLoading,
+    error,
+    remove: deleteDocument,
+    download,
+    deleteState,
+  } = useDocumentsWithMutations(queryParams);
 
-  // ── Mutations ──────────────────────────────────────────────────────────────
-  const { remove: deleteDocument, isLoading: deleting } = useDeleteDocument();
-  const { download, isLoading: downloading } = useDownloadDocument();
+  const deleting = deleteState.isLoading;
 
-  const handleDelete = (id: number) => {
-    if (!confirm("Are you sure you want to delete this document?")) return;
-    setDeletingId(id);
-    deleteDocument(id, {
-      onSuccess: () => toast.success("Document deleted successfully"),
-      onError: (msg) => toast.error(msg || "Failed to delete document"),
-    }).finally(() => setDeletingId(null));
+  const handleDeleteConfirm = () => {
+    if (!deleteTarget) return;
+    deleteDocument(deleteTarget.id, {
+      onSuccess: () => {
+        toast.success("Document deleted successfully");
+        setDeleteTarget(null);
+      },
+      onError: (msg) => {
+        toast.error(msg || "Failed to delete document");
+        setDeleteTarget(null);
+      },
+    });
   };
 
   const handleDownload = (doc: Document) => {
@@ -186,10 +268,13 @@ export default function DocumentsPage() {
           ) : (
             <DocumentTable
               documents={documents}
-              deletingId={deletingId}
+              deletingId={deleteTarget?.id ?? null}
               onView={setDetailDocument}
               onEdit={setEditDocument}
-              onDelete={handleDelete}
+              onDelete={(id) => {
+                const doc = documents.find((d) => d.id === id) ?? null;
+                setDeleteTarget(doc);
+              }}
               onDownload={handleDownload}
             />
           )}
@@ -203,9 +288,7 @@ export default function DocumentsPage() {
             total={pagination.total}
             dataLength={documents.length}
             onPrev={() => setPage((p) => Math.max(1, p - 1))}
-            onNext={() =>
-              setPage((p) => Math.min(pagination.last_page, p + 1))
-            }
+            onNext={() => setPage((p) => Math.min(pagination.last_page, p + 1))}
             onPageChange={(p) => setPage(p)}
           />
         )}
@@ -231,6 +314,14 @@ export default function DocumentsPage() {
         }}
         onDownload={handleDownload}
       />
+      {deleteTarget && (
+        <DeleteConfirmDialog
+          documentName={deleteTarget.name}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteTarget(null)}
+          isPending={deleting}
+        />
+      )}
     </div>
   );
 }

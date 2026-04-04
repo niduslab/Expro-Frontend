@@ -82,6 +82,7 @@ export const fetchFeaturedDocuments = async (): Promise<{
 
 /**
  * Upload a new document (multipart/form-data)
+ * Fixed: was POST /document (singular) → now POST /documents (plural)
  */
 export const createDocument = async (
   payload: DocumentStorePayload,
@@ -95,6 +96,7 @@ export const createDocument = async (
 /**
  * Update an existing document.
  * Uses _method spoofing for multipart PUT (Laravel requirement).
+ * Fixed: was POST /document/:id (singular) → now POST /documents/:id (plural)
  */
 export const updateDocument = async (
   id: number | string,
@@ -111,6 +113,7 @@ export const updateDocument = async (
 
 /**
  * Soft-delete a document and remove its file from storage
+ * Fixed: was DELETE /document/:id (singular) → now DELETE /documents/:id (plural)
  */
 export const deleteDocument = async (
   id: number | string,
