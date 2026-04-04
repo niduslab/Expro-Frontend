@@ -1,8 +1,19 @@
 "use client";
-import { Calendar, Package, Plus, TrendingUp, Users, Edit, Trash2 } from "lucide-react";
+import {
+  Calendar,
+  Package,
+  Plus,
+  TrendingUp,
+  Users,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import NewPackageModal from "./new-package-modal";
-import { usePensionPackages, useDeletePensionPackage } from "@/lib/hooks/admin/usePensionPackages";
+import {
+  usePensionPackages,
+  useDeletePensionPackage,
+} from "@/lib/hooks/admin/usePensionPackages";
 import { toast } from "sonner";
 
 function Stat({
@@ -28,12 +39,21 @@ function Stat({
 export default function AdminPensionPackages() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
-  
-  const { data: packagesData, isLoading, error } = usePensionPackages({ per_page: 100 });
-  const { mutate: deletePackage, isPending: isDeleting } = useDeletePensionPackage();
+
+  const {
+    data: packagesData,
+    isLoading,
+    error,
+  } = usePensionPackages({ per_page: 100 });
+  const { mutate: deletePackage, isPending: isDeleting } =
+    useDeletePensionPackage();
 
   const handleDelete = (id: number, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+      )
+    ) {
       return;
     }
 
@@ -41,10 +61,15 @@ export default function AdminPensionPackages() {
 
     deletePackage(id, {
       onSuccess: (res) => {
-        toast.success(res.message || "Pension package deleted successfully!", { id: "delete-package" });
+        toast.success(res.message || "Pension package deleted successfully!", {
+          id: "delete-package",
+        });
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.message || "Failed to delete pension package", { id: "delete-package" });
+        toast.error(
+          err?.response?.data?.message || "Failed to delete pension package",
+          { id: "delete-package" },
+        );
       },
     });
   };
@@ -56,17 +81,34 @@ export default function AdminPensionPackages() {
 
   const getStatusBadge = (status: string) => {
     const statusMap: Record<string, { text: string; className: string }> = {
-      running: { text: "Running", className: "text-[#29A36A] bg-[#DFF1E9] border-[#A8DAC3]" },
-      active: { text: "Running", className: "text-[#29A36A] bg-[#DFF1E9] border-[#A8DAC3]" },
-      inactive: { text: "Expired", className: "text-[#DC2626] bg-[#FEE2E2] border-[#FCA5A5]" },
-      expired: { text: "Expired", className: "text-[#DC2626] bg-[#FEE2E2] border-[#FCA5A5]" },
-      upcoming: { text: "Upcoming", className: "text-[#F59E0B] bg-[#FEF3C7] border-[#FCD34D]" },
+      running: {
+        text: "Running",
+        className: "text-[#29A36A] bg-[#DFF1E9] border-[#A8DAC3]",
+      },
+      active: {
+        text: "Running",
+        className: "text-[#29A36A] bg-[#DFF1E9] border-[#A8DAC3]",
+      },
+      inactive: {
+        text: "Expired",
+        className: "text-[#DC2626] bg-[#FEE2E2] border-[#FCA5A5]",
+      },
+      expired: {
+        text: "Expired",
+        className: "text-[#DC2626] bg-[#FEE2E2] border-[#FCA5A5]",
+      },
+      upcoming: {
+        text: "Upcoming",
+        className: "text-[#F59E0B] bg-[#FEF3C7] border-[#FCD34D]",
+      },
     };
 
     const statusInfo = statusMap[status?.toLowerCase()] || statusMap.running;
 
     return (
-      <span className={`text-[12px] font-semibold ${statusInfo.className} border px-3 py-[2px] rounded-full`}>
+      <span
+        className={`text-[12px] font-semibold ${statusInfo.className} border px-3 py-[2px] rounded-full`}
+      >
         {statusInfo.text}
       </span>
     );
@@ -77,7 +119,7 @@ export default function AdminPensionPackages() {
 
   return (
     <>
-      <div className="container flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex flex-col gap-2">
           <p className="font-semibold text-2xl sm:text-[32px] text-[#030712]">
             Pension Packages
@@ -102,7 +144,7 @@ export default function AdminPensionPackages() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center min-h-[400px] ">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#068847] mx-auto mb-4"></div>
             <p className="text-[#4A5565]">Loading pension packages...</p>
@@ -112,7 +154,9 @@ export default function AdminPensionPackages() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <p className="text-red-500 mb-2">Failed to load pension packages</p>
-            <p className="text-sm text-[#4A5565]">{(error as any)?.message || "Please try again later"}</p>
+            <p className="text-sm text-[#4A5565]">
+              {(error as any)?.message || "Please try again later"}
+            </p>
           </div>
         </div>
       ) : !packages || packages.length === 0 ? (
@@ -120,11 +164,13 @@ export default function AdminPensionPackages() {
           <div className="text-center">
             <Package className="h-16 w-16 text-[#D1D5DC] mx-auto mb-4" />
             <p className="text-[#4A5565] mb-2">No pension packages found</p>
-            <p className="text-sm text-[#6A7282]">Create your first pension package to get started</p>
+            <p className="text-sm text-[#6A7282]">
+              Create your first pension package to get started
+            </p>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8 max-w-7xl mx-auto">
           {packages.map((plan: any) => (
             <div
               key={plan.id}
@@ -201,10 +247,10 @@ export default function AdminPensionPackages() {
           ))}
         </div>
       )}
-      
+
       {openModal && (
-        <NewPackageModal 
-          setOpenModal={setOpenModal} 
+        <NewPackageModal
+          setOpenModal={setOpenModal}
           packageToEdit={selectedPackage}
         />
       )}

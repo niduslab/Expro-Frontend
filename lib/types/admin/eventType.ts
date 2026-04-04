@@ -16,6 +16,8 @@ export interface Event {
   image: string | null;
   metadata: Record<string, unknown> | null;
   created_by: number | null;
+  created_at: string;
+  updated_at: string;
 }
 
 // ─── Payload ─────────────────────────────────────────────────────

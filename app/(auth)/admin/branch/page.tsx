@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   useBranches,
   useDeleteBranch,
@@ -12,13 +12,11 @@ import {
   Search,
   SlidersHorizontal,
   Pencil,
-  Trash2,
   Eye,
   Building2,
-  ChevronLeft,
-  ChevronRight,
   CheckCircle2,
   XCircle,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import BranchModal from "./branchModal";
@@ -26,8 +24,11 @@ import BranchDetailModal from "./branchDetails";
 import Pagination from "@/components/pagination/page";
 
 export default function BranchesPage() {
+  const [searchInput, setSearchInput] = useState(""); // live input value
+  const [search, setSearch] = useState(""); // committed — sent to API
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
   const [filterActive, setFilterActive] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
 
@@ -36,6 +37,23 @@ export default function BranchesPage() {
   const [detailBranch, setDetailBranch] = useState<Branch | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  // ── Search helpers ─────────────────────────────────────────────────────────
+  const commitSearch = () => {
+    setSearch(searchInput.trim());
+    setPage(1);
+  };
+  const clearSearch = () => {
+    setSearchInput("");
+    setSearch("");
+    setPage(1);
+    searchInputRef.current?.focus();
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") commitSearch();
+    if (e.key === "Escape") clearSearch();
+  };
+
+  // ── Query params ───────────────────────────────────────────────────────────
   const params: Record<string, unknown> = { page };
   if (search) params.q = search;
   if (filterActive !== "") params.is_active = filterActive === "true";
@@ -52,15 +70,13 @@ export default function BranchesPage() {
   const handleDelete = (id: number) => {
     if (!confirm("Are you sure you want to delete this branch?")) return;
     setDeletingId(id);
-    deleteBranch(id, {
-      onSettled: () => setDeletingId(null),
-    });
+    deleteBranch(id, { onSettled: () => setDeletingId(null) });
   };
 
   return (
-    <div className="min-h-screen  font-['DM_Sans',sans-serif]">
-      {/* Header */}
-      <div className="bg-white border-b border-[#e8e6e0] flex items-center">
+    <div className="min-h-screen font-['DM_Sans',sans-serif]">
+      {/* ── Header ── */}
+      <div className="bg-white border-b border-[#e8e6e0] flex items-center max-w-7xl mx-auto">
         <div className="container mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-2xl sm:text-[32px] text-[#030712]">
@@ -70,7 +86,6 @@ export default function BranchesPage() {
               Manage Branches data and update here.
             </p>
           </div>
-
           <div className="flex justify-start sm:justify-end">
             <button
               onClick={() => setCreateModalOpen(true)}
@@ -83,41 +98,64 @@ export default function BranchesPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto  py-6 space-y-4">
-        {/* Search & Filters */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8780]" />
-            <input
-              type="text"
-              placeholder="Search branches..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[#e8e6e0] rounded-xl text-sm text-[#1a1a2e] placeholder:text-[#b8b5ae] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/10 focus:border-[#1a1a2e]"
-            />
+      <div className="max-w-7xl mx-auto py-6 space-y-4">
+        {/* ── Search & Filter Bar ── */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Input + Search button */}
+          <div className="flex items-center gap-2 flex-1 min-w-0 max-w-md">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8780] pointer-events-none" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search branches..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full pl-9 pr-9 py-2.5 bg-white border border-[#e8e6e0] rounded-xl text-sm text-[#1a1a2e] placeholder:text-[#b8b5ae] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/10 focus:border-[#1a1a2e]"
+              />
+              {/* ✕ clear — only when input has text */}
+              {searchInput && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8a8780] hover:text-[#1a1a2e] transition-colors rounded p-0.5"
+                  title="Clear"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Search button */}
+            <button
+              onClick={commitSearch}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#068847] text-white text-sm font-medium hover:bg-[#05713b] transition-colors whitespace-nowrap shrink-0"
+            >
+              <Search className="w-3.5 h-3.5" />
+              Search
+            </button>
           </div>
+
+          {/* Filter toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors ml-auto ${
               showFilters || filterActive !== ""
-                ? "bg-[#068847] text-white border-[#1a1a2e]"
+                ? "bg-[#068847] text-white border-[#068847]"
                 : "bg-white text-[#4a4845] border-[#e8e6e0] hover:border-[#1a1a2e]"
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filter
             {filterActive !== "" && (
-              <span className="w-2 h-2 rounded-full bg-[#068847]" />
+              <span className="w-2 h-2 rounded-full bg-white/70" />
             )}
           </button>
         </div>
 
-        {/* Filter Panel */}
+        {/* ── Filter Panel ── */}
         {showFilters && (
-          <div className="bg-white border border-[#e8e6e0] rounded-xl p-4 flex items-center gap-4">
+          <div className="bg-white border border-[#e8e6e0] rounded-xl p-4 flex flex-wrap items-center gap-4">
             <span className="text-sm font-medium text-[#4a4845]">Status:</span>
             {[
               { label: "All", value: "" },
@@ -139,10 +177,21 @@ export default function BranchesPage() {
                 {opt.label}
               </button>
             ))}
+            {filterActive !== "" && (
+              <button
+                onClick={() => {
+                  setFilterActive("");
+                  setPage(1);
+                }}
+                className="ml-auto text-xs text-[#DC2626] hover:underline"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
         )}
 
-        {/* Table */}
+        {/* ── Table ── */}
         <div className="bg-white border border-[#d7efdc] rounded-2xl overflow-hidden">
           {isLoading ? (
             <div className="py-20 flex flex-col items-center gap-3 text-[#8a8780]">
@@ -158,16 +207,28 @@ export default function BranchesPage() {
               <div className="w-12 h-12 rounded-2xl bg-[#f5f4f0] flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-[#b8b5ae]" />
               </div>
-              <p className="text-sm text-[#8a8780]">No branches found</p>
-              <button
-                onClick={() => setCreateModalOpen(true)}
-                className="text-sm text-[#1a1a2e] underline underline-offset-2 font-medium"
-              >
-                Create your first branch
-              </button>
+              <p className="text-sm text-[#8a8780]">
+                {search
+                  ? `No branches found for "${search}"`
+                  : "No branches found"}
+              </p>
+              {search ? (
+                <button
+                  onClick={clearSearch}
+                  className="text-sm text-[#1a1a2e] underline underline-offset-2 font-medium"
+                >
+                  Clear search
+                </button>
+              ) : (
+                <button
+                  onClick={() => setCreateModalOpen(true)}
+                  className="text-sm text-[#1a1a2e] underline underline-offset-2 font-medium"
+                >
+                  Create your first branch
+                </button>
+              )}
             </div>
           ) : (
-            /* Horizontal scroll wrapper — lets table breathe on small screens */
             <div className="overflow-x-auto w-full">
               <table className="w-full min-w-[700px]">
                 <thead>
@@ -225,19 +286,16 @@ export default function BranchesPage() {
                       <td className="px-5 py-4 whitespace-nowrap">
                         {branch.is_active ? (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium">
-                            <CheckCircle2 className="w-3 h-3" />
-                            Active
+                            <CheckCircle2 className="w-3 h-3" /> Active
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-600 text-xs font-medium">
-                            <XCircle className="w-3 h-3" />
-                            Inactive
+                            <XCircle className="w-3 h-3" /> Inactive
                           </span>
                         )}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap">
-                        {/* Always visible on mobile; hover-only on desktop */}
-                        <div className="flex items-center gap-1  transition-opacity">
+                        <div className="flex items-center gap-1 transition-opacity">
                           <button
                             onClick={() => setDetailBranch(branch)}
                             className="p-1.5 rounded-lg hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e] transition-colors"
@@ -262,11 +320,11 @@ export default function BranchesPage() {
           )}
         </div>
 
-        {/* Pagination */}
-        {pagination && pagination.last_page > 1 && (
+        {/* ── Pagination ── */}
+        {pagination && pagination.last_page > 0 && (
           <Pagination
             page={pagination.current_page}
-            perPage={pagination.per_page} // if your API returns per_page
+            perPage={pagination.per_page}
             total={pagination.total}
             dataLength={branches.length}
             onPrev={() => setPage((p) => Math.max(1, p - 1))}
@@ -276,7 +334,7 @@ export default function BranchesPage() {
         )}
       </div>
 
-      {/* Modals */}
+      {/* ── Modals ── */}
       <BranchModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
