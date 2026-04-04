@@ -164,7 +164,7 @@ const Leadership = () => {
                       {member.name}
                     </h3>
                     <p className="text-[#475467] text-sm font-normal mb-1">
-                      {member.role || <>Role</>}
+                      {member.designation || <>Role</>}
                     </p>
                     <p className="text-[#475467] text-xs font-normal">
                       EM No: {member.id}

@@ -237,7 +237,7 @@ export default function BranchesPage() {
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap">
                         {/* Always visible on mobile; hover-only on desktop */}
-                        <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-1  transition-opacity">
                           <button
                             onClick={() => setDetailBranch(branch)}
                             className="p-1.5 rounded-lg hover:bg-[#f0ede8] text-[#8a8780] hover:text-[#1a1a2e] transition-colors"
