@@ -43,14 +43,14 @@ export default function DeleteConfirmDialog({
           <button
             onClick={onCancel}
             disabled={isPending}
-            className="flex-1 h-[44px] rounded-xl border border-[#E5E7EB] text-[#6A7282] font-normal text-[15px] hover:bg-gray-50 transition-colors disabled:opacity-60"
+            className="flex-1  cursor-pointer h-[44px] rounded-xl border border-[#E5E7EB] text-[#6A7282] font-normal text-[15px] hover:bg-gray-50 transition-colors disabled:opacity-60"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isPending}
-            className="flex-1 h-[44px] rounded-xl bg-[#FB2C36] text-white font-semibold text-[15px] flex items-center justify-center gap-2 hover:bg-red-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex-1 h-[44px]  cursor-pointer rounded-xl bg-[#FB2C36] text-white font-semibold text-[15px] flex items-center justify-center gap-2 hover:bg-red-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isPending ? (
               <>
