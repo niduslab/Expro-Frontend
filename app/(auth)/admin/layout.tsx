@@ -16,7 +16,7 @@ export default function AdminLayout({
     <div className="min-h-screen bg-gray-50 flex">
       <AdminSidebarWrapper open={open} setOpen={setOpen} />
 
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 2xl:flex 2xl:items-center 2xl:justify-center">
+      <div className="flex-1 flex flex-col font-dm-sans min-w-0 lg:pl-64 2xl:flex 2xl:items-center 2xl:justify-center">
         <AdminHeader onMenuClick={() => setOpen(true)} />
 
         <main className="flex-1 p-4 md:p-6 w-full min-w-0">

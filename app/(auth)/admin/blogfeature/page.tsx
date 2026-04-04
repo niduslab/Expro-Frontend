@@ -16,8 +16,8 @@ export default function BlogPageAdmin() {
 
   return (
     <div className="min-h-screen font-['DM_Sans',sans-serif]">
-      <div className="bg-white border-b border-[#e8e6e0]">
-        <div className="max-w-7xl mx-auto ">
+      <div className="bg-white border-b border-[#e8e6e0] max-w-7xl mx-auto">
+        <div className="container">
           <p className="font-semibold text-2xl sm:text-[32px] text-[#030712]">
             Blog
           </p>
@@ -46,7 +46,7 @@ export default function BlogPageAdmin() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto py-6 ">
+      <div className=" py-6 max-w-7xl mx-auto">
         {activeTab === "posts" ? <PostsTab /> : <CategoriesTab />}
       </div>
     </div>
