@@ -39,7 +39,7 @@ export function AdminSidebar() {
               href={item.href}
               className={`group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 ${
                 isActive
-                  ? "bg-green-600 text-white shadow-sm"
+                  ? "bg-[#068847] text-white shadow-sm"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >

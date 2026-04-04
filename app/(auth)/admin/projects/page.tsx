@@ -105,7 +105,7 @@ export default function AdminProjects() {
 
   return (
     <>
-      <div className="w-full items-center">
+      <div className="max-w-7xl mx-auto items-center">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex flex-col gap-2">

@@ -38,7 +38,7 @@ const stats = [
 const WalletBallance = () => {
   return (
     <>
-      <div className="w-full mx-auto ">
+      <div className="max-w-7xl  mx-auto ">
         <div className="flex flex-col gap-6 ">
           {/* Header */}
           <div className="flex flex-col gap-2">
@@ -50,7 +50,7 @@ const WalletBallance = () => {
             </p>
           </div>
           {/* Stats Cards */}
-          <div className="w-full px">
+          <div className="w-full max-w-7xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;

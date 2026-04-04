@@ -188,7 +188,9 @@ const NewsArticles = () => {
                           >
                             <div className="relative w-full sm:w-45 h-35 rounded-xl overflow-hidden shrink-0">
                               <Image
-                                src={blogdatalist.featured_image}
+                                src={
+                                  blogdatalist.featured_image || "/fallback.jpg"
+                                }
                                 alt={blogdatalist.title}
                                 fill
                                 className="object-cover"
