@@ -11,6 +11,7 @@ import {
 } from "@/lib/hooks/admin/useexproTeamMembersHook";
 import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import DesignationDropdown from "./designationDropdown";
 
 interface ExproTeamMemberModalProps {
   open: boolean;
@@ -167,28 +168,27 @@ export default function ExproTeamMemberModal({
               Member Details
             </p>
 
-            {/* Name + Designation */}
-            <div className="flex gap-2 w-full">
-              <div className="w-1/2">
-                <FieldLabel label="Full Name" required />
-                <input
-                  className={inputClass}
-                  placeholder="e.g. John Doe"
-                  value={String(formData.name ?? "")}
-                  onChange={(e) => set("name", e.target.value)}
-                />
-                <FieldError message={errors.name} />
-              </div>
-              <div className="w-1/2">
-                <FieldLabel label="Designation" required />
-                <input
-                  className={inputClass}
-                  placeholder="e.g. CEO"
-                  value={String(formData.designation ?? "")}
-                  onChange={(e) => set("designation", e.target.value)}
-                />
-                <FieldError message={errors.designation} />
-              </div>
+            {/* Name */}
+            <div className="flex flex-col gap-1">
+              <FieldLabel label="Full Name" required />
+              <input
+                className={inputClass}
+                placeholder="e.g. John Doe"
+                value={String(formData.name ?? "")}
+                onChange={(e) => set("name", e.target.value)}
+              />
+              <FieldError message={errors.name} />
+            </div>
+
+            {/* Designation — grouped dropdown */}
+            <div className="flex flex-col gap-1">
+              <FieldLabel label="Designation" required />
+              <DesignationDropdown
+                value={String(formData.designation ?? "")}
+                onChange={(val) => set("designation", val)}
+                error={errors.designation}
+              />
+              <FieldError message={errors.designation} />
             </div>
 
             <div className="w-full border border-[#E5E7EB]" />
