@@ -7,6 +7,9 @@ import {
   Users,
   Edit,
   Trash2,
+  Eye,
+  X,
+  AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import NewPackageModal from "./new-package-modal";
@@ -39,6 +42,11 @@ function Stat({
 export default function AdminPensionPackages() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [packageToDelete, setPackageToDelete] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   const {
     data: packagesData,
@@ -48,22 +56,23 @@ export default function AdminPensionPackages() {
   const { mutate: deletePackage, isPending: isDeleting } =
     useDeletePensionPackage();
 
-  const handleDelete = (id: number, name: string) => {
-    if (
-      !confirm(
-        `Are you sure you want to delete "${name}"? This action cannot be undone.`,
-      )
-    ) {
-      return;
-    }
+  const handleDeleteClick = (id: number, name: string) => {
+    setPackageToDelete({ id, name });
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (!packageToDelete) return;
 
     toast.loading("Deleting pension package...", { id: "delete-package" });
 
-    deletePackage(id, {
+    deletePackage(packageToDelete.id, {
       onSuccess: (res) => {
         toast.success(res.message || "Pension package deleted successfully!", {
           id: "delete-package",
         });
+        setDeleteModalOpen(false);
+        setPackageToDelete(null);
       },
       onError: (err: any) => {
         toast.error(
@@ -71,6 +80,13 @@ export default function AdminPensionPackages() {
           { id: "delete-package" },
         );
       },
+    });
+  };
+
+  const handleViewMembers = (packageId: number, packageName: string) => {
+    // TODO: Navigate to members page with filter or open members modal
+    toast.info(`Viewing members for ${packageName}`, {
+      description: "This feature will be implemented soon",
     });
   };
 
@@ -228,6 +244,13 @@ export default function AdminPensionPackages() {
               {/* Action Buttons */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-[#E5E7EB]">
                 <button
+                  onClick={() => handleViewMembers(plan.id, plan.name)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#068847] text-[#068847] hover:bg-[#F0FDF4] transition-colors"
+                >
+                  <Eye size={16} />
+                  <span className="text-sm font-medium">View Members</span>
+                </button>
+                <button
                   onClick={() => handleEdit(plan)}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#D1D5DC] text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
                 >
@@ -235,12 +258,11 @@ export default function AdminPensionPackages() {
                   <span className="text-sm font-medium">Edit</span>
                 </button>
                 <button
-                  onClick={() => handleDelete(plan.id, plan.name)}
+                  onClick={() => handleDeleteClick(plan.id, plan.name)}
                   disabled={isDeleting}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#FCA5A5] text-[#DC2626] hover:bg-[#FEE2E2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#FCA5A5] text-[#DC2626] hover:bg-[#FEE2E2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Trash2 size={16} />
-                  <span className="text-sm font-medium">Delete</span>
                 </button>
               </div>
             </div>
@@ -253,6 +275,69 @@ export default function AdminPensionPackages() {
           setOpenModal={setOpenModal}
           packageToEdit={selectedPackage}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && packageToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+            {/* Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="h-16 w-16 rounded-full bg-[#FEE2E2] flex items-center justify-center">
+                <AlertTriangle className="h-8 w-8 text-[#DC2626]" />
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-[#030712] mb-2">
+                Delete Pension Package?
+              </h3>
+              <p className="text-[#4A5565] text-sm mb-3">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-[#030712]">
+                  "{packageToDelete.name}"
+                </span>
+                ?
+              </p>
+              <p className="text-[#DC2626] text-sm font-medium">
+                This action cannot be undone and will affect all enrolled
+                members.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setPackageToDelete(null);
+                }}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-3 rounded-lg border border-[#D1D5DC] text-[#4A5565] font-medium hover:bg-[#F3F4F6] transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-3 rounded-lg bg-[#DC2626] text-white font-medium hover:bg-[#B91C1C] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={16} />
+                    Delete Package
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
