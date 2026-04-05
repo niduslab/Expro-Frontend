@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { AxiosError } from "axios";
 
 import {
   fetchDocuments,
@@ -22,6 +23,50 @@ import {
   UseDocumentState,
   UseMutationState,
 } from "@/lib/types/admin/documentType";
+
+// ─────────────────────────────────────────────
+// extractApiError
+// Pulls the most useful human-readable message
+// out of an Axios 422 / 4xx / 5xx response so
+// the raw "Request failed with status 422" never
+// reaches the UI.
+// ─────────────────────────────────────────────
+
+export interface ApiFieldErrors {
+  [field: string]: string[];
+}
+
+export function extractApiError(err: unknown): {
+  message: string;
+  fieldErrors?: ApiFieldErrors;
+} {
+  if (err instanceof AxiosError) {
+    const data = err.response?.data as
+      | { message?: string; errors?: ApiFieldErrors }
+      | undefined;
+
+    const fieldErrors = data?.errors;
+
+    // Prefer the first field-level message (most specific)
+    if (fieldErrors && typeof fieldErrors === "object") {
+      const firstField = Object.values(fieldErrors)[0];
+      if (Array.isArray(firstField) && firstField.length > 0) {
+        return { message: firstField[0], fieldErrors };
+      }
+    }
+
+    // Fall back to top-level message from backend
+    if (data?.message && typeof data.message === "string") {
+      return { message: data.message, fieldErrors };
+    }
+
+    // Last resort: HTTP status text
+    return { message: err.message };
+  }
+
+  if (err instanceof Error) return { message: err.message };
+  return { message: "An unexpected error occurred" };
+}
 
 // ─────────────────────────────────────────────
 // documentApi — local adapter object
@@ -64,11 +109,8 @@ export function useDocuments(params: DocumentIndexParams = {}) {
         error: null,
       });
     } catch (err) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: err instanceof Error ? err.message : "Failed to fetch documents",
-      }));
+      const { message } = extractApiError(err);
+      setState((prev) => ({ ...prev, isLoading: false, error: message }));
     }
   }, []);
 
@@ -108,11 +150,8 @@ export function useDocument(id: number | null) {
       const res = await documentApi.getById(id);
       setState({ document: res.data, isLoading: false, error: null });
     } catch (err) {
-      setState({
-        document: null,
-        isLoading: false,
-        error: err instanceof Error ? err.message : "Failed to fetch document",
-      });
+      const { message } = extractApiError(err);
+      setState({ document: null, isLoading: false, error: message });
     }
   }, [id]);
 
@@ -146,9 +185,8 @@ export function useDocumentsByType(
       setDocuments(res.data);
       setPagination(res.pagination);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch documents",
-      );
+      const { message } = extractApiError(err);
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -178,11 +216,8 @@ export function useFeaturedDocuments() {
       const res = await documentApi.getFeatured();
       setDocuments(res.data);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to fetch featured documents",
-      );
+      const { message } = extractApiError(err);
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -196,6 +231,16 @@ export function useFeaturedDocuments() {
 }
 
 // ─────────────────────────────────────────────
+// Mutation result type
+// Returned by create/update so callers can show
+// both a toast and inline field errors.
+// ─────────────────────────────────────────────
+
+export type SaveResult =
+  | { ok: true; data: Document }
+  | { ok: false; message: string; fieldErrors?: ApiFieldErrors };
+
+// ─────────────────────────────────────────────
 // useCreateDocument
 // ─────────────────────────────────────────────
 
@@ -207,25 +252,16 @@ export function useCreateDocument() {
   });
 
   const create = useCallback(
-    async (
-      payload: DocumentStorePayload,
-      options?: {
-        onSuccess?: (doc: Document) => void;
-        onError?: (msg: string) => void;
-      },
-    ): Promise<Document | null> => {
+    async (payload: DocumentStorePayload): Promise<SaveResult> => {
       setState({ isLoading: true, error: null, isSuccess: false });
       try {
         const res = await documentApi.create(payload);
         setState({ isLoading: false, error: null, isSuccess: true });
-        options?.onSuccess?.(res.data);
-        return res.data;
+        return { ok: true, data: res.data };
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to upload document";
+        const { message, fieldErrors } = extractApiError(err);
         setState({ isLoading: false, error: message, isSuccess: false });
-        options?.onError?.(message);
-        return null;
+        return { ok: false, message, fieldErrors };
       }
     },
     [],
@@ -250,26 +286,16 @@ export function useUpdateDocument() {
   });
 
   const update = useCallback(
-    async (
-      id: number,
-      payload: DocumentUpdatePayload,
-      options?: {
-        onSuccess?: (doc: Document) => void;
-        onError?: (msg: string) => void;
-      },
-    ): Promise<Document | null> => {
+    async (id: number, payload: DocumentUpdatePayload): Promise<SaveResult> => {
       setState({ isLoading: true, error: null, isSuccess: false });
       try {
         const res = await documentApi.update(id, payload);
         setState({ isLoading: false, error: null, isSuccess: true });
-        options?.onSuccess?.(res.data);
-        return res.data;
+        return { ok: true, data: res.data };
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to update document";
+        const { message, fieldErrors } = extractApiError(err);
         setState({ isLoading: false, error: message, isSuccess: false });
-        options?.onError?.(message);
-        return null;
+        return { ok: false, message, fieldErrors };
       }
     },
     [],
@@ -305,8 +331,7 @@ export function useDeleteDocument() {
         options?.onSuccess?.();
         return true;
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to delete document";
+        const { message } = extractApiError(err);
         setState({ isLoading: false, error: message, isSuccess: false });
         options?.onError?.(message);
         return false;
@@ -343,8 +368,7 @@ export function useDownloadDocument() {
         setIsLoading(false);
         options?.onSuccess?.();
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to download document";
+        const { message } = extractApiError(err);
         setError(message);
         setIsLoading(false);
         options?.onError?.(message);
@@ -358,9 +382,6 @@ export function useDownloadDocument() {
 
 // ─────────────────────────────────────────────
 // useDocumentsWithMutations — combined hook
-// Use this in your page/component instead of
-// wiring useDocuments + mutations separately.
-// All mutations auto-refetch the list on success.
 // ─────────────────────────────────────────────
 
 export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
@@ -370,47 +391,28 @@ export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
   const deleter = useDeleteDocument();
   const downloader = useDownloadDocument();
 
-  // Always hold the latest refetch — avoids stale closure issues in mutation callbacks
+  // Always hold the latest refetch — avoids stale closure issues
   const refetchRef = useRef(list.refetch);
   useEffect(() => {
     refetchRef.current = list.refetch;
   }, [list.refetch]);
 
+  // create — returns SaveResult so page can forward fieldErrors to modal
   const create = useCallback(
-    async (
-      payload: DocumentStorePayload,
-      options?: {
-        onSuccess?: (doc: Document) => void;
-        onError?: (msg: string) => void;
-      },
-    ) => {
-      return creator.create(payload, {
-        ...options,
-        onSuccess: async (doc) => {
-          await refetchRef.current();
-          options?.onSuccess?.(doc);
-        },
-      });
+    async (payload: DocumentStorePayload): Promise<SaveResult> => {
+      const result = await creator.create(payload);
+      if (result.ok) await refetchRef.current();
+      return result;
     },
     [creator.create],
   );
 
+  // update — same
   const update = useCallback(
-    async (
-      id: number,
-      payload: DocumentUpdatePayload,
-      options?: {
-        onSuccess?: (doc: Document) => void;
-        onError?: (msg: string) => void;
-      },
-    ) => {
-      return updater.update(id, payload, {
-        ...options,
-        onSuccess: async (doc) => {
-          await refetchRef.current();
-          options?.onSuccess?.(doc);
-        },
-      });
+    async (id: number, payload: DocumentUpdatePayload): Promise<SaveResult> => {
+      const result = await updater.update(id, payload);
+      if (result.ok) await refetchRef.current();
+      return result;
     },
     [updater.update],
   );

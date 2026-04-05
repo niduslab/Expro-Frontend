@@ -8,23 +8,24 @@ import {
   DocumentType,
   DocumentStatus,
 } from "@/lib/types/admin/documentType";
+import { SaveResult } from "@/lib/hooks/admin/useDocumentsHook";
 import { Plus, Loader2, Upload, X, FileText } from "lucide-react";
-import { toast } from "sonner";
+import DatePicker from "@/components/ui/date-picker";
 
 interface DocumentModalProps {
   open: boolean;
   onClose: () => void;
   document?: Document | null;
   /**
-   * Called with the final payload when the user submits.
-   * The parent (page.tsx) owns the actual API call so that
-   * the shared useDocumentsWithMutations hook triggers refetch.
+   * Owned by page.tsx so the shared hook's refetch fires.
+   * Returns SaveResult — on failure, fieldErrors are mapped
+   * into inline red messages under each form field.
    */
   onSave: (
     payload: DocumentStorePayload | DocumentUpdatePayload,
     isEdit: boolean,
     id?: number,
-  ) => Promise<boolean>; // returns true on success
+  ) => Promise<SaveResult>;
   isSaving?: boolean;
 }
 
@@ -60,6 +61,9 @@ const defaultForm = {
 const inputClass =
   "w-full h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px]";
 
+const inputErrorClass =
+  "w-full h-[48px] border border-red-400 rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-red-300 text-[#6A7282] text-[14px]";
+
 const textareaClass =
   "w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[12px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px] resize-none";
 
@@ -89,7 +93,11 @@ function FieldLabel({
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="text-sm text-red-500">{message}</span>;
+  return (
+    <span className="block mt-1 text-sm text-red-500 font-medium">
+      {message}
+    </span>
+  );
 }
 
 export default function DocumentModal({
@@ -127,52 +135,64 @@ export default function DocumentModal({
     value: (typeof defaultForm)[K],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear inline error as user corrects the field
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
+  // ── Client-side validation (runs before hitting the network) ───────────────
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Document name is required";
     if (!formData.type) newErrors.type = "Document type is required";
     if (!isEdit && !formData.file) newErrors.file = "A file is required";
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      toast.error(Object.values(newErrors)[0]);
-      return false;
-    }
-    return true;
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
     if (!validate()) return;
 
-    if (isEdit) {
-      const payload: DocumentUpdatePayload = {
-        name: formData.name,
-        description: formData.description || undefined,
-        type: formData.type,
-        file: formData.file,
-        publish_date: formData.publish_date || undefined,
-        is_featured: formData.is_featured,
-        display_order: formData.display_order,
-        status: formData.status,
-      };
-      const ok = await onSave(payload, true, document!.id);
-      if (ok) onClose();
-    } else {
-      const payload: DocumentStorePayload = {
-        name: formData.name,
-        description: formData.description || undefined,
-        type: formData.type,
-        file: formData.file!,
-        publish_date: formData.publish_date || undefined,
-        is_featured: formData.is_featured,
-        display_order: formData.display_order,
-        status: formData.status,
-      };
-      const ok = await onSave(payload, false);
-      if (ok) onClose();
+    const payload = isEdit
+      ? ({
+          name: formData.name,
+          description: formData.description || undefined,
+          type: formData.type,
+          file: formData.file,
+          publish_date: formData.publish_date || undefined,
+          is_featured: formData.is_featured,
+          display_order: formData.display_order,
+          status: formData.status,
+        } as DocumentUpdatePayload)
+      : ({
+          name: formData.name,
+          description: formData.description || undefined,
+          type: formData.type,
+          file: formData.file!,
+          publish_date: formData.publish_date || undefined,
+          is_featured: formData.is_featured,
+          display_order: formData.display_order,
+          status: formData.status,
+        } as DocumentStorePayload);
+
+    const result = await onSave(payload, isEdit, document?.id);
+
+    if (result.ok) {
+      onClose();
+      return;
     }
+
+    // ── Map backend field errors → inline messages ─────────────────────────
+
+    if (result.fieldErrors && typeof result.fieldErrors === "object") {
+      const mapped: Record<string, string> = {};
+      for (const [field, msgs] of Object.entries(result.fieldErrors)) {
+        if (Array.isArray(msgs) && msgs.length > 0) {
+          mapped[field] = msgs[0];
+        }
+      }
+      setErrors(mapped);
+    }
+    // Toast is already fired by page.tsx handleSave — no duplicate here.
   };
 
   const handleFileDrop = (e: React.DragEvent) => {
@@ -222,7 +242,7 @@ export default function DocumentModal({
               <FieldLabel label="Document Name" required />
               <input
                 type="text"
-                className={inputClass}
+                className={errors.name ? inputErrorClass : inputClass}
                 placeholder="e.g. Annual Report 2024"
                 value={formData.name}
                 onChange={(e) => set("name", e.target.value)}
@@ -298,7 +318,7 @@ export default function DocumentModal({
               File Upload
             </p>
 
-            {/* Drop zone */}
+            {/* Drop zone — red border when there's a file error */}
             <div
               onDragOver={(e) => {
                 e.preventDefault();
@@ -307,9 +327,11 @@ export default function DocumentModal({
               onDragLeave={() => setDragOver(false)}
               onDrop={handleFileDrop}
               className={`relative flex flex-col items-center justify-center gap-3 border-2 border-dashed rounded-xl p-6 transition-colors cursor-pointer ${
-                dragOver
-                  ? "border-[#068847] bg-[#DCFCE7]/30"
-                  : "border-[#D1D5DC] bg-[#F9FAFB] hover:border-[#068847] hover:bg-[#DCFCE7]/10"
+                errors.file
+                  ? "border-red-400 bg-red-50"
+                  : dragOver
+                    ? "border-[#068847] bg-[#DCFCE7]/30"
+                    : "border-[#D1D5DC] bg-[#F9FAFB] hover:border-[#068847] hover:bg-[#DCFCE7]/10"
               }`}
               onClick={() =>
                 globalThis.document.getElementById("doc-file-input")?.click()
@@ -349,13 +371,23 @@ export default function DocumentModal({
                 </div>
               ) : (
                 <>
-                  <div className="w-10 h-10 rounded-lg bg-[#E5E7EB] flex items-center justify-center">
-                    <Upload className="w-5 h-5 text-[#6A7282]" />
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${errors.file ? "bg-red-100" : "bg-[#E5E7EB]"}`}
+                  >
+                    <Upload
+                      className={`w-5 h-5 ${errors.file ? "text-red-400" : "text-[#6A7282]"}`}
+                    />
                   </div>
                   <div className="text-center">
                     <p className="text-[14px] font-medium text-[#030712]">
                       Drop file here or{" "}
-                      <span className="text-[#068847]">browse</span>
+                      <span
+                        className={
+                          errors.file ? "text-red-500" : "text-[#068847]"
+                        }
+                      >
+                        browse
+                      </span>
                     </p>
                     <p className="text-[12px] text-[#6A7282] mt-1">
                       PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (max 20MB)
@@ -369,6 +401,8 @@ export default function DocumentModal({
                 </p>
               )}
             </div>
+
+            {/* Inline file error — shows both client and backend messages */}
             <FieldError message={errors.file} />
 
             <div className="w-full border border-[#E5E7EB]" />
@@ -383,12 +417,12 @@ export default function DocumentModal({
             <div className="flex flex-col md:flex-row gap-2 w-full">
               <div className="md:w-1/2">
                 <FieldLabel label="Publish Date" />
-                <input
-                  type="date"
-                  className={inputClass}
+                <DatePicker
                   value={formData.publish_date}
-                  onChange={(e) => set("publish_date", e.target.value)}
+                  onChange={(value) => set("publish_date", value)}
                 />
+
+                <FieldError message={errors.publish_date} />
               </div>
               <div className="md:w-1/2">
                 <FieldLabel label="Display Order" />
@@ -433,7 +467,7 @@ export default function DocumentModal({
               <button
                 onClick={handleSubmit}
                 disabled={isSaving}
-                className="bg-[#068847] h-[48px] w-[240px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-1"
+                className="bg-[#068847] h-[48px] whitespace-nowrap w-[180px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-1"
               >
                 {isSaving ? (
                   <>
