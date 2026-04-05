@@ -95,7 +95,7 @@ const Events = () => {
   const [page, setPage] = useState(1); // Initial page is 1
   const perPage = 10; // Items per page
   const { data, isLoading, error } = useEvents(page, perPage);
-  const events = data?.data ?? [];
+  const events = data?.data?.filter((e: any) => e.status === "published") || [];
 
   const nextPage = () => {
     if (events.length === perPage) {
@@ -190,7 +190,7 @@ const Events = () => {
         <div className="space-y-8">
           {data && (
             <>
-              {data?.data.map((event: any, index: any) => (
+              {events.map((event: any, index: any) => (
                 <div
                   key={index}
                   data-event-card
@@ -252,16 +252,16 @@ const Events = () => {
             </>
           )}
         </div>
+        <Pagination
+          page={page}
+          perPage={perPage}
+          total={data?.pagination?.total}
+          dataLength={events.length}
+          onNext={nextPage}
+          onPrev={prevPage}
+          onPageChange={(p) => setPage(p)}
+        />
       </div>
-      <Pagination
-        page={page}
-        perPage={perPage}
-        total={data?.pagination?.total}
-        dataLength={events.length}
-        onNext={nextPage}
-        onPrev={prevPage}
-        onPageChange={(p) => setPage(p)}
-      />
     </section>
   );
 };
