@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 /**
  * API Configuration
@@ -6,7 +6,8 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
  */
 
 // Environment-based API URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api/v1";
 
 /**
  * Main Axios Instance
@@ -16,8 +17,8 @@ export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
   timeout: 30000, // 30 seconds
 });
@@ -34,7 +35,7 @@ const getCsrfToken = async (): Promise<void> => {
   }
 
   // Properly construct the base URL by removing /api/v1
-  const baseURL = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+  const baseURL = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
   const csrfUrl = `${baseURL}/sanctum/csrf-cookie`;
 
   csrfTokenPromise = axios
@@ -46,7 +47,7 @@ const getCsrfToken = async (): Promise<void> => {
     })
     .catch((error) => {
       csrfTokenPromise = null;
-      console.error('Failed to fetch CSRF token from:', csrfUrl, error);
+      console.error("Failed to fetch CSRF token from:", csrfUrl, error);
       throw error;
     });
 
@@ -60,26 +61,30 @@ const getCsrfToken = async (): Promise<void> => {
 apiClient.interceptors.request.use(
   async (config) => {
     // Get CSRF token for state-changing requests
-    if (config.method && ['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase())) {
+    if (
+      config.method &&
+      ["post", "put", "patch", "delete"].includes(config.method.toLowerCase())
+    ) {
       try {
         await getCsrfToken();
       } catch (error) {
-        console.error('CSRF token fetch failed:', error);
+        console.error("CSRF token fetch failed:", error);
       }
     }
 
     // Attach auth token
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-    
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -91,43 +96,51 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean; skipAuthRedirect?: boolean };
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+      skipAuthRedirect?: boolean;
+    };
 
     // Handle 419 CSRF Token Mismatch - Retry with fresh token
     if (error.response?.status === 419 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
         // Force fetch a new CSRF token
         csrfTokenPromise = null;
         await getCsrfToken();
-        
+
         // Retry the original request
         return apiClient(originalRequest);
       } catch (csrfError) {
-        console.error('Failed to refresh CSRF token:', csrfError);
+        console.error("Failed to refresh CSRF token:", csrfError);
         return Promise.reject(error);
       }
     }
 
     // Handle 401 Unauthorized - Token expired or invalid
     // Only redirect to login if not a public endpoint and not explicitly skipped
-    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.skipAuthRedirect) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.skipAuthRedirect
+    ) {
       originalRequest._retry = true;
-      
-      const url = originalRequest.url || '';
-      const isPublicEndpoint = url.includes('/public/') || url.includes('/contactmessage');
-      
+
+      const url = originalRequest.url || "";
+      const isPublicEndpoint =
+        url.includes("/public/") || url.includes("/contactmessage");
+
       // Only redirect if it's not a public endpoint and user has a token
-      if (!isPublicEndpoint && typeof window !== 'undefined') {
-        const hasToken = localStorage.getItem('auth_token');
+      if (!isPublicEndpoint && typeof window !== "undefined") {
+        const hasToken = localStorage.getItem("auth_token");
         if (hasToken) {
-          localStorage.removeItem('auth_token');
-          window.location.href = '/login';
+          localStorage.removeItem("auth_token");
+          window.location.href = "/login";
         }
       }
     }
-
+    
     // Handle 429 Rate Limiting - Don't retry, just reject
     if (error.response?.status === 429) {
       console.error('Rate limit exceeded. Please try again later.');
@@ -136,11 +149,12 @@ apiClient.interceptors.response.use(
       return Promise.reject({
         ...error,
         message: 'Too many requests. Please wait a moment and try again.',
+
       });
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -177,16 +191,16 @@ export interface ApiError {
 export const apiRequest = {
   get: <T = any>(url: string, config?: AxiosRequestConfig) =>
     apiClient.get<ApiResponse<T>>(url, config),
-  
+
   post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
     apiClient.post<ApiResponse<T>>(url, data, config),
-  
+
   put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
     apiClient.put<ApiResponse<T>>(url, data, config),
-  
+
   patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
     apiClient.patch<ApiResponse<T>>(url, data, config),
-  
+
   delete: <T = any>(url: string, config?: AxiosRequestConfig) =>
     apiClient.delete<ApiResponse<T>>(url, config),
 };
@@ -197,19 +211,34 @@ export const apiRequest = {
  */
 export const publicApiRequest = {
   get: <T = any>(url: string, config?: AxiosRequestConfig) =>
-    apiClient.get<ApiResponse<T>>(url, { ...config, skipAuthRedirect: true } as any),
-  
+    apiClient.get<ApiResponse<T>>(url, {
+      ...config,
+      skipAuthRedirect: true,
+    } as any),
+
   post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-    apiClient.post<ApiResponse<T>>(url, data, { ...config, skipAuthRedirect: true } as any),
-  
+    apiClient.post<ApiResponse<T>>(url, data, {
+      ...config,
+      skipAuthRedirect: true,
+    } as any),
+
   put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-    apiClient.put<ApiResponse<T>>(url, data, { ...config, skipAuthRedirect: true } as any),
-  
+    apiClient.put<ApiResponse<T>>(url, data, {
+      ...config,
+      skipAuthRedirect: true,
+    } as any),
+
   patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-    apiClient.patch<ApiResponse<T>>(url, data, { ...config, skipAuthRedirect: true } as any),
-  
+    apiClient.patch<ApiResponse<T>>(url, data, {
+      ...config,
+      skipAuthRedirect: true,
+    } as any),
+
   delete: <T = any>(url: string, config?: AxiosRequestConfig) =>
-    apiClient.delete<ApiResponse<T>>(url, { ...config, skipAuthRedirect: true } as any),
+    apiClient.delete<ApiResponse<T>>(url, {
+      ...config,
+      skipAuthRedirect: true,
+    } as any),
 };
 
 /**
@@ -217,28 +246,29 @@ export const publicApiRequest = {
  */
 export const authUtils = {
   setToken: (token: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("auth_token", token);
       // Also set as cookie for middleware access
       document.cookie = `auth_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
     }
   },
-  
+
   getToken: () => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('auth_token');
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("auth_token");
     }
     return null;
   },
-  
+
   removeToken: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth_token");
       // Also remove cookie
-      document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie =
+        "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   },
-  
+
   isAuthenticated: () => {
     return !!authUtils.getToken();
   },
