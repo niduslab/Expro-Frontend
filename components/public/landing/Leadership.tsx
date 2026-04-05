@@ -141,7 +141,7 @@ const Leadership = () => {
                   {/* Background Image */}
                   <div className="absolute inset-0">
                     <Image
-                      src={member.image_url}
+                      src={member.image_url || "/fallback.jpg"}
                       alt={member.name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
