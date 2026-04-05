@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Document, DocumentStorePayload, DocumentUpdatePayload, DocumentType, DocumentStatus } from "@/lib/types/admin/documentType";
 import {
-  useCreateDocument,
-  useUpdateDocument,
-} from "@/lib/hooks/admin/useDocumentsHook";
+  Document,
+  DocumentStorePayload,
+  DocumentUpdatePayload,
+  DocumentType,
+  DocumentStatus,
+} from "@/lib/types/admin/documentType";
 import { Plus, Loader2, Upload, X, FileText } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,6 +15,17 @@ interface DocumentModalProps {
   open: boolean;
   onClose: () => void;
   document?: Document | null;
+  /**
+   * Called with the final payload when the user submits.
+   * The parent (page.tsx) owns the actual API call so that
+   * the shared useDocumentsWithMutations hook triggers refetch.
+   */
+  onSave: (
+    payload: DocumentStorePayload | DocumentUpdatePayload,
+    isEdit: boolean,
+    id?: number,
+  ) => Promise<boolean>; // returns true on success
+  isSaving?: boolean;
 }
 
 const DOCUMENT_TYPES: { label: string; value: DocumentType }[] = [
@@ -53,7 +66,13 @@ const textareaClass =
 const selectClass =
   "w-full h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px] appearance-none cursor-pointer";
 
-function FieldLabel({ label, required }: { label: string; required?: boolean }) {
+function FieldLabel({
+  label,
+  required,
+}: {
+  label: string;
+  required?: boolean;
+}) {
   return (
     <div className="pb-2">
       <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -73,7 +92,13 @@ function FieldError({ message }: { message?: string }) {
   return <span className="text-sm text-red-500">{message}</span>;
 }
 
-export default function DocumentModal({ open, onClose, document }: DocumentModalProps) {
+export default function DocumentModal({
+  open,
+  onClose,
+  document,
+  onSave,
+  isSaving = false,
+}: DocumentModalProps) {
   const isEdit = !!document;
   const [formData, setFormData] = useState(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -118,10 +143,6 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
     return true;
   };
 
-  const { create, isLoading: creating } = useCreateDocument();
-  const { update, isLoading: updating } = useUpdateDocument();
-  const isPending = creating || updating;
-
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -136,13 +157,8 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
         display_order: formData.display_order,
         status: formData.status,
       };
-      await update(document!.id, payload, {
-        onSuccess: () => {
-          toast.success("Document updated successfully");
-          onClose();
-        },
-        onError: (msg) => toast.error(msg || "Failed to update document"),
-      });
+      const ok = await onSave(payload, true, document!.id);
+      if (ok) onClose();
     } else {
       const payload: DocumentStorePayload = {
         name: formData.name,
@@ -154,13 +170,8 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
         display_order: formData.display_order,
         status: formData.status,
       };
-      await create(payload, {
-        onSuccess: () => {
-          toast.success("Document uploaded successfully");
-          onClose();
-        },
-        onError: (msg) => toast.error(msg || "Failed to upload document"),
-      });
+      const ok = await onSave(payload, false);
+      if (ok) onClose();
     }
   };
 
@@ -185,7 +196,7 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
               </p>
               <button
                 onClick={onClose}
-                disabled={isPending}
+                disabled={isSaving}
                 className="text-gray-500 hover:text-black disabled:opacity-40"
               >
                 ✕
@@ -200,16 +211,17 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
 
           <div className="w-full border border-[#E5E7EB]" />
 
-          {/* ── Section 1: Document Details ── */}
-          <div className="flex flex-col relative top-[24px] gap-[16px]">
+          {/* ── Section 1: Document Info ── */}
+          <div className="flex flex-col gap-[16px]">
             <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
-              Document Details
+              Document Info
             </p>
 
             {/* Name */}
             <div>
               <FieldLabel label="Document Name" required />
               <input
+                type="text"
                 className={inputClass}
                 placeholder="e.g. Annual Report 2024"
                 value={formData.name}
@@ -226,7 +238,9 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                   <select
                     className={selectClass}
                     value={formData.type}
-                    onChange={(e) => set("type", e.target.value as DocumentType)}
+                    onChange={(e) =>
+                      set("type", e.target.value as DocumentType)
+                    }
                   >
                     {DOCUMENT_TYPES.map((t) => (
                       <option key={t.value} value={t.value}>
@@ -234,7 +248,9 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                       </option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">▾</div>
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">
+                    ▾
+                  </div>
                 </div>
                 <FieldError message={errors.type} />
               </div>
@@ -244,7 +260,9 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                   <select
                     className={selectClass}
                     value={formData.status}
-                    onChange={(e) => set("status", e.target.value as DocumentStatus)}
+                    onChange={(e) =>
+                      set("status", e.target.value as DocumentStatus)
+                    }
                   >
                     {DOCUMENT_STATUSES.map((s) => (
                       <option key={s.value} value={s.value}>
@@ -252,7 +270,9 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                       </option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">▾</div>
+                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">
+                    ▾
+                  </div>
                 </div>
               </div>
             </div>
@@ -280,7 +300,10 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
 
             {/* Drop zone */}
             <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
               onDragLeave={() => setDragOver(false)}
               onDrop={handleFileDrop}
               className={`relative flex flex-col items-center justify-center gap-3 border-2 border-dashed rounded-xl p-6 transition-colors cursor-pointer ${
@@ -288,7 +311,9 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                   ? "border-[#068847] bg-[#DCFCE7]/30"
                   : "border-[#D1D5DC] bg-[#F9FAFB] hover:border-[#068847] hover:bg-[#DCFCE7]/10"
               }`}
-              onClick={() => globalThis.document.getElementById("doc-file-input")?.click()}
+              onClick={() =>
+                globalThis.document.getElementById("doc-file-input")?.click()
+              }
             >
               <input
                 id="doc-file-input"
@@ -313,7 +338,10 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                     </p>
                   </div>
                   <button
-                    onClick={(e) => { e.stopPropagation(); set("file", undefined as unknown as File); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      set("file", undefined as unknown as File);
+                    }}
                     className="p-1 rounded-lg hover:bg-[#FEE2E2] text-[#6A7282] hover:text-[#DC2626] transition-colors"
                   >
                     <X className="w-4 h-4" />
@@ -326,7 +354,8 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                   </div>
                   <div className="text-center">
                     <p className="text-[14px] font-medium text-[#030712]">
-                      Drop file here or <span className="text-[#068847]">browse</span>
+                      Drop file here or{" "}
+                      <span className="text-[#068847]">browse</span>
                     </p>
                     <p className="text-[12px] text-[#6A7282] mt-1">
                       PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (max 20MB)
@@ -396,17 +425,17 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
             <div className="flex ml-auto gap-[16px] w-fit">
               <button
                 onClick={onClose}
-                disabled={isPending}
+                disabled={isSaving}
                 className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-40"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={isPending}
-                className="bg-[#068847] h-[48px] w-[180px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-1"
+                disabled={isSaving}
+                className="bg-[#068847] h-[48px] w-[240px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-1"
               >
-                {isPending ? (
+                {isSaving ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span>Saving...</span>

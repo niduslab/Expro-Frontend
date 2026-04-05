@@ -72,13 +72,21 @@ export function useDocuments(params: DocumentIndexParams = {}) {
     }
   }, []);
 
+  // Stable refetch ref — always points to the latest fetch function
+  const refetchRef = useRef(fetch);
+  useEffect(() => {
+    refetchRef.current = fetch;
+  }, [fetch]);
+
+  const stableRefetch = useCallback(() => refetchRef.current(), []);
+
   const paramsKey = JSON.stringify(params);
   useEffect(() => {
     fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsKey]);
 
-  return { ...state, refetch: fetch };
+  return { ...state, refetch: stableRefetch };
 }
 
 // ─────────────────────────────────────────────
@@ -332,7 +340,6 @@ export function useDownloadDocument() {
       setError(null);
       try {
         await documentApi.download(id, fileName);
-
         setIsLoading(false);
         options?.onSuccess?.();
       } catch (err) {
@@ -363,6 +370,12 @@ export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
   const deleter = useDeleteDocument();
   const downloader = useDownloadDocument();
 
+  // Always hold the latest refetch — avoids stale closure issues in mutation callbacks
+  const refetchRef = useRef(list.refetch);
+  useEffect(() => {
+    refetchRef.current = list.refetch;
+  }, [list.refetch]);
+
   const create = useCallback(
     async (
       payload: DocumentStorePayload,
@@ -374,12 +387,12 @@ export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
       return creator.create(payload, {
         ...options,
         onSuccess: async (doc) => {
-          await list.refetch();
+          await refetchRef.current();
           options?.onSuccess?.(doc);
         },
       });
     },
-    [creator.create, list.refetch],
+    [creator.create],
   );
 
   const update = useCallback(
@@ -394,12 +407,12 @@ export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
       return updater.update(id, payload, {
         ...options,
         onSuccess: async (doc) => {
-          await list.refetch();
+          await refetchRef.current();
           options?.onSuccess?.(doc);
         },
       });
     },
-    [updater.update, list.refetch],
+    [updater.update],
   );
 
   const remove = useCallback(
@@ -410,12 +423,12 @@ export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
       return deleter.remove(id, {
         ...options,
         onSuccess: async () => {
-          await list.refetch();
+          await refetchRef.current();
           options?.onSuccess?.();
         },
       });
     },
-    [deleter.remove, list.refetch],
+    [deleter.remove],
   );
 
   return {

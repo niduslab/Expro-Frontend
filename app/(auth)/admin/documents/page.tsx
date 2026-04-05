@@ -10,6 +10,8 @@ import {
   DocumentIndexParams,
   DocumentType,
   DocumentStatus,
+  DocumentStorePayload,
+  DocumentUpdatePayload,
 } from "@/lib/types/admin/documentType";
 
 import DocumentSearchBar from "./documentSearchBar";
@@ -136,7 +138,7 @@ export default function DocumentsPage() {
     setPage(1);
   };
 
-  // ── Build query params — typed, no `Record<string, unknown>` ───────────────
+  // ── Build query params ─────────────────────────────────────────────────────
   const queryParams: DocumentIndexParams = { page };
   if (search) queryParams.search = search;
   if (filterType) queryParams.type = filterType as DocumentType;
@@ -144,18 +146,47 @@ export default function DocumentsPage() {
   if (filterFeatured !== "")
     queryParams.is_featured = filterFeatured === "true";
 
+  // ── Single hook instance — all mutations share the same refetch ────────────
   const {
     documents,
     pagination,
     isLoading,
     error,
+    create,
+    update,
     remove: deleteDocument,
     download,
+    createState,
+    updateState,
     deleteState,
   } = useDocumentsWithMutations(queryParams);
 
+  // ── Unified save handler passed to DocumentModal ───────────────────────────
+  // Returns true on success so the modal knows to close itself.
+  const handleSave = async (
+    payload: DocumentStorePayload | DocumentUpdatePayload,
+    isEdit: boolean,
+    id?: number,
+  ): Promise<boolean> => {
+    if (isEdit && id !== undefined) {
+      const result = await update(id, payload as DocumentUpdatePayload, {
+        onSuccess: () => toast.success("Document updated successfully"),
+        onError: (msg) => toast.error(msg || "Failed to update document"),
+      });
+      return result !== null;
+    } else {
+      const result = await create(payload as DocumentStorePayload, {
+        onSuccess: () => toast.success("Document uploaded successfully"),
+        onError: (msg) => toast.error(msg || "Failed to upload document"),
+      });
+      return result !== null;
+    }
+  };
+
+  const isSaving = createState.isLoading || updateState.isLoading;
   const deleting = deleteState.isLoading;
 
+  // ── Delete ─────────────────────────────────────────────────────────────────
   const handleDeleteConfirm = () => {
     if (!deleteTarget) return;
     deleteDocument(deleteTarget.id, {
@@ -170,6 +201,7 @@ export default function DocumentsPage() {
     });
   };
 
+  // ── Download ───────────────────────────────────────────────────────────────
   const handleDownload = (doc: Document) => {
     download(doc.id, doc.file_name, {
       onSuccess: () => toast.success("Download started"),
@@ -193,10 +225,10 @@ export default function DocumentsPage() {
           <div className="flex justify-start sm:justify-end">
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#068847] text-white whitespace-nowrap"
+              className="flex items-center gap-2 px-4 py-3 rounded-lg bg-[#068847] text-white "
             >
               <Plus className="h-5 w-5 shrink-0" />
-              <span className="text-sm font-semibold">Upload Document</span>
+              <span className="text-sm font-semibold ">Upload Document</span>
             </button>
           </div>
         </div>
@@ -295,15 +327,25 @@ export default function DocumentsPage() {
       </div>
 
       {/* ── Modals ── */}
+
+      {/* Create modal */}
       <DocumentModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
+        onSave={handleSave}
+        isSaving={isSaving}
       />
+
+      {/* Edit modal */}
       <DocumentModal
         open={!!editDocument}
         document={editDocument}
         onClose={() => setEditDocument(null)}
+        onSave={handleSave}
+        isSaving={isSaving}
       />
+
+      {/* Detail modal */}
       <DocumentDetailModal
         open={!!detailDocument}
         document={detailDocument}
@@ -314,6 +356,8 @@ export default function DocumentsPage() {
         }}
         onDownload={handleDownload}
       />
+
+      {/* Delete confirm */}
       {deleteTarget && (
         <DeleteConfirmDialog
           documentName={deleteTarget.name}
