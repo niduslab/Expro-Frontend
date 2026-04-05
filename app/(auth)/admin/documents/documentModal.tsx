@@ -467,7 +467,7 @@ export default function DocumentModal({
               <button
                 onClick={handleSubmit}
                 disabled={isSaving}
-                className="bg-[#068847] h-[48px] whitespace-nowrap w-[180px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-1"
+                className="bg-[#068847] h-[48px] whitespace-nowrap w-[180px] rounded-xl text-white flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-2"
               >
                 {isSaving ? (
                   <>
@@ -478,7 +478,7 @@ export default function DocumentModal({
                   <span>Save Changes</span>
                 ) : (
                   <>
-                    <Plus className="h-5 w-5" />
+                    <Plus className="h-4 w-4 text-white shrink-0" />
                     <span>Upload Document</span>
                   </>
                 )}
