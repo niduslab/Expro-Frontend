@@ -2,6 +2,7 @@
 import { ChevronRight, CircleCheck, CircleX, Eye, Clock } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { 
   useMembershipRequests, 
   useApproveMembershipRequest,
@@ -32,6 +33,7 @@ const statusConfig: Record<Status, { icon: React.ReactNode; style: string }> = {
 };
 
 export default function MembershipRequestPage() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<{ id: number; name: string } | null>(null);
@@ -253,7 +255,10 @@ export default function MembershipRequestPage() {
                                 </button>
                               </>
                             )}
-                            <button title="View Details">
+                            <button 
+                              onClick={() => router.push(`/admin/membership-request/${request.id}`)}
+                              title="View Details"
+                            >
                               <Eye className="text-[#73808C] h-[22px] w-[22px]" />
                             </button>
                           </div>
