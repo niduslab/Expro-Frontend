@@ -34,7 +34,25 @@ export const getProjectById = async (id: number): Promise<Project> => {
 export const createProject = async (
   payload: CreateProjectPayload,
 ): Promise<Project> => {
-  const res = await apiClient.post<ApiResponse<Project>>("/project", payload);
+  const form = new FormData();
+
+  // Append all fields
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+
+    if (key === "featured_image") {
+      form.append("featured_image", value as File);
+    } else if (key === "is_featured" || key === "is_published") {
+      // Convert boolean to "1" / "0" for Laravel
+      form.append(key, value ? "1" : "0");
+    } else {
+      form.append(key, String(value));
+    }
+  });
+
+  const res = await apiClient.post<ApiResponse<Project>>("/project", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res.data.data;
 };
 
@@ -42,9 +60,28 @@ export const updateProject = async (
   id: number,
   payload: UpdateProjectPayload,
 ): Promise<Project> => {
-  const res = await apiClient.put<ApiResponse<Project>>(
+  const form = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+
+    if (key === "featured_image") {
+      form.append("featured_image", value as File);
+    } else if (key === "is_featured" || key === "is_published") {
+      // Convert boolean to "1" / "0" for Laravel
+      form.append(key, value ? "1" : "0");
+    } else {
+      form.append(key, String(value));
+    }
+  });
+
+  // Laravel PUT doesn't support FormData — use POST + method spoofing
+  form.append("_method", "PUT");
+
+  const res = await apiClient.post<ApiResponse<Project>>(
     `/project/${id}`,
-    payload,
+    form,
+    { headers: { "Content-Type": "multipart/form-data" } },
   );
   return res.data.data;
 };

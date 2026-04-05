@@ -199,6 +199,37 @@ export default function ProjectInfo({
             </span>
           )}
         </div>{" "}
+        <div className="justify-between">
+          <div className="pb-2">
+            <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+              Featured Image
+            </span>
+          </div>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml"
+            onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+              setFormData({ ...formData, featuredImage: file });
+            }}
+            className="w-full text- border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
+          />
+          {/* Preview */}
+          {formData.featuredImage && (
+            <img
+              src={URL.createObjectURL(formData.featuredImage)}
+              alt="preview"
+              className="mt-2 h-[80px] w-auto rounded-md object-cover"
+            />
+          )}
+        </div>
+        {!formData.featuredImage && formData.featuredImage && (
+          <img
+            src={formData.featuredImage}
+            alt="current"
+            className="mt-2 h-[80px] w-auto rounded-md object-cover"
+          />
+        )}
         <div className="flex relative justify-between w-full  ">
           <button
             onClick={() => setOpenModal(false)}
