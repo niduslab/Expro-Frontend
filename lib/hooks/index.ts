@@ -15,6 +15,7 @@ export * from './user/useWallet';
 // Admin hooks (admin authentication required)
 export * from './admin/useMembers';
 export * from './admin/useDashboard';
+export * from './admin/useMembershipRequests';
 
 export { useDonations, useDonation } from './admin/useDonations';
 export type { Donation, DonationsResponse, DonationsParams } from './admin/useDonations';
