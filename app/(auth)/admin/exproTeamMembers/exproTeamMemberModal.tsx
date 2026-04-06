@@ -130,11 +130,6 @@ export default function ExproTeamMemberModal({
       formDataObj.append("image_url", imageFile);
     }
 
-    // 🔍 Debug — check what's actually in FormData
-    for (const [key, value] of formDataObj.entries()) {
-      console.log(key, value);
-    }
-
     if (isEdit) update(formDataObj);
     else create(formDataObj);
   };

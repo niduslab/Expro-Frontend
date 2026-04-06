@@ -55,6 +55,7 @@ export default function EditProjectModal({
     isFeatured: project.is_featured ?? false,
     isPublished: project.is_published ?? false,
     featuredImage: null,
+    featured_image: project.featured_image ?? null,
   });
 
   // All tabs unlocked when editing

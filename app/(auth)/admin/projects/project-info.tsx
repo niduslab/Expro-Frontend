@@ -27,7 +27,9 @@ export default function ProjectInfo({
   setCompletedTabs,
 }: ProjectInfoProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [preview, setPreview] = useState<string | null>(
+    formData.featured_image ?? null,
+  );
   const handleNext = () => {
     const result = projectInfoSchema.safeParse(formData);
 
@@ -54,6 +56,13 @@ export default function ProjectInfo({
     }));
 
     setActiveTab("budget");
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setFormData((prev) => ({ ...prev, featuredImage: file }));
+    if (file) {
+      setPreview(URL.createObjectURL(file)); // new file overrides existing URL
+    }
   };
 
   return (
@@ -205,31 +214,23 @@ export default function ProjectInfo({
               Featured Image
             </span>
           </div>
+
           <input
             type="file"
             accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml"
-            onChange={(e) => {
-              const file = e.target.files?.[0] ?? null;
-              setFormData({ ...formData, featuredImage: file });
-            }}
-            className="w-full text- border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
+            onChange={handleImageChange}
+            className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
           />
-          {/* Preview */}
-          {formData.featuredImage && (
+
+          {/* Shows new file selection OR existing URL, whichever is available */}
+          {preview && (
             <img
-              src={URL.createObjectURL(formData.featuredImage)}
-              alt="preview"
+              src={preview}
+              alt="Featured preview"
               className="mt-2 h-[80px] w-auto rounded-md object-cover"
             />
           )}
         </div>
-        {!formData.featuredImage && formData.featuredImage && (
-          <img
-            src={formData.featuredImage}
-            alt="current"
-            className="mt-2 h-[80px] w-auto rounded-md object-cover"
-          />
-        )}
         <div className="flex relative justify-between w-full  ">
           <button
             onClick={() => setOpenModal(false)}
