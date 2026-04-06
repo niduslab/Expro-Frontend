@@ -195,11 +195,32 @@ export default function DocumentModal({
     // Toast is already fired by page.tsx handleSave — no duplicate here.
   };
 
+  // Before handleFileDrop, add:
+  const validateFile = (file: File): string | null => {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+      return "Only PDF files are allowed";
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return "File size must not exceed 10MB";
+    }
+    return null;
+  };
+
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) set("file", file);
+    if (file) {
+      const fileError = validateFile(file);
+      if (fileError) {
+        setErrors((prev) => ({ ...prev, file: fileError }));
+        return;
+      }
+      set("file", file);
+    }
   };
 
   if (!open) return null;
@@ -340,10 +361,19 @@ export default function DocumentModal({
               <input
                 id="doc-file-input"
                 type="file"
+                accept=".pdf,application/pdf"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) set("file", file);
+                  if (file) {
+                    const fileError = validateFile(file);
+                    if (fileError) {
+                      setErrors((prev) => ({ ...prev, file: fileError }));
+                      e.target.value = "";
+                      return;
+                    }
+                    set("file", file);
+                  }
                 }}
               />
               {formData.file ? (
@@ -390,7 +420,7 @@ export default function DocumentModal({
                       </span>
                     </p>
                     <p className="text-[12px] text-[#6A7282] mt-1">
-                      PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (max 20MB)
+                      PDF only (max 10MB)
                     </p>
                   </div>
                 </>
