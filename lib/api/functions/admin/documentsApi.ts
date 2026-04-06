@@ -11,72 +11,12 @@ import type {
 } from "@/lib/types/admin/documentType";
 
 // ─────────────────────────────────────────────
-// Helpers
+// GET /documents
 // ─────────────────────────────────────────────
-
-function toFormData(
-  payload: DocumentStorePayload | DocumentUpdatePayload,
-): FormData {
-  const form = new FormData();
-
-  for (const [key, value] of Object.entries(payload)) {
-    if (value === undefined || value === null) continue;
-
-    if (value instanceof File) {
-      form.append(key, value);
-    } else if (typeof value === "boolean") {
-      form.append(key, value ? "1" : "0");
-    } else {
-      form.append(key, String(value));
-    }
-  }
-
-  return form;
-}
-
-// ─────────────────────────────────────────────
-// Document API
-// ─────────────────────────────────────────────
-
-/**
- * Get all documents with optional filters, search, sorting, and pagination
- */
 export const fetchDocuments = async (
   params?: DocumentIndexParams,
 ): Promise<DocumentListResponse> => {
   const { data } = await apiClient.get("/documents", { params });
-  return data;
-};
-
-/**
- * Get a single document by ID (also increments view_count)
- */
-export const fetchDocumentById = async (
-  id: number | string,
-): Promise<DocumentSingleResponse> => {
-  const { data } = await apiClient.get(`/documents/${id}`);
-  return data;
-};
-
-/**
- * Get active documents filtered by type (public endpoint)
- */
-export const fetchDocumentsByType = async (
-  type: Document["type"],
-  params?: DocumentByTypeParams,
-): Promise<DocumentListResponse> => {
-  const { data } = await apiClient.get(`/documents/type/${type}`, { params });
-  return data;
-};
-
-/**
- * Get featured active documents (public endpoint, max 10)
- */
-export const fetchFeaturedDocuments = async (): Promise<{
-  success: boolean;
-  data: Document[];
-}> => {
-  const { data } = await apiClient.get("/documents/featured");
   return data;
 };
 
@@ -86,14 +26,44 @@ export const fetchFeaturedDocuments = async (): Promise<{
 export async function fetchDocument(
   id: number,
 ): Promise<DocumentSingleResponse> {
-  const res = await apiClient.get<DocumentSingleResponse>(
-    `/public/documents/${id}`,
-  );
+  const res = await apiClient.get<DocumentSingleResponse>(`/documents/${id}`);
   return res.data;
 }
 
 // ─────────────────────────────────────────────
-// POST /documents
+// GET /documents/:id  (alias — increments view_count)
+// ─────────────────────────────────────────────
+export const fetchDocumentById = async (
+  id: number | string,
+): Promise<DocumentSingleResponse> => {
+  const { data } = await apiClient.get(`/documents/${id}`);
+  return data;
+};
+
+// ─────────────────────────────────────────────
+// GET /documents/type/:type
+// ─────────────────────────────────────────────
+export const fetchDocumentsByType = async (
+  type: Document["type"],
+  params?: DocumentByTypeParams,
+): Promise<DocumentListResponse> => {
+  const { data } = await apiClient.get(`/documents/type/${type}`, { params });
+  return data;
+};
+
+// ─────────────────────────────────────────────
+// GET /documents/featured
+// ─────────────────────────────────────────────
+export const fetchFeaturedDocuments = async (): Promise<{
+  success: boolean;
+  data: Document[];
+}> => {
+  const { data } = await apiClient.get("/documents/featured");
+  return data;
+};
+
+// ─────────────────────────────────────────────
+// POST /document  (store — singular route)
 // ─────────────────────────────────────────────
 export async function createDocument(
   payload: DocumentStorePayload,
@@ -112,24 +82,21 @@ export async function createDocument(
   if (payload.status) formData.append("status", payload.status);
 
   const res = await apiClient.post<DocumentSingleResponse>(
-    "/documents",
+    "/document", // ← singular
     formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    },
+    { headers: { "Content-Type": "multipart/form-data" } },
   );
   return res.data;
 }
 
 // ─────────────────────────────────────────────
-// POST /documents/:id  (Laravel FormData PATCH)
+// PUT /document/:id  (update — singular route, true PUT)
 // ─────────────────────────────────────────────
 export async function updateDocument(
   id: number,
   payload: DocumentUpdatePayload,
 ): Promise<DocumentSingleResponse> {
   const formData = new FormData();
-  formData.append("_method", "PATCH");
   formData.append("name", payload.name);
   formData.append("type", payload.type);
   if (payload.file) formData.append("file", payload.file);
@@ -143,31 +110,32 @@ export async function updateDocument(
   if (payload.status) formData.append("status", payload.status);
 
   const res = await apiClient.post<DocumentSingleResponse>(
-    `/documents/${id}`,
+    `/document/${id}`, // ← singular
     formData,
     {
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "X-HTTP-Method-Override": "PUT", // ← PUT override header
+      },
+      params: { _method: "PUT" }, // ← Laravel query-string fallback
     },
   );
   return res.data;
 }
 
 // ─────────────────────────────────────────────
-// DELETE /documents/:id
+// DELETE /document/:id  (singular route)
 // ─────────────────────────────────────────────
 export async function deleteDocument(
   id: number,
 ): Promise<DocumentDeleteResponse> {
-  const res = await apiClient.delete<DocumentDeleteResponse>(
-    `/documents/${id}`,
-  );
+  const res = await apiClient.delete<DocumentDeleteResponse>(`/document/${id}`); // ← singular
   return res.data;
 }
 
-/**
- * Download a document file (increments download_count).
- * Triggers a native browser file download.
- */
+// ─────────────────────────────────────────────
+// GET /documents/:id/download
+// ─────────────────────────────────────────────
 export const downloadDocument = async (
   id: number | string,
   fileName: string,

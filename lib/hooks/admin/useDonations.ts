@@ -72,12 +72,11 @@ export const useDonations = (
       }>("/donations", {
         params: { page, per_page: 15, ...params },
       });
-      return response.data.data;
+      return response.data.data; // ✅ Return DonationsResponse directly
     },
-    staleTime: 1000 * 60 * 2, // 2 minutes
+    staleTime: 1000 * 60 * 2,
   });
 };
-
 /**
  * Hook: Get Single Donation (Admin)
  * Fetches details of a specific donation

@@ -11,8 +11,11 @@ import {
   FileText,
   Eye,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 import { useDocuments } from "@/lib/hooks/public/useDocumentPublicHooks";
+import { downloadDocument } from "@/lib/api/functions/public/useDocumentPublicApi";
+import { apiClient } from "@/lib";
 import type { Document } from "@/lib/types/admin/documentType";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -28,13 +31,19 @@ function isPdf(doc: Document): boolean {
   );
 }
 
+function resolveFileUrl(fileUrl: string) {
+  return fileUrl.startsWith("http")
+    ? fileUrl
+    : `${apiClient.defaults.baseURL?.replace("/api/v1", "")}${fileUrl}`;
+}
+
 // ── PDF Preview Panel ─────────────────────────────────────────────────────────
 function PdfPreview({ doc }: { doc: Document }) {
   const [show, setShow] = useState(false);
+  const fullUrl = resolveFileUrl(doc.file_url);
 
   return (
     <div className="space-y-2">
-      {/* Toggle preview */}
       <button
         onClick={() => setShow((s) => !s)}
         className="font-dm-sans w-full flex items-center justify-center gap-2 text-sm font-medium border border-gray-200 text-gray-700 py-2.5 rounded-xl hover:bg-gray-50 transition"
@@ -46,7 +55,7 @@ function PdfPreview({ doc }: { doc: Document }) {
       {show && (
         <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
           <iframe
-            src={doc.file_url}
+            src={`${fullUrl}#toolbar=1&navpanes=0&scrollbar=1`}
             title={doc.file_name}
             className="w-full h-[400px]"
           />
@@ -60,6 +69,17 @@ function PdfPreview({ doc }: { doc: Document }) {
 function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
   const hasFile = !!doc.file_url;
   const canPreview = hasFile && isPdf(doc);
+  const fullUrl = hasFile ? resolveFileUrl(doc.file_url) : "";
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadDocument(doc.id, doc.file_name);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
@@ -82,7 +102,7 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
           </button>
         </div>
 
-        {/* Body — scrollable */}
+        {/* Body */}
         <div className="p-6 space-y-5 overflow-y-auto flex-1">
           {/* Date */}
           <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -97,7 +117,7 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
             </p>
           )}
 
-          {/* ── Attachment block ── */}
+          {/* Attachment block */}
           {hasFile && (
             <div className="space-y-3">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -119,7 +139,7 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
                 {/* Action buttons */}
                 <div className="flex items-center gap-2 shrink-0">
                   <a
-                    href={doc.file_url}
+                    href={fullUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition"
@@ -127,13 +147,18 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
                   >
                     <ExternalLink size={14} />
                   </a>
-                  <a
-                    href={doc.file_url}
-                    download={doc.file_name}
-                    className="font-dm-sans flex items-center gap-1 text-xs font-medium bg-[#068847] text-white px-3 py-1.5 rounded-lg hover:bg-[#05703A] transition"
+                  <button
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="font-dm-sans flex items-center gap-1 text-xs font-medium bg-[#068847] text-white px-3 py-1.5 rounded-lg hover:bg-[#05703A] transition disabled:opacity-60"
                   >
-                    <DownloadIcon size={12} /> Download
-                  </a>
+                    {downloading ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                      <DownloadIcon size={12} />
+                    )}
+                    {downloading ? "Downloading..." : "Download"}
+                  </button>
                 </div>
               </div>
 
@@ -198,14 +223,12 @@ const NoticePage = () => {
             </div>
           </div>
 
-          {/* Error */}
           {error && !isLoading && (
             <div className="text-center py-16 text-sm text-red-500">
               {error}
             </div>
           )}
 
-          {/* Empty */}
           {!isLoading && !error && documents.length === 0 && (
             <div className="text-center py-16">
               <Bell size={48} className="mx-auto mb-3 text-gray-300" />
@@ -213,7 +236,6 @@ const NoticePage = () => {
             </div>
           )}
 
-          {/* Skeleton */}
           {isLoading && (
             <div className="mx-auto space-y-6 sm:space-y-8">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -222,7 +244,6 @@ const NoticePage = () => {
             </div>
           )}
 
-          {/* Notice list */}
           {!isLoading && documents.length > 0 && (
             <div className="mx-auto space-y-6 sm:space-y-8">
               {documents.map((doc) => (
@@ -249,7 +270,6 @@ const NoticePage = () => {
                       </p>
                     )}
                     <div className="flex items-center gap-3">
-                      {/* Show file badge on the card if attachment exists */}
                       {doc.file_url && (
                         <span className="flex items-center gap-1 text-xs text-gray-400">
                           <FileText size={12} />
@@ -268,7 +288,6 @@ const NoticePage = () => {
         </section>
       </div>
 
-      {/* Modal */}
       {selectedDoc && (
         <NoticeModal doc={selectedDoc} onClose={() => setSelectedDoc(null)} />
       )}

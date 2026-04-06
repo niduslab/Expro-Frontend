@@ -1,93 +1,35 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { AxiosError } from "axios";
-
 import {
   fetchDocuments,
-  fetchDocumentById,
-  fetchDocumentsByType,
-  fetchFeaturedDocuments,
+  fetchDocument,
   createDocument,
   updateDocument,
   deleteDocument,
   downloadDocument,
 } from "@/lib/api/functions/admin/documentsApi";
-
 import {
   Document,
   DocumentIndexParams,
-  DocumentByTypeParams,
   DocumentStorePayload,
   DocumentUpdatePayload,
   PaginationMeta,
+  SaveResult,
   UseDocumentsState,
   UseDocumentState,
   UseMutationState,
 } from "@/lib/types/admin/documentType";
 
 // ─────────────────────────────────────────────
-// extractApiError
-// Pulls the most useful human-readable message
-// out of an Axios 422 / 4xx / 5xx response so
-// the raw "Request failed with status 422" never
-// reaches the UI.
-// ─────────────────────────────────────────────
-
-export interface ApiFieldErrors {
-  [field: string]: string[];
-}
-
-export function extractApiError(err: unknown): {
-  message: string;
-  fieldErrors?: ApiFieldErrors;
-} {
-  if (err instanceof AxiosError) {
-    const data = err.response?.data as
-      | { message?: string; errors?: ApiFieldErrors }
-      | undefined;
-
-    const fieldErrors = data?.errors;
-
-    // Prefer the first field-level message (most specific)
-    if (fieldErrors && typeof fieldErrors === "object") {
-      const firstField = Object.values(fieldErrors)[0];
-      if (Array.isArray(firstField) && firstField.length > 0) {
-        return { message: firstField[0], fieldErrors };
-      }
-    }
-
-    // Fall back to top-level message from backend
-    if (data?.message && typeof data.message === "string") {
-      return { message: data.message, fieldErrors };
-    }
-
-    // Last resort: HTTP status text
-    return { message: err.message };
-  }
-
-  if (err instanceof Error) return { message: err.message };
-  return { message: "An unexpected error occurred" };
-}
-
-// ─────────────────────────────────────────────
-// documentApi — local adapter object
-// ─────────────────────────────────────────────
-
-const documentApi = {
-  getAll: fetchDocuments,
-  getById: fetchDocumentById,
-  getByType: fetchDocumentsByType,
-  getFeatured: fetchFeaturedDocuments,
-  create: createDocument,
-  update: updateDocument,
-  delete: deleteDocument,
-  download: downloadDocument,
-};
-
-// ─────────────────────────────────────────────
 // useDocuments — paginated list with filters
 // ─────────────────────────────────────────────
-
-export function useDocuments(params: DocumentIndexParams = {}) {
+export function useDocuments(
+  initialParams: DocumentIndexParams = {},
+): UseDocumentsState & {
+  params: DocumentIndexParams;
+  setParams: React.Dispatch<React.SetStateAction<DocumentIndexParams>>;
+  refetch: () => void;
+} {
+  const [params, setParams] = useState<DocumentIndexParams>(initialParams);
   const [state, setState] = useState<UseDocumentsState>({
     documents: [],
     pagination: null,
@@ -95,156 +37,80 @@ export function useDocuments(params: DocumentIndexParams = {}) {
     error: null,
   });
 
-  const paramsRef = useRef(params);
-  paramsRef.current = params;
+  const abortRef = useRef<AbortController | null>(null);
 
-  const fetch = useCallback(async () => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+  const load = useCallback(async () => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+
+    setState((s) => ({ ...s, isLoading: true, error: null }));
     try {
-      const res = await documentApi.getAll(paramsRef.current);
+      const res = await fetchDocuments(params);
       setState({
         documents: res.data,
         pagination: res.pagination,
         isLoading: false,
         error: null,
       });
-    } catch (err) {
-      const { message } = extractApiError(err);
-      setState((prev) => ({ ...prev, isLoading: false, error: message }));
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") return;
+      setState((s) => ({
+        ...s,
+        isLoading: false,
+        error: err instanceof Error ? err.message : "Failed to load documents.",
+      }));
     }
-  }, []);
+  }, [params]);
 
-  // Stable refetch ref — always points to the latest fetch function
-  const refetchRef = useRef(fetch);
   useEffect(() => {
-    refetchRef.current = fetch;
-  }, [fetch]);
+    load();
+    return () => abortRef.current?.abort();
+  }, [load]);
 
-  const stableRefetch = useCallback(() => refetchRef.current(), []);
-
-  const paramsKey = JSON.stringify(params);
-  useEffect(() => {
-    fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsKey]);
-
-  return { ...state, refetch: stableRefetch };
+  return { ...state, params, setParams, refetch: load };
 }
 
 // ─────────────────────────────────────────────
-// useDocument — single document by ID
+// useDocument — single document by id
 // ─────────────────────────────────────────────
-
-export function useDocument(id: number | null) {
+export function useDocument(id: number | null): UseDocumentState & {
+  refetch: () => void;
+} {
   const [state, setState] = useState<UseDocumentState>({
     document: null,
     isLoading: false,
     error: null,
   });
 
-  const fetch = useCallback(async () => {
+  const load = useCallback(async () => {
     if (id === null) return;
-
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+    setState({ document: null, isLoading: true, error: null });
     try {
-      const res = await documentApi.getById(id);
+      const res = await fetchDocument(id);
       setState({ document: res.data, isLoading: false, error: null });
-    } catch (err) {
-      const { message } = extractApiError(err);
-      setState({ document: null, isLoading: false, error: message });
+    } catch (err: unknown) {
+      setState({
+        document: null,
+        isLoading: false,
+        error: err instanceof Error ? err.message : "Failed to load document.",
+      });
     }
   }, [id]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    load();
+  }, [load]);
 
-  return { ...state, refetch: fetch };
+  return { ...state, refetch: load };
 }
-
-// ─────────────────────────────────────────────
-// useDocumentsByType — public, type-filtered list
-// ─────────────────────────────────────────────
-
-export function useDocumentsByType(
-  type: Document["type"] | null,
-  params: DocumentByTypeParams = {},
-) {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetch = useCallback(async () => {
-    if (!type) return;
-
-    setIsLoading(true);
-    setError(null);
-    try {
-      const res = await documentApi.getByType(type, params);
-      setDocuments(res.data);
-      setPagination(res.pagination);
-    } catch (err) {
-      const { message } = extractApiError(err);
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, JSON.stringify(params)]);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { documents, pagination, isLoading, error, refetch: fetch };
-}
-
-// ─────────────────────────────────────────────
-// useFeaturedDocuments — public featured list
-// ─────────────────────────────────────────────
-
-export function useFeaturedDocuments() {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetch = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const res = await documentApi.getFeatured();
-      setDocuments(res.data);
-    } catch (err) {
-      const { message } = extractApiError(err);
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { documents, isLoading, error, refetch: fetch };
-}
-
-// ─────────────────────────────────────────────
-// Mutation result type
-// Returned by create/update so callers can show
-// both a toast and inline field errors.
-// ─────────────────────────────────────────────
-
-export type SaveResult =
-  | { ok: true; data: Document }
-  | { ok: false; message: string; fieldErrors?: ApiFieldErrors };
 
 // ─────────────────────────────────────────────
 // useCreateDocument
 // ─────────────────────────────────────────────
-
-export function useCreateDocument() {
+export function useCreateDocument(): UseMutationState & {
+  create: (payload: DocumentStorePayload) => Promise<Document | null>;
+  reset: () => void;
+} {
   const [state, setState] = useState<UseMutationState>({
     isLoading: false,
     error: null,
@@ -252,16 +118,20 @@ export function useCreateDocument() {
   });
 
   const create = useCallback(
-    async (payload: DocumentStorePayload): Promise<SaveResult> => {
+    async (payload: DocumentStorePayload): Promise<Document | null> => {
       setState({ isLoading: true, error: null, isSuccess: false });
       try {
-        const res = await documentApi.create(payload);
+        const res = await createDocument(payload);
         setState({ isLoading: false, error: null, isSuccess: true });
-        return { ok: true, data: res.data };
-      } catch (err) {
-        const { message, fieldErrors } = extractApiError(err);
-        setState({ isLoading: false, error: message, isSuccess: false });
-        return { ok: false, message, fieldErrors };
+        return res.data;
+      } catch (err: unknown) {
+        setState({
+          isLoading: false,
+          error:
+            err instanceof Error ? err.message : "Failed to create document.",
+          isSuccess: false,
+        });
+        return null;
       }
     },
     [],
@@ -277,8 +147,13 @@ export function useCreateDocument() {
 // ─────────────────────────────────────────────
 // useUpdateDocument
 // ─────────────────────────────────────────────
-
-export function useUpdateDocument() {
+export function useUpdateDocument(): UseMutationState & {
+  update: (
+    id: number,
+    payload: DocumentUpdatePayload,
+  ) => Promise<Document | null>;
+  reset: () => void;
+} {
   const [state, setState] = useState<UseMutationState>({
     isLoading: false,
     error: null,
@@ -286,16 +161,23 @@ export function useUpdateDocument() {
   });
 
   const update = useCallback(
-    async (id: number, payload: DocumentUpdatePayload): Promise<SaveResult> => {
+    async (
+      id: number,
+      payload: DocumentUpdatePayload,
+    ): Promise<Document | null> => {
       setState({ isLoading: true, error: null, isSuccess: false });
       try {
-        const res = await documentApi.update(id, payload);
+        const res = await updateDocument(id, payload);
         setState({ isLoading: false, error: null, isSuccess: true });
-        return { ok: true, data: res.data };
-      } catch (err) {
-        const { message, fieldErrors } = extractApiError(err);
-        setState({ isLoading: false, error: message, isSuccess: false });
-        return { ok: false, message, fieldErrors };
+        return res.data;
+      } catch (err: unknown) {
+        setState({
+          isLoading: false,
+          error:
+            err instanceof Error ? err.message : "Failed to update document.",
+          isSuccess: false,
+        });
+        return null;
       }
     },
     [],
@@ -311,34 +193,32 @@ export function useUpdateDocument() {
 // ─────────────────────────────────────────────
 // useDeleteDocument
 // ─────────────────────────────────────────────
-
-export function useDeleteDocument() {
+export function useDeleteDocument(): UseMutationState & {
+  remove: (id: number) => Promise<boolean>;
+  reset: () => void;
+} {
   const [state, setState] = useState<UseMutationState>({
     isLoading: false,
     error: null,
     isSuccess: false,
   });
 
-  const remove = useCallback(
-    async (
-      id: number,
-      options?: { onSuccess?: () => void; onError?: (msg: string) => void },
-    ): Promise<boolean> => {
-      setState({ isLoading: true, error: null, isSuccess: false });
-      try {
-        await documentApi.delete(id);
-        setState({ isLoading: false, error: null, isSuccess: true });
-        options?.onSuccess?.();
-        return true;
-      } catch (err) {
-        const { message } = extractApiError(err);
-        setState({ isLoading: false, error: message, isSuccess: false });
-        options?.onError?.(message);
-        return false;
-      }
-    },
-    [],
-  );
+  const remove = useCallback(async (id: number): Promise<boolean> => {
+    setState({ isLoading: true, error: null, isSuccess: false });
+    try {
+      await deleteDocument(id);
+      setState({ isLoading: false, error: null, isSuccess: true });
+      return true;
+    } catch (err: unknown) {
+      setState({
+        isLoading: false,
+        error:
+          err instanceof Error ? err.message : "Failed to delete document.",
+        isSuccess: false,
+      });
+      return false;
+    }
+  }, []);
 
   const reset = useCallback(() => {
     setState({ isLoading: false, error: null, isSuccess: false });
@@ -346,123 +226,109 @@ export function useDeleteDocument() {
 
   return { ...state, remove, reset };
 }
+// Add to the bottom of your hooks file
+export function useDocumentsWithMutations(params: DocumentIndexParams) {
+  const { documents, pagination, isLoading, error, refetch } =
+    useDocuments(params);
 
-// ─────────────────────────────────────────────
-// useDownloadDocument
-// ─────────────────────────────────────────────
+  const createHook = useCreateDocument();
+  const updateHook = useUpdateDocument();
+  const deleteHook = useDeleteDocument();
 
-export function useDownloadDocument() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const download = useCallback(
-    async (
-      id: number,
-      fileName: string,
-      options?: { onSuccess?: () => void; onError?: (msg: string) => void },
-    ): Promise<void> => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        await documentApi.download(id, fileName);
-        setIsLoading(false);
-        options?.onSuccess?.();
-      } catch (err) {
-        const { message } = extractApiError(err);
-        setError(message);
-        setIsLoading(false);
-        options?.onError?.(message);
+  const create = async (payload: DocumentStorePayload): Promise<SaveResult> => {
+    try {
+      const doc = await createHook.create(payload);
+      if (doc) {
+        refetch();
+        return { ok: true, message: "Document created successfully." };
       }
-    },
-    [],
-  );
+      return {
+        ok: false,
+        message: createHook.error ?? "Failed to create document.",
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        message:
+          err instanceof Error ? err.message : "Failed to create document.",
+      };
+    }
+  };
 
-  return { isLoading, error, download };
-}
+  const update = async (
+    id: number,
+    payload: DocumentUpdatePayload,
+  ): Promise<SaveResult> => {
+    try {
+      const doc = await updateHook.update(id, payload);
+      if (doc) {
+        refetch();
+        return { ok: true, message: "Document updated successfully." };
+      }
+      return {
+        ok: false,
+        message: updateHook.error ?? "Failed to update document.",
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        message:
+          err instanceof Error ? err.message : "Failed to update document.",
+      };
+    }
+  };
 
-// ─────────────────────────────────────────────
-// useDocumentsWithMutations — combined hook
-// ─────────────────────────────────────────────
+  const remove = (
+    id: number,
+    callbacks?: { onSuccess?: () => void; onError?: (msg: string) => void },
+  ) => {
+    deleteHook.remove(id).then((ok) => {
+      if (ok) {
+        refetch();
+        callbacks?.onSuccess?.();
+      } else {
+        callbacks?.onError?.(deleteHook.error ?? "Failed to delete document.");
+      }
+    });
+  };
 
-export function useDocumentsWithMutations(params: DocumentIndexParams = {}) {
-  const list = useDocuments(params);
-  const creator = useCreateDocument();
-  const updater = useUpdateDocument();
-  const deleter = useDeleteDocument();
-  const downloader = useDownloadDocument();
-
-  // Always hold the latest refetch — avoids stale closure issues
-  const refetchRef = useRef(list.refetch);
-  useEffect(() => {
-    refetchRef.current = list.refetch;
-  }, [list.refetch]);
-
-  // create — returns SaveResult so page can forward fieldErrors to modal
-  const create = useCallback(
-    async (payload: DocumentStorePayload): Promise<SaveResult> => {
-      const result = await creator.create(payload);
-      if (result.ok) await refetchRef.current();
-      return result;
-    },
-    [creator.create],
-  );
-
-  // update — same
-  const update = useCallback(
-    async (id: number, payload: DocumentUpdatePayload): Promise<SaveResult> => {
-      const result = await updater.update(id, payload);
-      if (result.ok) await refetchRef.current();
-      return result;
-    },
-    [updater.update],
-  );
-
-  const remove = useCallback(
-    async (
-      id: number,
-      options?: { onSuccess?: () => void; onError?: (msg: string) => void },
-    ) => {
-      return deleter.remove(id, {
-        ...options,
-        onSuccess: async () => {
-          await refetchRef.current();
-          options?.onSuccess?.();
-        },
-      });
-    },
-    [deleter.remove],
-  );
+  const download = (
+    id: number,
+    fileName: string,
+    callbacks?: { onSuccess?: () => void; onError?: (msg: string) => void },
+  ) => {
+    downloadDocument(id, fileName)
+      .then(() => callbacks?.onSuccess?.())
+      .catch((err: unknown) =>
+        callbacks?.onError?.(
+          err instanceof Error ? err.message : "Download failed.",
+        ),
+      );
+  };
 
   return {
-    // list state
-    documents: list.documents,
-    pagination: list.pagination,
-    isLoading: list.isLoading,
-    error: list.error,
-    refetch: list.refetch,
-
-    // mutations
+    documents,
+    pagination,
+    isLoading,
+    error,
     create,
     update,
     remove,
-    download: downloader.download,
-
-    // mutation states
+    download,
     createState: {
-      isLoading: creator.isLoading,
-      error: creator.error,
-      isSuccess: creator.isSuccess,
+      isLoading: createHook.isLoading,
+      error: createHook.error,
+      isSuccess: createHook.isSuccess,
     },
     updateState: {
-      isLoading: updater.isLoading,
-      error: updater.error,
-      isSuccess: updater.isSuccess,
+      isLoading: updateHook.isLoading,
+      error: updateHook.error,
+      isSuccess: updateHook.isSuccess,
     },
     deleteState: {
-      isLoading: deleter.isLoading,
-      error: deleter.error,
-      isSuccess: deleter.isSuccess,
+      isLoading: deleteHook.isLoading,
+      error: deleteHook.error,
+      isSuccess: deleteHook.isSuccess,
     },
-    downloadState: { isLoading: downloader.isLoading, error: downloader.error },
   };
 }
