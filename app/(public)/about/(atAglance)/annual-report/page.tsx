@@ -7,18 +7,25 @@ import {
   FileText,
   Notebook,
   TimerIcon,
+  Loader2,
 } from "lucide-react";
 import { useDocuments } from "@/lib/hooks/public/useDocumentPublicHooks";
+import { downloadDocument } from "@/lib/api/functions/public/useDocumentPublicApi";
+import { apiClient } from "@/lib";
 import type { Document } from "@/lib/types/admin/documentType";
 
-// Format "2025-02-01" → "February 2025"
 function formatPublishDate(dateStr: string | null): string {
   if (!dateStr) return "—";
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 }
 
-// ── Skeleton loader ──────────────────────────────────────────────────────────
+function resolveFileUrl(fileUrl: string) {
+  return fileUrl.startsWith("http")
+    ? fileUrl
+    : `${apiClient.defaults.baseURL?.replace("/api/v1", "")}${fileUrl}`;
+}
+
 function SidebarSkeleton() {
   return (
     <ul className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible p-3 gap-2">
@@ -41,9 +48,9 @@ function ContentSkeleton() {
   );
 }
 
-// ── Main Component ───────────────────────────────────────────────────────────
 const AnnualReport = () => {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  const [downloading, setDownloading] = useState(false);
 
   const { documents, isLoading, error } = useDocuments({
     type: "annual_reports",
@@ -53,12 +60,28 @@ const AnnualReport = () => {
     sort_order: "asc",
   });
 
-  // Auto-select first document when data loads
   useEffect(() => {
     if (documents.length > 0 && !selectedDoc) {
       setSelectedDoc(documents[0]);
     }
   }, [documents, selectedDoc]);
+
+  const fullUrl = selectedDoc ? resolveFileUrl(selectedDoc.file_url) : "";
+
+  const handleDownload = async () => {
+    if (!selectedDoc) return;
+    setDownloading(true);
+    try {
+      await downloadDocument(selectedDoc.id, selectedDoc.file_name);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleSelectDoc = (doc: Document) => {
+    setDownloading(false);
+    setSelectedDoc(doc);
+  };
 
   return (
     <div className="min-h-screen py-12">
@@ -75,14 +98,12 @@ const AnnualReport = () => {
         </div>
 
         <div className="container mx-auto px-6 md:px-12 lg:px-20">
-          {/* Error state */}
           {error && !isLoading && (
             <div className="flex items-center justify-center rounded-3xl border border-red-100 bg-red-50 p-12 text-center">
               <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
 
-          {/* Empty state */}
           {!isLoading && !error && documents.length === 0 && (
             <div className="flex flex-col items-center justify-center rounded-3xl border border-gray-200 bg-white p-16 text-center">
               <FileText size={40} className="mb-3 text-gray-300" />
@@ -92,7 +113,6 @@ const AnnualReport = () => {
             </div>
           )}
 
-          {/* Main layout */}
           {(isLoading || documents.length > 0) && (
             <div
               className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden 
@@ -110,7 +130,7 @@ const AnnualReport = () => {
                       return (
                         <li key={doc.id} className="min-w-[220px] lg:min-w-0">
                           <button
-                            onClick={() => setSelectedDoc(doc)}
+                            onClick={() => handleSelectDoc(doc)}
                             className={`w-full text-left px-4 sm:px-6 py-4 flex items-center gap-3 transition
                               ${
                                 isSelected
@@ -141,7 +161,6 @@ const AnnualReport = () => {
                 <ContentSkeleton />
               ) : selectedDoc ? (
                 <section className="p-4 sm:p-6 lg:p-8 flex flex-col">
-                  {/* Header + Actions */}
                   <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
                     <div className="flex flex-col gap-1">
                       <h2 className="font-dm-sans text-xl sm:text-2xl font-semibold text-gray-900 break-words">
@@ -164,10 +183,9 @@ const AnnualReport = () => {
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                       <a
-                        href={selectedDoc.file_url}
+                        href={fullUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-dm-sans w-full sm:w-auto inline-flex justify-center items-center gap-2 px-5 py-2.5 text-sm font-medium border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-200 transition"
@@ -175,23 +193,30 @@ const AnnualReport = () => {
                         Open
                         <MoveUpRightIcon size={14} className="text-[#068847]" />
                       </a>
-
-                      <a
-                        href={selectedDoc.file_url}
-                        download={selectedDoc.file_name}
-                        className="font-dm-sans w-full sm:w-auto inline-flex justify-center items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#068847] text-white rounded-xl hover:bg-[#05703A] transition shadow-sm"
+                      <button
+                        onClick={handleDownload}
+                        disabled={downloading}
+                        className="font-dm-sans w-full sm:w-auto inline-flex justify-center items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#068847] text-white rounded-xl hover:bg-[#05703A] transition shadow-sm disabled:opacity-70"
                       >
-                        Download
-                        <DownloadIcon size={18} />
-                      </a>
+                        {downloading ? (
+                          <>
+                            <Loader2 size={18} className="animate-spin" />
+                            Downloading...
+                          </>
+                        ) : (
+                          <>
+                            Download
+                            <DownloadIcon size={18} />
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
 
-                  {/* PDF Preview */}
                   <div className="flex-1 rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 shadow-inner">
                     <iframe
-                      key={selectedDoc.id} // remount iframe when doc changes
-                      src={selectedDoc.file_url}
+                      key={selectedDoc.id}
+                      src={`${fullUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                       className="w-full h-[50vh] sm:h-[60vh] lg:h-[calc(100vh-300px)] min-h-[450px]"
                       title={`${selectedDoc.name} Preview`}
                     />
