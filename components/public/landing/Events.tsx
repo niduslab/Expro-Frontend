@@ -151,11 +151,15 @@ const Events = () => {
                     {/* Image */}
                     <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
                       <Image
-                        src={event.image}
-                        alt={event.title}
+                        src={
+                          event.image ||
+                          "/images/dashboard/memberApproval/1.jpg"
+                        }
+                        alt={`${event.title} - ${event.location}`}
                         fill
                         className="object-cover hover:scale-105 transition-transform duration-500"
                         sizes="(max-width: 1024px) 100vw, 50vw"
+                        unoptimized={event.image?.startsWith("http")}
                       />
                     </div>
 
