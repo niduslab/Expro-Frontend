@@ -19,6 +19,7 @@ interface PostDetailsSectionProps {
   errors: Record<string, string>;
   onTitleChange: (value: string) => void;
   set: (field: keyof BlogPostPayload, value: unknown) => void;
+  existingImageUrl?: string | null;
 }
 
 export function PostDetailsSection({
@@ -26,13 +27,13 @@ export function PostDetailsSection({
   errors,
   onTitleChange,
   set,
+  existingImageUrl,
 }: PostDetailsSectionProps) {
   return (
     <div className="flex flex-col relative top-[24px] gap-[16px]">
       <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
         Post Details
       </p>
-
       <div className="flex gap-2 w-full">
         <div className="w-1/2">
           <FieldLabel label="Title" required />
@@ -54,7 +55,6 @@ export function PostDetailsSection({
           />
         </div>
       </div>
-
       <div>
         <FieldLabel label="Slug" required />
         <input
@@ -65,7 +65,6 @@ export function PostDetailsSection({
         />
         <FieldError message={errors.slug} />
       </div>
-
       <div>
         <FieldLabel label="Excerpt" />
         <textarea
@@ -76,7 +75,6 @@ export function PostDetailsSection({
           onChange={(e) => set("excerpt", e.target.value)}
         />
       </div>
-
       <div>
         <FieldLabel label="Content" required />
         <textarea
@@ -88,17 +86,61 @@ export function PostDetailsSection({
         />
         <FieldError message={errors.content} />
       </div>
-
+      {/* ── Featured Image ── */}
       <div>
-        <FieldLabel label="Featured Image URL" />
+        <FieldLabel label="Featured Image" />
         <input
-          className={inputClass}
-          placeholder="https://example.com/image.jpg"
-          value={String(formData.featured_image ?? "")}
-          onChange={(e) => set("featured_image", e.target.value)}
+          type="file"
+          accept="image/*"
+          onChange={(e) => set("featured_image", e.target.files?.[0] ?? null)}
+          className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
         />
-      </div>
 
+        {/* New file selected → blob preview */}
+        {formData.featured_image instanceof File && (
+          <div className="flex items-center gap-3 mt-2">
+            <img
+              src={URL.createObjectURL(formData.featured_image)}
+              className="w-20 h-20 rounded-xl object-cover border border-[#E5E7EB]"
+              alt="New upload preview"
+            />
+            <div className="flex flex-col gap-1">
+              <span className="text-[13px] font-medium text-[#030712]">
+                {formData.featured_image.name}
+              </span>
+              <span className="text-[12px] text-[#6A7282]">
+                New image — replaces current
+              </span>
+              <button
+                type="button"
+                onClick={() => set("featured_image", null)}
+                className="text-[12px] text-red-500 hover:text-red-600 text-left"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* No new file + existing image from server → show current */}
+        {!(formData.featured_image instanceof File) && existingImageUrl && (
+          <div className="flex items-center gap-3 mt-2">
+            <img
+              src={existingImageUrl}
+              className="w-20 h-20 rounded-xl object-cover border border-[#E5E7EB]"
+              alt="Current featured image"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+            <div className="flex flex-col gap-1">
+              <span className="text-[12px] text-[#6A7282]">
+                Current image (select file above to replace)
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
       <Divider />
     </div>
   );
@@ -110,6 +152,7 @@ interface PublishingSettingsSectionProps {
   categories: { id: number; name: string }[];
   set: (field: keyof BlogPostPayload, value: unknown) => void;
   users: UserListItem[];
+  errors?: Record<string, string>;
 }
 
 export function PublishingSettingsSection({
@@ -117,6 +160,7 @@ export function PublishingSettingsSection({
   categories,
   set,
   users,
+  errors,
 }: PublishingSettingsSectionProps) {
   const [search, setSearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -126,29 +170,44 @@ export function PublishingSettingsSection({
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
+
   const selectedUser = users.find(
     (u) => Number(u.id) === Number(formData.author_id),
   );
+
+  // Helper to determine if a field has an error
+  const hasError = (field: string) => !!errors?.[field];
+
   return (
     <div className="flex flex-col relative top-[48px] gap-[16px]">
       <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
         Publishing Settings
       </p>
 
-      <select
-        className={inputClass}
-        value={formData.category_id != null ? String(formData.category_id) : ""}
-        onChange={(e) =>
-          set("category_id", e.target.value ? Number(e.target.value) : null)
-        }
-      >
-        <option value="">Select a category</option>
-        {categories.map((c) => (
-          <option key={c.id} value={String(c.id)}>
-            {c.name}
-          </option>
-        ))}
-      </select>
+      {/* --- CATEGORY SELECT --- */}
+      <div>
+        <FieldLabel label="Category" required />
+        <select
+          className={`${inputClass} ${hasError("category_id") ? "border-red-500 focus:ring-red-200" : ""}`}
+          value={
+            formData.category_id != null ? String(formData.category_id) : ""
+          }
+          onChange={(e) =>
+            set("category_id", e.target.value ? Number(e.target.value) : null)
+          }
+        >
+          <option value="">Select a category</option>
+          {categories.map((c) => (
+            <option key={c.id} value={String(c.id)}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        {/* Error message MUST be outside the select tag */}
+        <FieldError message={errors?.category_id} />
+      </div>
+
+      {/* --- STATUS SELECT --- */}
       <div>
         <FieldLabel label="Status" required />
         <select
@@ -165,7 +224,8 @@ export function PublishingSettingsSection({
           ))}
         </select>
       </div>
-      {/* ✅ Replaced datetime-local with DateTimePicker */}
+
+      {/* --- PUBLISHED AT --- */}
       <div>
         <FieldLabel label="Published At" />
         <DateTimePicker
@@ -174,25 +234,38 @@ export function PublishingSettingsSection({
         />
       </div>
 
-      <div className="relative">
+      {/* --- AUTHOR DROPDOWN --- */}
+      <div>
         <FieldLabel label="Author" required />
         <button
           type="button"
           onClick={() => setDropdownOpen((v) => !v)}
-          className="h-[48px] w-full flex items-center justify-between border border-[#D1D5DC] rounded-[8px] px-[16px] bg-white focus:outline-none focus:ring focus:ring-green-500 text-left"
+          className={`h-[48px] w-full flex items-center justify-between border rounded-[8px] px-[16px] bg-white focus:outline-none focus:ring text-left transition-colors ${
+            hasError("author_id")
+              ? "border-red-500 focus:ring-red-200"
+              : "border-[#D1D5DC] focus:ring-green-500"
+          }`}
         >
           <span
-            className={`text-[14px] truncate ${selectedUser ? "text-[#6A7282]" : "text-[#6A7282]"}`}
+            className={`text-[14px] truncate ${
+              selectedUser ? "text-[#030712]" : "text-[#6A7282]"
+            }`}
           >
             {selectedUser?.member?.name_english ||
               selectedUser?.email ||
               "Select an author"}
           </span>
           <ChevronDown
-            className={`h-4 w-4 text-[#6A7282] shrink-0 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+            className={`h-4 w-4 text-[#6A7282] shrink-0 transition-transform ${
+              dropdownOpen ? "rotate-180" : ""
+            }`}
           />
         </button>
 
+        {/* Error message MUST be outside the button tag */}
+        <FieldError message={errors?.author_id} />
+
+        {/* Dropdown Menu */}
         {dropdownOpen && (
           <div className="absolute z-50 mt-1 w-full bg-white border border-[#D1D5DC] rounded-[8px] shadow-lg">
             <div className="flex items-center gap-2 px-3 py-2 border-b border-[#E5E7EB]">
@@ -239,6 +312,8 @@ export function PublishingSettingsSection({
           </div>
         )}
       </div>
+
+      {/* --- FEATURED POST --- */}
       <div>
         <FieldLabel label="Featured Post" />
         <div className="flex items-center gap-3 h-[48px]">

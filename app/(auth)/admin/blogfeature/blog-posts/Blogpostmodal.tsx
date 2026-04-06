@@ -47,7 +47,7 @@ export default function BlogPostModal({
         slug: post.slug,
         excerpt: post.excerpt ?? "",
         content: post.content,
-        featured_image: post.featured_image ?? "",
+        featured_image: null,
         author_id: post.author?.id ?? post.author_id ?? null, // ← fix
         category_id: post.category?.id ?? post.category_id ?? null, // ← fix
         status: String(post.status) as BlogPostPayload["status"],
@@ -100,6 +100,9 @@ export default function BlogPostModal({
     if (!formData.content?.trim()) newErrors.content = "Content is required";
     if (formData.author_id === null || formData.author_id === undefined)
       newErrors.author_id = "Author is required";
+    if (formData.category_id === null || formData.category_id === undefined)
+      newErrors.category_id = "Category is required";
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       toast.error(Object.values(newErrors)[0]);
@@ -181,6 +184,7 @@ export default function BlogPostModal({
             errors={errors}
             onTitleChange={handleTitleChange}
             set={set}
+            existingImageUrl={post?.featured_image_url ?? null}
           />
 
           <PublishingSettingsSection
@@ -188,6 +192,7 @@ export default function BlogPostModal({
             categories={categories}
             set={set}
             users={users}
+            errors={errors}
           />
 
           <TagsSection

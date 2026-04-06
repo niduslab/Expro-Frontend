@@ -15,7 +15,7 @@ export interface BlogPost {
   slug: string;
   excerpt: string | null;
   content: string;
-  featured_image: string;
+  featured_image?: string | null;
   author: Author;
   category: any | null;
   status: "draft" | "published" | string;

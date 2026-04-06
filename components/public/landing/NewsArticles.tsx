@@ -106,10 +106,14 @@ const NewsArticles = () => {
               >
                 <div className="relative h-70 md:h-90 w-full">
                   <Image
-                    src={blogs[0].featured_image || "/fallback.jpg"}
-                    alt={blogs[0].title}
+                    src={
+                      blogs[0]?.featured_image ||
+                      "/images/dashboard/memberApproval/1.jpg"
+                    }
+                    alt={blogs[0]?.title || "Featured blog"}
                     fill
                     className="object-cover"
+                    unoptimized={blogs[0]?.featured_image?.startsWith("http")}
                   />
                 </div>
 
@@ -145,6 +149,7 @@ const NewsArticles = () => {
                       alt={blog.title}
                       fill
                       className="object-cover"
+                      unoptimized={blog.featured_image?.startsWith("http")}
                     />
                   </div>
 

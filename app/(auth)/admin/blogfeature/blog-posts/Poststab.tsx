@@ -21,6 +21,7 @@ import {
   STATUS_STYLES,
 } from "../Shared";
 import DeleteConfirmDialog from "../../projects/delete-confirmation";
+import Image from "next/image";
 
 const STATUS_FILTERS = [
   { l: "All", v: "" },
@@ -171,6 +172,7 @@ export default function PostsTab() {
               <thead>
                 <tr className="border-b border-[#e3e8e0] bg-[#f8faf7]">
                   {[
+                    "Image",
                     "Title",
                     "Category",
                     "Author",
@@ -194,6 +196,23 @@ export default function PostsTab() {
                     key={post.id ?? `${post.title}-${index}`}
                     className="hover:bg-[#f8faf7] transition-colors group"
                   >
+                    <td className="px-5 py-4">
+                      <div className="relative w-20 h-14 rounded-lg overflow-hidden border border-[#E5E7EB]">
+                        <Image
+                          src={
+                            post.featured_image_url ||
+                            "/images/dashboard/memberApproval/1.jpg"
+                          }
+                          alt={`${post.title} - ${post.slug}`}
+                          fill
+                          className="object-cover"
+                          sizes="80px"
+                          unoptimized={post.featured_image_url?.startsWith(
+                            "http",
+                          )}
+                        />
+                      </div>
+                    </td>
                     <td className="px-5 py-4 max-w-[220px]">
                       <p className="text-sm font-medium text-[#1a1a2e] truncate">
                         {post.title}

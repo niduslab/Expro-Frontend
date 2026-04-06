@@ -75,6 +75,7 @@ export default function BlogPage() {
                           sizes=""
                           className="object-cover"
                           priority
+                          unoptimized={blog.featured_image?.startsWith("http")}
                         />
                       </div>
 

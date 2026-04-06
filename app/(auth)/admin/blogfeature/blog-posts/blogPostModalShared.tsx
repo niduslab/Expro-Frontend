@@ -8,7 +8,7 @@ export const defaultForm: BlogPostPayload = {
   excerpt: "",
   author_id: null,
   content: "",
-  featured_image: "",
+  featured_image: null,
   category_id: null,
   status: "draft",
   published_at: null,
