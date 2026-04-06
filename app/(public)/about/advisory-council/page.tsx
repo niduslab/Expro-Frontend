@@ -113,11 +113,15 @@ export default function AdvisoryCounsil() {
                 {/* Background Image */}
                 <div className="absolute inset-0">
                   <Image
-                    src={member.image_url}
-                    alt={member.name}
+                    src={
+                      member.image_url ||
+                      "/images/dashboard/memberApproval/1.jpg"
+                    }
+                    alt={`${member.name} - ${member.designation}`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    unoptimized={member.image_url?.startsWith("http")}
                   />
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />

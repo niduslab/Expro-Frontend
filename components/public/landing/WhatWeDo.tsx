@@ -242,11 +242,15 @@ const WhatWeDo = () => {
 
                   <div className="relative h-[192px] w-full rounded-[4px] overflow-hidden mt-auto shrink-0">
                     <Image
-                      src={service.featured_image || "/fallback.jpg"}
-                      alt={service.title}
+                      src={
+                        service.featured_image ||
+                        "/images/dashboard/memberApproval/1.jpg"
+                      }
+                      alt={`${service.name} - ${service.designation}`}
                       fill
                       className="object-cover transform group-hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      unoptimized={service.featured_image?.startsWith("http")}
                     />
                   </div>
                 </div>
