@@ -2,6 +2,8 @@ export interface NomineeInput {
   name: string;
   relation: string;
   dob: string; // YYYY-MM-DD
+  nominee_mobile?: string;
+  nominee_address?: string;
 }
 
 export interface CreateMembershipApplicationInput {
@@ -30,6 +32,9 @@ export interface CreateMembershipApplicationInput {
   nominees?: NomineeInput[];
 
   photo?: File | null;
+  nid_front_photo?: File | null;
+  nid_back_photo?: File | null;
+  signature?: File | null;
 }
 
 export interface MembershipApplicationResponse {

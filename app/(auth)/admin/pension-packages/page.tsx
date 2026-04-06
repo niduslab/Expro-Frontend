@@ -84,10 +84,7 @@ export default function AdminPensionPackages() {
   };
 
   const handleViewMembers = (packageId: number, packageName: string) => {
-    // TODO: Navigate to members page with filter or open members modal
-    toast.info(`Viewing members for ${packageName}`, {
-      description: "This feature will be implemented soon",
-    });
+    window.location.href = `/admin/members?packageId=${packageId}&packageName=${encodeURIComponent(packageName)}`;
   };
 
   const handleEdit = (pkg: any) => {
