@@ -314,6 +314,8 @@ export default function ActivityLogPage() {
           onLogNameChange={handleLogNameChange}
           onDateChange={handleDateChange}
           onClear={resetFilters}
+          perPage={perPage}
+          onPerPageChange={handlePerPageChange}
         />
 
         {/* ── Error Banner ── */}

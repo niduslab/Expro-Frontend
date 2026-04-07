@@ -13,14 +13,20 @@ import {
   FilePlusCorner,
   UserRoundCheck,
   Activity,
+  SquareChartGantt,
+  AudioLines,
 } from "lucide-react";
 
 export const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Pension Packages", href: "/admin/pension-packages", icon: Package },
 
-  { name: "Manage Members", href: "/admin/members", icon: Package },
-  { name: "Membership Request", href: "/admin/membership-request", icon: Package },
+  { name: "Manage Members", href: "/admin/members", icon: SquareChartGantt },
+  {
+    name: "Membership Request",
+    href: "/admin/membership-request",
+    icon: AudioLines,
+  },
   // { name: "All Pension Members", href: "/admin/members", icon: Users },
 
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },

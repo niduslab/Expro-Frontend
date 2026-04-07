@@ -34,6 +34,8 @@ interface ActivityLogToolbarProps {
   onLogNameChange: (v: string) => void;
   onDateChange: (v: string) => void;
   onClear: () => void;
+  perPage: number;
+  onPerPageChange: (v: number) => void;
 }
 
 const CHANNEL_OPTIONS = [
@@ -61,6 +63,8 @@ export function ActivityLogToolbar({
   onLogNameChange,
   onDateChange,
   onClear,
+  perPage,
+  onPerPageChange,
 }: ActivityLogToolbarProps) {
   const hasActiveFilters = search || logNameFilter || dateFilter;
 
@@ -115,6 +119,18 @@ export function ActivityLogToolbar({
 
           <div className="w-[148px]">
             <DatePicker value={dateFilter} onChange={(v) => onDateChange(v)} />
+          </div>
+          <div className="w-[130px]">
+            <CustomSelect
+              value={String(perPage)}
+              onChange={(v) => onPerPageChange(Number(v))}
+              options={[
+                { label: "25 / page", value: "25" },
+                { label: "50 / page", value: "50" },
+                { label: "100 / page", value: "100" },
+                { label: "200 / page", value: "200" },
+              ]}
+            />
           </div>
 
           {hasActiveFilters && (
@@ -565,18 +581,6 @@ export function ActivityLogTable({
             onPrev={onPrev}
             onPageChange={onPageChange}
           />
-          <div className="w-[130px]">
-            <CustomSelect
-              value={String(perPage)}
-              onChange={(v) => onPerPageChange(Number(v))}
-              options={[
-                { label: "25 / page", value: "25" },
-                { label: "50 / page", value: "50" },
-                { label: "100 / page", value: "100" },
-                { label: "200 / page", value: "200" },
-              ]}
-            />
-          </div>
         </div>
       </div>
     </div>
