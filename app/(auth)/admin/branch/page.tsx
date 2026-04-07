@@ -13,6 +13,7 @@ import {
   SlidersHorizontal,
   Pencil,
   Eye,
+  Trash2,
   Building2,
   CheckCircle2,
   XCircle,
@@ -21,11 +22,12 @@ import {
 import { toast } from "sonner";
 import BranchModal from "./branchModal";
 import BranchDetailModal from "./branchDetails";
+import DeleteConfirmDialog from "../projects/delete-confirmation"; // adjust path
 import Pagination from "@/components/pagination/page";
 
 export default function BranchesPage() {
-  const [searchInput, setSearchInput] = useState(""); // live input value
-  const [search, setSearch] = useState(""); // committed — sent to API
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [page, setPage] = useState(1);
@@ -35,7 +37,9 @@ export default function BranchesPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editBranch, setEditBranch] = useState<Branch | null>(null);
   const [detailBranch, setDetailBranch] = useState<Branch | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  // ── Delete state ───────────────────────────────────────────────────────────
+  const [deletingBranch, setDeletingBranch] = useState<Branch | null>(null);
 
   // ── Search helpers ─────────────────────────────────────────────────────────
   const commitSearch = () => {
@@ -63,15 +67,15 @@ export default function BranchesPage() {
   const pagination = data?.pagination;
 
   const { mutate: deleteBranch, isPending: deleting } = useDeleteBranch({
-    onSuccess: () => toast.success("Branch deleted successfully"),
-    onError: () => toast.error("Failed to delete branch"),
+    onSuccess: () => {
+      toast.success("Branch deleted successfully");
+      setDeletingBranch(null);
+    },
+    onError: () => {
+      toast.error("Failed to delete branch");
+      setDeletingBranch(null);
+    },
   });
-
-  const handleDelete = (id: number) => {
-    if (!confirm("Are you sure you want to delete this branch?")) return;
-    setDeletingId(id);
-    deleteBranch(id, { onSettled: () => setDeletingId(null) });
-  };
 
   return (
     <div className="min-h-screen font-['DM_Sans',sans-serif]">
@@ -101,7 +105,6 @@ export default function BranchesPage() {
       <div className="max-w-7xl mx-auto py-6 space-y-4">
         {/* ── Search & Filter Bar ── */}
         <div className="flex flex-wrap items-center gap-3">
-          {/* Input + Search button */}
           <div className="flex items-center gap-2 flex-1 min-w-0 max-w-md">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a8780] pointer-events-none" />
@@ -114,7 +117,6 @@ export default function BranchesPage() {
                 onKeyDown={handleKeyDown}
                 className="w-full pl-9 pr-9 py-2.5 bg-white border border-[#e8e6e0] rounded-xl text-sm text-[#1a1a2e] placeholder:text-[#b8b5ae] focus:outline-none focus:ring-2 focus:ring-[#1a1a2e]/10 focus:border-[#1a1a2e]"
               />
-              {/* ✕ clear — only when input has text */}
               {searchInput && (
                 <button
                   onClick={clearSearch}
@@ -125,8 +127,6 @@ export default function BranchesPage() {
                 </button>
               )}
             </div>
-
-            {/* Search button */}
             <button
               onClick={commitSearch}
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#068847] text-white text-sm font-medium hover:bg-[#05713b] transition-colors whitespace-nowrap shrink-0"
@@ -136,7 +136,6 @@ export default function BranchesPage() {
             </button>
           </div>
 
-          {/* Filter toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors ml-auto ${
@@ -310,6 +309,14 @@ export default function BranchesPage() {
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
+                          {/* ── Delete button ── */}
+                          <button
+                            onClick={() => setDeletingBranch(branch)}
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-[#8a8780] hover:text-[#FB2C36] transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -353,6 +360,16 @@ export default function BranchesPage() {
           setEditBranch(b);
         }}
       />
+
+      {/* ── Delete Confirm Dialog ── */}
+      {deletingBranch && (
+        <DeleteConfirmDialog
+          projectTitle={deletingBranch.name}
+          isPending={deleting}
+          onConfirm={() => deleteBranch(deletingBranch.id)}
+          onCancel={() => setDeletingBranch(null)}
+        />
+      )}
     </div>
   );
 }
