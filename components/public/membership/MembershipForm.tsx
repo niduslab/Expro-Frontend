@@ -30,6 +30,9 @@ const initialPersonalInfo: PersonalInfoState = {
   nid: "",
   qualification: [],
   photo: null,
+  nidFrontPhoto: null,
+  nidBackPhoto: null,
+  signature: null,
 };
 
 const initialAddressInfo: AddressFormState = {
@@ -48,6 +51,8 @@ const initialNomineeInfo: NomineeInfoState = {
   relation: "",
   nid: "",
   photo: null,
+  nomineeMobile: "",
+  nomineeAddress: "",
 };
 
 const initialSponsorInfo: SponsorInfoState = {
@@ -112,7 +117,10 @@ const MembershipForm = () => {
             ...prev.personalInfo, 
             ...parsedData.personalInfo, 
             memberDateOfBirth: convertDateFormat(parsedData.personalInfo?.memberDateOfBirth || parsedData.personalInfo?.dateOfBirth || ''),
-            photo: null 
+            photo: null,
+            nidFrontPhoto: null,
+            nidBackPhoto: null,
+            signature: null
           },
           addressInfo: { ...prev.addressInfo, ...parsedData.addressInfo },
           nomineeInfo: { 
@@ -143,7 +151,10 @@ const MembershipForm = () => {
       ...newData,
       personalInfo: {
         ...newData.personalInfo,
-        photo: null // Exclude file from storage
+        photo: null, // Exclude file from storage
+        nidFrontPhoto: null,
+        nidBackPhoto: null,
+        signature: null
       },
       nomineeInfo: {
         ...newData.nomineeInfo,

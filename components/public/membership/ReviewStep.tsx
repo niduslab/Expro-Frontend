@@ -154,10 +154,15 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         name: data.nomineeInfo.nomineeNameEnglish,
         relation: data.nomineeInfo.relation,
         dob: formatDate(data.nomineeInfo.nomineeDob),
+        nominee_mobile: data.nomineeInfo.nomineeMobile,
+        nominee_address: data.nomineeInfo.nomineeAddress,
       },
     ],
 
     photo: data.personalInfo.photo || null,
+    nid_front_photo: data.personalInfo.nidFrontPhoto || null,
+    nid_back_photo: data.personalInfo.nidBackPhoto || null,
+    signature: data.personalInfo.signature || null,
     
     // Payment method selection
     payment_method: "bkash", // or "sslcommerz"
@@ -298,6 +303,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                 label="Academic Qualification"
                 value={data.personalInfo.qualification.join(", ")}
               />
+              <SectionRow label="Photo" image={data.personalInfo.photo} />
             </div>
             <div className="space-y-3">
               <SectionRow
@@ -309,7 +315,9 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                 value={data.personalInfo.motherName}
               />
               <SectionRow label="National ID" value={data.personalInfo.nid} />
-              <SectionRow label="Photo" image={data.personalInfo.photo} />
+              <SectionRow label="NID Front" image={data.personalInfo.nidFrontPhoto} />
+              <SectionRow label="NID Back" image={data.personalInfo.nidBackPhoto} />
+              <SectionRow label="Signature" image={data.personalInfo.signature} />
             </div>
           </SectionCard>
 
@@ -349,6 +357,8 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                 label="Date of Birth"
                 value={data.nomineeInfo.nomineeDob}
               />
+              <SectionRow label="Mobile" value={data.nomineeInfo.nomineeMobile} />
+              <SectionRow label="Photo" image={data.nomineeInfo.photo} />
             </div>
             <div className="space-y-3">
               <SectionRow
@@ -356,7 +366,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                 value={data.nomineeInfo.nomineeNameEnglish}
               />
               <SectionRow label="Relation" value={data.nomineeInfo.relation} />
-              <SectionRow label="Photo" image={data.nomineeInfo.photo} />
+              <SectionRow label="Address" value={data.nomineeInfo.nomineeAddress} />
             </div>
           </SectionCard>
 

@@ -5,16 +5,67 @@ import { AxiosError } from 'axios';
 /**
  * Member Types
  */
-export interface Member {
+export interface MemberProfile {
   id: number;
   user_id: number;
-  full_name: string;
-  email: string;
-  phone: string;
-  status: 'active' | 'inactive' | 'pending' | 'suspended';
+  member_id: string;
+  sl_no: number;
+  name_bangla: string;
+  name_english: string;
+  father_husband_name: string;
+  mother_name: string;
+  user_date_of_birth: string;
+  nid_number: string;
+  academic_qualification: string;
+  permanent_address: string;
+  present_address: string;
+  religion: string;
+  gender: string;
+  mobile: string;
+  alternate_mobile: string | null;
+  photo: string | null;
+  nid_front_photo: string | null;
+  nid_back_photo: string | null;
+  signature: string | null;
   membership_type: 'general' | 'executive';
-  branch_id: number;
+  member_fee_paid: string;
+  membership_date: string | null;
+  membership_expiry_date: string | null;
+  suspended_at: string | null;
+  suspension_reason: string | null;
   created_at: string;
+  updated_at: string;
+}
+
+export interface Wallet {
+  id: number;
+  user_id: number;
+  balance: string;
+  commission_balance: string;
+  total_deposited: string;
+  total_withdrawn: string;
+  total_commission_earned: string;
+  total_membership_paid: string;
+  total_pension_paid: string;
+  is_locked: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Member {
+  id: number;
+  email: string;
+  status: 'active' | 'inactive' | 'pending' | 'suspended' | 'approved';
+  last_login_at: string | null;
+  roles: string[];
+  permissions: string[];
+  branch: any | null;
+  member: MemberProfile | null;
+  nominee: any[];
+  wallet: Wallet | null;
+  wallet_transactions: any[];
+  pension_enrollments: any[];
+  pension_installments: any[];
 }
 
 export interface MembersParams {
