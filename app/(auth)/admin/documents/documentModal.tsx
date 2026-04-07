@@ -1,18 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Document, DocumentStorePayload, DocumentUpdatePayload, DocumentType, DocumentStatus } from "@/lib/types/admin/documentType";
+import { useEffect, useRef, useState } from "react";
 import {
-  useCreateDocument,
-  useUpdateDocument,
-} from "@/lib/hooks/admin/useDocumentsHook";
+  Document,
+  DocumentStorePayload,
+  DocumentUpdatePayload,
+  DocumentType,
+  DocumentStatus,
+  SaveResult,
+} from "@/lib/types/admin/documentType";
+
 import { Plus, Loader2, Upload, X, FileText } from "lucide-react";
-import { toast } from "sonner";
+import DatePicker from "@/components/ui/date-picker";
 
 interface DocumentModalProps {
   open: boolean;
   onClose: () => void;
   document?: Document | null;
+  onSave: (
+    payload: DocumentStorePayload | DocumentUpdatePayload,
+    isEdit: boolean,
+    id?: number,
+  ) => Promise<SaveResult>;
+  isSaving?: boolean;
 }
 
 const DOCUMENT_TYPES: { label: string; value: DocumentType }[] = [
@@ -47,13 +57,19 @@ const defaultForm = {
 const inputClass =
   "w-full h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px]";
 
+const inputErrorClass =
+  "w-full h-[48px] border border-red-400 rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-red-300 text-[#6A7282] text-[14px]";
+
 const textareaClass =
   "w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[12px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px] resize-none";
 
-const selectClass =
-  "w-full h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px] appearance-none cursor-pointer";
-
-function FieldLabel({ label, required }: { label: string; required?: boolean }) {
+function FieldLabel({
+  label,
+  required,
+}: {
+  label: string;
+  required?: boolean;
+}) {
   return (
     <div className="pb-2">
       <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -70,10 +86,99 @@ function FieldLabel({ label, required }: { label: string; required?: boolean }) 
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="text-sm text-red-500">{message}</span>;
+  return (
+    <span className="block mt-1 text-sm text-red-500 font-medium">
+      {message}
+    </span>
+  );
 }
 
-export default function DocumentModal({ open, onClose, document }: DocumentModalProps) {
+// ── CustomSelect ────────────────────────────────────────────────────────────
+
+function CustomSelect({
+  value,
+  onChange,
+  options,
+  error,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  options: { label: string; value: string }[];
+  error?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <div ref={ref} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={`w-full h-[48px] border rounded-[8px] px-[16px] bg-white flex items-center justify-between text-[#6A7282] text-[14px] focus:outline-none focus:ring focus:ring-green-500 ${
+          error ? "border-red-400" : "border-[#D1D5DC]"
+        } ${open ? "ring ring-green-500 border-transparent" : ""}`}
+      >
+        <span>{selected?.label ?? "Select..."}</span>
+        <svg
+          className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      {open && (
+        <ul className="absolute z-50 mt-1 w-full bg-white border border-[#D1D5DC] rounded-[8px] shadow-lg overflow-hidden max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <li
+              key={opt.value}
+              onClick={() => {
+                onChange(opt.value);
+                setOpen(false);
+              }}
+              className={`px-[16px] py-[12px] text-[14px] cursor-pointer hover:bg-green-50 hover:text-green-700 ${
+                opt.value === value
+                  ? "bg-green-100 text-green-800 font-semibold"
+                  : "text-[#030712]"
+              }`}
+            >
+              {opt.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ── Main Modal ──────────────────────────────────────────────────────────────
+
+export default function DocumentModal({
+  open,
+  onClose,
+  document,
+  onSave,
+  isSaving = false,
+}: DocumentModalProps) {
   const isEdit = !!document;
   const [formData, setFormData] = useState(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -111,64 +216,77 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
     if (!formData.type) newErrors.type = "Document type is required";
     if (!isEdit && !formData.file) newErrors.file = "A file is required";
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      toast.error(Object.values(newErrors)[0]);
-      return false;
-    }
-    return true;
+    return Object.keys(newErrors).length === 0;
   };
-
-  const { create, isLoading: creating } = useCreateDocument();
-  const { update, isLoading: updating } = useUpdateDocument();
-  const isPending = creating || updating;
 
   const handleSubmit = async () => {
     if (!validate()) return;
 
-    if (isEdit) {
-      const payload: DocumentUpdatePayload = {
-        name: formData.name,
-        description: formData.description || undefined,
-        type: formData.type,
-        file: formData.file,
-        publish_date: formData.publish_date || undefined,
-        is_featured: formData.is_featured,
-        display_order: formData.display_order,
-        status: formData.status,
-      };
-      await update(document!.id, payload, {
-        onSuccess: () => {
-          toast.success("Document updated successfully");
-          onClose();
-        },
-        onError: (msg) => toast.error(msg || "Failed to update document"),
-      });
-    } else {
-      const payload: DocumentStorePayload = {
-        name: formData.name,
-        description: formData.description || undefined,
-        type: formData.type,
-        file: formData.file!,
-        publish_date: formData.publish_date || undefined,
-        is_featured: formData.is_featured,
-        display_order: formData.display_order,
-        status: formData.status,
-      };
-      await create(payload, {
-        onSuccess: () => {
-          toast.success("Document uploaded successfully");
-          onClose();
-        },
-        onError: (msg) => toast.error(msg || "Failed to upload document"),
-      });
+    const payload = isEdit
+      ? ({
+          name: formData.name,
+          description: formData.description || undefined,
+          type: formData.type,
+          file: formData.file,
+          publish_date: formData.publish_date || undefined,
+          is_featured: formData.is_featured,
+          display_order: formData.display_order,
+          status: formData.status,
+        } as DocumentUpdatePayload)
+      : ({
+          name: formData.name,
+          description: formData.description || undefined,
+          type: formData.type,
+          file: formData.file!,
+          publish_date: formData.publish_date || undefined,
+          is_featured: formData.is_featured,
+          display_order: formData.display_order,
+          status: formData.status,
+        } as DocumentStorePayload);
+
+    const result = await onSave(payload, isEdit, document?.id);
+
+    if (result.ok) {
+      onClose();
+      return;
     }
+
+    if (result.fieldErrors && typeof result.fieldErrors === "object") {
+      const mapped: Record<string, string> = {};
+      for (const [field, msgs] of Object.entries(result.fieldErrors)) {
+        if (Array.isArray(msgs) && msgs.length > 0) {
+          mapped[field] = msgs[0];
+        }
+      }
+      setErrors(mapped);
+    }
+  };
+
+  const validateFile = (file: File): string | null => {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+      return "Only PDF files are allowed";
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return "File size must not exceed 10MB";
+    }
+    return null;
   };
 
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) set("file", file);
+    if (file) {
+      const fileError = validateFile(file);
+      if (fileError) {
+        setErrors((prev) => ({ ...prev, file: fileError }));
+        return;
+      }
+      set("file", file);
+    }
   };
 
   if (!open) return null;
@@ -185,7 +303,7 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
               </p>
               <button
                 onClick={onClose}
-                disabled={isPending}
+                disabled={isSaving}
                 className="text-gray-500 hover:text-black disabled:opacity-40"
               >
                 ✕
@@ -200,17 +318,18 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
 
           <div className="w-full border border-[#E5E7EB]" />
 
-          {/* ── Section 1: Document Details ── */}
-          <div className="flex flex-col relative top-[24px] gap-[16px]">
+          {/* ── Section 1: Document Info ── */}
+          <div className="flex flex-col gap-[16px]">
             <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
-              Document Details
+              Document Info
             </p>
 
             {/* Name */}
             <div>
               <FieldLabel label="Document Name" required />
               <input
-                className={inputClass}
+                type="text"
+                className={errors.name ? inputErrorClass : inputClass}
                 placeholder="e.g. Annual Report 2024"
                 value={formData.name}
                 onChange={(e) => set("name", e.target.value)}
@@ -218,42 +337,27 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
               <FieldError message={errors.name} />
             </div>
 
-            {/* Type + Status */}
+            {/* Type + Status — now using CustomSelect */}
             <div className="flex gap-2 w-full">
               <div className="w-1/2">
                 <FieldLabel label="Document Type" required />
-                <div className="relative">
-                  <select
-                    className={selectClass}
-                    value={formData.type}
-                    onChange={(e) => set("type", e.target.value as DocumentType)}
-                  >
-                    {DOCUMENT_TYPES.map((t) => (
-                      <option key={t.value} value={t.value}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">▾</div>
-                </div>
+                <CustomSelect
+                  value={formData.type}
+                  onChange={(val) => set("type", val as DocumentType)}
+                  options={DOCUMENT_TYPES}
+                  error={!!errors.type}
+                />
                 <FieldError message={errors.type} />
               </div>
               <div className="w-1/2">
                 <FieldLabel label="Status" />
-                <div className="relative">
-                  <select
-                    className={selectClass}
-                    value={formData.status}
-                    onChange={(e) => set("status", e.target.value as DocumentStatus)}
-                  >
-                    {DOCUMENT_STATUSES.map((s) => (
-                      <option key={s.value} value={s.value}>
-                        {s.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">▾</div>
-                </div>
+                <CustomSelect
+                  value={formData.status}
+                  onChange={(val) => set("status", val as DocumentStatus)}
+                  options={DOCUMENT_STATUSES}
+                  error={!!errors.status}
+                />
+                <FieldError message={errors.status} />
               </div>
             </div>
 
@@ -278,25 +382,71 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
               File Upload
             </p>
 
+            {/* ── Existing file preview (edit mode only, no new file chosen yet) ── */}
+            {isEdit && !formData.file && document?.file_name && (
+              <div className="flex flex-col gap-1">
+                <p className="text-[12px] font-medium text-[#6A7282] uppercase tracking-wide">
+                  Current File
+                </p>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-[#D1D5DC] bg-[#F9FAFB]">
+                  <div className="w-10 h-10 rounded-lg bg-[#DCFCE7] flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5 text-[#068847]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[#030712] truncate">
+                      {document.file_name}
+                    </p>
+                    <p className="text-[12px] text-[#6A7282]">
+                      {document.file_size_formatted}
+                      {document.mime_type ? ` · ${document.mime_type}` : ""}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                    Current
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#6A7282]">
+                  Upload a new file below to replace it, or leave empty to keep
+                  this one.
+                </p>
+              </div>
+            )}
+
             {/* Drop zone */}
             <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
               onDragLeave={() => setDragOver(false)}
               onDrop={handleFileDrop}
               className={`relative flex flex-col items-center justify-center gap-3 border-2 border-dashed rounded-xl p-6 transition-colors cursor-pointer ${
-                dragOver
-                  ? "border-[#068847] bg-[#DCFCE7]/30"
-                  : "border-[#D1D5DC] bg-[#F9FAFB] hover:border-[#068847] hover:bg-[#DCFCE7]/10"
+                errors.file
+                  ? "border-red-400 bg-red-50"
+                  : dragOver
+                    ? "border-[#068847] bg-[#DCFCE7]/30"
+                    : "border-[#D1D5DC] bg-[#F9FAFB] hover:border-[#068847] hover:bg-[#DCFCE7]/10"
               }`}
-              onClick={() => globalThis.document.getElementById("doc-file-input")?.click()}
+              onClick={() =>
+                globalThis.document.getElementById("doc-file-input")?.click()
+              }
             >
               <input
                 id="doc-file-input"
                 type="file"
+                accept=".pdf,application/pdf"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) set("file", file);
+                  if (file) {
+                    const fileError = validateFile(file);
+                    if (fileError) {
+                      setErrors((prev) => ({ ...prev, file: fileError }));
+                      e.target.value = "";
+                      return;
+                    }
+                    set("file", file);
+                  }
                 }}
               />
               {formData.file ? (
@@ -309,11 +459,17 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                       {formData.file.name}
                     </p>
                     <p className="text-[12px] text-[#6A7282]">
-                      {(formData.file.size / 1024).toFixed(1)} KB
+                      {(formData.file.size / 1024).toFixed(1)} KB ·{" "}
+                      <span className="text-[#068847] font-medium">
+                        New file
+                      </span>
                     </p>
                   </div>
                   <button
-                    onClick={(e) => { e.stopPropagation(); set("file", undefined as unknown as File); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      set("file", undefined as unknown as File);
+                    }}
                     className="p-1 rounded-lg hover:bg-[#FEE2E2] text-[#6A7282] hover:text-[#DC2626] transition-colors"
                   >
                     <X className="w-4 h-4" />
@@ -321,25 +477,35 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                 </div>
               ) : (
                 <>
-                  <div className="w-10 h-10 rounded-lg bg-[#E5E7EB] flex items-center justify-center">
-                    <Upload className="w-5 h-5 text-[#6A7282]" />
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${errors.file ? "bg-red-100" : "bg-[#E5E7EB]"}`}
+                  >
+                    <Upload
+                      className={`w-5 h-5 ${errors.file ? "text-red-400" : "text-[#6A7282]"}`}
+                    />
                   </div>
                   <div className="text-center">
                     <p className="text-[14px] font-medium text-[#030712]">
-                      Drop file here or <span className="text-[#068847]">browse</span>
+                      {isEdit
+                        ? "Replace file — drop here or "
+                        : "Drop file here or "}
+                      <span
+                        className={
+                          errors.file ? "text-red-500" : "text-[#068847]"
+                        }
+                      >
+                        browse
+                      </span>
                     </p>
                     <p className="text-[12px] text-[#6A7282] mt-1">
-                      PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (max 20MB)
+                      PDF only (max 10MB)
                     </p>
                   </div>
                 </>
               )}
-              {isEdit && !formData.file && (
-                <p className="text-[12px] text-[#6A7282]">
-                  Leave empty to keep the existing file
-                </p>
-              )}
             </div>
+
+            {/* Inline file error */}
             <FieldError message={errors.file} />
 
             <div className="w-full border border-[#E5E7EB]" />
@@ -354,12 +520,11 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
             <div className="flex flex-col md:flex-row gap-2 w-full">
               <div className="md:w-1/2">
                 <FieldLabel label="Publish Date" />
-                <input
-                  type="date"
-                  className={inputClass}
+                <DatePicker
                   value={formData.publish_date}
-                  onChange={(e) => set("publish_date", e.target.value)}
+                  onChange={(value) => set("publish_date", value)}
                 />
+                <FieldError message={errors.publish_date} />
               </div>
               <div className="md:w-1/2">
                 <FieldLabel label="Display Order" />
@@ -396,17 +561,17 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
             <div className="flex ml-auto gap-[16px] w-fit">
               <button
                 onClick={onClose}
-                disabled={isPending}
+                disabled={isSaving}
                 className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-40"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={isPending}
-                className="bg-[#068847] h-[48px] w-[180px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-1"
+                disabled={isSaving}
+                className="bg-[#068847] h-[48px] whitespace-nowrap w-[180px] rounded-xl text-white flex items-center justify-center font-semibold text-[16px] leading-[150%] tracking-[-0.01em] disabled:opacity-60 gap-2"
               >
-                {isPending ? (
+                {isSaving ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span>Saving...</span>
@@ -415,7 +580,7 @@ export default function DocumentModal({ open, onClose, document }: DocumentModal
                   <span>Save Changes</span>
                 ) : (
                   <>
-                    <Plus className="h-5 w-5" />
+                    <Plus className="h-4 w-4 text-white shrink-0" />
                     <span>Upload Document</span>
                   </>
                 )}

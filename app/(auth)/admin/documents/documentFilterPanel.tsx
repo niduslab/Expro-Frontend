@@ -1,7 +1,5 @@
 "use client";
 
-import { DocumentType, DocumentStatus } from "@/lib/types/admin/documentType";
-
 interface DocumentFilterPanelProps {
   filterType: string;
   filterStatus: string;
@@ -52,7 +50,9 @@ function FilterGroup({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="text-sm font-medium text-[#4a4845] shrink-0">{label}:</span>
+      <span className="text-sm font-medium text-[#4a4845] shrink-0">
+        {label}:
+      </span>
       {options.map((opt) => (
         <button
           key={opt.value}

@@ -11,6 +11,7 @@ import {
 } from "@/lib/hooks/admin/useexproTeamMembersHook";
 import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import DesignationDropdown from "./designationDropdown";
 
 interface ExproTeamMemberModalProps {
   open: boolean;
@@ -21,7 +22,6 @@ interface ExproTeamMemberModalProps {
 const defaultForm: ExproTeamMemberPayload = {
   name: "",
   designation: "",
-  image_url: "",
 };
 
 const inputClass =
@@ -62,17 +62,19 @@ export default function ExproTeamMemberModal({
 
   const [formData, setFormData] = useState<ExproTeamMemberPayload>(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (open && member) {
       setFormData({
         name: member.name,
         designation: member.designation,
-        image_url: member.image_url ?? "",
+        // ✅ Don't set image_url — it's a file upload, not a URL string field
       });
     } else if (open && !member) {
       setFormData(defaultForm);
     }
+    setImageFile(null); // ✅ Reset file on every open
     setErrors({});
   }, [open, member]);
 
@@ -87,12 +89,7 @@ export default function ExproTeamMemberModal({
       newErrors.name = "Name is required";
     if (!String(formData.designation ?? "").trim())
       newErrors.designation = "Designation is required";
-    if (
-      formData.image_url &&
-      !/^https?:\/\/.+/.test(String(formData.image_url))
-    ) {
-      newErrors.image_url = "Enter a valid URL (must start with http/https)";
-    }
+    // ✅ No image_url URL validation — it's a file, not a URL
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       toast.error(Object.values(newErrors).slice(-1)[0]);
@@ -124,12 +121,17 @@ export default function ExproTeamMemberModal({
 
   const handleSubmit = () => {
     if (!validate()) return;
-    const payload: ExproTeamMemberPayload = {
-      ...formData,
-      image_url: formData.image_url || null,
-    };
-    if (isEdit) update(payload);
-    else create(payload);
+
+    const formDataObj = new FormData();
+    formDataObj.append("name", formData.name);
+    formDataObj.append("designation", formData.designation);
+
+    if (imageFile) {
+      formDataObj.append("image_url", imageFile);
+    }
+
+    if (isEdit) update(formDataObj);
+    else create(formDataObj);
   };
 
   if (!open) return null;
@@ -167,28 +169,25 @@ export default function ExproTeamMemberModal({
               Member Details
             </p>
 
-            {/* Name + Designation */}
-            <div className="flex gap-2 w-full">
-              <div className="w-1/2">
-                <FieldLabel label="Full Name" required />
-                <input
-                  className={inputClass}
-                  placeholder="e.g. John Doe"
-                  value={String(formData.name ?? "")}
-                  onChange={(e) => set("name", e.target.value)}
-                />
-                <FieldError message={errors.name} />
-              </div>
-              <div className="w-1/2">
-                <FieldLabel label="Designation" required />
-                <input
-                  className={inputClass}
-                  placeholder="e.g. CEO"
-                  value={String(formData.designation ?? "")}
-                  onChange={(e) => set("designation", e.target.value)}
-                />
-                <FieldError message={errors.designation} />
-              </div>
+            <div className="flex flex-col gap-1">
+              <FieldLabel label="Full Name" required />
+              <input
+                className={inputClass}
+                placeholder="e.g. John Doe"
+                value={String(formData.name ?? "")}
+                onChange={(e) => set("name", e.target.value)}
+              />
+              <FieldError message={errors.name} />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <FieldLabel label="Designation" required />
+              <DesignationDropdown
+                value={String(formData.designation ?? "")}
+                onChange={(val) => set("designation", val)}
+                error={errors.designation}
+              />
+              <FieldError message={errors.designation} />
             </div>
 
             <div className="w-full border border-[#E5E7EB]" />
@@ -200,37 +199,47 @@ export default function ExproTeamMemberModal({
               Profile Image
             </p>
 
-            <div>
-              <FieldLabel label="Image URL" />
+            <div className="flex flex-col gap-2">
+              <FieldLabel label="Upload Image" />
               <input
-                className={inputClass}
-                placeholder="e.g. https://example.com/photo.jpg"
-                value={String(formData.image_url ?? "")}
-                onChange={(e) => set("image_url", e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  setImageFile(file);
+                }}
+                className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
               />
-              <span className="text-[#6A7282] font-normal text-[12px] leading-[160%] tracking-[-0.01em]">
-                Provide a publicly accessible image URL
-              </span>
-              <FieldError message={errors.image_url} />
-            </div>
-
-            {/* Image preview */}
-            {formData.image_url &&
-              /^https?:\/\/.+/.test(String(formData.image_url)) && (
+              {/* ✅ Preview new file selection */}
+              {imageFile && (
                 <div className="flex items-center gap-3">
                   <img
-                    src={String(formData.image_url)}
-                    alt="Preview"
+                    src={URL.createObjectURL(imageFile)}
                     className="w-16 h-16 rounded-xl object-cover border border-[#E5E7EB]"
+                    alt="New upload preview"
+                  />
+                  <span className="text-[12px] text-[#6A7282]">
+                    New image selected
+                  </span>
+                </div>
+              )}
+              {/* ✅ Show existing image on edit when no new file selected */}
+              {!imageFile && member?.image_url && (
+                <div className="flex items-center gap-3">
+                  <img
+                    src={member.image_url}
+                    className="w-16 h-16 rounded-xl object-cover border border-[#E5E7EB]"
+                    alt="Current image"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = "none";
                     }}
                   />
                   <span className="text-[12px] text-[#6A7282]">
-                    Image preview
+                    Current image (unchanged)
                   </span>
                 </div>
               )}
+            </div>
 
             {/* Actions */}
             <div className="flex ml-auto gap-[16px] w-fit pt-4">

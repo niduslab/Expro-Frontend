@@ -27,24 +27,53 @@ export const fetchEventById = async (
   return data;
 };
 
-/**
- * Create a new event
- */
 export const createEvent = async (
   payload: EventPayload,
 ): Promise<SingleEventResponse> => {
-  const { data } = await apiClient.post("/event", payload);
+  const form = new FormData();
+  form.append("title", payload.title);
+  form.append("status", payload.status);
+  form.append("start_date", payload.start_date);
+  if (payload.project_id != null)
+    form.append("project_id", String(payload.project_id));
+  if (payload.description) form.append("description", payload.description);
+  if (payload.location) form.append("location", payload.location);
+  if (payload.end_date) form.append("end_date", payload.end_date);
+  if (payload.max_attendees != null)
+    form.append("max_attendees", String(payload.max_attendees));
+  if (payload.registration_fee != null)
+    form.append("registration_fee", String(payload.registration_fee));
+  if (payload.image instanceof File) form.append("image", payload.image);
+
+  const { data } = await apiClient.post("/event", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 };
 
-/**
- * Update an existing event
- */
 export const updateEvent = async (
   id: number | string,
   payload: EventPayload,
 ): Promise<SingleEventResponse> => {
-  const { data } = await apiClient.put(`/event/${id}`, payload);
+  const form = new FormData();
+  form.append("title", payload.title);
+  form.append("status", payload.status);
+  form.append("start_date", payload.start_date);
+  if (payload.project_id != null)
+    form.append("project_id", String(payload.project_id));
+  if (payload.description) form.append("description", payload.description);
+  if (payload.location) form.append("location", payload.location);
+  if (payload.end_date) form.append("end_date", payload.end_date);
+  if (payload.max_attendees != null)
+    form.append("max_attendees", String(payload.max_attendees));
+  if (payload.registration_fee != null)
+    form.append("registration_fee", String(payload.registration_fee));
+  if (payload.image instanceof File) form.append("image", payload.image);
+  form.append("_method", "PUT");
+
+  const { data } = await apiClient.post(`/event/${id}`, form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 };
 

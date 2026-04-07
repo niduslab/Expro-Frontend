@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Plus, FileText, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
-import { useDocumentsWithMutations } from "@/lib/hooks/admin/useDocumentsHook";
 import {
   Document,
   DocumentIndexParams,
   DocumentType,
   DocumentStatus,
+  DocumentStorePayload,
+  DocumentUpdatePayload,
+  SaveResult,
 } from "@/lib/types/admin/documentType";
 
 import DocumentSearchBar from "./documentSearchBar";
@@ -18,6 +20,7 @@ import DocumentTable from "./documentTable";
 import DocumentModal from "./documentModal";
 import DocumentDetailModal from "./documentDetails";
 import Pagination from "@/components/pagination/page";
+import { useDocumentsWithMutations } from "@/lib/hooks/admin/useDocumentsHook";
 
 // ── Delete Confirmation Dialog ─────────────────────────────────────────────
 
@@ -136,7 +139,7 @@ export default function DocumentsPage() {
     setPage(1);
   };
 
-  // ── Build query params — typed, no `Record<string, unknown>` ───────────────
+  // ── Build query params ─────────────────────────────────────────────────────
   const queryParams: DocumentIndexParams = { page };
   if (search) queryParams.search = search;
   if (filterType) queryParams.type = filterType as DocumentType;
@@ -144,18 +147,50 @@ export default function DocumentsPage() {
   if (filterFeatured !== "")
     queryParams.is_featured = filterFeatured === "true";
 
+  // ── Single hook instance — all mutations share the same refetch ────────────
   const {
     documents,
     pagination,
     isLoading,
     error,
+    create,
+    update,
     remove: deleteDocument,
     download,
+    createState,
+    updateState,
     deleteState,
   } = useDocumentsWithMutations(queryParams);
 
+  // ── Unified save handler — returns SaveResult so modal can show field errors
+  const handleSave = async (
+    payload: DocumentStorePayload | DocumentUpdatePayload,
+    isEdit: boolean,
+    id?: number,
+  ): Promise<SaveResult> => {
+    if (isEdit && id !== undefined) {
+      const result = await update(id, payload as DocumentUpdatePayload);
+      if (result.ok) {
+        toast.success("Document updated successfully");
+      } else {
+        toast.error(result.message);
+      }
+      return result;
+    } else {
+      const result = await create(payload as DocumentStorePayload);
+      if (result.ok) {
+        toast.success("Document uploaded successfully");
+      } else {
+        toast.error(result.message);
+      }
+      return result;
+    }
+  };
+
+  const isSaving = createState.isLoading || updateState.isLoading;
   const deleting = deleteState.isLoading;
 
+  // ── Delete ─────────────────────────────────────────────────────────────────
   const handleDeleteConfirm = () => {
     if (!deleteTarget) return;
     deleteDocument(deleteTarget.id, {
@@ -170,6 +205,7 @@ export default function DocumentsPage() {
     });
   };
 
+  // ── Download ───────────────────────────────────────────────────────────────
   const handleDownload = (doc: Document) => {
     download(doc.id, doc.file_name, {
       onSuccess: () => toast.success("Download started"),
@@ -295,15 +331,22 @@ export default function DocumentsPage() {
       </div>
 
       {/* ── Modals ── */}
+
       <DocumentModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
+        onSave={handleSave}
+        isSaving={isSaving}
       />
+
       <DocumentModal
         open={!!editDocument}
         document={editDocument}
         onClose={() => setEditDocument(null)}
+        onSave={handleSave}
+        isSaving={isSaving}
       />
+
       <DocumentDetailModal
         open={!!detailDocument}
         document={detailDocument}
@@ -314,6 +357,7 @@ export default function DocumentsPage() {
         }}
         onDownload={handleDownload}
       />
+
       {deleteTarget && (
         <DeleteConfirmDialog
           documentName={deleteTarget.name}

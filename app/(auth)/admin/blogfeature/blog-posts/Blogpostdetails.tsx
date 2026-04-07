@@ -2,6 +2,7 @@
 
 import { Pencil, Star } from "lucide-react";
 import { BlogPost } from "@/lib/types/admin/blogType";
+import Image from "next/image";
 
 interface BlogPostDetailModalProps {
   open: boolean;
@@ -129,18 +130,25 @@ export default function BlogPostDetailModal({
                 <DetailField label="Excerpt" value={post.excerpt} />
               )}
 
-              {post.featured_image && (
-                <div className="flex flex-col gap-1">
-                  <span className="font-semibold text-[12px] text-[#6A7282] uppercase">
-                    Featured Image
-                  </span>
-                  <img
-                    src={post.featured_image}
-                    alt="Featured"
-                    className="w-full h-40 object-cover rounded-lg border border-[#E5E7EB]"
+              <div className="flex flex-col gap-2">
+                <span className="font-semibold text-[12px] text-[#6A7282] uppercase">
+                  Featured Image
+                </span>
+
+                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-[#E5E7EB]">
+                  <Image
+                    src={
+                      post.featured_image_url ||
+                      "/images/dashboard/memberApproval/1.jpg"
+                    }
+                    alt={`${post.title} - ${post.slug}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    unoptimized={post.featured_image_url?.startsWith("http")}
                   />
                 </div>
-              )}
+              </div>
 
               <SectionDivider />
             </div>

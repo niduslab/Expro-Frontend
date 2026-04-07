@@ -138,65 +138,71 @@ const Events = () => {
         <div className="space-y-8">
           {data && (
             <>
-              {data?.data.map((event: any, index: any) => (
-                <div
-                  key={index}
-                  data-event-card
-                  className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
-                    index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                  } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
-                >
-                  {/* Image */}
-                  <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
-                  </div>
+              {data?.data
+                ?.filter((event: any) => event.status === "published")
+                .map((event: any, index: any) => (
+                  <div
+                    key={index}
+                    data-event-card
+                    className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
+                      index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                    } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
+                  >
+                    {/* Image */}
+                    <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
+                      <Image
+                        src={
+                          event.image ||
+                          "/images/dashboard/memberApproval/1.jpg"
+                        }
+                        alt={`${event.title} - ${event.location}`}
+                        fill
+                        className="object-cover hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        unoptimized={event.image?.startsWith("http")}
+                      />
+                    </div>
 
-                  {/* Content */}
-                  <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                    <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
-                      {event.title}
-                    </h3>
-                    <p className="text-[#475467] text-base leading-relaxed mb-6">
-                      {event.description}
-                    </p>
+                    {/* Content */}
+                    <div className="w-full lg:w-1/2 flex flex-col justify-center">
+                      <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
+                        {event.title}
+                      </h3>
+                      <p className="text-[#475467] text-base leading-relaxed mb-6">
+                        {event.description}
+                      </p>
 
-                    {/* Meta Info */}
-                    <div className="flex flex-wrap gap-3 mb-8">
-                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <FormateDateTime
-                          datetime={event.start_date}
-                          type="date"
-                          icon="calendar"
-                        />
-                      </div>
-                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <MapPin size={16} className="text-[#667085]" />
-                        {event.location}
-                      </div>
-                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <FormateDateTime
-                          datetime={event.start_date}
-                          type="time"
-                          icon="clock"
-                        />
-                      </div>
-                      {/* Button */}
+                      {/* Meta Info */}
+                      <div className="flex flex-wrap gap-3 mb-8">
+                        <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                          <FormateDateTime
+                            datetime={event.start_date}
+                            type="date"
+                            icon="calendar"
+                          />
+                        </div>
+                        <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                          <MapPin size={16} className="text-[#667085]" />
+                          {event.location}
+                        </div>
+                        <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                          <FormateDateTime
+                            datetime={event.start_date}
+                            type="time"
+                            icon="clock"
+                          />
+                        </div>
+                        {/* Button */}
 
-                      <Link href={event.title}>
-                        <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
-                          Learn More
-                        </Button>
-                      </Link>
+                        <Link href={event.title}>
+                          <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                            Learn More
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </>
           )}
         </div>

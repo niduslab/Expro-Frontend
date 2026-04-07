@@ -95,7 +95,7 @@ const Events = () => {
   const [page, setPage] = useState(1); // Initial page is 1
   const perPage = 10; // Items per page
   const { data, isLoading, error } = useEvents(page, perPage);
-  const events = data?.data ?? [];
+  const events = data?.data?.filter((e: any) => e.status === "published") || [];
 
   const nextPage = () => {
     if (events.length === perPage) {
@@ -190,7 +190,7 @@ const Events = () => {
         <div className="space-y-8">
           {data && (
             <>
-              {data?.data.map((event: any, index: any) => (
+              {events.map((event: any, index: any) => (
                 <div
                   key={index}
                   data-event-card
@@ -201,11 +201,14 @@ const Events = () => {
                   {/* Image */}
                   <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
                     <Image
-                      src={event.image}
-                      alt={event.title}
+                      src={
+                        event.image || "/images/dashboard/memberApproval/1.jpg"
+                      }
+                      alt={`${event.title} - ${event.location}`}
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 1024px) 100vw, 50vw"
+                      unoptimized={event.image?.startsWith("http")}
                     />
                   </div>
 
@@ -252,16 +255,16 @@ const Events = () => {
             </>
           )}
         </div>
+        <Pagination
+          page={page}
+          perPage={perPage}
+          total={data?.pagination?.total}
+          dataLength={events.length}
+          onNext={nextPage}
+          onPrev={prevPage}
+          onPageChange={(p) => setPage(p)}
+        />
       </div>
-      <Pagination
-        page={page}
-        perPage={perPage}
-        total={data?.pagination?.total}
-        dataLength={events.length}
-        onNext={nextPage}
-        onPrev={prevPage}
-        onPageChange={(p) => setPage(p)}
-      />
     </section>
   );
 };

@@ -13,7 +13,7 @@ export interface Event {
   status: EventStatus;
   max_attendees: number | null;
   registration_fee: number;
-  image: string | null;
+  image: File | null;
   metadata: Record<string, unknown> | null;
   created_by: number | null;
   created_at: string;
@@ -31,7 +31,7 @@ export interface EventPayload {
   status: EventStatus;
   max_attendees?: number | null;
   registration_fee?: number | null;
-  image?: string | null;
+  image?: File | null;
   metadata?: string | null; // JSON string as per validation
 }
 

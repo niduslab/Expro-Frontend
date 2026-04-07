@@ -14,7 +14,8 @@ export default function BlogPage() {
 
   const { data, isLoading, isError } = useBlogs(page, perPage);
 
-  const projects = data?.data ?? [];
+  const projects =
+    data?.data?.filter((b: any) => b.status === "published") || [];
 
   const nextPage = () => {
     if (projects.length === perPage) {
@@ -60,7 +61,7 @@ export default function BlogPage() {
             >
               {data && (
                 <>
-                  {data?.data.map((blog: any, index: any) => (
+                  {projects.map((blog: any, index: any) => (
                     <div
                       key={index}
                       className="w-full rounded-lg border border-gray-200 p-6 shadow-md hover:shadow-xl transition cursor-pointer bg-white"
@@ -68,12 +69,13 @@ export default function BlogPage() {
                       {/* Image */}
                       <div className="relative w-full h-64 rounded-md overflow-hidden">
                         <Image
-                          src={blog.featured_image}
+                          src={blog.featured_image || "/fallback.jpg"}
                           alt="Blog Item image"
                           fill
                           sizes=""
                           className="object-cover"
                           priority
+                          unoptimized={blog.featured_image?.startsWith("http")}
                         />
                       </div>
 

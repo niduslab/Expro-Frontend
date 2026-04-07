@@ -63,6 +63,7 @@ export interface CreateProjectPayload {
   project_lead_id?: number;
   is_featured?: boolean;
   is_published?: boolean;
+  featured_image?: File;
 }
 export interface ProjectFormDataInterface {
   title: string;
@@ -78,5 +79,7 @@ export interface ProjectFormDataInterface {
   projectLeadId: number | null;
   isFeatured: boolean; // ← replaces teamSize
   isPublished: boolean; // ← replaces contribution
+  featuredImage: File | null;
+  featured_image?: string | null;
 }
 export type UpdateProjectPayload = Partial<CreateProjectPayload>;

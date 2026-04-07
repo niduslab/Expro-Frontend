@@ -54,6 +54,8 @@ export default function EditProjectModal({
     projectLeadId: project.project_lead_id ?? null,
     isFeatured: project.is_featured ?? false,
     isPublished: project.is_published ?? false,
+    featuredImage: null,
+    featured_image: project.featured_image ?? null,
   });
 
   // All tabs unlocked when editing
@@ -82,6 +84,7 @@ export default function EditProjectModal({
       is_featured: formData.isFeatured,
       is_published: formData.isPublished,
       project_lead_id: formData.projectLeadId ?? undefined,
+      featured_image: formData.featuredImage ?? undefined, // ← add
     };
 
     updateProject(
