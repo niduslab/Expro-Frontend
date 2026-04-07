@@ -15,6 +15,7 @@ import {
   Activity,
   SquareChartGantt,
   AudioLines,
+  MessageSquareShare,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -47,5 +48,10 @@ export const sidebarItems = [
     name: "Recent Activity",
     href: "/admin/activitylogger",
     icon: Activity,
+  },
+  {
+    name: "Contact Messages",
+    href: "/admin/contactmessage",
+    icon: MessageSquareShare,
   },
 ];

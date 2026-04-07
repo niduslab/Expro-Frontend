@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
-import { publicApiRequest } from "@/lib/api/axios";
 import { toast } from "sonner";
+import { useContactMessageCreate } from "@/lib/hooks/admin/useContactmessages";
+import type { ContactMessageCreatePayload } from "@/lib/types/admin/ContactMessageType";
+import { useForm } from "react-hook-form";
 
 interface FormData {
   firstName: string;
@@ -15,142 +17,61 @@ interface FormData {
   message: string;
 }
 
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  contact?: string;
-  address?: string;
-  message?: string;
-}
+const INPUT_BASE =
+  "w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400";
+const INPUT_ERROR = "border-red-500 focus:border-red-500";
+const INPUT_NORMAL = "border-transparent focus:border-[#00A651]";
 
 const ContactFormSection = () => {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    contact: "",
-    address: "",
-    message: "",
+  const { create, isCreating, isSuccess, creationError, reset } =
+    useContactMessageCreate();
+
+  const {
+    register,
+    handleSubmit,
+    reset: resetForm,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      contact: "",
+      address: "",
+      message: "",
+    },
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
-  const [submitMessage, setSubmitMessage] = useState("");
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
+  // Show toast + reset form on success
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(
+        "Thank you for your message! We will get back to you soon.",
+      );
+      resetForm();
+      reset(); // reset hook state so banner can be dismissed on next submit
     }
+  }, [isSuccess, resetForm, reset]);
 
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
+  // Show toast on error
+  useEffect(() => {
+    if (creationError) {
+      toast.error(creationError);
     }
+  }, [creationError]);
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
+  const onSubmit = async (formData: FormData) => {
+    const payload: ContactMessageCreatePayload = {
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      phone: formData.contact,
+      subject: "Contact Form Inquiry",
+      message: formData.message,
+      priority: "normal",
+      status: "new",
+    };
 
-    if (!formData.contact.trim()) {
-      newErrors.contact = "Contact number is required";
-    } else if (!/^[\d\s\-\+\(\)]+$/.test(formData.contact)) {
-      newErrors.contact = "Please enter a valid phone number";
-    }
-
-    if (!formData.address.trim()) {
-      newErrors.address = "Address is required";
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = "Message is required";
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = "Message must be at least 10 characters long";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-    // Clear error for this field when user starts typing
-    if (errors[id as keyof FormErrors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [id]: undefined,
-      }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      toast.error("Please fill in all required fields correctly");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
-
-    try {
-      const response = await publicApiRequest.post("/public/contactmessage", {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.contact,
-        subject: "Contact Form Inquiry",
-        message: formData.message,
-        address: formData.address,
-        priority: "normal",
-        status: "new",
-      });
-
-      if (response.data.success) {
-        setSubmitStatus("success");
-        const successMsg =
-          "Thank you for your message! We will get back to you soon.";
-        setSubmitMessage(successMsg);
-        toast.success(successMsg);
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          contact: "",
-          address: "",
-          message: "",
-        });
-      }
-    } catch (error: any) {
-      setSubmitStatus("error");
-      let errorMsg = "Failed to send message. Please try again.";
-
-      if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      } else if (error.response?.data?.errors) {
-        const errorMessages = Object.values(error.response.data.errors)
-          .flat()
-          .join(", ");
-        errorMsg = errorMessages;
-      }
-
-      setSubmitMessage(errorMsg);
-      toast.error(errorMsg);
-    } finally {
-      setIsSubmitting(false);
-    }
+    await create(payload);
   };
 
   return (
@@ -165,7 +86,7 @@ const ContactFormSection = () => {
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111111] text-center">
-            Let’s Talk With Us
+            Let's Talk With Us
           </h2>
         </div>
 
@@ -176,20 +97,23 @@ const ContactFormSection = () => {
               Get In Touch
             </h3>
 
-            {submitStatus === "success" && (
+            {/* Inline success / error banners */}
+            {isSuccess && (
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800 font-medium">{submitMessage}</p>
+                <p className="text-green-800 font-medium">
+                  Thank you for your message! We will get back to you soon.
+                </p>
               </div>
             )}
-
-            {submitStatus === "error" && (
+            {creationError && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-800 font-medium">{submitMessage}</p>
+                <p className="text-red-800 font-medium">{creationError}</p>
               </div>
             )}
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* First Name */}
                 <div className="space-y-2">
                   <label
                     htmlFor="firstName"
@@ -198,23 +122,22 @@ const ContactFormSection = () => {
                     First Name
                   </label>
                   <input
-                    type="text"
                     id="firstName"
+                    type="text"
                     placeholder="Abdul"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
-                      errors.firstName
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-transparent focus:border-[#00A651]"
-                    }`}
+                    {...register("firstName", {
+                      required: "First name is required",
+                    })}
+                    className={`${INPUT_BASE} ${errors.firstName ? INPUT_ERROR : INPUT_NORMAL}`}
                   />
                   {errors.firstName && (
                     <p className="text-red-500 text-xs font-medium">
-                      {errors.firstName}
+                      {errors.firstName.message}
                     </p>
                   )}
                 </div>
+
+                {/* Last Name */}
                 <div className="space-y-2">
                   <label
                     htmlFor="lastName"
@@ -223,26 +146,24 @@ const ContactFormSection = () => {
                     Last Name
                   </label>
                   <input
-                    type="text"
                     id="lastName"
+                    type="text"
                     placeholder="Rahman"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
-                      errors.lastName
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-transparent focus:border-[#00A651]"
-                    }`}
+                    {...register("lastName", {
+                      required: "Last name is required",
+                    })}
+                    className={`${INPUT_BASE} ${errors.lastName ? INPUT_ERROR : INPUT_NORMAL}`}
                   />
                   {errors.lastName && (
                     <p className="text-red-500 text-xs font-medium">
-                      {errors.lastName}
+                      {errors.lastName.message}
                     </p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Email */}
                 <div className="space-y-2">
                   <label
                     htmlFor="email"
@@ -251,23 +172,26 @@ const ContactFormSection = () => {
                     Email
                   </label>
                   <input
-                    type="email"
                     id="email"
+                    type="email"
                     placeholder="example@gmail.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
-                      errors.email
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-transparent focus:border-[#00A651]"
-                    }`}
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Please enter a valid email address",
+                      },
+                    })}
+                    className={`${INPUT_BASE} ${errors.email ? INPUT_ERROR : INPUT_NORMAL}`}
                   />
                   {errors.email && (
                     <p className="text-red-500 text-xs font-medium">
-                      {errors.email}
+                      {errors.email.message}
                     </p>
                   )}
                 </div>
+
+                {/* Contact */}
                 <div className="space-y-2">
                   <label
                     htmlFor="contact"
@@ -276,25 +200,27 @@ const ContactFormSection = () => {
                     Contact
                   </label>
                   <input
-                    type="tel"
                     id="contact"
+                    type="tel"
                     placeholder="+8801764XXXXXXX"
-                    value={formData.contact}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
-                      errors.contact
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-transparent focus:border-[#00A651]"
-                    }`}
+                    {...register("contact", {
+                      required: "Contact number is required",
+                      pattern: {
+                        value: /^[\d\s\-\+\(\)]+$/,
+                        message: "Please enter a valid phone number",
+                      },
+                    })}
+                    className={`${INPUT_BASE} ${errors.contact ? INPUT_ERROR : INPUT_NORMAL}`}
                   />
                   {errors.contact && (
                     <p className="text-red-500 text-xs font-medium">
-                      {errors.contact}
+                      {errors.contact.message}
                     </p>
                   )}
                 </div>
               </div>
 
+              {/* Address */}
               <div className="space-y-2">
                 <label
                   htmlFor="address"
@@ -303,24 +229,22 @@ const ContactFormSection = () => {
                   Address
                 </label>
                 <input
-                  type="text"
                   id="address"
+                  type="text"
                   placeholder="Bogura Town"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 ${
-                    errors.address
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-transparent focus:border-[#00A651]"
-                  }`}
+                  {...register("address", {
+                    required: "Address is required",
+                  })}
+                  className={`${INPUT_BASE} ${errors.address ? INPUT_ERROR : INPUT_NORMAL}`}
                 />
                 {errors.address && (
                   <p className="text-red-500 text-xs font-medium">
-                    {errors.address}
+                    {errors.address.message}
                   </p>
                 )}
               </div>
 
+              {/* Message */}
               <div className="space-y-2">
                 <label
                   htmlFor="message"
@@ -332,27 +256,28 @@ const ContactFormSection = () => {
                   id="message"
                   rows={6}
                   placeholder="Enter your message here..."
-                  value={formData.message}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border bg-white focus:ring-0 outline-none transition-colors text-gray-700 placeholder-gray-400 resize-none ${
-                    errors.message
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-transparent focus:border-[#00A651]"
-                  }`}
+                  {...register("message", {
+                    required: "Message is required",
+                    minLength: {
+                      value: 10,
+                      message: "Message must be at least 10 characters long",
+                    },
+                  })}
+                  className={`${INPUT_BASE} resize-none ${errors.message ? INPUT_ERROR : INPUT_NORMAL}`}
                 />
                 {errors.message && (
                   <p className="text-red-500 text-xs font-medium">
-                    {errors.message}
+                    {errors.message.message}
                   </p>
                 )}
               </div>
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isCreating}
                 className="w-full py-4 px-6 bg-[#0E8B44] hover:bg-[#0b7036] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors duration-300 text-center"
               >
-                {isSubmitting ? "Submitting..." : "Submit Now"}
+                {isCreating ? "Submitting..." : "Submit Now"}
               </button>
             </form>
           </div>
@@ -371,7 +296,6 @@ const ContactFormSection = () => {
 
             {/* Contact Cards */}
             <div className="space-y-4">
-              {/* Customer Service */}
               <div className="flex items-start p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex-shrink-0 p-3 bg-[#F4FBF7] rounded-lg mr-4">
                   <Phone className="w-6 h-6 text-[#00A651]" />
@@ -384,7 +308,6 @@ const ContactFormSection = () => {
                 </div>
               </div>
 
-              {/* Mail Address */}
               <div className="flex items-start p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex-shrink-0 p-3 bg-[#F4FBF7] rounded-lg mr-4">
                   <Mail className="w-6 h-6 text-[#00A651]" />
@@ -397,7 +320,6 @@ const ContactFormSection = () => {
                 </div>
               </div>
 
-              {/* Office Address */}
               <div className="flex items-start p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex-shrink-0 p-3 bg-[#F4FBF7] rounded-lg mr-4">
                   <MapPin className="w-6 h-6 text-[#00A651]" />
