@@ -10,6 +10,8 @@ export type NomineeInfoState = {
   relation: string;
   nid: string;
   photo: File | null;
+  nomineeMobile: string;
+  nomineeAddress: string;
 };
 
 type FormErrors = Partial<Record<keyof NomineeInfoState, string>>;
@@ -114,6 +116,19 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
       if (!nidPattern.test(data.nid.trim())) {
         nextErrors.nid = "Enter a valid numeric ID (10–17 digits)";
       }
+    }
+
+    if (!data.nomineeMobile.trim()) {
+      nextErrors.nomineeMobile = "Nominee mobile number is required";
+    } else {
+      const mobilePattern = /^01[0-9]{9}$/;
+      if (!mobilePattern.test(data.nomineeMobile.trim())) {
+        nextErrors.nomineeMobile = "Enter a valid mobile number (e.g., 01712345678)";
+      }
+    }
+
+    if (!data.nomineeAddress.trim()) {
+      nextErrors.nomineeAddress = "Nominee address is required";
     }
 
     if (!data.photo) {
@@ -272,6 +287,58 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
               />
               {errors.nid && (
                 <p className="text-xs text-red-500">{errors.nid}</p>
+              )}
+            </div>
+
+            {/* Nominee Mobile */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900">
+                Nominee Mobile <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                value={data.nomineeMobile}
+                onChange={handleChange("nomineeMobile")}
+                placeholder="e.g. 01712345678"
+                aria-invalid={Boolean(errors.nomineeMobile)}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
+                  errors.nomineeMobile ? "border-red-500" : "border-gray-200"
+                }`}
+              />
+              {errors.nomineeMobile && (
+                <p className="text-xs text-red-500">{errors.nomineeMobile}</p>
+              )}
+            </div>
+
+            {/* Nominee Address */}
+            <div className="space-y-2 md:col-span-1">
+              <label className="block text-sm font-medium text-gray-900">
+                Nominee Address <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={data.nomineeAddress}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  onUpdate({
+                    ...data,
+                    nomineeAddress: value,
+                  });
+                  if (errors.nomineeAddress) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      nomineeAddress: undefined,
+                    }));
+                  }
+                }}
+                placeholder="Enter nominee's full address"
+                rows={3}
+                aria-invalid={Boolean(errors.nomineeAddress)}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 resize-none ${
+                  errors.nomineeAddress ? "border-red-500" : "border-gray-200"
+                }`}
+              />
+              {errors.nomineeAddress && (
+                <p className="text-xs text-red-500">{errors.nomineeAddress}</p>
               )}
             </div>
 

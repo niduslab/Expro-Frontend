@@ -12,6 +12,9 @@ export type PersonalInfoState = {
   nid: string;
   qualification: string[];
   photo: File | null;
+  nidFrontPhoto: File | null;
+  nidBackPhoto: File | null;
+  signature: File | null;
 };
 
 type FormErrors = Partial<Record<keyof PersonalInfoState, string>>;
@@ -53,6 +56,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 }) => {
   const [errors, setErrors] = useState<FormErrors>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const nidFrontInputRef = useRef<HTMLInputElement | null>(null);
+  const nidBackInputRef = useRef<HTMLInputElement | null>(null);
+  const signatureInputRef = useRef<HTMLInputElement | null>(null);
 
   const qualifications = ["JSC", "SSC", "HSC", "Bachelor", "Masters", "Others"];
 
@@ -107,6 +113,48 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     }
   };
 
+  const handleNidFrontChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    onUpdate({
+      ...data,
+      nidFrontPhoto: file,
+    });
+    if (errors.nidFrontPhoto) {
+      setErrors((prev) => ({
+        ...prev,
+        nidFrontPhoto: undefined,
+      }));
+    }
+  };
+
+  const handleNidBackChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    onUpdate({
+      ...data,
+      nidBackPhoto: file,
+    });
+    if (errors.nidBackPhoto) {
+      setErrors((prev) => ({
+        ...prev,
+        nidBackPhoto: undefined,
+      }));
+    }
+  };
+
+  const handleSignatureChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    onUpdate({
+      ...data,
+      signature: file,
+    });
+    if (errors.signature) {
+      setErrors((prev) => ({
+        ...prev,
+        signature: undefined,
+      }));
+    }
+  };
+
   const validate = () => {
     const nextErrors: FormErrors = {};
 
@@ -154,6 +202,24 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       nextErrors.photo = "Passport size photo is required";
     } else if (data.photo.size > 2 * 1024 * 1024) {
       nextErrors.photo = "Maximum allowed file size is 2MB";
+    }
+
+    if (!data.nidFrontPhoto) {
+      nextErrors.nidFrontPhoto = "NID front photo is required";
+    } else if (data.nidFrontPhoto.size > 2 * 1024 * 1024) {
+      nextErrors.nidFrontPhoto = "Maximum allowed file size is 2MB";
+    }
+
+    if (!data.nidBackPhoto) {
+      nextErrors.nidBackPhoto = "NID back photo is required";
+    } else if (data.nidBackPhoto.size > 2 * 1024 * 1024) {
+      nextErrors.nidBackPhoto = "Maximum allowed file size is 2MB";
+    }
+
+    if (!data.signature) {
+      nextErrors.signature = "Signature is required";
+    } else if (data.signature.size > 2 * 1024 * 1024) {
+      nextErrors.signature = "Maximum allowed file size is 2MB";
     }
 
     setErrors(nextErrors);
@@ -363,50 +429,203 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               )}
             </div>
 
-            {/* Passport Size Photo */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Passport Size Photo <span className="text-red-500">*</span>
-              </label>
-              <p className="text-xs text-gray-500 mb-3">
-                Upload a recent passport size photograph (max 2MB, JPG/PNG)
-              </p>
+           
+          </div>
 
-              <div className="flex flex-col items-start space-y-3">
-                <div className="w-40 h-40 bg-[#F3F4F6] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 relative overflow-hidden">
-                  {data.photo ? (
-                    <img
-                      src={URL.createObjectURL(data.photo)}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <>
-                      <Camera size={32} className="mb-2" />
-                      <span className="text-xs">PP Size Photo</span>
-                    </>
+          {/* Document Uploads Section */}
+          <div className="col-span-1 md:col-span-2 mt-8">
+            <div className="bg-gradient-to-r from-[#F0F9FF] to-[#F0FDF4] rounded-xl p-6 border border-gray-200">
+              <h3 className="text-xl font-bold text-[#00341C] mb-6 flex items-center">
+                <Upload className="mr-2" size={24} />
+                Document Uploads
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                {/* Passport Size Photo */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    Passport Photo <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">
+                    Recent passport size (max 2MB)
+                  </p>
+
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="group cursor-pointer"
+                  >
+                    <div className="w-full aspect-[3/2] bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden hover:border-[#008543] transition-all">
+                      {data.photo ? (
+                        <>
+                          <img
+                            src={URL.createObjectURL(data.photo)}
+                            alt="Preview"
+                            className="absolute inset-0 w-full h-full object-cover z-0"
+                          />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={handlePhotoChange}
+                  />
+                  
+                  {errors.photo && (
+                    <p className="text-xs text-red-500 mt-1">{errors.photo}</p>
+                  )}
+                </div>
+                
+                {/* NID Front Photo */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    NID Front <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">
+                    Front side (max 2MB)
+                  </p>
+
+                  <div 
+                    onClick={() => nidFrontInputRef.current?.click()}
+                    className="group cursor-pointer"
+                  >
+                    <div className="w-full aspect-[3/2] bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden hover:border-[#008543] transition-all">
+                      {data.nidFrontPhoto ? (
+                        <>
+                          <img
+                            src={URL.createObjectURL(data.nidFrontPhoto)}
+                            alt="NID Front"
+                            className="absolute inset-0 w-full h-full object-cover z-0"
+                          />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <input
+                    ref={nidFrontInputRef}
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={handleNidFrontChange}
+                  />
+                  
+                  {errors.nidFrontPhoto && (
+                    <p className="text-xs text-red-500 mt-1">{errors.nidFrontPhoto}</p>
                   )}
                 </div>
 
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".jpg,.jpeg,.png"
-                  className="hidden"
-                  onChange={handlePhotoChange}
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center space-x-2 px-4 py-2 bg-[#E5E7EB] hover:bg-gray-300 text-gray-700 rounded-md text-sm font-medium transition-colors"
-                >
-                  <Upload size={16} />
-                  <span>{data.photo ? "Change Photo" : "Upload Photo"}</span>
-                </button>
+                {/* NID Back Photo */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    NID Back <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">
+                    Back side (max 2MB)
+                  </p>
+
+                  <div 
+                    onClick={() => nidBackInputRef.current?.click()}
+                    className="group cursor-pointer"
+                  >
+                    <div className="w-full aspect-[3/2] bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden hover:border-[#008543] transition-all">
+                      {data.nidBackPhoto ? (
+                        <>
+                          <img
+                            src={URL.createObjectURL(data.nidBackPhoto)}
+                            alt="NID Back"
+                            className="absolute inset-0 w-full h-full object-cover z-0"
+                          />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <input
+                    ref={nidBackInputRef}
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={handleNidBackChange}
+                  />
+                  
+                  {errors.nidBackPhoto && (
+                    <p className="text-xs text-red-500 mt-1">{errors.nidBackPhoto}</p>
+                  )}
+                </div>
+
+                {/* Signature */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    Signature <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">
+                    Your signature (max 2MB)
+                  </p>
+
+                  <div 
+                    onClick={() => signatureInputRef.current?.click()}
+                    className="group cursor-pointer"
+                  >
+                    <div className="w-full aspect-[3/2] bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden hover:border-[#008543] transition-all">
+                      {data.signature ? (
+                        <>
+                          <img
+                            src={URL.createObjectURL(data.signature)}
+                            alt="Signature"
+                            className="absolute inset-0 w-full h-full object-contain p-2 z-0"
+                          />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <input
+                    ref={signatureInputRef}
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={handleSignatureChange}
+                  />
+                  
+                  {errors.signature && (
+                    <p className="text-xs text-red-500 mt-1">{errors.signature}</p>
+                  )}
+                </div>
+
               </div>
-              {errors.photo && (
-                <p className="text-xs text-red-500">{errors.photo}</p>
-              )}
             </div>
           </div>
         </div>
