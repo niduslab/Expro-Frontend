@@ -12,6 +12,7 @@ import {
   UsersRound,
   FilePlusCorner,
   UserRoundCheck,
+  Activity,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -35,5 +36,10 @@ export const sidebarItems = [
     name: "Expro Team Members",
     href: "/admin/exproTeamMembers",
     icon: UsersRound,
+  },
+  {
+    name: "Recent Activity",
+    href: "/admin/activitylogger",
+    icon: Activity,
   },
 ];
