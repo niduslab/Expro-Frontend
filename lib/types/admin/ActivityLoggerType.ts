@@ -12,6 +12,7 @@ export interface ActivityLogCauser {
   id: number;
   name?: string;
   email?: string;
+  photo?: string | null;
   type: string;
   [key: string]: any;
 }

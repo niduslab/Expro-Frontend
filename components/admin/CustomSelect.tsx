@@ -31,7 +31,7 @@ export default function CustomSelect({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`w-full h-[48px] border rounded-[8px] px-[16px] bg-white flex items-center justify-between text-[#6A7282] text-[14px] focus:outline-none focus:ring focus:ring-green-500 ${
+        className={`w-full h-[44px] border rounded-[8px] px-[16px] bg-white flex items-center justify-between text-[#6A7282] text-[14px] focus:outline-none focus:ring focus:ring-green-500 ${
           error ? "border-red-400" : "border-[#D1D5DC]"
         } ${open ? "ring ring-green-500 border-transparent" : ""}`}
       >
@@ -60,7 +60,7 @@ export default function CustomSelect({
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className={`px-[16px] py-[12px] text-[14px] cursor-pointer hover:bg-green-50 hover:text-green-700 ${
+              className={`px-[16px] py-[10px] text-[14px] cursor-pointer hover:bg-green-50 hover:text-green-700 ${
                 opt.value === value
                   ? "bg-green-100 text-green-800 font-semibold"
                   : "text-[#030712]"
