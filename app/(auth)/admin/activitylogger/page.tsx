@@ -205,9 +205,9 @@ export default function ActivityLogPage() {
               >
                 <RefreshIcon /> Refresh
               </button>
-              <button className="flex items-center gap-1.5 text-[12px] px-3 py-2 border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors cursor-pointer text-gray-600 font-medium">
+              {/* <button className="flex items-center gap-1.5 text-[12px] px-3 py-2 border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors cursor-pointer text-gray-600 font-medium">
                 <DownloadIcon /> Export CSV
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
