@@ -2,9 +2,10 @@ import { apiClient } from "@/lib/api/axios";
 import {
   ExproTeamMemberListResponse,
   SingleExproTeamMemberResponse,
-  ExproTeamMemberPayload,
   DeleteExproTeamMemberResponse,
 } from "@/lib/types/admin/exproTeamMemberType";
+
+const multipartHeaders = { headers: { "Content-Type": "multipart/form-data" } };
 
 export const fetchExproTeamMembers = async (
   params?: Record<string, unknown>,
@@ -21,17 +22,27 @@ export const fetchExproTeamMemberById = async (
 };
 
 export const createExproTeamMember = async (
-  payload: ExproTeamMemberPayload,
+  payload: FormData,
 ): Promise<SingleExproTeamMemberResponse> => {
-  const { data } = await apiClient.post("/exproteammember", payload);
+  //  Explicitly set multipart header to override global application/json
+  const { data } = await apiClient.post(
+    "/exproteammember",
+    payload,
+    multipartHeaders,
+  );
   return data;
 };
 
 export const updateExproTeamMember = async (
   id: number | string,
-  payload: ExproTeamMemberPayload,
+  payload: FormData,
 ): Promise<SingleExproTeamMemberResponse> => {
-  const { data } = await apiClient.put(`/exproteammember/${id}`, payload);
+  //  Explicitly set multipart header to override global application/json
+  const { data } = await apiClient.post(
+    `/exproteammember/${id}?_method=PUT`,
+    payload,
+    multipartHeaders,
+  );
   return data;
 };
 

@@ -76,11 +76,15 @@ const OurFounder = () => {
           <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
             <div className="relative w-full mx-2 aspect-[4/5] rounded-lg overflow-hidden bg-[#F5F5F5]">
               <Image
-                src={founderMember.image_url}
+                src={
+                  founderMember.image_url ||
+                  "/images/dashboard/memberApproval/1.jpg"
+                }
                 alt={`${founderMember.name} - ${founderMember.designation}`}
                 fill
                 className="object-cover object-top"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                unoptimized={founderMember.image_url?.startsWith("http")}
               />
             </div>
           </div>

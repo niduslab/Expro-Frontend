@@ -8,7 +8,24 @@ import {
 } from "@/lib/hooks/admin/useEventsHook";
 import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import CustomSelect from "@/components/admin/CustomSelect";
+// Allowed MIME types for images
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "image/svg+xml", // Note: SVGs are often blocked by servers for security, but valid in browser
+  "image/webp",
+];
 
+// Max size in bytes (e.g., 5MB)
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+// Helper to get file extension from MIME type or name
+const getFileExtension = (file: File) => {
+  return file.name.split(".").pop()?.toLowerCase();
+};
 interface EventModalProps {
   open: boolean;
   onClose: () => void;
@@ -88,6 +105,7 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
 
   const [formData, setFormData] = useState<EventPayload>(defaultForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (open && event) {
@@ -107,6 +125,7 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
     } else if (open && !event) {
       setFormData(defaultForm);
     }
+    setImageFile(null);
     setErrors({});
   }, [open, event]);
 
@@ -117,9 +136,13 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
+
+    // ... existing title/date validations ...
     if (!formData.title.trim()) newErrors.title = "Title is required";
     if (!formData.start_date) newErrors.start_date = "Start date is required";
     if (!formData.status) newErrors.status = "Status is required";
+
+    // ... existing date logic ...
     if (
       formData.end_date &&
       formData.start_date &&
@@ -127,6 +150,8 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
     ) {
       newErrors.end_date = "End date must be after start date";
     }
+
+    // ... existing number validations ...
     if (
       formData.max_attendees !== null &&
       formData.max_attendees !== undefined &&
@@ -141,14 +166,28 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
     ) {
       newErrors.registration_fee = "Registration fee cannot be negative";
     }
+
+    // NEW: Image Validation
+    if (imageFile) {
+      // 1. Check Type
+      if (!ALLOWED_IMAGE_TYPES.includes(imageFile.type)) {
+        newErrors.image =
+          "Invalid file type. Please upload JPG, PNG, GIF, SVG, or WebP.";
+      }
+      // 2. Check Size
+      else if (imageFile.size > MAX_IMAGE_SIZE) {
+        newErrors.image = "Image size exceeds 5MB limit.";
+      }
+    }
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
+      // Show the first error found
       toast.error(Object.values(newErrors)[0]);
       return false;
     }
     return true;
   };
-
   const { mutate: create, isPending: creating } = useCreateEvent({
     onSuccess: () => {
       toast.success("Event created successfully");
@@ -172,30 +211,28 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
 
   const handleSubmit = () => {
     if (!validate()) return;
-    // Clean up empty strings to null for optional fields
     const payload: EventPayload = {
       ...formData,
       description: formData.description || null,
       location: formData.location || null,
       end_date: formData.end_date || null,
-      image: formData.image || null,
       max_attendees: formData.max_attendees
         ? Number(formData.max_attendees)
         : null,
       registration_fee: formData.registration_fee
         ? Number(formData.registration_fee)
         : null,
+      image: imageFile, // ✅ was formData.image || null
     };
     if (isEdit) update(payload);
     else create(payload);
   };
-
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
       <div className="flex flex-col w-full max-w-[620px] h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative my-4">
-        <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden p-2">
+        <div className="flex flex-col gap-6  overflow-x-hidden p-2">
           {/* ── Header ── */}
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
@@ -224,7 +261,6 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
             <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
               Event Details
             </p>
-
             {/* Title */}
             <div>
               <FieldLabel label="Title" required />
@@ -238,7 +274,6 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
               />
               <FieldError message={errors.title} />
             </div>
-
             {/* Description */}
             <div>
               <FieldLabel label="Description" />
@@ -251,27 +286,64 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
               />
             </div>
 
+            {/* Image Upload */}
+            <div>
+              <FieldLabel label="Event Image" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  setImageFile(e.target.files?.[0] ?? null);
+                  if (errors.image)
+                    setErrors((prev) => ({ ...prev, image: "" })); // clear on new pick
+                }}
+                className={`w-full border rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm ${
+                  errors.image ? "border-red-400" : "border-[#D1D5DC]"
+                }`}
+              />
+              <FieldError message={errors.image} />{" "}
+              {/* ← THIS is what displays the error */}
+              {/* Preview new selection */}
+              {imageFile && !errors.image && (
+                <div className="flex items-center gap-3 mt-2">
+                  <img
+                    src={URL.createObjectURL(imageFile)}
+                    className="w-16 h-16 rounded-xl object-cover border border-[#E5E7EB]"
+                    alt="New upload preview"
+                  />
+                  <span className="text-[12px] text-[#6A7282]">
+                    New image selected
+                  </span>
+                </div>
+              )}
+              {/* Show existing image on edit when no new file selected */}
+              {!imageFile && event?.image && (
+                <div className="flex items-center gap-3 mt-2">
+                  <img
+                    src={event.image}
+                    className="w-16 h-16 rounded-xl object-cover border border-[#E5E7EB]"
+                    alt="Current event image"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                  <span className="text-[12px] text-[#6A7282]">
+                    Current image (unchanged)
+                  </span>
+                </div>
+              )}
+            </div>
             {/* Status */}
             <div>
               <FieldLabel label="Status" required />
-              <select
-                className={
-                  errors.status ? selectClass + " border-red-400" : selectClass
-                }
+              <CustomSelect
                 value={formData.status}
-                onChange={(e) =>
-                  setField("status", e.target.value as EventStatus)
-                }
-              >
-                {STATUS_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setField("status", val as EventStatus)}
+                options={STATUS_OPTIONS}
+                error={!!errors.status}
+              />
               <FieldError message={errors.status} />
             </div>
-
             <div className="w-full border border-[#E5E7EB]" />
           </div>
 

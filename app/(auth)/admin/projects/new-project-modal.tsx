@@ -40,6 +40,7 @@ export default function NewProjectModal({
     projectLeadId: null,
     isFeatured: false, // ← new
     isPublished: false, // ← new
+    featuredImage: null,
   });
 
   const [completedTabs, setCompletedTabs] = useState<CompletedTabs>({
@@ -62,6 +63,7 @@ export default function NewProjectModal({
       funds_utilized: formData.fundsUtilized
         ? Number(formData.fundsUtilized)
         : undefined,
+      featured_image: formData.featuredImage ?? undefined,
       start_date: formData.startDate || undefined,
       end_date: formData.endDate || undefined,
       is_featured: formData.isFeatured,

@@ -18,7 +18,11 @@ export type DocumentStatus = "active" | "inactive" | "archived";
 // ─────────────────────────────────────────────
 // Core Models
 // ─────────────────────────────────────────────
-
+export interface SaveResult {
+  ok: boolean;
+  message: string;
+  fieldErrors?: Record<string, string[]>;
+}
 export interface DocumentUploader {
   id: number;
   email: string;

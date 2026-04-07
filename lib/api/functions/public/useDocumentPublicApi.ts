@@ -1,10 +1,7 @@
 import type {
   DocumentListResponse,
   DocumentSingleResponse,
-  DocumentDeleteResponse,
   DocumentIndexParams,
-  DocumentStorePayload,
-  DocumentUpdatePayload,
 } from "@/lib/types/admin/documentType";
 import apiClient from "../../axios";
 
@@ -31,75 +28,21 @@ export async function fetchDocument(
   );
   return res.data;
 }
+export const downloadDocument = async (
+  id: number | string,
+  fileName: string,
+): Promise<void> => {
+  const response = await apiClient.get(`/public/documents/${id}/download`, {
+    responseType: "blob", // important for binary
+  });
 
-// ─────────────────────────────────────────────
-// POST /documents
-// ─────────────────────────────────────────────
-export async function createDocument(
-  payload: DocumentStorePayload,
-): Promise<DocumentSingleResponse> {
-  const formData = new FormData();
-  formData.append("name", payload.name);
-  formData.append("type", payload.type);
-  formData.append("file", payload.file);
-  if (payload.description) formData.append("description", payload.description);
-  if (payload.publish_date)
-    formData.append("publish_date", payload.publish_date);
-  if (payload.is_featured !== undefined)
-    formData.append("is_featured", payload.is_featured ? "1" : "0");
-  if (payload.display_order !== undefined)
-    formData.append("display_order", String(payload.display_order));
-  if (payload.status) formData.append("status", payload.status);
-
-  const res = await apiClient.post<DocumentSingleResponse>(
-    "/documents",
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    },
-  );
-  return res.data;
-}
-
-// ─────────────────────────────────────────────
-// POST /documents/:id  (Laravel FormData PATCH)
-// ─────────────────────────────────────────────
-export async function updateDocument(
-  id: number,
-  payload: DocumentUpdatePayload,
-): Promise<DocumentSingleResponse> {
-  const formData = new FormData();
-  formData.append("_method", "PATCH");
-  formData.append("name", payload.name);
-  formData.append("type", payload.type);
-  if (payload.file) formData.append("file", payload.file);
-  if (payload.description) formData.append("description", payload.description);
-  if (payload.publish_date)
-    formData.append("publish_date", payload.publish_date);
-  if (payload.is_featured !== undefined)
-    formData.append("is_featured", payload.is_featured ? "1" : "0");
-  if (payload.display_order !== undefined)
-    formData.append("display_order", String(payload.display_order));
-  if (payload.status) formData.append("status", payload.status);
-
-  const res = await apiClient.post<DocumentSingleResponse>(
-    `/documents/${id}`,
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    },
-  );
-  return res.data;
-}
-
-// ─────────────────────────────────────────────
-// DELETE /documents/:id
-// ─────────────────────────────────────────────
-export async function deleteDocument(
-  id: number,
-): Promise<DocumentDeleteResponse> {
-  const res = await apiClient.delete<DocumentDeleteResponse>(
-    `/documents/${id}`,
-  );
-  return res.data;
-}
+  // Create a download link
+  const blobUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = fileName;
+  document.body.appendChild(link); // required for Firefox
+  link.click();
+  document.body.removeChild(link); // clean up
+  URL.revokeObjectURL(blobUrl); // free memory
+};

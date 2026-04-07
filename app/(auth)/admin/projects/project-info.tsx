@@ -27,7 +27,9 @@ export default function ProjectInfo({
   setCompletedTabs,
 }: ProjectInfoProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [preview, setPreview] = useState<string | null>(
+    formData.featured_image ?? null,
+  );
   const handleNext = () => {
     const result = projectInfoSchema.safeParse(formData);
 
@@ -54,6 +56,13 @@ export default function ProjectInfo({
     }));
 
     setActiveTab("budget");
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setFormData((prev) => ({ ...prev, featuredImage: file }));
+    if (file) {
+      setPreview(URL.createObjectURL(file)); // new file overrides existing URL
+    }
   };
 
   return (
@@ -199,6 +208,29 @@ export default function ProjectInfo({
             </span>
           )}
         </div>{" "}
+        <div className="justify-between">
+          <div className="pb-2">
+            <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+              Featured Image
+            </span>
+          </div>
+
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml"
+            onChange={handleImageChange}
+            className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
+          />
+
+          {/* Shows new file selection OR existing URL, whichever is available */}
+          {preview && (
+            <img
+              src={preview}
+              alt="Featured preview"
+              className="mt-2 h-[80px] w-auto rounded-md object-cover"
+            />
+          )}
+        </div>
         <div className="flex relative justify-between w-full  ">
           <button
             onClick={() => setOpenModal(false)}

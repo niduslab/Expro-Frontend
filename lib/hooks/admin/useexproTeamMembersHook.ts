@@ -15,7 +15,6 @@ import {
 import {
   ExproTeamMemberListResponse,
   SingleExproTeamMemberResponse,
-  ExproTeamMemberPayload,
   DeleteExproTeamMemberResponse,
 } from "@/lib/types/admin/exproTeamMemberType";
 
@@ -55,19 +54,14 @@ export const useExproTeamMember = (
 type CreateOptions = UseMutationOptions<
   SingleExproTeamMemberResponse,
   Error,
-  ExproTeamMemberPayload,
+  FormData,
   void
 >;
 
 export const useCreateExproTeamMember = (options?: CreateOptions) => {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    SingleExproTeamMemberResponse,
-    Error,
-    ExproTeamMemberPayload,
-    void
-  >({
+  return useMutation<SingleExproTeamMemberResponse, Error, FormData, void>({
     mutationFn: (payload) => createExproTeamMember(payload),
     ...options,
     onSuccess: (data, variables, onMutateResult, context) => {
@@ -80,7 +74,7 @@ export const useCreateExproTeamMember = (options?: CreateOptions) => {
 type UpdateOptions = UseMutationOptions<
   SingleExproTeamMemberResponse,
   Error,
-  ExproTeamMemberPayload,
+  FormData,
   void
 >;
 
@@ -90,12 +84,7 @@ export const useUpdateExproTeamMember = (
 ) => {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    SingleExproTeamMemberResponse,
-    Error,
-    ExproTeamMemberPayload,
-    void
-  >({
+  return useMutation<SingleExproTeamMemberResponse, Error, FormData, void>({
     mutationFn: (payload) => updateExproTeamMember(id, payload),
     ...options,
     onSuccess: (data, variables, onMutateResult, context) => {

@@ -1,13 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import {
   DownloadIcon,
   FileText,
   MoveUpRightIcon,
   Notebook,
   TimerIcon,
+  Loader2,
 } from "lucide-react";
 import { useDocuments } from "@/lib/hooks/public/useDocumentPublicHooks";
+import { downloadDocument } from "@/lib/api/functions/public/useDocumentPublicApi";
+import { apiClient } from "@/lib";
 
 function formatPublishDate(dateStr: string | null): string {
   if (!dateStr) return "—";
@@ -16,6 +20,12 @@ function formatPublishDate(dateStr: string | null): string {
     month: "long",
     year: "numeric",
   });
+}
+
+function resolveFileUrl(fileUrl: string) {
+  return fileUrl.startsWith("http")
+    ? fileUrl
+    : `${apiClient.defaults.baseURL?.replace("/api/v1", "")}${fileUrl}`;
 }
 
 function SingleDocSkeleton() {
@@ -40,6 +50,8 @@ function SingleDocSkeleton() {
 }
 
 const Organogram = () => {
+  const [downloading, setDownloading] = useState(false);
+
   const { documents, isLoading, error } = useDocuments({
     type: "organogram",
     status: "active",
@@ -49,6 +61,17 @@ const Organogram = () => {
   });
 
   const doc = documents[0] ?? null;
+  const fullUrl = doc ? resolveFileUrl(doc.file_url) : "";
+
+  const handleDownload = async () => {
+    if (!doc) return;
+    setDownloading(true);
+    try {
+      await downloadDocument(doc.id, doc.file_name);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen py-12">
@@ -122,7 +145,7 @@ const Organogram = () => {
               <div className="p-2">
                 <div className="p-2 pb-6 sm:pb-1 flex flex-wrap justify-center sm:justify-end gap-3">
                   <a
-                    href={doc.file_url}
+                    href={fullUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-dm-sans inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-200 transition"
@@ -130,18 +153,27 @@ const Organogram = () => {
                     Open{" "}
                     <MoveUpRightIcon size={14} className="text-[#068847]" />
                   </a>
-                  <a
-                    href={doc.file_url}
-                    download={doc.file_name}
-                    className="font-dm-sans inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#068847] text-white rounded-xl hover:bg-[#05703A] transition shadow-sm"
+                  <button
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="font-dm-sans inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-[#068847] text-white rounded-xl hover:bg-[#05703A] transition shadow-sm disabled:opacity-70"
                   >
-                    Download
-                    <DownloadIcon size={18} />
-                  </a>
+                    {downloading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Downloading...
+                      </>
+                    ) : (
+                      <>
+                        Download
+                        <DownloadIcon size={18} />
+                      </>
+                    )}
+                  </button>
                 </div>
                 <div className="w-full h-[650px] rounded-2xl overflow-hidden border border-gray-200 bg-gray-100">
                   <iframe
-                    src={doc.file_url}
+                    src={`${fullUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                     className="w-full h-full"
                     title={`${doc.name} Preview`}
                   />

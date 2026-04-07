@@ -2,19 +2,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import {
   fetchDocuments,
   fetchDocument,
-  createDocument,
-  updateDocument,
-  deleteDocument,
 } from "@/lib/api/functions/public/useDocumentPublicApi";
 import {
-  Document,
   DocumentIndexParams,
-  DocumentStorePayload,
-  DocumentUpdatePayload,
-  PaginationMeta,
   UseDocumentsState,
   UseDocumentState,
-  UseMutationState,
 } from "@/lib/types/admin/documentType";
 
 // ─────────────────────────────────────────────
@@ -100,127 +92,4 @@ export function useDocument(id: number | null): UseDocumentState & {
   }, [load]);
 
   return { ...state, refetch: load };
-}
-
-// ─────────────────────────────────────────────
-// useCreateDocument
-// ─────────────────────────────────────────────
-export function useCreateDocument(): UseMutationState & {
-  create: (payload: DocumentStorePayload) => Promise<Document | null>;
-  reset: () => void;
-} {
-  const [state, setState] = useState<UseMutationState>({
-    isLoading: false,
-    error: null,
-    isSuccess: false,
-  });
-
-  const create = useCallback(
-    async (payload: DocumentStorePayload): Promise<Document | null> => {
-      setState({ isLoading: true, error: null, isSuccess: false });
-      try {
-        const res = await createDocument(payload);
-        setState({ isLoading: false, error: null, isSuccess: true });
-        return res.data;
-      } catch (err: unknown) {
-        setState({
-          isLoading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to create document.",
-          isSuccess: false,
-        });
-        return null;
-      }
-    },
-    [],
-  );
-
-  const reset = useCallback(() => {
-    setState({ isLoading: false, error: null, isSuccess: false });
-  }, []);
-
-  return { ...state, create, reset };
-}
-
-// ─────────────────────────────────────────────
-// useUpdateDocument
-// ─────────────────────────────────────────────
-export function useUpdateDocument(): UseMutationState & {
-  update: (
-    id: number,
-    payload: DocumentUpdatePayload,
-  ) => Promise<Document | null>;
-  reset: () => void;
-} {
-  const [state, setState] = useState<UseMutationState>({
-    isLoading: false,
-    error: null,
-    isSuccess: false,
-  });
-
-  const update = useCallback(
-    async (
-      id: number,
-      payload: DocumentUpdatePayload,
-    ): Promise<Document | null> => {
-      setState({ isLoading: true, error: null, isSuccess: false });
-      try {
-        const res = await updateDocument(id, payload);
-        setState({ isLoading: false, error: null, isSuccess: true });
-        return res.data;
-      } catch (err: unknown) {
-        setState({
-          isLoading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to update document.",
-          isSuccess: false,
-        });
-        return null;
-      }
-    },
-    [],
-  );
-
-  const reset = useCallback(() => {
-    setState({ isLoading: false, error: null, isSuccess: false });
-  }, []);
-
-  return { ...state, update, reset };
-}
-
-// ─────────────────────────────────────────────
-// useDeleteDocument
-// ─────────────────────────────────────────────
-export function useDeleteDocument(): UseMutationState & {
-  remove: (id: number) => Promise<boolean>;
-  reset: () => void;
-} {
-  const [state, setState] = useState<UseMutationState>({
-    isLoading: false,
-    error: null,
-    isSuccess: false,
-  });
-
-  const remove = useCallback(async (id: number): Promise<boolean> => {
-    setState({ isLoading: true, error: null, isSuccess: false });
-    try {
-      await deleteDocument(id);
-      setState({ isLoading: false, error: null, isSuccess: true });
-      return true;
-    } catch (err: unknown) {
-      setState({
-        isLoading: false,
-        error:
-          err instanceof Error ? err.message : "Failed to delete document.",
-        isSuccess: false,
-      });
-      return false;
-    }
-  }, []);
-
-  const reset = useCallback(() => {
-    setState({ isLoading: false, error: null, isSuccess: false });
-  }, []);
-
-  return { ...state, remove, reset };
 }

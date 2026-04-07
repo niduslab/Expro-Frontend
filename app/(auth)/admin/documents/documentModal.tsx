@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Document,
   DocumentStorePayload,
   DocumentUpdatePayload,
   DocumentType,
   DocumentStatus,
+  SaveResult,
 } from "@/lib/types/admin/documentType";
-import { SaveResult } from "@/lib/hooks/admin/useDocumentsHook";
+
 import { Plus, Loader2, Upload, X, FileText } from "lucide-react";
 import DatePicker from "@/components/ui/date-picker";
 
@@ -16,11 +17,6 @@ interface DocumentModalProps {
   open: boolean;
   onClose: () => void;
   document?: Document | null;
-  /**
-   * Owned by page.tsx so the shared hook's refetch fires.
-   * Returns SaveResult — on failure, fieldErrors are mapped
-   * into inline red messages under each form field.
-   */
   onSave: (
     payload: DocumentStorePayload | DocumentUpdatePayload,
     isEdit: boolean,
@@ -67,9 +63,6 @@ const inputErrorClass =
 const textareaClass =
   "w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[12px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px] resize-none";
 
-const selectClass =
-  "w-full h-[48px] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282] text-[14px] appearance-none cursor-pointer";
-
 function FieldLabel({
   label,
   required,
@@ -99,6 +92,85 @@ function FieldError({ message }: { message?: string }) {
     </span>
   );
 }
+
+// ── CustomSelect ────────────────────────────────────────────────────────────
+
+function CustomSelect({
+  value,
+  onChange,
+  options,
+  error,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  options: { label: string; value: string }[];
+  error?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <div ref={ref} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={`w-full h-[48px] border rounded-[8px] px-[16px] bg-white flex items-center justify-between text-[#6A7282] text-[14px] focus:outline-none focus:ring focus:ring-green-500 ${
+          error ? "border-red-400" : "border-[#D1D5DC]"
+        } ${open ? "ring ring-green-500 border-transparent" : ""}`}
+      >
+        <span>{selected?.label ?? "Select..."}</span>
+        <svg
+          className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      {open && (
+        <ul className="absolute z-50 mt-1 w-full bg-white border border-[#D1D5DC] rounded-[8px] shadow-lg overflow-hidden max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <li
+              key={opt.value}
+              onClick={() => {
+                onChange(opt.value);
+                setOpen(false);
+              }}
+              className={`px-[16px] py-[12px] text-[14px] cursor-pointer hover:bg-green-50 hover:text-green-700 ${
+                opt.value === value
+                  ? "bg-green-100 text-green-800 font-semibold"
+                  : "text-[#030712]"
+              }`}
+            >
+              {opt.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ── Main Modal ──────────────────────────────────────────────────────────────
 
 export default function DocumentModal({
   open,
@@ -135,11 +207,9 @@ export default function DocumentModal({
     value: (typeof defaultForm)[K],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear inline error as user corrects the field
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  // ── Client-side validation (runs before hitting the network) ───────────────
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Document name is required";
@@ -181,8 +251,6 @@ export default function DocumentModal({
       return;
     }
 
-    // ── Map backend field errors → inline messages ─────────────────────────
-
     if (result.fieldErrors && typeof result.fieldErrors === "object") {
       const mapped: Record<string, string> = {};
       for (const [field, msgs] of Object.entries(result.fieldErrors)) {
@@ -192,14 +260,33 @@ export default function DocumentModal({
       }
       setErrors(mapped);
     }
-    // Toast is already fired by page.tsx handleSave — no duplicate here.
+  };
+
+  const validateFile = (file: File): string | null => {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+      return "Only PDF files are allowed";
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return "File size must not exceed 10MB";
+    }
+    return null;
   };
 
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) set("file", file);
+    if (file) {
+      const fileError = validateFile(file);
+      if (fileError) {
+        setErrors((prev) => ({ ...prev, file: fileError }));
+        return;
+      }
+      set("file", file);
+    }
   };
 
   if (!open) return null;
@@ -250,50 +337,27 @@ export default function DocumentModal({
               <FieldError message={errors.name} />
             </div>
 
-            {/* Type + Status */}
+            {/* Type + Status — now using CustomSelect */}
             <div className="flex gap-2 w-full">
               <div className="w-1/2">
                 <FieldLabel label="Document Type" required />
-                <div className="relative">
-                  <select
-                    className={selectClass}
-                    value={formData.type}
-                    onChange={(e) =>
-                      set("type", e.target.value as DocumentType)
-                    }
-                  >
-                    {DOCUMENT_TYPES.map((t) => (
-                      <option key={t.value} value={t.value}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">
-                    ▾
-                  </div>
-                </div>
+                <CustomSelect
+                  value={formData.type}
+                  onChange={(val) => set("type", val as DocumentType)}
+                  options={DOCUMENT_TYPES}
+                  error={!!errors.type}
+                />
                 <FieldError message={errors.type} />
               </div>
               <div className="w-1/2">
                 <FieldLabel label="Status" />
-                <div className="relative">
-                  <select
-                    className={selectClass}
-                    value={formData.status}
-                    onChange={(e) =>
-                      set("status", e.target.value as DocumentStatus)
-                    }
-                  >
-                    {DOCUMENT_STATUSES.map((s) => (
-                      <option key={s.value} value={s.value}>
-                        {s.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282]">
-                    ▾
-                  </div>
-                </div>
+                <CustomSelect
+                  value={formData.status}
+                  onChange={(val) => set("status", val as DocumentStatus)}
+                  options={DOCUMENT_STATUSES}
+                  error={!!errors.status}
+                />
+                <FieldError message={errors.status} />
               </div>
             </div>
 
@@ -318,7 +382,37 @@ export default function DocumentModal({
               File Upload
             </p>
 
-            {/* Drop zone — red border when there's a file error */}
+            {/* ── Existing file preview (edit mode only, no new file chosen yet) ── */}
+            {isEdit && !formData.file && document?.file_name && (
+              <div className="flex flex-col gap-1">
+                <p className="text-[12px] font-medium text-[#6A7282] uppercase tracking-wide">
+                  Current File
+                </p>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-[#D1D5DC] bg-[#F9FAFB]">
+                  <div className="w-10 h-10 rounded-lg bg-[#DCFCE7] flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5 text-[#068847]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[#030712] truncate">
+                      {document.file_name}
+                    </p>
+                    <p className="text-[12px] text-[#6A7282]">
+                      {document.file_size_formatted}
+                      {document.mime_type ? ` · ${document.mime_type}` : ""}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                    Current
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#6A7282]">
+                  Upload a new file below to replace it, or leave empty to keep
+                  this one.
+                </p>
+              </div>
+            )}
+
+            {/* Drop zone */}
             <div
               onDragOver={(e) => {
                 e.preventDefault();
@@ -340,10 +434,19 @@ export default function DocumentModal({
               <input
                 id="doc-file-input"
                 type="file"
+                accept=".pdf,application/pdf"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) set("file", file);
+                  if (file) {
+                    const fileError = validateFile(file);
+                    if (fileError) {
+                      setErrors((prev) => ({ ...prev, file: fileError }));
+                      e.target.value = "";
+                      return;
+                    }
+                    set("file", file);
+                  }
                 }}
               />
               {formData.file ? (
@@ -356,7 +459,10 @@ export default function DocumentModal({
                       {formData.file.name}
                     </p>
                     <p className="text-[12px] text-[#6A7282]">
-                      {(formData.file.size / 1024).toFixed(1)} KB
+                      {(formData.file.size / 1024).toFixed(1)} KB ·{" "}
+                      <span className="text-[#068847] font-medium">
+                        New file
+                      </span>
                     </p>
                   </div>
                   <button
@@ -380,7 +486,9 @@ export default function DocumentModal({
                   </div>
                   <div className="text-center">
                     <p className="text-[14px] font-medium text-[#030712]">
-                      Drop file here or{" "}
+                      {isEdit
+                        ? "Replace file — drop here or "
+                        : "Drop file here or "}
                       <span
                         className={
                           errors.file ? "text-red-500" : "text-[#068847]"
@@ -390,19 +498,14 @@ export default function DocumentModal({
                       </span>
                     </p>
                     <p className="text-[12px] text-[#6A7282] mt-1">
-                      PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (max 20MB)
+                      PDF only (max 10MB)
                     </p>
                   </div>
                 </>
               )}
-              {isEdit && !formData.file && (
-                <p className="text-[12px] text-[#6A7282]">
-                  Leave empty to keep the existing file
-                </p>
-              )}
             </div>
 
-            {/* Inline file error — shows both client and backend messages */}
+            {/* Inline file error */}
             <FieldError message={errors.file} />
 
             <div className="w-full border border-[#E5E7EB]" />
@@ -421,7 +524,6 @@ export default function DocumentModal({
                   value={formData.publish_date}
                   onChange={(value) => set("publish_date", value)}
                 />
-
                 <FieldError message={errors.publish_date} />
               </div>
               <div className="md:w-1/2">

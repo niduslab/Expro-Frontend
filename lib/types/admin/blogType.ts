@@ -74,7 +74,10 @@ export interface BlogPost {
   slug: string;
   excerpt?: string | null;
   content: string;
-  featured_image?: string | null;
+
+  featured_image?: File | null;
+  featured_image_url?: string | null;
+
   author_id: number;
   author?: BlogPostAuthor | null;
   category_id?: number | null;
@@ -114,7 +117,7 @@ export interface BlogPostPayload {
   slug: string;
   excerpt?: string | null;
   content: string;
-  featured_image?: string | null;
+  featured_image?: File | null;
   author_id: number | null;
   category_id?: number | null;
   status?: BlogPostStatus;

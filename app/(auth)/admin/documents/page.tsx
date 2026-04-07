@@ -5,16 +5,13 @@ import { Plus, FileText, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 import {
-  useDocumentsWithMutations,
-  SaveResult,
-} from "@/lib/hooks/admin/useDocumentsHook";
-import {
   Document,
   DocumentIndexParams,
   DocumentType,
   DocumentStatus,
   DocumentStorePayload,
   DocumentUpdatePayload,
+  SaveResult,
 } from "@/lib/types/admin/documentType";
 
 import DocumentSearchBar from "./documentSearchBar";
@@ -23,6 +20,7 @@ import DocumentTable from "./documentTable";
 import DocumentModal from "./documentModal";
 import DocumentDetailModal from "./documentDetails";
 import Pagination from "@/components/pagination/page";
+import { useDocumentsWithMutations } from "@/lib/hooks/admin/useDocumentsHook";
 
 // ── Delete Confirmation Dialog ─────────────────────────────────────────────
 

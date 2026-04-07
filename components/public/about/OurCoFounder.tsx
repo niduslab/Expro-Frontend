@@ -19,11 +19,15 @@ const OurCoFounder = () => {
           <div className="relative flex justify-center lg:justify-start order-1">
             <div className="relative w-full mx-2 aspect-[4/5] rounded-lg overflow-hidden bg-[#F5F5F5]">
               <Image
-                src={coFounder.image_url}
-                alt={`${coFounder.name} - Co-Founder`}
+                src={
+                  coFounder.image_url ||
+                  "/images/dashboard/memberApproval/1.jpg"
+                }
+                alt={`${coFounder.name} - ${coFounder.designation}`}
                 fill
                 className="object-cover object-top"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                unoptimized={coFounder.image_url?.startsWith("http")}
               />
             </div>
           </div>
