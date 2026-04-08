@@ -9,14 +9,25 @@ import {
   Balloon,
   UsersRound,
   FilePlusCorner,
+
+  UserRoundCheck,
+  Activity,
+  SquareChartGantt,
+  AudioLines,
+  MessageSquareShare,
+
 } from "lucide-react";
 
 export const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Pension Packages", href: "/admin/pension-packages", icon: Package },
 
-  { name: "Manage Members", href: "/admin/members", icon: Package },
-  { name: "Membership Request", href: "/admin/membership-request", icon: Package },
+  { name: "Manage Members", href: "/admin/members", icon: SquareChartGantt },
+  {
+    name: "Membership Request",
+    href: "/admin/membership-request",
+    icon: AudioLines,
+  },
   // { name: "All Pension Members", href: "/admin/members", icon: Users },
 
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
@@ -32,5 +43,15 @@ export const sidebarItems = [
     name: "Expro Team Members",
     href: "/admin/exproTeamMembers",
     icon: UsersRound,
+  },
+  {
+    name: "Recent Activity",
+    href: "/admin/activitylogger",
+    icon: Activity,
+  },
+  {
+    name: "Contact Messages",
+    href: "/admin/contactmessage",
+    icon: MessageSquareShare,
   },
 ];
