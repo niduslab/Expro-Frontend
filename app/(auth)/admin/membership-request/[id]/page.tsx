@@ -184,12 +184,18 @@ export default function MembershipRequestDetailsPage() {
               <div className="flex items-start gap-4 mb-6">
                 <div className="flex-shrink-0">
                   <Image
-                    src={application.photo || "/images/dashboard/memberApproval/1.jpg"}
+                    src={
+                      application.photo
+                        ? application.photo.startsWith('http')
+                          ? application.photo
+                          : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${application.photo}`
+                        : "/images/dashboard/memberApproval/1.jpg"
+                    }
                     alt={application.name_english}
                     width={100}
                     height={100}
                     className="rounded-lg object-cover w-24 h-24"
-                    unoptimized={application.photo?.startsWith('http')}
+                    unoptimized
                   />
                 </div>
                 <div className="flex-1">
