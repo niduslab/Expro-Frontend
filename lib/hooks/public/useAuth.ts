@@ -87,10 +87,7 @@ export const useLogin = () => {
         await getCsrfCookie();
 
         // Step 2: Login with credentials using publicApiRequest (same as contact form)
-        const response = await publicApiRequest.post(
-          "/public/login",
-          credentials,
-        );
+        const response = await publicApiRequest.post("/login", credentials);
 
         console.log("Login response:", response.data); // Debug log
 
