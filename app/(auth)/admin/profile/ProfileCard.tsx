@@ -14,7 +14,11 @@ const ProfileCard = ({ profile }: { profile: any }) => {
       <div className="w-16 h-16 rounded-full bg-blue-50 overflow-hidden flex items-center justify-center flex-shrink-0">
         {profile?.member?.photo ? (
           <img
-            src={profile.member.photo}
+            src={
+              profile.member.photo.startsWith('http')
+                ? profile.member.photo
+                : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${profile.member.photo}`
+            }
             alt="profile"
             className="w-full h-full object-cover"
           />

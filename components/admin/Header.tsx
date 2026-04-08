@@ -51,10 +51,17 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
         >
           <div className="relative w-9 h-9 rounded-full overflow-hidden border">
             <Image
-              src={profile?.member?.photo || "/images/default-avatar.png"}
+              src={
+                profile?.member?.photo
+                  ? profile.member.photo.startsWith('http')
+                    ? profile.member.photo
+                    : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${profile.member.photo}`
+                  : "/images/default-avatar.svg"
+              }
               alt="avatar"
               fill
               className="object-cover"
+              unoptimized={profile?.member?.photo ? true : false}
             />
           </div>
 

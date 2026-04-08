@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMembers, Member } from "@/lib/hooks/admin/useMembers";
 import { usePensionPackages } from "@/lib/hooks/admin/usePensionPackages";
+import PensionRoleModal from "./pensionRoleModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Status = "active" | "pending" | "inactive" | "suspended";
@@ -160,6 +161,22 @@ export default function MembersPage() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
   const [editMemberId, setEditMemberId] = useState<number | null>(null);
+  const [pensionRoleMember, setPensionRoleMember] = useState<{ id: number; name: string; enrollments: any[] } | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [enrollmentRoleFilter, setEnrollmentRoleFilter] = useState<string>("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdownId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Apply pension package filter from URL params
   useEffect(() => {
@@ -174,6 +191,7 @@ export default function MembersPage() {
     per_page: perPage,
     search: search || undefined,
     status: statusFilter || undefined,
+    pension_role: enrollmentRoleFilter || undefined, // Filter by enrollment role
   });
 
   // Fetch pension packages for filter
@@ -443,6 +461,22 @@ export default function MembersPage() {
               ))}
             </select>
 
+            <select
+              value={enrollmentRoleFilter}
+              onChange={(e) => {
+                setEnrollmentRoleFilter(e.target.value);
+                setPage(1);
+              }}
+              className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer"
+            >
+              <option value="">All Roles</option>
+              <option value="executive_member">Executive Member</option>
+              <option value="project_presenter">Project Presenter</option>
+              <option value="assistant_pp">Assistant PP</option>
+            </select>
+
+            {/*  */}
+
             <span className="text-[12px] text-gray-600 font-[500] ml-2 hidden sm:inline">
               Showing {members.length} of {stats.total.toLocaleString()}
             </span>
@@ -485,6 +519,7 @@ export default function MembersPage() {
                 setStatusFilter("");
                 setTypeFilter("");
                 setPensionFilter("");
+                setEnrollmentRoleFilter("");
               }}
               className="mt-2 text-[12px] text-[#068847] underline"
             >
@@ -537,6 +572,9 @@ export default function MembersPage() {
                   >
                     Joined <SortChevron active={sortKey === "joined"} dir={sortDir} />
                   </th>
+                  {/* <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[120px]">
+                    Enrollment Role
+                  </th> */}
                   <th className="px-4 py-3 text-center text-[11px] font-medium text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
@@ -566,6 +604,12 @@ export default function MembersPage() {
                     const walletBalance = parseFloat(member.wallet?.balance || "0");
                     const pensionCount = member.pension_enrollments?.length || 0;
                     const joinDate = member.member?.membership_date || member.member?.created_at;
+                    
+                    // Get enrollment roles
+                    const enrollmentRoles = member.pension_enrollments?.flatMap((enrollment: any) => 
+                      enrollment.package_roles?.filter((role: any) => role.is_active).map((role: any) => role.role) || []
+                    ) || [];
+                    const uniqueRoles = [...new Set(enrollmentRoles)];
 
                     return (
                       <tr
@@ -587,7 +631,7 @@ export default function MembersPage() {
                                 src={
                                   memberProfile.photo.startsWith('http') 
                                     ? memberProfile.photo 
-                                    : `http://localhost:8000/storage/${memberProfile.photo}`
+                                    : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${memberProfile.photo}`
                                 }
                                 alt={memberName}
                                 width={32}
@@ -611,8 +655,36 @@ export default function MembersPage() {
                           <p className="text-[12px] text-gray-900">{memberPhone}</p>
                           <p className="text-[11px] text-gray-600 font-[500]">{member.email}</p>
                         </td>
-                        <td className="px-4 py-[9px]">
-                          <TypeBadge type={memberType} />
+                        <td className="px-4 py-2">
+                          <div className="flex flex-col gap-2">
+                            <TypeBadge type={memberType} />
+                            {uniqueRoles.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5">
+                                {uniqueRoles.map((role: string) => {
+                                  const roleConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
+                                    executive_member: { label: "Executive Member", bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
+                                    project_presenter: { label: "Project Presenter", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+                                    assistant_pp: { label: "Assistant PP", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+                                    general_member: { label: "General Member", bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200" },
+                                  };
+                                  const config = roleConfig[role] || { 
+                                    label: role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
+                                    bg: "bg-gray-100", 
+                                    text: "text-gray-700", 
+                                    border: "border-gray-200" 
+                                  };
+                                  return (
+                                    <span
+                                      key={role}
+                                      className={`inline-flex items-center justify-start h-6 px-2.5 w-full text-[11px] font-medium rounded-full border whitespace-nowrap ${config.bg} ${config.text} ${config.border}`}
+                                    >
+                                      {config.label}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-[9px]">
                           <StatusBadge status={memberStatus} />
@@ -634,6 +706,9 @@ export default function MembersPage() {
                               })
                             : "N/A"}
                         </td>
+                        {/* <td className="px-4 py-[9px]">
+                          
+                        </td> */}
                         <td className="px-4 py-[9px]">
                           <div className="flex items-center justify-center gap-1">
                             <button
@@ -650,9 +725,38 @@ export default function MembersPage() {
                             >
                               <EditIcon />
                             </button>
-                            <IconBtn title="More actions">
-                              <MoreIcon />
-                            </IconBtn>
+                            
+                            {/* More Actions Dropdown */}
+                            <div className="relative" ref={openDropdownId === member.id ? dropdownRef : null}>
+                              <button
+                                onClick={() => setOpenDropdownId(openDropdownId === member.id ? null : member.id)}
+                                title="More actions"
+                                className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F3F4F6] hover:text-gray-900 transition-colors cursor-pointer"
+                              >
+                                <MoreIcon />
+                              </button>
+                              
+                              {openDropdownId === member.id && (
+                                <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-[#E5E7EB] py-1 z-50">
+                                  <button
+                                    onClick={() => {
+                                      setPensionRoleMember({
+                                        id: member.id,
+                                        name: memberName,
+                                        enrollments: member.pension_enrollments || []
+                                      });
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className="w-full px-4 py-2 text-left text-sm text-[#030712] hover:bg-[#F9FAFB] flex items-center gap-2 transition-colors"
+                                  >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    </svg>
+                                    Pension Role
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -735,6 +839,17 @@ export default function MembersPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Pension Role Modal */}
+      {pensionRoleMember && (
+        <PensionRoleModal
+          isOpen={!!pensionRoleMember}
+          onClose={() => setPensionRoleMember(null)}
+          memberId={pensionRoleMember.id}
+          memberName={pensionRoleMember.name}
+          pensionEnrollments={pensionRoleMember.enrollments}
+        />
       )}
       </div>
     </div>

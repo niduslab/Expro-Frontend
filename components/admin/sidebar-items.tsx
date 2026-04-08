@@ -1,9 +1,7 @@
 import {
   LayoutDashboard,
   Package,
-  Users,
   FolderKanban,
-  UserCheck,
   Wallet,
   Banknote,
   Split,
@@ -11,7 +9,6 @@ import {
   Balloon,
   UsersRound,
   FilePlusCorner,
-  UserRoundCheck,
 } from "lucide-react";
 
 export const sidebarItems = [

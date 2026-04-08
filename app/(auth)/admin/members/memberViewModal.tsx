@@ -82,7 +82,7 @@ export default function MemberViewModal({ memberId, onClose }: MemberViewModalPr
                 src={
                   memberProfile.photo.startsWith('http') 
                     ? memberProfile.photo 
-                    : `http://localhost:8000/storage/${memberProfile.photo}`
+                    : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${memberProfile.photo}`
                 }
                 alt={memberProfile.name_english || "Member"}
                 width={64}
