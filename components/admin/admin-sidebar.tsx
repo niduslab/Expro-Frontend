@@ -6,16 +6,22 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
 import { sidebarItems } from "./sidebar-items";
+import { userSidebarItems } from "./user-sidebar-items";
 import { LogoutButton } from "./LogoutButton";
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  isAdmin?: boolean;
+}
+
+export function AdminSidebar({ isAdmin = true }: AdminSidebarProps) {
   const pathname = usePathname();
+  const items = isAdmin ? sidebarItems : userSidebarItems;
 
   return (
     <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 shadow-sm flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center px-6 border-b border-gray-100">
-        <Link href="/admin" className="flex items-center">
+        <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex items-center">
           <div className="relative w-32 h-10">
             <Image
               src="/logo.svg"
@@ -30,7 +36,7 @@ export function AdminSidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {sidebarItems.map((item) => {
+        {items.map((item) => {
           const isActive = pathname === item.href;
 
           return (
@@ -59,7 +65,7 @@ export function AdminSidebar() {
       {/* Bottom Actions */}
       <div className="p-4 border-t border-gray-100 space-y-1">
         <Link
-          href="/admin/settings"
+          href={isAdmin ? "/admin/settings" : "/dashboard/settings"}
           className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
         >
           <Settings className="w-5 h-5 text-gray-500" />

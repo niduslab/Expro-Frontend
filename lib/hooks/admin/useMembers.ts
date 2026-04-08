@@ -74,6 +74,7 @@ export interface MembersParams {
   status?: string;
   search?: string;
   branch_id?: number;
+  pension_role?: string;
 }
 
 /**

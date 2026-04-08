@@ -5,16 +5,19 @@ import { LogOut, Settings, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { sidebarItems } from "./sidebar-items";
+import { userSidebarItems } from "./user-sidebar-items";
 import Image from "next/image";
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isAdmin?: boolean;
 }
 
-export function MobileSidebar({ open, setOpen }: Props) {
+export function MobileSidebar({ open, setOpen, isAdmin = true }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const items = isAdmin ? sidebarItems : userSidebarItems;
 
   return (
     <>
@@ -51,7 +54,7 @@ export function MobileSidebar({ open, setOpen }: Props) {
 
         {/* Navigation */}
         <nav className="p-4 space-y-2 overflow-y-auto">
-          {sidebarItems.map((item) => {
+          {items.map((item) => {
             const isActive = pathname === item.href;
 
             return (
@@ -79,7 +82,7 @@ export function MobileSidebar({ open, setOpen }: Props) {
         {/* Logout */}
         <div className="absolute bottom-4 left-0 w-full px-4 space-y-2">
           <Link
-            href="/admin/settings"
+            href={isAdmin ? "/admin/settings" : "/dashboard/settings"}
             onClick={() => setOpen(false)}
             className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
           >
