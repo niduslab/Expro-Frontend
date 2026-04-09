@@ -19,7 +19,7 @@ const buildParams = (
   if (filters.causer_id !== undefined) params.causer_id = filters.causer_id;
   if (filters.log_name) params.log_name = filters.log_name;
   if (filters.created_at) params.created_at = filters.created_at;
-  if (filters.search) params.search = filters.search;
+  if (filters.search) params.q = filters.search; // ✅ was: params.search = filters.search
   if (filters.page !== undefined) params.page = filters.page;
   if (filters.per_page !== undefined) params.per_page = filters.per_page;
 
