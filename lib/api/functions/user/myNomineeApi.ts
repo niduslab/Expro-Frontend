@@ -6,7 +6,7 @@ import { NomineeResponse } from "@/lib/types/admin/nomineeType";
  *
  * GET /mynominees
  */
-export const getMyNominees = async (): Promise<NomineeResponse> => {
-  const response = await apiRequest.get<NomineeResponse>("/mynominees");
-  return response.data.data;
+export const getMyNominees = async () => {
+  const response = await apiRequest.get("/mynominees");
+  return response.data; // { success, message, data: [...], pagination }
 };

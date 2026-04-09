@@ -14,7 +14,7 @@ import { getMyPensionEnrollments } from "@/lib/api/functions/user/mypensionEnrol
  */
 export const useMyPensionEnrollments = () => {
   return useQuery<ApiResponse<PensionEnrollment[]>, AxiosError>({
-    queryKey: ["my-pension-enrollments"],
+    queryKey: ["mypensionenrollments"],
     queryFn: getMyPensionEnrollments,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

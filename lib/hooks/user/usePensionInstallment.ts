@@ -14,7 +14,7 @@ import { getMyPensionInstallments } from "@/lib/api/functions/user/mypensionInst
  */
 export const useMyPensionInstallments = () => {
   return useQuery<ApiResponse<PensionInstallment[]>, AxiosError>({
-    queryKey: ["my-pension-installments"],
+    queryKey: ["mypensioninstallments"],
     queryFn: getMyPensionInstallments,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

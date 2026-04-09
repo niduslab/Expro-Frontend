@@ -88,12 +88,6 @@ export default function ProfilePage() {
 
         {/* ── Profile hero card ── */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
-          {/* Green top band */}
-          <div className="h-24 bg-[#068847] relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/[0.06]" />
-            <div className="absolute top-4 right-24 w-20 h-20 rounded-full bg-white/[0.06]" />
-          </div>
-
           {/* Avatar + name row */}
           <div className="px-5 md:px-6 pb-5">
             <div className="flex items-end justify-between -mt-10 mb-4">

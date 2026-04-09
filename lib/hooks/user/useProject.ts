@@ -30,7 +30,7 @@ import {
  */
 export const useMyProjects = (params?: MyProjectsParams) => {
   return useQuery<ApiResponseWithPagination<Project>, AxiosError>({
-    queryKey: ["my-projects", params],
+    queryKey: ["myprojects", params],
     queryFn: () => getMyProjects(params),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

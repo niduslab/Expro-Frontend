@@ -10,7 +10,7 @@ import {
   BadgeCheck,
   ShieldAlert,
 } from "lucide-react";
-import { useMyProfile } from "@/lib/hooks/admin/useUsers";
+import { useMyNominees } from "@/lib/hooks/user/useNominee";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
@@ -29,7 +29,7 @@ const fmtDate = (d?: string | null) =>
     : "—";
 
 export default function NomineePage() {
-  const { data: profile, isLoading } = useMyProfile();
+  const { data: profile, isLoading } = useMyNominees();
 
   if (isLoading) {
     return (

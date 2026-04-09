@@ -11,8 +11,8 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import { useMyProfile } from "@/lib/hooks/admin/useUsers";
 import { Branch } from "@/lib/types/branchType";
+import { useMyBranch } from "@/lib/hooks/user/useBranch";
 
 const fmtDate = (d?: string | null) =>
   d
@@ -24,7 +24,7 @@ const fmtDate = (d?: string | null) =>
     : "—";
 
 export default function BranchPage() {
-  const { data: profile, isLoading } = useMyProfile();
+  const { data: profile, isLoading } = useMyBranch();
 
   if (isLoading) {
     return (
@@ -39,7 +39,7 @@ export default function BranchPage() {
 
   if (!profile) return null;
 
-  const branch: Branch | null = profile.branch ?? null;
+  const branch: Branch | null = profile.data ?? null;
 
   if (!branch) {
     return (
@@ -69,8 +69,8 @@ export default function BranchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] p-4 md:p-6">
-      <div className="max-w-5xl mx-auto space-y-5">
+    <div className="min-h-screen bg-[#F9FAFB] ">
+      <div className="max-w-7xl mx-auto space-y-5">
         {/* ── Page title ── */}
         <div>
           <h1 className="text-lg font-semibold text-[#030712]">My Branch</h1>
@@ -81,15 +81,9 @@ export default function BranchPage() {
 
         {/* ── Branch hero card ── */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
-          {/* Green top band */}
-          <div className="h-20 bg-[#068847] relative overflow-hidden">
-            <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/[0.06]" />
-            <div className="absolute top-2 right-20 w-16 h-16 rounded-full bg-white/[0.06]" />
-          </div>
-
           <div className="px-5 md:px-6 pb-5">
             {/* Icon overlapping band */}
-            <div className="flex items-end justify-between -mt-8 mb-4">
+            <div className="flex items-end justify-between mt-8 mb-4">
               <div className="w-16 h-16 rounded-2xl bg-[#068847] border-4 border-white shadow-sm flex items-center justify-center flex-shrink-0">
                 <Building2 className="w-7 h-7 text-white" />
               </div>
@@ -148,7 +142,7 @@ export default function BranchPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Location */}
           <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
-            <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-[#F3F4F6]">
+            <div className="flex items-center gap-2.5 px-5 py-3.5 ">
               <div className="w-7 h-7 rounded-lg bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-4 h-4 text-[#068847]" />
               </div>
@@ -176,8 +170,8 @@ export default function BranchPage() {
           </div>
 
           {/* Branch details */}
-          <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
-            <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-[#F3F4F6]">
+          <div className="bg-white rounded-xl  overflow-hidden">
+            <div className="flex items-center gap-2.5 px-5 py-3.5 ">
               <div className="w-7 h-7 rounded-lg bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
                 <Building2 className="w-4 h-4 text-[#068847]" />
               </div>
@@ -249,7 +243,7 @@ function InfoRow({
   valueClass?: string;
 }) {
   return (
-    <div className="flex items-start justify-between py-2.5 border-b border-[#F9FAFB] last:border-0 gap-4">
+    <div className="flex items-start justify-between py-2.5  last:border-0 gap-4">
       <span className="text-[11px] text-[#9CA3AF] flex-shrink-0 pt-px">
         {label}
       </span>
