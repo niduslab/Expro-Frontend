@@ -1,5 +1,8 @@
+import { Branch } from "../branchType";
 import { MemberProfile } from "./memberType";
 import { Nominee } from "./nomineeType";
+import { PensionEnrollment, PensionInstallment } from "./pensionsType";
+import { Wallet, WalletTransaction } from "./walletsType";
 
 // User (lightweight)
 export interface UserListItem {
@@ -11,6 +14,11 @@ export interface UserListItem {
   permissions: string[];
   member: MemberProfile;
   nominee: Nominee[];
+  wallet: Wallet[];
+  wallet_transactions: WalletTransaction[];
+  pension_enrollments: PensionEnrollment[];
+  pension_installments: PensionInstallment[];
+  branch: Branch | null;
 }
 
 // Pagination
