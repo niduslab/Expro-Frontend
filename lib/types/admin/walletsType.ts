@@ -80,3 +80,12 @@ export interface WalletTransaction {
   updated_at: string;
   deleted_at: string | null; // softDeletes
 }
+export interface WalletTransactionsParams {
+  page?: number;
+  per_page?: number;
+  type?: TransactionType;
+  category?: TransactionCategory;
+  status?: TransactionStatus;
+  date_from?: string;
+  date_to?: string;
+}
