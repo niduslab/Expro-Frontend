@@ -2,9 +2,11 @@
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMembers, Member } from "@/lib/hooks/admin/useMembers";
 import { usePensionPackages } from "@/lib/hooks/admin/usePensionPackages";
+import { ArrowLeft, ArrowRight, Users as UsersIcon } from "lucide-react";
 import PensionRoleModal from "./pensionRoleModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -305,6 +307,31 @@ export default function MembersPage() {
     }, 0),
   };
 
+  // Helper function to get sponsor info
+  const getSponsorInfo = (member: Member) => {
+    // Try to get sponsor from pension enrollment first (more specific)
+    const enrollment = member.pension_enrollments?.[0];
+    const sponsorId = enrollment?.sponsored_by || member.sponsor_id;
+    
+    if (!sponsorId) return null;
+    
+    // Find sponsor in members list
+    const sponsor = apiMembers.find(m => m.id === sponsorId);
+    if (sponsor) {
+      return {
+        id: sponsor.id,
+        name: sponsor.member?.name_english || sponsor.email || 'Unknown',
+        isLeader: sponsor.pension_enrollments?.some((e: any) => 
+          e.package_roles?.some((r: any) => 
+            ['executive_member', 'project_presenter', 'assistant_pp'].includes(r.role) && r.is_active
+          )
+        ) || false
+      };
+    }
+    
+    return { id: sponsorId, name: 'Unknown Sponsor', isLeader: false };
+  };
+
   // ── Page window (shows 5 buttons around current page) ──
   function pageWindow(): number[] {
     const pages: number[] = [];
@@ -320,43 +347,78 @@ export default function MembersPage() {
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-[1400px] mx-auto space-y-4">
-        {/* ── Header ── */}
+        {/* ── Header with Back Button ── */}
         <div className="bg-white rounded-lg border border-[#E5E7EB] p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <p className="text-[22px] font-medium text-gray-900">Members</p>
+          <div className="flex items-center gap-4 mb-4">
+            {packageNameFromUrl && (
+              <Link
+                href="/admin/pension-packages"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Back to Pension Packages"
+              >
+                <ArrowLeft className="h-5 w-5 text-[#4A5565]" />
+              </Link>
+            )}
+            <div className="flex-1">
+              <p className="text-[22px] font-medium text-gray-900">
+                {packageNameFromUrl ? `${packageNameFromUrl} - Members` : 'Members'}
+              </p>
               <p className="text-[13px] text-gray-700 mt-0.5">
-                All registered members · Updated just now
+                {packageNameFromUrl 
+                  ? `Members enrolled in ${packageNameFromUrl}` 
+                  : 'All registered members · Updated just now'}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+          </div>
+          
+          {/* Package Context Banner */}
+          {packageNameFromUrl && pensionFilter && (
+            <div className="flex items-center justify-between p-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-[#DBEAFE] flex items-center justify-center">
+                  <UsersIcon className="h-5 w-5 text-[#2563EB]" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-[#1E40AF]">
+                    Viewing members for: <span className="font-semibold">{packageNameFromUrl}</span>
+                  </p>
+                  <p className="text-xs text-[#3B82F6]">
+                    {stats.total} member{stats.total !== 1 ? 's' : ''} enrolled in this package
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/admin/team-collections?packageId=${pensionFilter}&packageName=${encodeURIComponent(packageNameFromUrl)}`}
+                  className="flex items-center gap-1.5 text-sm text-[#2563EB] hover:text-[#1D4ED8] font-medium transition-colors"
+                >
+                  View Team Collections <ArrowRight size={14} />
+                </Link>
+                <button
+                  onClick={() => {
+                    setPensionFilter("");
+                    router.push('/admin/members');
+                  }}
+                  className="ml-2 p-1.5 text-[#2563EB] hover:bg-[#DBEAFE] rounded-lg transition-colors"
+                  title="Clear filter"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {/* Action Buttons */}
+          {!packageNameFromUrl && (
+            <div className="flex items-center gap-2 mt-4">
               <button className="flex items-center gap-1.5 text-[12px] px-3 py-[5px] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors cursor-pointer">
                 <DownloadIcon /> Export CSV
               </button>
               <button className="flex items-center gap-1.5 text-[12px] px-3 py-[5px] bg-[#068847] text-white rounded-lg hover:bg-[#045a2e] transition-colors cursor-pointer">
                 + Add Member
-              </button>
-            </div>
-          </div>
-          
-          {/* Package Filter Badge */}
-          {packageNameFromUrl && pensionFilter && (
-            <div className="mt-4 flex items-center gap-2 p-3 bg-[#F0FDF4] border border-[#86EFAC] rounded-lg">
-              <span className="text-[13px] text-[#068847]">
-                Filtering by pension package: <span className="font-semibold">{packageNameFromUrl}</span>
-              </span>
-              <button
-                onClick={() => {
-                  setPensionFilter("");
-                  router.push('/admin/members');
-                }}
-                className="ml-auto text-[#068847] hover:text-[#045a2e] transition-colors"
-                title="Clear filter"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
               </button>
             </div>
           )}
@@ -551,8 +613,11 @@ export default function MembersPage() {
                   <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
                     Contact
                   </th>
+                  <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
+                    Sponsor
+                  </th>
                   <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider">
-                    Type
+                    Package Roles
                   </th>
                   <th
                     className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
@@ -585,7 +650,7 @@ export default function MembersPage() {
               <tbody className="divide-y divide-[#F3F4F6]">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={8} className="px-4 py-8 text-center text-gray-700">
+                    <td colSpan={9} className="px-4 py-8 text-center text-gray-700">
                       Loading members...
                     </td>
                   </tr>
@@ -604,12 +669,13 @@ export default function MembersPage() {
                     const walletBalance = parseFloat(member.wallet?.balance || "0");
                     const pensionCount = member.pension_enrollments?.length || 0;
                     const joinDate = member.member?.membership_date || member.member?.created_at;
+                    const sponsorInfo = getSponsorInfo(member);
                     
-                    // Get enrollment roles
-                    const enrollmentRoles = member.pension_enrollments?.flatMap((enrollment: any) => 
-                      enrollment.package_roles?.filter((role: any) => role.is_active).map((role: any) => role.role) || []
+                    // Get active package roles from all enrollments
+                    const packageRoles = member.pension_enrollments?.flatMap((enrollment: any) => 
+                      enrollment.package_roles?.filter((pkgRole: any) => pkgRole.is_active).map((pkgRole: any) => pkgRole.role) || []
                     ) || [];
-                    const uniqueRoles = [...new Set(enrollmentRoles)];
+                    const uniqueRoles = [...new Set(packageRoles)];
 
                     return (
                       <tr
@@ -655,36 +721,54 @@ export default function MembersPage() {
                           <p className="text-[12px] text-gray-900">{memberPhone}</p>
                           <p className="text-[11px] text-gray-600 font-[500]">{member.email}</p>
                         </td>
+                        <td className="px-4 py-[9px]">
+                          {sponsorInfo ? (
+                            <div>
+                              <Link
+                                href={`/admin/members/${sponsorInfo.id}`}
+                                className="text-[12px] font-medium text-[#2563EB] hover:underline"
+                              >
+                                {sponsorInfo.name}
+                              </Link>
+                              {sponsorInfo.isLeader && (
+                                <p className="text-[10px] text-[#068847] font-medium mt-0.5">
+                                  ⭐ Team Leader
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-[11px] text-gray-500">No sponsor</span>
+                          )}
+                        </td>
                         <td className="px-4 py-2">
-                          <div className="flex flex-col gap-2">
-                            <TypeBadge type={memberType} />
-                            {uniqueRoles.length > 0 && (
-                              <div className="flex flex-wrap gap-1.5">
-                                {uniqueRoles.map((role: string) => {
-                                  const roleConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
-                                    executive_member: { label: "Executive Member", bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
-                                    project_presenter: { label: "Project Presenter", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-                                    assistant_pp: { label: "Assistant PP", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-                                    general_member: { label: "General Member", bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200" },
-                                  };
-                                  const config = roleConfig[role] || { 
-                                    label: role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
-                                    bg: "bg-gray-100", 
-                                    text: "text-gray-700", 
-                                    border: "border-gray-200" 
-                                  };
-                                  return (
-                                    <span
-                                      key={role}
-                                      className={`inline-flex items-center justify-start h-6 px-2.5 w-full text-[11px] font-medium rounded-full border whitespace-nowrap ${config.bg} ${config.text} ${config.border}`}
-                                    >
-                                      {config.label}
-                                    </span>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
+                          {uniqueRoles.length > 0 ? (
+                            <div className="flex flex-col gap-1.5">
+                              {uniqueRoles.map((role: string) => {
+                                const roleConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
+                                  executive_member: { label: "Executive Member", bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
+                                  project_presenter: { label: "Project Presenter", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+                                  assistant_pp: { label: "Assistant PP", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+                                  general_member: { label: "General Member", bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200" },
+                                };
+                                const config = roleConfig[role] || { 
+                                  label: role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
+                                  bg: "bg-gray-100", 
+                                  text: "text-gray-700", 
+                                  border: "border-gray-200" 
+                                };
+                                return (
+                                  <span
+                                    key={role}
+                                    className={`inline-flex items-center justify-start h-6 px-2.5 text-[11px] font-medium rounded-full border whitespace-nowrap ${config.bg} ${config.text} ${config.border}`}
+                                  >
+                                    {config.label}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <span className="text-[12px] text-gray-500">No roles</span>
+                          )}
                         </td>
                         <td className="px-4 py-[9px]">
                           <StatusBadge status={memberStatus} />
@@ -752,7 +836,7 @@ export default function MembersPage() {
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                       <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                     </svg>
-                                    Pension Role
+                                    Manage Pension Roles
                                   </button>
                                 </div>
                               )}

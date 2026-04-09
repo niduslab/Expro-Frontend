@@ -9,6 +9,7 @@ import {
   Balloon,
   UsersRound,
   FilePlusCorner,
+  Percent,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -21,7 +22,7 @@ export const sidebarItems = [
 
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Wallet Balance", href: "/admin/wallet", icon: Wallet },
-
+  { name: "Commission", href: "/admin/commission", icon: Percent },
   { name: "Donation", href: "/admin/donation", icon: Banknote },
 
   { name: "Branch", href: "/admin/branch", icon: Split },
