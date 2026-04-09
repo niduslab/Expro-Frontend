@@ -1,4 +1,5 @@
 import { MemberProfile } from "./memberType";
+import { Nominee } from "./nomineeType";
 
 // User (lightweight)
 export interface UserListItem {
@@ -9,6 +10,7 @@ export interface UserListItem {
   roles: string[];
   permissions: string[];
   member: MemberProfile;
+  nominee: Nominee[];
 }
 
 // Pagination
