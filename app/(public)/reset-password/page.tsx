@@ -166,12 +166,8 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F0] flex flex-col items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-      <p className="text-[13px] text-gray-400 font-medium mb-5 tracking-wide uppercase">
-        Password reset flow — 3 steps
-      </p>
-
-      <div className="w-full max-w-[360px] bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+    <div className="container mx-auto py-10 px-6 md:px-12 lg:px-20 pt-36 mb-4 ">
+      <div className="max-w-3xl mx-auto  bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
         <div className="h-[3px] w-full bg-gradient-to-r from-[#068847] via-[#34d399] to-[#059669]" />
 
         {!isSuccess ? (
@@ -226,7 +222,7 @@ function ResetPasswordContent() {
                     placeholder="••••••••"
                     disabled={isPending}
                     {...register("password")}
-                    className={`w-full pl-9 pr-10 py-[0.6rem] rounded-lg text-[0.8rem] text-gray-800 placeholder-gray-300 bg-[#F9FAFB] outline-none transition-all border disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`w-full pl-9 pr-10 py-[12px] rounded-lg text-[0.8rem] text-gray-800 placeholder-gray-300 bg-[#F9FAFB] outline-none transition-all border disabled:opacity-50 disabled:cursor-not-allowed ${
                       errors.password
                         ? "border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100"
                         : "border-[#E5E7EB] focus:border-[#068847] focus:ring-2 focus:ring-[#F0FDF4] focus:bg-white"
@@ -276,7 +272,7 @@ function ResetPasswordContent() {
                     placeholder="••••••••"
                     disabled={isPending}
                     {...register("password_confirmation")}
-                    className={`w-full pl-9 pr-10 py-[0.6rem] rounded-lg text-[0.8rem] text-gray-800 placeholder-gray-300 bg-[#F9FAFB] outline-none transition-all border disabled:opacity-50 disabled:cursor-not-allowed ${
+                    className={`w-full pl-9 pr-10 py-[12px] rounded-lg text-[0.8rem] text-gray-800 placeholder-gray-300 bg-[#F9FAFB] outline-none transition-all border disabled:opacity-50 disabled:cursor-not-allowed ${
                       errors.password_confirmation
                         ? "border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100"
                         : "border-[#E5E7EB] focus:border-[#068847] focus:ring-2 focus:ring-[#F0FDF4] focus:bg-white"
@@ -309,7 +305,7 @@ function ResetPasswordContent() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="mt-1 flex items-center justify-center gap-2 w-full py-[0.65rem] px-5 rounded-lg text-[0.825rem] font-semibold text-white border-none cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:opacity-90 active:enabled:scale-[0.99]"
+                className="mt-1 flex items-center justify-center gap-2 w-full py-[12px] px-5 rounded-lg text-[0.825rem] font-semibold text-white border-none cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed hover:enabled:opacity-90 active:enabled:scale-[0.99]"
                 style={{
                   background:
                     "linear-gradient(135deg, #068847 0%, #059669 100%)",
@@ -334,14 +330,14 @@ function ResetPasswordContent() {
           </div>
         ) : (
           /* Success state */
-          <div className="flex flex-col items-center text-center gap-4 px-6 py-8">
+          <div className="flex flex-col items-center text-center gap-8 px-6 py-8">
             <div className="w-12 h-12 rounded-xl bg-[#F0FDF4] border border-[#A7F3D0] flex items-center justify-center">
               <CheckCircle2 size={24} strokeWidth={1.6} color="#068847" />
             </div>
 
             <div className="flex flex-col gap-1">
               <h1 className="text-[1.05rem] font-bold text-gray-900 leading-snug m-0">
-                Password reset!
+                Password reset successfully!
               </h1>
               <p className="text-[12px] text-gray-400 m-0 leading-relaxed">
                 Your password has been updated. All previous sessions have been
@@ -349,11 +345,11 @@ function ResetPasswordContent() {
               </p>
             </div>
 
-            <div className="w-full bg-[#F0FDF4] border border-[#A7F3D0] rounded-lg px-4 py-3 text-left">
+            <div className="w-full bg-[#F0FDF4] border border-[#A7F3D0] rounded-lg px-4 py-10 text-left">
               <p className="text-[11px] text-[#068847] font-medium m-0 mb-0.5">
                 Security notice
               </p>
-              <p className="text-[11px] text-[#059669] m-0 leading-relaxed">
+              <p className="text-[14px] text-[#059669] m-0 leading-relaxed">
                 All your devices have been signed out. You'll need to log in
                 again on each device.
               </p>
@@ -362,7 +358,7 @@ function ResetPasswordContent() {
             <button
               type="button"
               onClick={() => router.push("/login")}
-              className="flex items-center justify-center gap-2 w-full py-[0.65rem] px-5 rounded-lg text-[0.825rem] font-semibold text-white border-none cursor-pointer transition-all hover:opacity-90 active:scale-[0.99]"
+              className="flex items-center justify-center gap-2 w-full py-[12px] px-5 rounded-lg text-[0.825rem] font-semibold text-white border-none cursor-pointer transition-all hover:opacity-90 active:scale-[0.99]"
               style={{
                 background: "linear-gradient(135deg, #068847 0%, #059669 100%)",
                 boxShadow:

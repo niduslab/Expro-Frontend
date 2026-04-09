@@ -43,7 +43,9 @@ function VerifyOtpContent() {
 
   const { mutate: verifyOtp, isPending } = useVerifyOtp({
     onSuccess: (res) => {
-      if (res.data?.verified) {
+      // Check res.verified directly, not res.data.verified
+      if (res.verified) {
+        // ✅ Correct
         toast.success("OTP verified", {
           description: "You can now reset your password.",
           duration: 3000,
@@ -173,8 +175,8 @@ function VerifyOtpContent() {
 
   // ─── Main UI ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F5F5F0] to-white flex flex-col items-center justify-center px-4 py-6 sm:py-10 pt-32">
-      <div className="w-full max-w-[400px] bg-white rounded-2xl border border-[#E5E7EB] shadow-lg overflow-hidden">
+    <div className="container mx-auto py-10 px-6 md:px-12 lg:px-20 pt-36 mb-4 ">
+      <div className="max-w-3xl mx-auto  bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
         {/* Top gradient bar */}
         <div className="h-1 w-full bg-gradient-to-r from-[#068847] via-[#34d399] to-[#059669]" />
 

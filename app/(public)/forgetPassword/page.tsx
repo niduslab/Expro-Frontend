@@ -56,8 +56,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="container mx-auto px-6 md:px-12 lg:px-20 pt-32 mb-4">
-      <div className="w-full bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+    <div className="container mx-auto py-10 px-6 md:px-12 lg:px-20 pt-36  mb-4 ">
+      <div className="max-w-3xl mx-auto  bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
         <div className="px-6 pt-6 pb-6 flex flex-col gap-5">
           {/* Icon + Title */}
           <div className="flex flex-col gap-2">

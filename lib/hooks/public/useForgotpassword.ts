@@ -27,17 +27,18 @@ import { ApiError, ApiResponse } from "@/lib/api/axios";
  * mutate({ email: "user@example.com" });
  */
 export const useForgotPassword = (options?: {
-  onSuccess?: (data: ApiResponse<ForgotPasswordResponse>) => void;
+  onSuccess?: (data: ForgotPasswordResponse) => void;
   onError?: (error: AxiosError<ApiError>) => void;
 }) => {
   return useMutation<
-    ApiResponse<ForgotPasswordResponse>,
+    ForgotPasswordResponse,
     AxiosError<ApiError>,
     ForgotPasswordPayload
   >({
     mutationFn: async (payload: ForgotPasswordPayload) => {
       const response = await authApi.forgotPassword(payload);
-      return response.data;
+      // 👇 Cast to handle type mismatch (backend returns T directly, not ApiResponse<T>)
+      return response.data as unknown as ForgotPasswordResponse;
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
@@ -62,21 +63,19 @@ export const useForgotPassword = (options?: {
  * mutate({ email: "user@example.com", token: "123456" });
  */
 export const useVerifyOtp = (options?: {
-  onSuccess?: (data: ApiResponse<VerifyOtpResponse>) => void;
+  onSuccess?: (data: VerifyOtpResponse) => void;
   onError?: (error: AxiosError<ApiError>) => void;
 }) => {
-  return useMutation<
-    ApiResponse<VerifyOtpResponse>,
-    AxiosError<ApiError>,
-    VerifyOtpPayload
-  >({
-    mutationFn: async (payload: VerifyOtpPayload) => {
-      const response = await authApi.verifyOtp(payload);
-      return response.data;
+  return useMutation<VerifyOtpResponse, AxiosError<ApiError>, VerifyOtpPayload>(
+    {
+      mutationFn: async (payload: VerifyOtpPayload) => {
+        const response = await authApi.verifyOtp(payload);
+        return response.data as unknown as VerifyOtpResponse; // 👈 Cast here
+      },
+      onSuccess: options?.onSuccess,
+      onError: options?.onError,
     },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
-  });
+  );
 };
 
 // ─── useResetPassword ─────────────────────────────────────────────────────────
@@ -103,18 +102,19 @@ export const useVerifyOtp = (options?: {
  *   password_confirmation: "newpassword123",
  * });
  */
+// ─── useResetPassword ─────────────────────────────────────────────────────────
 export const useResetPassword = (options?: {
-  onSuccess?: (data: ApiResponse<ResetPasswordResponse>) => void;
+  onSuccess?: (data: ResetPasswordResponse) => void;
   onError?: (error: AxiosError<ApiError>) => void;
 }) => {
   return useMutation<
-    ApiResponse<ResetPasswordResponse>,
+    ResetPasswordResponse,
     AxiosError<ApiError>,
     ResetPasswordPayload
   >({
     mutationFn: async (payload: ResetPasswordPayload) => {
       const response = await authApi.resetPassword(payload);
-      return response.data;
+      return response.data as unknown as ResetPasswordResponse; // 👈 Cast here
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
