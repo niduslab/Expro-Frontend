@@ -22,6 +22,7 @@ export interface MemberProfile {
   religion?: string;
   gender: string;
   mobile: string;
+  membership_type: string;
   alternate_mobile?: string | null;
   photo?: string | null;
   nid_front_photo?: string | null;
@@ -33,6 +34,7 @@ export interface MemberProfile {
   suspended_at?: string | null;
   suspension_reason?: string | null;
   consecutive_missed_payments?: number;
+
   created_at?: string | null;
   updated_at?: string | null;
 }
