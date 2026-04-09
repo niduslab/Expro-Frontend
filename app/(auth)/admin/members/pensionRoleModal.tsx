@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { X, TrendingUp, TrendingDown } from "lucide-react";
+import { useState, useMemo } from "react";
+import { X, TrendingUp, TrendingDown, Plus } from "lucide-react";
 import { usePromotePensionEnrollment, useDemotePensionEnrollment } from "@/lib/hooks/admin/useProjectHook";
 import { toast } from "sonner";
 
@@ -33,7 +33,29 @@ export default function PensionRoleModal({
   const { mutate: promote, isPending: isPromoting } = usePromotePensionEnrollment();
   const { mutate: demote, isPending: isDemoting } = useDemotePensionEnrollment();
 
+  // Get existing roles for selected enrollment
+  const existingRoles = useMemo(() => {
+    if (!selectedEnrollmentId) return [];
+    const enrollment = pensionEnrollments.find((e: any) => e.id === Number(selectedEnrollmentId));
+    if (!enrollment) return [];
+    return enrollment.package_roles?.filter((role: any) => role.is_active).map((role: any) => role.role) || [];
+  }, [selectedEnrollmentId, pensionEnrollments]);
+
   if (!isOpen) return null;
+
+  // Check if role already exists
+  const roleAlreadyExists = existingRoles.includes(selectedRole);
+
+  // Get role display name
+  const getRoleDisplayName = (role: string) => {
+    const roleNames: Record<string, string> = {
+      executive_member: 'Executive Member',
+      project_presenter: 'Project Presenter',
+      assistant_pp: 'Assistant PP',
+      general_member: 'General Member'
+    };
+    return roleNames[role] || role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +66,12 @@ export default function PensionRoleModal({
     }
 
     if (action === 'promote') {
+      // Check if role already exists
+      if (roleAlreadyExists) {
+        toast.error(`Member already has the ${getRoleDisplayName(selectedRole)} role`);
+        return;
+      }
+
       if (selectedRole === 'executive_member' && !paymentId) {
         toast.error("Payment ID is required for Executive Member role");
         return;
@@ -62,16 +90,16 @@ export default function PensionRoleModal({
         params.notes = notes;
       }
 
-      toast.loading("Promoting member...", { id: "pension-role-action" });
+      toast.loading("Adding role...", { id: "pension-role-action" });
 
       promote(params, {
         onSuccess: (res) => {
-          toast.success(res.message || "Member promoted successfully!", { id: "pension-role-action" });
+          toast.success(res.message || "Role added successfully!", { id: "pension-role-action" });
           onClose();
           resetForm();
         },
         onError: (err: any) => {
-          toast.error(err.message || "Failed to promote member", { id: "pension-role-action" });
+          toast.error(err.message || "Failed to add role", { id: "pension-role-action" });
         },
       });
     } else {
@@ -123,14 +151,14 @@ export default function PensionRoleModal({
               action === 'promote' ? 'bg-[#F0FDF4]' : 'bg-[#FEF3C7]'
             }`}>
               {action === 'promote' ? (
-                <TrendingUp className="w-5 h-5 text-[#068847]" />
+                <Plus className="w-5 h-5 text-[#068847]" />
               ) : (
                 <TrendingDown className="w-5 h-5 text-[#F59E0B]" />
               )}
             </div>
             <div>
               <h3 className="text-lg font-semibold text-[#030712]">
-                {action === 'promote' ? 'Promote' : 'Demote'} Member
+                {action === 'promote' ? 'Add Role' : 'Demote'} Member
               </h3>
               <p className="text-sm text-[#4A5565]">{memberName}</p>
             </div>
@@ -156,7 +184,7 @@ export default function PensionRoleModal({
                   : 'text-[#4A5565] hover:text-[#030712]'
               }`}
             >
-              Promote
+              Add Role
             </button>
             <button
               type="button"
@@ -198,10 +226,27 @@ export default function PensionRoleModal({
 
           {action === 'promote' ? (
             <>
+              {/* Current Roles Display */}
+              {existingRoles.length > 0 && (
+                <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg p-3">
+                  <p className="text-xs font-medium text-[#4A5565] mb-2">Current Roles:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {existingRoles.map((role: string) => (
+                      <span
+                        key={role}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-white border border-[#E5E7EB] text-[#030712]"
+                      >
+                        {getRoleDisplayName(role)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Role Selection */}
               <div>
                 <label className="block text-sm font-medium text-[#030712] mb-2">
-                  Select Role <span className="text-red-500">*</span>
+                  Select Role to Add <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={selectedRole}
@@ -212,6 +257,23 @@ export default function PensionRoleModal({
                   <option value="project_presenter">Project Presenter</option>
                   <option value="assistant_pp">Assistant PP</option>
                 </select>
+                {roleAlreadyExists && (
+                  <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Member already has this role
+                  </p>
+                )}
+              </div>
+
+              {/* Info Box */}
+              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg p-3">
+                <p className="text-xs text-[#1E40AF]">
+                  <strong>Note:</strong> Members can have multiple roles. The General Member role is assigned by default and will be retained when adding new roles.
+                </p>
               </div>
 
               {/* Payment ID (for Executive Member) */}
@@ -294,14 +356,14 @@ export default function PensionRoleModal({
             </button>
             <button
               type="submit"
-              disabled={isPending || pensionEnrollments.length === 0}
+              disabled={isPending || pensionEnrollments.length === 0 || (action === 'promote' && roleAlreadyExists)}
               className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 action === 'promote'
                   ? 'bg-[#068847] text-white hover:bg-[#057038]'
                   : 'bg-[#F59E0B] text-white hover:bg-[#D97706]'
               }`}
             >
-              {isPending ? (action === 'promote' ? 'Promoting...' : 'Demoting...') : (action === 'promote' ? 'Promote' : 'Demote')}
+              {isPending ? (action === 'promote' ? 'Adding Role...' : 'Demoting...') : (action === 'promote' ? 'Add Role' : 'Demote')}
             </button>
           </div>
         </form>

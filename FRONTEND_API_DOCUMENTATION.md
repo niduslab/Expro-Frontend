@@ -331,6 +331,104 @@ const response = await api.get('/mywallettransactions', {
 }
 ```
 
+### Get Company Wallet (Admin)
+
+**Endpoint:** `GET /admin/wallets/company`  
+**Auth Required:** Yes (Admin)
+
+```javascript
+const response = await api.get('/admin/wallets/company');
+
+// Response
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "balance": 250000.00,
+    "currency": "BDT",
+    "status": "active",
+    "total_deposits": 500000.00,
+    "total_withdrawals": 250000.00,
+    "last_transaction_date": "2024-03-15T10:00:00.000000Z"
+  }
+}
+```
+
+### Get Company Wallet Dashboard (Admin)
+
+**Endpoint:** `GET /admin/wallets/company/dashboard`  
+**Auth Required:** Yes (Admin)
+
+```javascript
+const response = await api.get('/admin/wallets/company/dashboard');
+
+// Response
+{
+  "success": true,
+  "data": {
+    "total_balance": 250000.00,
+    "commission_pool": 18500.00,
+    "total_deposited": 500000.00,
+    "total_withdrawn": 250000.00,
+    "pending_commissions": 5000.00,
+    "monthly_stats": {
+      "deposits": 50000.00,
+      "withdrawals": 30000.00,
+      "net_change": 20000.00
+    },
+    "recent_activity": [
+      {
+        "type": "credit",
+        "amount": 5000.00,
+        "description": "Membership fee payment",
+        "date": "2024-03-15T10:00:00.000000Z"
+      }
+    ]
+  }
+}
+```
+
+### Get Company Wallet Transactions (Admin)
+
+**Endpoint:** `GET /admin/wallets/company/transactions`  
+**Auth Required:** Yes (Admin)
+
+```javascript
+const response = await api.get('/admin/wallets/company/transactions', {
+  params: {
+    page: 1,
+    per_page: 15,
+    type: 'credit', // or 'debit'
+    category: 'membership_fee',.ll
+    from_date: '2024-01-01',
+    to_date: '2024-12-31'
+  }
+});
+
+// Response
+{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "type": "credit",
+        "category": "membership_fee",
+        "amount": 1000.00,
+        "balance_after": 251000.00,
+        "description": "Monthly membership fee",
+        "user_id": 5,
+        "user_name": "John Doe",
+        "created_at": "2024-03-15T10:00:00.000000Z"
+      }
+    ],
+    "total": 150,
+    "per_page": 15
+  }
+}
+```
+
 ---
 
 ## Branches
