@@ -8,8 +8,9 @@ import {
   Edit,
   Trash2,
   Eye,
-  X,
   AlertTriangle,
+  MoreVertical,
+  UsersRound,
 } from "lucide-react";
 import { useState } from "react";
 import NewPackageModal from "./new-package-modal";
@@ -47,6 +48,7 @@ export default function AdminPensionPackages() {
     id: number;
     name: string;
   } | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   const {
     data: packagesData,
@@ -87,9 +89,18 @@ export default function AdminPensionPackages() {
     window.location.href = `/admin/members?packageId=${packageId}&packageName=${encodeURIComponent(packageName)}`;
   };
 
+  const handleTeamCollection = (packageId: number, packageName: string) => {
+    window.location.href = `/admin/team-collections?packageId=${packageId}&packageName=${encodeURIComponent(packageName)}`;
+  };
+
   const handleEdit = (pkg: any) => {
     setSelectedPackage(pkg);
     setOpenModal(true);
+    setOpenDropdownId(null);
+  };
+
+  const toggleDropdown = (planId: number) => {
+    setOpenDropdownId(openDropdownId === planId ? null : planId);
   };
 
   const getStatusBadge = (status: string) => {
@@ -248,19 +259,54 @@ export default function AdminPensionPackages() {
                   <span className="text-sm font-medium">View Members</span>
                 </button>
                 <button
-                  onClick={() => handleEdit(plan)}
+                  onClick={() => handleTeamCollection(plan.id, plan.name)}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#D1D5DC] text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
                 >
-                  <Edit size={16} />
-                  <span className="text-sm font-medium">Edit</span>
+                  <UsersRound size={16} />
+                  <span className="text-sm font-medium">Team Collection</span>
                 </button>
-                <button
-                  onClick={() => handleDeleteClick(plan.id, plan.name)}
-                  disabled={isDeleting}
-                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#FCA5A5] text-[#DC2626] hover:bg-[#FEE2E2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Trash2 size={16} />
-                </button>
+                
+                {/* Dropdown Menu */}
+                <div className="relative">
+                  <button
+                    onClick={() => toggleDropdown(plan.id)}
+                    className="flex items-center justify-center p-2 rounded-lg border border-[#D1D5DC] text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
+                  >
+                    <MoreVertical size={20} />
+                  </button>
+                  
+                  {/* Dropdown Content */}
+                  {openDropdownId === plan.id && (
+                    <>
+                      {/* Backdrop to close dropdown */}
+                      <div 
+                        className="fixed inset-0 z-10" 
+                        onClick={() => setOpenDropdownId(null)}
+                      />
+                      
+                      <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-[#E5E7EB] py-1 z-20">
+                        <button
+                          onClick={() => handleEdit(plan)}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
+                        >
+                          <Edit size={16} />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDeleteClick(plan.id, plan.name);
+                            setOpenDropdownId(null);
+                          }}
+                          disabled={isDeleting}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#DC2626] hover:bg-[#FEE2E2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <Trash2 size={16} />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           ))}
