@@ -1,19 +1,19 @@
 /**
  * Authentication Utilities
- * 
+ *
  * DEPRECATED: This file is maintained for backward compatibility.
- * 
+ *
  * RECOMMENDED: Use the new authentication hooks instead:
  * - useLogin() for login functionality
  * - useLogout() for logout functionality
  * - useCurrentUser() for fetching user profile
  * - useAuthStatus() for checking authentication status
- * 
+ *
  * Import from: @/lib/hooks
- * 
+ *
  * @example
  * import { useLogin, useLogout } from '@/lib/hooks';
- * 
+ *
  * const { mutate: login, isPending } = useLogin();
  * const { mutate: logout } = useLogout();
  */
@@ -41,13 +41,13 @@ async function getCsrfCookie(): Promise<void> {
 
 /**
  * Login function
- * 
+ *
  * @deprecated Use useLogin() hook instead for better error handling and state management
- * 
+ *
  * @example
  * // Old way (deprecated)
  * const result = await login(email, password);
- * 
+ *
  * // New way (recommended)
  * const { mutate: login } = useLogin();
  * login({ email, password });
@@ -61,7 +61,7 @@ export async function login(
     await getCsrfCookie();
 
     // Step 2: Login with credentials
-    const response = await apiClient.post("/public/login", {
+    const response = await apiClient.post("/login", {
       email,
       password,
     });
@@ -82,13 +82,13 @@ export async function login(
 
 /**
  * Logout function
- * 
+ *
  * @deprecated Use useLogout() hook instead
- * 
+ *
  * @example
  * // Old way (deprecated)
  * await logout();
- * 
+ *
  * // New way (recommended)
  * const { mutate: logout } = useLogout();
  * logout();
@@ -103,13 +103,13 @@ export async function logout() {
 
 /**
  * Get current user profile
- * 
+ *
  * @deprecated Use useCurrentUser() hook instead
- * 
+ *
  * @example
  * // Old way (deprecated)
  * const user = await getCurrentUser();
- * 
+ *
  * // New way (recommended)
  * const { data: user, isLoading } = useCurrentUser();
  */

@@ -88,7 +88,7 @@ export const useLogin = () => {
 
         // Step 2: Login with credentials using publicApiRequest (same as contact form)
         const response = await publicApiRequest.post(
-          "/public/login",
+          "public/login",
           credentials,
         );
 
