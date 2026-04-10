@@ -14,6 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useChangePassword } from "@/lib/hooks/admin/useChangePassword";
+import { useAuth } from "@/lib";
 
 // ─────────────────────────────────────────────
 // Helpers
@@ -152,10 +153,10 @@ export default function ChangePasswordPage() {
     setLocalErrors(e);
     return Object.keys(e).length === 0;
   }
-
+  const { logout } = useAuth();
   // Start a 3-second countdown then redirect to /login
   function startRedirect() {
-    localStorage.removeItem("token");
+    logout();
     let count = 3;
     setRedirectCountdown(count);
     const interval = setInterval(() => {
