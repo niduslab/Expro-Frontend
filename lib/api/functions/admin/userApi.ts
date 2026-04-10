@@ -21,3 +21,11 @@ export const fetchAllusers = async (
 
   return res.data;
 };
+
+export const fetchMemberDashboard = async () => {
+  const res = await apiClient.get<ApiResponse<any>>("/member/dashboard", {
+    withCredentials: true,
+  });
+
+  return res.data?.data ?? null;
+};

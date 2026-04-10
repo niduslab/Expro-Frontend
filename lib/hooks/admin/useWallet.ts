@@ -35,14 +35,42 @@ export interface CompanyWalletDashboard {
 
 export interface CompanyWalletTransaction {
   id: number;
+  transaction_id: string;
   type: 'credit' | 'debit';
   category: string;
   amount: number;
+  balance_before: number;
   balance_after: number;
   description: string;
+  notes?: string | null;
+  status: 'completed' | 'pending' | 'failed';
+  processed_by?: number | null;
+  processed_at?: string | null;
   user_id?: number;
   user_name?: string;
   created_at: string;
+}
+
+export interface CompanyWalletInfo {
+  id: number;
+  wallet_type: string;
+  balance: number;
+  total_received: number;
+  total_membership_paid: number;
+  total_pension_paid: number;
+  total_commission_paid: number;
+  total_withdrawals_paid: number;
+}
+
+export interface CompanyWalletTransactionsResponse {
+  data: CompanyWalletTransaction[];
+  wallet: CompanyWalletInfo;
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+  };
 }
 
 export interface CompanyWalletTransactionsParams {
@@ -99,7 +127,7 @@ export const useCompanyWalletDashboard = () => {
  * Fetches the company wallet transactions with filtering (Admin only)
  * 
  * @param params - Query parameters for filtering transactions
- * @returns React Query result with paginated transactions
+ * @returns React Query result with paginated transactions and wallet info
  * 
  * @example
  * const { data, isLoading } = useCompanyWalletTransactions({
@@ -112,7 +140,7 @@ export const useCompanyWalletTransactions = (params?: CompanyWalletTransactionsP
   return useQuery({
     queryKey: ['company-wallet-transactions', params],
     queryFn: async () => {
-      const response = await apiRequest.get<PaginatedResponse<CompanyWalletTransaction>>(
+      const response = await apiRequest.get<CompanyWalletTransactionsResponse>(
         '/admin/wallets/company/transactions',
         { params }
       );
