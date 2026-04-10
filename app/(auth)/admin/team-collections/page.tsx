@@ -203,7 +203,7 @@ export default function TeamCollectionsPage() {
                           </div>
                           <div>
                             <p className="font-semibold text-[#030712]">
-                              {collection.team_leader?.member?.name_english ||
+                              {collection.team_leader?.member_profile?.name_english ||
                                 collection.team_leader?.email ||
                                 "Unknown Leader"}
                             </p>
@@ -281,7 +281,7 @@ export default function TeamCollectionsPage() {
                           <p className="text-sm font-medium text-[#068847]">
                             ৳
                             {parseFloat(
-                              collection.commission_eligible_amount
+                              collection.comission_eligible_amount || 0
                             ).toLocaleString()}
                           </p>
                         </div>
@@ -344,14 +344,14 @@ export default function TeamCollectionsPage() {
                                       >
                                         <div>
                                           <p className="text-sm font-medium text-[#2563EB]">
-                                            {contrib.member?.member
+                                            {contrib.member?.member_profile
                                               ?.name_english ||
                                               contrib.member?.email ||
                                               "Unknown"}
                                           </p>
-                                          {contrib.member?.member?.phone && (
+                                          {contrib.member?.member_profile?.mobile && (
                                             <p className="text-xs text-[#4A5565]">
-                                              {contrib.member.member.phone}
+                                              {contrib.member.member_profile.mobile}
                                             </p>
                                           )}
                                         </div>

@@ -131,14 +131,15 @@ export default function DashboardPage() {
               {userData?.member?.photo ? (
                 <Image
                   src={
-                    userData?.member?.photo ||
-                    "/images/dashboard/memberApproval/1.jpg"
+                    userData?.member?.photo.startsWith("http")
+                      ? userData?.member?.photo
+                      : `${process.env.NEXT_PUBLIC_API_URL || ""}/${userData?.member?.photo}`
                   }
                   alt={userData?.member?.name_english || "Member"}
                   width={68}
                   height={68}
                   className="w-[68px] h-[68px] rounded-2xl object-cover border-2 border-white/30"
-                  unoptimized={userData?.member?.photo.startsWith("http")}
+                  unoptimized
                 />
               ) : (
                 <div className="w-[88px] h-[68px] p-3 px-4 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center text-white text-xl font-semibold tracking-tight">
