@@ -69,8 +69,8 @@ function PasswordInput({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full h-[44px] border rounded-lg px-4 pr-10 text-[14px] text-[#111827] bg-white outline-none transition-all
-            focus:ring-[3px] focus:ring-[#068847]/10 focus:border-[#068847]
+          className={`w-full h-[44px] border border-slate-300 rounded-lg px-4 pr-10 text-[14px] text-[#111827] bg-white outline-none transition-all
+            focus:ring-[3px] focus:ring-[#068847]/40 focus:border-[#068847]
             ${error ? "border-red-400" : "border-[#D1D5DB]"}`}
         />
         <button
@@ -228,7 +228,7 @@ export default function ChangePasswordPage() {
 
         {/* Back button */}
         <Link
-          href="/settings"
+          href="/admin/settings"
           className="inline-flex items-center gap-1.5 mb-3 text-[13px] text-[#6B7280] hover:text-[#068847] transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -246,7 +246,7 @@ export default function ChangePasswordPage() {
                 Change password
               </h1>
               <p className="text-[13px] text-gray-400 mt-0.5">
-                Last changed 3 months ago
+                Secure your password carefully.
               </p>
             </div>
           </div>
