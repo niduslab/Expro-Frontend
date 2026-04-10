@@ -19,6 +19,10 @@ import {
   Wallet, // ← Wallet type interface
   WalletTransaction,
 } from "@/lib/types/admin/walletsType";
+import {
+  useMyWallet,
+  useMyWalletTransactions,
+} from "@/lib/hooks/user/useWallet";
 
 /* ─────────────────────────────────────────
    Helpers
@@ -105,8 +109,12 @@ const STATUS_CONFIG: Record<
 ───────────────────────────────────────── */
 
 export default function WalletPage() {
-  const { data: profile, isLoading } = useMyProfile();
+  const { data: profile, isLoading: walletLoading } = useMyWallet();
+  const { data: transactionsData, isLoading: txLoading } =
+    useMyWalletTransactions();
   const [filter, setFilter] = useState<FilterKey>("all");
+
+  const isLoading = walletLoading || txLoading;
 
   if (isLoading) {
     return (
@@ -122,10 +130,9 @@ export default function WalletPage() {
   if (!profile) return null;
 
   // wallet is a single object on the profile (not an array)
-  const wallet: Wallet | null = profile.wallet?.[0] ?? null;
-  const allTransactions: WalletTransaction[] =
-    profile.wallet_transactions ?? [];
-  const pensionEnrollments: any[] = profile.pension_enrollments ?? [];
+  const wallet: Wallet | null = profile ?? null; // profile is Wallet ✅
+  const allTransactions: WalletTransaction[] = transactionsData ?? []; // transactionsData is WalletTransaction[] ✅
+  const pensionEnrollments: any[] = [];
 
   const filteredTransactions = allTransactions.filter((tx) => {
     if (filter === "all") return true;
@@ -151,8 +158,8 @@ export default function WalletPage() {
       <div className="max-w-7xl mx-auto space-y-5">
         {/* ── Page title ── */}
         <div>
-          <h1 className="text-lg font-semibold text-[#030712]">Wallet</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">
+          <h1 className="text-[14px] font-semibold text-[#030712]">Wallet</h1>
+          <p className="text-[10px] text-[#6B7280] mt-0.5 ">
             Your balance, statistics, and transaction history
           </p>
         </div>
@@ -184,12 +191,7 @@ export default function WalletPage() {
           <div className="lg:col-span-2 space-y-5">
             {/* Balance hero — mirrors the profile page green band pattern */}
             <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
-              <div className="h-20 bg-[#068847] relative overflow-hidden">
-                <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/[0.06]" />
-                <div className="absolute top-3 right-20 w-16 h-16 rounded-full bg-white/[0.06]" />
-              </div>
-
-              <div className="px-5 md:px-6 pb-5 -mt-8">
+              <div className="px-5 md:px-6 pb-5 mt-8">
                 <div className="w-16 h-16 rounded-2xl bg-[#068847] border-4 border-white flex items-center justify-center mb-4">
                   <WalletIcon className="w-7 h-7 text-white" />
                 </div>
@@ -199,7 +201,7 @@ export default function WalletPage() {
                     <p className="text-xs text-[#9CA3AF] mb-1">
                       Total available
                     </p>
-                    <p className="text-3xl font-semibold text-[#030712] font-mono">
+                    <p className="text-[14px] font-semibold text-[#030712] font-mono">
                       ৳{fmtAmount(totalBalance)}
                     </p>
                   </div>
@@ -225,7 +227,7 @@ export default function WalletPage() {
                     <p className="text-[11px] text-[#9CA3AF] mb-1">
                       Main balance
                     </p>
-                    <p className="text-lg font-semibold text-[#030712] font-mono">
+                    <p className="text-[14px] font-semibold text-[#030712] font-mono">
                       ৳{fmtAmount(wallet?.balance ?? "0")}
                     </p>
                   </div>
@@ -233,7 +235,7 @@ export default function WalletPage() {
                     <p className="text-[11px] text-[#9CA3AF] mb-1">
                       Commission balance
                     </p>
-                    <p className="text-lg font-semibold text-[#030712] font-mono">
+                    <p className="text-[14px] font-semibold text-[#030712] font-mono">
                       ৳{fmtAmount(wallet?.commission_balance ?? "0")}
                     </p>
                   </div>

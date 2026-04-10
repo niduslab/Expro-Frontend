@@ -185,10 +185,7 @@ export default function DashboardPage() {
                     value: fmtDate(member.membership_expiry_date),
                   },
                 ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="bg-gray-500 border border-green-200 rounded-xl px-6 py-4"
-                  >
+                  <div key={label} className=" border  rounded-xl px-6 py-4">
                     <p className="text-white/50 text-[10px] uppercase tracking-wide mb-2">
                       {label}
                     </p>
