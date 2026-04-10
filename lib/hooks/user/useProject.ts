@@ -1,37 +1,81 @@
-import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { ApiResponseWithPagination, Project } from "@/lib/types/projectType";
 import {
-  getMyProjects,
+  fetchMyProjects,
   MyProjectsParams,
-} from "@/lib/api/functions/user/myProjectsApi";
+  MyProjectsResponse,
+  ProjectMember,
+} from "@/lib/types/projectMemberType";
+import {
+  useQuery,
+  useInfiniteQuery,
+  keepPreviousData,
+} from "@tanstack/react-query";
+
+// ─── Query Keys ───────────────────────────────────────────────────────────────
+
+export const myProjectsKeys = {
+  all: ["myProjects"] as const,
+  lists: () => [...myProjectsKeys.all, "list"] as const,
+  list: (params?: MyProjectsParams) =>
+    [...myProjectsKeys.lists(), params ?? {}] as const,
+  infinite: (params?: Omit<MyProjectsParams, "page">) =>
+    [...myProjectsKeys.all, "infinite", params ?? {}] as const,
+};
+
+// ─── Paginated Hook ───────────────────────────────────────────────────────────
 
 /**
- * Hook: Get My Projects
- * Fetches the authenticated user's projects with optional filters
+ * useMyProjects
  *
- * @param params - Optional query params (status, sort_by, sort_order, page, per_page)
+ * Standard paginated hook. Pass filter / pagination params and the data
+ * will automatically refetch whenever they change.
  *
  * @example
- * // Default — active projects sorted by joining_date desc
- * const { data, isLoading } = useMyProjects();
- *
- * // Custom filters
- * const { data, isLoading } = useMyProjects({
- *   status: 'active',
- *   sort_by: 'joining_date',
- *   sort_order: 'desc',
- *   page: 1,
- *   per_page: 10,
- * });
- *
- * const projects = data?.data;       // Project[]
- * const pagination = data?.pagination;
+ * const { data, isLoading, isError } = useMyProjects({ status: "active", page: 1 });
  */
 export const useMyProjects = (params?: MyProjectsParams) => {
-  return useQuery<ApiResponseWithPagination<Project>, AxiosError>({
-    queryKey: ["myprojects", params],
-    queryFn: () => getMyProjects(params),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+  return useQuery<MyProjectsResponse, Error>({
+    queryKey: myProjectsKeys.list(params),
+    queryFn: () => fetchMyProjects(params),
+    placeholderData: keepPreviousData, // keeps old data visible while fetching next page
+    staleTime: 1000 * 60 * 2, // 2 minutes
   });
+};
+
+// ─── Infinite Scroll Hook ─────────────────────────────────────────────────────
+
+/**
+ * useMyProjectsInfinite
+ *
+ * Infinite-scroll / "load more" variant. Automatically appends the next
+ * page of results when `fetchNextPage` is called.
+ *
+ * @example
+ * const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+ *   useMyProjectsInfinite({ status: "active" });
+ */
+export const useMyProjectsInfinite = (
+  params?: Omit<MyProjectsParams, "page">,
+) => {
+  return useInfiniteQuery<MyProjectsResponse, Error>({
+    queryKey: myProjectsKeys.infinite(params),
+    queryFn: ({ pageParam = 1 }) =>
+      fetchMyProjects({ ...params, page: pageParam as number }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, last_page } = lastPage.pagination;
+      return current_page < last_page ? current_page + 1 : undefined;
+    },
+    staleTime: 1000 * 60 * 2,
+  });
+};
+
+// ─── Selector Helpers (use with useMyProjects) ────────────────────────────────
+
+/**
+ * Flatten all project members from an infinite query result.
+ */
+export const flattenInfiniteMyProjects = (
+  data: ReturnType<typeof useMyProjectsInfinite>["data"],
+): ProjectMember[] => {
+  return data?.pages.flatMap((page) => page.data) ?? [];
 };

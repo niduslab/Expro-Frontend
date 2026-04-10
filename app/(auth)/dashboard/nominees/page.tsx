@@ -44,7 +44,7 @@ export default function NomineePage() {
 
   if (!profile) return null;
 
-  const nominees: any[] = profile.nominee || [];
+  const nominees: any[] = profile.data || [];
   const primary = nominees.find((n) => n.is_primary);
   const totalShare = nominees.reduce(
     (sum, n) => sum + parseFloat(n.percentage || "0"),

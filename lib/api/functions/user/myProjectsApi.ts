@@ -1,22 +1,27 @@
-import { apiRequest } from "@/lib/api/axios";
-import { ApiResponseWithPagination, Project } from "@/lib/types/projectType";
-
-export interface MyProjectsParams {
-  status?: string;
-  sort_by?: string;
-  sort_order?: "asc" | "desc";
-  page?: number;
-  per_page?: number;
-}
+import {
+  MyProjectsParams,
+  MyProjectsResponse,
+} from "@/lib/types/projectMemberType";
+import { apiRequest } from "../../axios";
 
 /**
- * Get the authenticated user's projects
+ * Fetch the authenticated user's project memberships.
  *
- * GET /myprojects?status=active&sort_by=joining_date&sort_order=desc
+ * GET /api/v1/myprojects
+ *
+ * Supports filtering by project_id, project_role, status,
+ * joining_date, expiry_date, and pagination.
  */
-export const getMyProjects = async (
+export const fetchMyProjects = async (
   params?: MyProjectsParams,
-): Promise<ApiResponseWithPagination<Project>> => {
-  const response = await apiRequest.get<Project[]>("/myprojects", { params });
-  return response.data as unknown as ApiResponseWithPagination<Project>;
+): Promise<MyProjectsResponse> => {
+  const response = await apiRequest.get<MyProjectsResponse["data"]>(
+    "/myprojects",
+    { params },
+  );
+
+  // The generic wrapper returns { success, message, data }
+  // but our endpoint also returns pagination at the top level,
+  // so we surface the full response data here.
+  return response.data as unknown as MyProjectsResponse;
 };
