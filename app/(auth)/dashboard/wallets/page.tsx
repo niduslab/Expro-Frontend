@@ -9,10 +9,8 @@ import {
   RotateCcw,
   ShieldAlert,
   TrendingUp,
-  Landmark,
 } from "lucide-react";
 import { useState } from "react";
-import { useMyProfile } from "@/lib/hooks/admin/useUsers";
 import {
   TransactionStatus,
   TransactionType,
@@ -23,6 +21,7 @@ import {
   useMyWallet,
   useMyWalletTransactions,
 } from "@/lib/hooks/user/useWallet";
+import MembershipFeePayment from "@/components/dashboard/wallet/MembershipFeePayment";
 
 /* ─────────────────────────────────────────
    Helpers
@@ -132,7 +131,6 @@ export default function WalletPage() {
   // wallet is a single object on the profile (not an array)
   const wallet: Wallet | null = profile ?? null; // profile is Wallet ✅
   const allTransactions: WalletTransaction[] = transactionsData ?? []; // transactionsData is WalletTransaction[] ✅
-  const pensionEnrollments: any[] = [];
 
   const filteredTransactions = allTransactions.filter((tx) => {
     if (filter === "all") return true;
@@ -154,30 +152,30 @@ export default function WalletPage() {
     parseFloat(wallet?.commission_balance ?? "0");
 
   return (
-    <div className="container mx-auto mb-4">
-      <div className="max-w-7xl mx-auto space-y-5">
+    <div className="container mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* ── Page title ── */}
         <div>
-          <h1 className="text-[14px] font-semibold text-[#030712]">Wallet</h1>
-          <p className="text-[10px] text-[#6B7280] mt-0.5 ">
-            Your balance, statistics, and transaction history
+          <h1 className="text-2xl font-bold text-[#030712]">My Wallet</h1>
+          <p className="text-[14px] text-[#6B7280] mt-1">
+            Manage your balance, view statistics, and track transaction history
           </p>
         </div>
 
         {/* ── Locked warning ── */}
         {wallet?.is_locked && (
-          <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-            <ShieldAlert className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-4">
+            <ShieldAlert className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-semibold text-red-800 mb-0.5">
-                Wallet locked
+              <p className="text-[14px] font-semibold text-red-800 mb-1">
+                Wallet Locked
               </p>
-              <p className="text-xs text-red-700">
+              <p className="text-[14px] text-red-700">
                 {wallet.lock_reason ??
-                  "Your wallet has been locked. Please contact support."}
+                  "Your wallet has been locked. Please contact support for assistance."}
                 {wallet.locked_at && (
-                  <span className="ml-1 text-red-500">
-                    · Since {fmtDateTime(wallet.locked_at)}
+                  <span className="ml-1 text-red-600">
+                    · Locked since {fmtDateTime(wallet.locked_at)}
                   </span>
                 )}
               </p>
@@ -186,56 +184,60 @@ export default function WalletPage() {
         )}
 
         {/* ── Main grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* ── Left (2/3) ── */}
-          <div className="lg:col-span-2 space-y-5">
-            {/* Balance hero — mirrors the profile page green band pattern */}
-            <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
-              <div className="px-5 md:px-6 pb-5 mt-8">
-                <div className="w-16 h-16 rounded-2xl bg-[#068847] border-4 border-white flex items-center justify-center mb-4">
-                  <WalletIcon className="w-7 h-7 text-white" />
-                </div>
+          <div className="lg:col-span-2 space-y-6">
+            {/* Membership Fee Payment */}
+            <MembershipFeePayment />
 
-                <div className="flex items-end justify-between flex-wrap gap-4">
-                  <div>
-                    <p className="text-xs text-[#9CA3AF] mb-1">
-                      Total available
-                    </p>
-                    <p className="text-[14px] font-semibold text-[#030712] font-mono">
-                      ৳{fmtAmount(totalBalance)}
-                    </p>
+            {/* Balance hero */}
+            <div className="bg-gradient-to-br from-[#068847] to-[#057a3d] rounded-2xl border border-[#E5E7EB] overflow-hidden shadow-lg">
+              <div className="px-6 md:px-8 py-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <WalletIcon className="w-7 h-7 text-white" />
                   </div>
                   <span
-                    className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full ${
+                    className={`inline-flex items-center gap-2 text-[13px] font-medium px-4 py-2 rounded-full ${
                       wallet?.is_locked
-                        ? "bg-red-50 text-red-700"
-                        : "bg-emerald-50 text-emerald-700"
+                        ? "bg-red-500 text-white"
+                        : "bg-white/20 text-white backdrop-blur-sm"
                     }`}
                   >
                     <span
-                      className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-                        wallet?.is_locked ? "bg-red-500" : "bg-emerald-500"
+                      className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                        wallet?.is_locked ? "bg-white" : "bg-emerald-300"
                       }`}
                     />
-                    {wallet?.is_locked ? "Locked" : "Unlocked"}
+                    {wallet?.is_locked ? "Locked" : "Active"}
                   </span>
                 </div>
 
+                <div>
+                  <p className="text-[14px] text-white/80 mb-2">
+                    Total Available Balance
+                  </p>
+                  <p className="text-4xl font-bold text-white font-mono mb-6">
+                    ৳{fmtAmount(totalBalance)}
+                  </p>
+                </div>
+
                 {/* Balance breakdown tiles */}
-                <div className="grid grid-cols-2 gap-3 mt-5">
-                  <div className="bg-[#F9FAFB] rounded-xl px-4 py-3 border border-[#F3F4F6]">
-                    <p className="text-[11px] text-[#9CA3AF] mb-1">
-                      Main balance
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-4 border border-white/20">
+                    <p className="text-[13px] text-white/70 mb-1">
+                      Main Balance
                     </p>
-                    <p className="text-[14px] font-semibold text-[#030712] font-mono">
-                      ৳{fmtAmount(wallet?.balance ?? "0")}
+                    <p className="text-xl font-bold text-white font-mono">
+                      {/* ৳{fmtAmount(wallet?.balance ?? "0")} */}
+                      ৳{fmtAmount(wallet?.total_pension_paid)}
                     </p>
                   </div>
-                  <div className="bg-[#F9FAFB] rounded-xl px-4 py-3 border border-[#F3F4F6]">
-                    <p className="text-[11px] text-[#9CA3AF] mb-1">
-                      Commission balance
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-4 border border-white/20">
+                    <p className="text-[13px] text-white/70 mb-1">
+                      Commission Balance
                     </p>
-                    <p className="text-[14px] font-semibold text-[#030712] font-mono">
+                    <p className="text-xl font-bold text-white font-mono">
                       ৳{fmtAmount(wallet?.commission_balance ?? "0")}
                     </p>
                   </div>
@@ -245,27 +247,27 @@ export default function WalletPage() {
 
             {/* Transaction history */}
             <Section
-              icon={<TrendingUp className="w-4 h-4 text-[#068847]" />}
-              title="Transaction history"
-              badge={`${allTransactions.length} records`}
+              icon={<TrendingUp className="w-5 h-5 text-[#068847]" />}
+              title="Transaction History"
+              badge={`${allTransactions.length} total`}
             >
               {/* Filter pills */}
-              <div className="flex items-center gap-2 px-5 pt-3 pb-3 border-b border-[#F3F4F6] flex-wrap">
+              <div className="flex items-center gap-2 px-6 pt-4 pb-4 border-b border-[#F3F4F6] flex-wrap">
                 {FILTERS.map(({ key, label }) => {
                   const count = countFor(key);
                   return (
                     <button
                       key={key}
                       onClick={() => setFilter(key)}
-                      className={`text-[11px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                      className={`text-[13px] font-medium px-4 py-2 rounded-lg border transition-all ${
                         filter === key
-                          ? "bg-[#068847] text-white border-[#068847]"
-                          : "bg-white text-[#6B7280] border-[#E5E7EB] hover:bg-[#F9FAFB]"
+                          ? "bg-[#068847] text-white border-[#068847] shadow-sm"
+                          : "bg-white text-[#6B7280] border-[#E5E7EB] hover:bg-[#F9FAFB] hover:border-[#D1D5DB]"
                       }`}
                     >
                       {label}
                       {key !== "all" && count > 0 && (
-                        <span className="ml-1 opacity-60">({count})</span>
+                        <span className="ml-1.5 opacity-70">({count})</span>
                       )}
                     </button>
                   );
@@ -273,17 +275,17 @@ export default function WalletPage() {
               </div>
 
               {filteredTransactions.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-14 text-center px-6">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-3">
-                    <WalletIcon className="w-5 h-5 text-[#D1D5DB]" />
+                <div className="flex flex-col items-center justify-center py-16 text-center px-6">
+                  <div className="w-16 h-16 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
+                    <WalletIcon className="w-7 h-7 text-[#D1D5DB]" />
                   </div>
-                  <p className="text-sm font-semibold text-[#030712] mb-1">
-                    No transactions
+                  <p className="text-[15px] font-semibold text-[#030712] mb-2">
+                    No Transactions Found
                   </p>
-                  <p className="text-xs text-[#6B7280] max-w-xs leading-relaxed">
+                  <p className="text-[14px] text-[#6B7280] max-w-sm leading-relaxed">
                     {filter === "all"
                       ? "Your wallet activity will appear here once you make a deposit, payment, or receive a commission."
-                      : `No ${filter} transactions found.`}
+                      : `No ${filter} transactions found. Try adjusting your filters.`}
                   </p>
                 </div>
               ) : (
@@ -297,76 +299,42 @@ export default function WalletPage() {
           </div>
 
           {/* ── Right (1/3) ── */}
-          <div className="space-y-5">
-            {/* Statistics — exactly the 5 fields on the Wallet type */}
+          <div className="space-y-6">
+            {/* Statistics */}
             <Section
-              icon={<TrendingUp className="w-4 h-4 text-[#068847]" />}
+              icon={<TrendingUp className="w-5 h-5 text-[#068847]" />}
               title="Statistics"
             >
-              <div className="px-5 py-2">
+              <div className="px-6 py-3">
                 <StatRow
-                  label="Total deposited"
+                  label="Total Deposited"
                   value={wallet?.total_deposited}
                 />
                 <StatRow
-                  label="Total withdrawn"
+                  label="Total Withdrawn"
                   value={wallet?.total_withdrawn}
                 />
                 <StatRow
-                  label="Commission earned"
+                  label="Commission Earned"
                   value={wallet?.total_commission_earned}
                 />
                 <StatRow
-                  label="Membership paid"
+                  label="Membership Paid"
                   value={wallet?.total_membership_paid}
                 />
                 <StatRow
-                  label="Pension paid"
+                  label="Pension Paid"
                   value={wallet?.total_pension_paid}
                 />
               </div>
             </Section>
 
-            {/* Pension enrollments */}
-            <Section
-              icon={<Landmark className="w-4 h-4 text-[#068847]" />}
-              title="Pension enrollments"
-              badge={String(pensionEnrollments.length)}
-            >
-              {pensionEnrollments.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 text-center px-5">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-3">
-                    <Landmark className="w-5 h-5 text-[#D1D5DB]" />
-                  </div>
-                  <p className="text-xs font-semibold text-[#030712] mb-1">
-                    No pension plan
-                  </p>
-                  <p className="text-[11px] text-[#6B7280] leading-relaxed">
-                    Contact your branch to enroll in a pension plan.
-                  </p>
-                </div>
-              ) : (
-                <div className="divide-y divide-[#F3F4F6]">
-                  {pensionEnrollments.map((pe: any) => (
-                    <div key={pe.id} className="px-5 py-3">
-                      <p className="text-xs font-semibold text-[#030712]">
-                        {pe.plan_name ?? `Plan #${pe.id}`}
-                      </p>
-                      <p className="text-[11px] text-[#9CA3AF] mt-0.5">
-                        Since {fmtDate(pe.enrolled_at ?? pe.created_at)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Section>
-
             {/* Wallet meta */}
             <Section
-              icon={<WalletIcon className="w-4 h-4 text-[#068847]" />}
-              title="Wallet info"
+              icon={<WalletIcon className="w-5 h-5 text-[#068847]" />}
+              title="Wallet Information"
             >
-              <div className="px-5 py-2">
+              <div className="px-6 py-3">
                 <InfoRow
                   label="Wallet ID"
                   value={wallet ? `#${wallet.id}` : null}
@@ -374,7 +342,7 @@ export default function WalletPage() {
                 />
                 <InfoRow label="Created" value={fmtDate(wallet?.created_at)} />
                 <InfoRow
-                  label="Last updated"
+                  label="Last Updated"
                   value={fmtDate(wallet?.updated_at)}
                 />
                 <InfoRow
@@ -383,12 +351,12 @@ export default function WalletPage() {
                 />
                 {wallet?.is_locked && wallet.locked_at && (
                   <InfoRow
-                    label="Locked on"
+                    label="Locked On"
                     value={fmtDateTime(wallet.locked_at)}
                   />
                 )}
                 {wallet?.is_locked && wallet.lock_reason && (
-                  <InfoRow label="Lock reason" value={wallet.lock_reason} />
+                  <InfoRow label="Lock Reason" value={wallet.lock_reason} />
                 )}
               </div>
             </Section>
@@ -408,49 +376,49 @@ function TransactionRow({ tx }: { tx: WalletTransaction }) {
   const sc = STATUS_CONFIG[tx.status];
 
   return (
-    <div className="flex items-center gap-4 px-5 py-3.5">
+    <div className="flex items-center gap-4 px-6 py-4 hover:bg-[#F9FAFB] transition-colors">
       {/* Direction icon */}
       <div
-        className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+        className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
           isCredit ? "bg-emerald-50" : "bg-red-50"
         }`}
       >
         {isCredit ? (
-          <ArrowDownLeft className="w-4 h-4 text-emerald-600" />
+          <ArrowDownLeft className="w-5 h-5 text-emerald-600" />
         ) : (
-          <ArrowUpRight className="w-4 h-4 text-red-500" />
+          <ArrowUpRight className="w-5 h-5 text-red-500" />
         )}
       </div>
 
       {/* Details */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-          <p className="text-xs font-semibold text-[#030712] truncate">
+        <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <p className="text-[14px] font-semibold text-[#030712] truncate">
             {CATEGORY_LABELS[tx.category]}
           </p>
           <span
-            className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full ${sc.cls}`}
+            className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-full ${sc.cls}`}
           >
             {sc.icon}
             {tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}
           </span>
         </div>
 
-        <p className="text-[11px] text-[#9CA3AF] font-mono">
+        <p className="text-[12px] text-[#9CA3AF] font-mono mb-1">
           {tx.transaction_id}
         </p>
 
         {tx.description && (
-          <p className="text-[11px] text-[#6B7280] mt-0.5 truncate">
+          <p className="text-[13px] text-[#6B7280] mt-1 line-clamp-1">
             {tx.description}
           </p>
         )}
 
-        <p className="text-[10px] text-[#9CA3AF] mt-0.5">
+        <p className="text-[12px] text-[#9CA3AF] mt-1.5">
           {fmtDateTime(tx.created_at)}
           {tx.processed_at && tx.processed_at !== tx.created_at && (
-            <span className="ml-1">
-              · processed {fmtDateTime(tx.processed_at)}
+            <span className="ml-1.5">
+              · Processed {fmtDateTime(tx.processed_at)}
             </span>
           )}
         </p>
@@ -459,14 +427,14 @@ function TransactionRow({ tx }: { tx: WalletTransaction }) {
       {/* Amount + running balance */}
       <div className="text-right flex-shrink-0">
         <p
-          className={`text-sm font-semibold font-mono ${
+          className={`text-[15px] font-bold font-mono ${
             isCredit ? "text-emerald-600" : "text-red-500"
           }`}
         >
           {isCredit ? "+" : "-"}৳{fmtAmount(tx.amount)}
         </p>
-        <p className="text-[10px] text-[#9CA3AF] mt-0.5 font-mono">
-          bal ৳{fmtAmount(tx.balance_after)}
+        <p className="text-[12px] text-[#9CA3AF] mt-1 font-mono">
+          Balance: ৳{fmtAmount(tx.balance_after)}
         </p>
       </div>
     </div>
@@ -489,14 +457,14 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-[#F3F4F6]">
-        <div className="w-7 h-7 rounded-lg bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
+    <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden shadow-sm">
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-[#F3F4F6] bg-[#FAFAFA]">
+        <div className="w-9 h-9 rounded-lg bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
-        <h3 className="text-sm font-semibold text-[#030712]">{title}</h3>
+        <h3 className="text-[15px] font-semibold text-[#030712]">{title}</h3>
         {badge !== undefined && (
-          <span className="ml-auto text-[11px] font-medium px-2 py-0.5 bg-[#F3F4F6] text-[#6B7280] rounded-full font-mono">
+          <span className="ml-auto text-[12px] font-medium px-3 py-1 bg-[#F3F4F6] text-[#6B7280] rounded-full font-mono">
             {badge}
           </span>
         )}
@@ -508,11 +476,11 @@ function Section({
 
 function StatRow({ label, value }: { label: string; value?: string | null }) {
   return (
-    <div className="flex items-start justify-between py-2.5 border-b border-[#F3F4F6] last:border-0 gap-4">
-      <span className="text-[11px] text-[#9CA3AF] flex-shrink-0 pt-px">
+    <div className="flex items-start justify-between py-3 border-b border-[#F3F4F6] last:border-0 gap-4">
+      <span className="text-[13px] text-[#6B7280] flex-shrink-0 pt-px">
         {label}
       </span>
-      <span className="text-[13px] text-[#030712] font-medium font-mono text-right">
+      <span className="text-[14px] text-[#030712] font-semibold font-mono text-right">
         ৳{fmtAmount(value ?? "0")}
       </span>
     </div>
@@ -531,12 +499,12 @@ function InfoRow({
   capitalize?: boolean;
 }) {
   return (
-    <div className="flex items-start justify-between py-2.5 border-b border-[#F3F4F6] last:border-0 gap-4">
-      <span className="text-[11px] text-[#9CA3AF] flex-shrink-0 pt-px">
+    <div className="flex items-start justify-between py-3 border-b border-[#F3F4F6] last:border-0 gap-4">
+      <span className="text-[13px] text-[#6B7280] flex-shrink-0 pt-px">
         {label}
       </span>
       <span
-        className={`text-[13px] text-[#030712] font-medium text-right ${
+        className={`text-[14px] text-[#030712] font-medium text-right ${
           mono ? "font-mono" : ""
         } ${capitalize ? "capitalize" : ""}`}
       >

@@ -46,7 +46,16 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
 
         {/* Profile */}
         <div
-          onClick={() => router.push("/admin/profile")}
+          onClick={() => {
+            const role = profile?.roles?.[0];
+            if (role === 'admin' || role === 'chairman') {
+              router.push("/admin/profile");
+            } else if (role === 'member') {
+              router.push("/dashboard/profile");
+            } else {
+              router.push("/admin/profile");
+            }
+          }}
           className="flex items-center gap-2 cursor-pointer"
         >
           <div className="relative w-9 h-9 rounded-full overflow-hidden border">
@@ -69,7 +78,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
             <p className="font-semibold text-gray-900">
               {profile?.member?.name_english}
             </p>
-            <p className="text-xs text-gray-500">{profile?.roles[0]}</p>
+            <p className="text-xs text-gray-500 capitalize">{profile?.roles[0]}</p>
           </div>
         </div>
       </div>

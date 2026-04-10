@@ -7,46 +7,52 @@ import {
   SquareArrowRightExit,
 } from "lucide-react";
 import RecentTransactions from "./recent-transactions";
-import { useCompanyWalletDashboard } from "@/lib/hooks";
+import { useCompanyWalletTransactions } from "@/lib/hooks";
 
 const WalletBallance = () => {
-  const { data: dashboardData, isLoading } = useCompanyWalletDashboard();
+  // Fetch wallet data from transactions API (first page to get wallet info)
+  const { data: transactionsData, isLoading } = useCompanyWalletTransactions({
+    page: 1,
+    per_page: 1, // Just need 1 item to get wallet data
+  });
+
+  const wallet = transactionsData?.wallet;
 
   const stats = [
     {
       title: "Total Balance",
-      value: dashboardData?.total_balance 
-        ? `৳${(dashboardData.total_balance / 100000).toFixed(1)}L` 
-        : "৳0.0L",
+      value: wallet?.balance 
+        ? `৳${wallet.balance.toLocaleString()}` 
+        : "৳0",
       description: "Current available balance",
       icon: Wallet,
       color: "text-[#03B65C]",
     },
     {
-      title: "Commission Pool",
-      value: dashboardData?.commission_pool 
-        ? `৳${(dashboardData.commission_pool / 100000).toFixed(1)}L` 
-        : "৳0.0L",
-      description: "Pending distributions",
-      icon: TrendingUp,
-      color: "text-[#03B65C]",
-    },
-    {
-      title: "Total Deposited",
-      value: dashboardData?.total_deposited 
-        ? `৳${(dashboardData.total_deposited / 100000).toFixed(1)}L` 
-        : "৳0.0L",
+      title: "Total Received",
+      value: wallet?.total_received 
+        ? `৳${wallet.total_received.toLocaleString()}` 
+        : "৳0",
       description: "All-time inflow",
       icon: ArrowUpRight,
       color: "text-[#03B65C]",
     },
     {
-      title: "Total Withdrawn",
-      value: dashboardData?.total_withdrawn 
-        ? `৳${(dashboardData.total_withdrawn / 100000).toFixed(1)}L` 
-        : "৳0.0L",
-      description: "All-time outflow",
+      title: "Total Pension Paid",
+      value: wallet?.total_pension_paid 
+        ? `৳${wallet.total_pension_paid.toLocaleString()}` 
+        : "৳0",
+      description: "Pension payouts",
       icon: SquareArrowRightExit,
+      color: "text-[#F14248]",
+    },
+    {
+      title: "Commission Paid",
+      value: wallet?.total_commission_paid 
+        ? `৳${wallet.total_commission_paid.toLocaleString()}` 
+        : "৳0",
+      description: "Commission distributions",
+      icon: TrendingUp,
       color: "text-[#F14248]",
     },
   ];
