@@ -12,14 +12,10 @@ type GalleryProps = {
 const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
   const { data: images, isLoading } = useGalleryImages(galleryId);
 
-  if (isLoading) return <p className="text-center py-10">Loading gallery...</p>;
-  if (!images || images.length === 0)
-    return <p className="text-center py-10">No images found</p>;
-
   return (
     <section className="font-dm-sans py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
-        {/* Header */}
+        {/* Header - Always Visible */}
         <div className="text-center pt-10 mb-10 space-y-4">
           <h2 className="font-dm-sans text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
             {header2}
@@ -30,78 +26,99 @@ const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-150">
-          {/* Column 1 - Large Image */}
-          {images[0] && (
-            <div className="relative w-full h-75 md:h-full rounded-2xl overflow-hidden group">
-              <Image
-                src={images[0].image_path}
-                alt={images[0].title || "Gallery Image 1"}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-150 animate-pulse">
+            {/* Skeleton for Column 1 */}
+            <div className="relative w-full h-75 md:h-full rounded-2xl bg-gray-200"></div>
+
+            {/* Skeleton for Column 2 */}
+            <div className="flex flex-col gap-6 h-full">
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl bg-gray-200"></div>
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl bg-gray-200"></div>
             </div>
-          )}
 
-          {/* Column 2 */}
-          <div className="flex flex-col gap-6 h-full">
-            {images[1] && (
-              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-                <Image
-                  src={images[1].image_path}
-                  alt={images[1].title || "Gallery Image 2"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            )}
-            {images[2] && (
-              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-                <Image
-                  src={images[2].image_path}
-                  alt={images[2].title || "Gallery Image 3"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            )}
+            {/* Skeleton for Column 3 */}
+            <div className="flex flex-col gap-6 h-full">
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl bg-gray-200"></div>
+              <div className="relative w-full h-75 md:flex-1 rounded-2xl bg-gray-200"></div>
+            </div>
           </div>
+        ) : !images || images.length === 0 ? (
+          // Empty State
+          <p className="text-center py-10 text-gray-500">No images found</p>
+        ) : (
+          // Data Loaded - Render Grid
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-150">
+            {/* Column 1 - Large Image */}
+            {images[0] && (
+              <div className="relative w-full h-75 md:h-full rounded-2xl overflow-hidden group">
+                <Image
+                  src={images[0].image_path}
+                  alt={images[0].title || "Gallery Image 1"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  unoptimized={images[0].image_path.startsWith("http")}
+                />
+              </div>
+            )}
 
-          {/* Column 3 */}
-          <div className="flex flex-col gap-6 h-full">
-            {images[3] && (
-              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-                <Image
-                  src={images[3].image_path}
-                  alt={images[3].title || "Gallery Image 4"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            )}
-            {images[4] && (
-              <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
-                <Image
-                  src={images[4].image_path}
-                  alt={images[4].title || "Gallery Image 5"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            )}
+            {/* Column 2 */}
+            <div className="flex flex-col gap-6 h-full">
+              {images[1] && (
+                <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                  <Image
+                    src={images[1].image_path}
+                    alt={images[1].title || "Gallery Image 2"}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[1].image_path.startsWith("http")}
+                  />
+                </div>
+              )}
+              {images[2] && (
+                <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                  <Image
+                    src={images[2].image_path}
+                    alt={images[2].title || "Gallery Image 3"}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[2].image_path.startsWith("http")}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Column 3 */}
+            <div className="flex flex-col gap-6 h-full">
+              {images[3] && (
+                <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                  <Image
+                    src={images[3].image_path}
+                    alt={images[3].title || "Gallery Image 4"}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[3].image_path.startsWith("http")}
+                  />
+                </div>
+              )}
+              {images[4] && (
+                <div className="relative w-full h-75 md:flex-1 rounded-2xl overflow-hidden group">
+                  <Image
+                    src={images[4].image_path}
+                    alt={images[4].title || "Gallery Image 5"}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[4].image_path.startsWith("http")}
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
 };
 
 export default Gallery;
-// const galleryImages = [
-//   "/images/landing-page/gallery/75078fcca13640498f537bb1ed99fec6fdf3bbff.jpg",
-//   "/images/landing-page/gallery/29b8f955feee723d75cdfbde39b8f13c16cf3517.jpg",
-//   "/images/landing-page/gallery/a8e7ad2df1a93ece6fa17575882ece9001a367af.jpg",
-//   "/images/landing-page/gallery/7c8e0916f9f2764fde3c5c3298b7c1a2e8be3374.jpg",
-//   "/images/landing-page/gallery/a7b8440868a04a45cc452a7925eb10e54e747be6.jpg",
-// ];

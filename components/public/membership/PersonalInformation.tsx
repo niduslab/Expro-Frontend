@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState, ChangeEvent, useRef, useEffect } from "react";
-import { Camera, ChevronRight, ChevronLeft, Upload, Calendar } from "lucide-react";
+import {
+  Camera,
+  ChevronRight,
+  ChevronLeft,
+  Upload,
+  Calendar,
+} from "lucide-react";
 
 export type PersonalInfoState = {
   nameBangla: string;
@@ -362,22 +368,32 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                   }}
                   aria-invalid={Boolean(errors.memberDateOfBirth)}
                   className={`peer relative z-10 w-full pl-4 pr-12 py-3 bg-transparent rounded-md border focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all cursor-pointer text-transparent focus:text-gray-900 ${
-                    errors.memberDateOfBirth ? "border-red-500" : "border-gray-200"
+                    errors.memberDateOfBirth
+                      ? "border-red-500"
+                      : "border-gray-200"
                   } [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
                 />
                 {/* Custom Display */}
                 <div className="absolute inset-0 pl-4 pr-12 py-3 pointer-events-none flex items-center peer-focus:opacity-0">
-                  <span className={data.memberDateOfBirth ? "text-gray-900" : "text-gray-400"}>
-                    {data.memberDateOfBirth ? formatDate(data.memberDateOfBirth) : "mm/dd/yyyy"}
+                  <span
+                    className={
+                      data.memberDateOfBirth ? "text-gray-900" : "text-gray-400"
+                    }
+                  >
+                    {data.memberDateOfBirth
+                      ? formatDate(data.memberDateOfBirth)
+                      : "mm/dd/yyyy"}
                   </span>
                 </div>
-                <Calendar 
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20" 
-                  size={20} 
+                <Calendar
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20"
+                  size={20}
                 />
               </div>
               {errors.memberDateOfBirth && (
-                <p className="text-xs text-red-500">{errors.memberDateOfBirth}</p>
+                <p className="text-xs text-red-500">
+                  {errors.memberDateOfBirth}
+                </p>
               )}
             </div>
 
@@ -428,8 +444,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 </p>
               )}
             </div>
-
-           
           </div>
 
           {/* Document Uploads Section */}
@@ -440,7 +454,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 Document Uploads
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
                 {/* Passport Size Photo */}
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-900">
@@ -450,7 +463,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     Recent passport size (max 2MB)
                   </p>
 
-                  <div 
+                  <div
                     onClick={() => fileInputRef.current?.click()}
                     className="group cursor-pointer"
                   >
@@ -463,12 +476,23 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                             className="absolute inset-0 w-full h-full object-cover z-0"
                           />
                           <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
-                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                          <Upload
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                            size={28}
+                          />
                         </>
                       ) : (
                         <>
-                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
-                          <span className="text-xs text-center px-2">Click to Upload</span>
+                          <div className="flex flex-col items-center p-8">
+                            {" "}
+                            <Upload
+                              size={14}
+                              className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors"
+                            />
+                            <span className="text-xs text-center px-2">
+                              Click to Upload
+                            </span>
+                          </div>
                         </>
                       )}
                     </div>
@@ -481,12 +505,12 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     className="hidden"
                     onChange={handlePhotoChange}
                   />
-                  
+
                   {errors.photo && (
                     <p className="text-xs text-red-500 mt-1">{errors.photo}</p>
                   )}
                 </div>
-                
+
                 {/* NID Front Photo */}
                 <div className="space-y-3">
                   <label className="block text-sm font-semibold text-gray-900">
@@ -496,7 +520,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     Front side (max 2MB)
                   </p>
 
-                  <div 
+                  <div
                     onClick={() => nidFrontInputRef.current?.click()}
                     className="group cursor-pointer"
                   >
@@ -509,12 +533,23 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                             className="absolute inset-0 w-full h-full object-cover z-0"
                           />
                           <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
-                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                          <Upload
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                            size={28}
+                          />
                         </>
                       ) : (
                         <>
-                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
-                          <span className="text-xs text-center px-2">Click to Upload</span>
+                          <div className="flex flex-col items-center p-8">
+                            {" "}
+                            <Upload
+                              size={14}
+                              className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors"
+                            />
+                            <span className="text-xs text-center px-2">
+                              Click to Upload
+                            </span>
+                          </div>
                         </>
                       )}
                     </div>
@@ -527,9 +562,11 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     className="hidden"
                     onChange={handleNidFrontChange}
                   />
-                  
+
                   {errors.nidFrontPhoto && (
-                    <p className="text-xs text-red-500 mt-1">{errors.nidFrontPhoto}</p>
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.nidFrontPhoto}
+                    </p>
                   )}
                 </div>
 
@@ -542,7 +579,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     Back side (max 2MB)
                   </p>
 
-                  <div 
+                  <div
                     onClick={() => nidBackInputRef.current?.click()}
                     className="group cursor-pointer"
                   >
@@ -555,12 +592,23 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                             className="absolute inset-0 w-full h-full object-cover z-0"
                           />
                           <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
-                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                          <Upload
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                            size={28}
+                          />
                         </>
                       ) : (
                         <>
-                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
-                          <span className="text-xs text-center px-2">Click to Upload</span>
+                          <div className="flex flex-col items-center p-8">
+                            {" "}
+                            <Upload
+                              size={14}
+                              className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors"
+                            />
+                            <span className="text-xs text-center px-2">
+                              Click to Upload
+                            </span>
+                          </div>
                         </>
                       )}
                     </div>
@@ -573,9 +621,11 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     className="hidden"
                     onChange={handleNidBackChange}
                   />
-                  
+
                   {errors.nidBackPhoto && (
-                    <p className="text-xs text-red-500 mt-1">{errors.nidBackPhoto}</p>
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.nidBackPhoto}
+                    </p>
                   )}
                 </div>
 
@@ -588,7 +638,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     Your signature (max 2MB)
                   </p>
 
-                  <div 
+                  <div
                     onClick={() => signatureInputRef.current?.click()}
                     className="group cursor-pointer"
                   >
@@ -601,12 +651,23 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                             className="absolute inset-0 w-full h-full object-contain p-2 z-0"
                           />
                           <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10"></div>
-                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                          <Upload
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                            size={28}
+                          />
                         </>
                       ) : (
                         <>
-                          <Upload size={32} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
-                          <span className="text-xs text-center px-2">Click to Upload</span>
+                          <div className="flex flex-col items-center p-8">
+                            {" "}
+                            <Upload
+                              size={14}
+                              className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors"
+                            />
+                            <span className="text-xs text-center px-2">
+                              Click to Upload
+                            </span>
+                          </div>
                         </>
                       )}
                     </div>
@@ -619,12 +680,13 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     className="hidden"
                     onChange={handleSignatureChange}
                   />
-                  
+
                   {errors.signature && (
-                    <p className="text-xs text-red-500 mt-1">{errors.signature}</p>
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.signature}
+                    </p>
                   )}
                 </div>
-
               </div>
             </div>
           </div>

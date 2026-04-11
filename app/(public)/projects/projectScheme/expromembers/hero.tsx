@@ -1,35 +1,26 @@
-// hero.tsx
 "use client";
 
+import { useExproMember } from "@/lib/hooks/public/useExpromembers";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEvent } from "@/lib/hooks/public/useEventHooks";
 
 const Hero = () => {
   const params = useParams();
   const id = Number(params?.id);
-  const { data: event, isLoading } = useEvent(id);
+  const { data: member, isLoading, isError } = useExproMember(id);
 
   return (
-    <section className="relative h-[590px] md:h-[600px] items-center overflow-hidden">
+    <section className="relative h-[590px] md:h-[600px] overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={
-            event?.image ||
-            "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg"
-          }
-          alt={event?.title || "Event banner"}
+          src={"/images/projects/project/project poster.png"}
+          alt={member?.name ? `${member.name} image` : "Member image"}
           fill
           sizes="100vw"
           style={{ objectFit: "cover", objectPosition: "center top" }}
           priority
-          unoptimized={
-            !!(
-              event?.image?.startsWith("http") || event?.image?.startsWith("/")
-            )
-          }
         />
         <div
           className="absolute inset-0"
@@ -45,7 +36,7 @@ const Hero = () => {
       <div className="font-dm-sans relative z-10 container mx-auto pt-[50px] md:pt-0 px-6 md:px-12 lg:px-20 flex flex-col justify-center h-full">
         <div className="max-w-2xl text-white space-y-4">
           {/* Breadcrumb */}
-          <div className="flex items-center space-x-2 text-sm md:text-base font-medium mb-2">
+          <div className="flex items-center gap-2 text-sm md:text-base font-medium">
             <Link
               href="/"
               className="text-white hover:text-gray-200 transition-colors"
@@ -54,31 +45,36 @@ const Hero = () => {
             </Link>
             <span>•</span>
             <Link
-              href="/events"
+              href="/projects/projectScheme/expromembers"
               className="text-white hover:text-gray-200 transition-colors"
             >
-              Events
+              Expro Members
             </Link>
             <span>•</span>
-            <span className="text-[#36F293]">Event Details</span>
+            <span className="text-[#36F293]">Member Details</span>
           </div>
 
           {/* Title / Skeleton */}
           {isLoading ? (
-            <div className="space-y-4">
-              <div className="h-12 md:h-16 bg-white/20 rounded-lg animate-pulse w-3/4" />
-              <div className="h-5 bg-white/10 rounded-lg animate-pulse w-full max-w-xl" />
-              <div className="h-5 bg-white/10 rounded-lg animate-pulse w-2/3" />
+            <div className="space-y-3">
+              <div className="h-10 md:h-14 bg-white/20 rounded-lg animate-pulse w-3/4" />
+              <div className="h-6 bg-white/10 rounded-lg animate-pulse w-1/2" />
             </div>
-          ) : event ? (
-            <>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
-                {event.title}
+          ) : isError ? (
+            <p className="text-red-400 text-sm">
+              Failed to load member details.
+            </p>
+          ) : member ? (
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+                {member.name}
               </h1>
-              <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
-                {event.description}
-              </p>
-            </>
+              {member.designation && (
+                <p className="text-xs md:text-xl text-[#36F293] font-medium">
+                  {member.designation}
+                </p>
+              )}
+            </div>
           ) : null}
         </div>
       </div>

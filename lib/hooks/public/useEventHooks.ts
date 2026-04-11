@@ -1,5 +1,3 @@
-// lib/hooks/useEvents.ts
-
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { EventType, PaginatedResponse } from "@/lib/types/eventsType";
@@ -11,15 +9,20 @@ import {
 /**
  * Get paginated events
  */
-export const useEvents = (page: number, per_page: number = 6) => {
+export const useEvents = (
+  page: number,
+  per_page: number = 6,
+  status?: string,
+) => {
   const options: UseQueryOptions<
     PaginatedResponse<EventType>,
     Error,
     PaginatedResponse<EventType>,
-    [string, number]
+    [string, number, number, string | undefined] // 1. Updated Key Type: [key, page, per_page, status]
   > = {
-    queryKey: ["events", page],
-    queryFn: () => fetchEvents(page, per_page),
+    // 2. Updated Key Array to match the type above
+    queryKey: ["events", page, per_page, status],
+    queryFn: () => fetchEvents(page, per_page, status),
     placeholderData: (previousData) => previousData,
   };
 

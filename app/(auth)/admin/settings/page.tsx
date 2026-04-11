@@ -150,19 +150,6 @@ const PREFERENCE_CARDS: SettingCard[] = [
     href: "/settings/appearance",
   },
   {
-    title: "Language & region",
-    description: "Set your preferred language, timezone, and date format.",
-    icon: <Globe className="h-4 w-4" />,
-    iconBg: "bg-gray-50",
-    iconBorder: "border-gray-200",
-    iconColor: "text-gray-500",
-    tag: "Preferences",
-    tagColor: "text-gray-700",
-    tagBorder: "border-gray-300",
-    tagBg: "bg-white",
-    href: "/settings/language",
-  },
-  {
     title: "Activity log",
     description: "Review a full history of your account activity and logins.",
     icon: <FileText className="h-4 w-4" />,
@@ -231,7 +218,7 @@ function Section({ label, cards }: { label: string; cards: SettingCard[] }) {
       <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9CA3AF]">
         {label}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-3">
         {cards.map((card) => (
           <SettingCardItem key={card.href} card={card} />
         ))}
