@@ -10,51 +10,13 @@ import { Button } from "@/components/ui/Button";
 import { useEvents } from "@/lib/hooks/public/useEventHooks";
 import FormateDateTime from "@/components/formateDateTime/page";
 
-const events = [
-  {
-    title: "Green Earth Initiative",
-    description:
-      "Join our massive tree plantation drive. Goal: Plant 10,000 trees to combat climate change and restore natural habitats.",
-    date: "06 February, 2026",
-    location: "Gulshan-1, Dhaka",
-    time: "11.30 AM - 2.30 PM",
-    image:
-      "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg", // Placeholder, using first available
-    link: "events/event-details",
-  },
-  {
-    title: "Disaster Relief Training",
-    description:
-      "Training volunteers for emergency response and disaster relief operations. Learn essential skills to help communities during crises.",
-    date: "06 February, 2026",
-    location: "National Training Center",
-    time: "11.30 AM - 2.30 PM",
-    image:
-      "/images/landing-page/events/45cfcb47c1850f33fb81de1fcbb9c346e53f1581.jpg", // Placeholder, using second available
-    link: "events/event-details",
-  },
-  {
-    title: "Women Business Workshop",
-    description:
-      "Empowering women entrepreneurs with business skills, financial literacy, and networking opportunities to build sustainable livelihoods.",
-    date: "06 February, 2026",
-    location: "Community Center, Chittagong",
-    time: "11.30 AM - 2.30 PM",
-    image:
-      "/images/landing-page/events/9d28340008ab0f8b020c34003fa1a49fdbe7cda1.jpg",
-    link: "events/event-details",
-  },
-];
-
 gsap.registerPlugin(ScrollTrigger);
 
 const Events = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!sectionRef.current) {
-      return;
-    }
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
       // Header Animation
@@ -70,23 +32,25 @@ const Events = () => {
         },
       });
 
-      // Cards Animation
+      // Cards Animation - Only run if cards exist
       const cards = gsap.utils.toArray<HTMLElement>("[data-event-card]");
-      cards.forEach((card, index) => {
-        const isEven = index % 2 === 0;
-        gsap.from(card, {
-          opacity: 0,
-          x: isEven ? -50 : 50, // Slide from left for even, right for odd (or simple fade up)
-          y: 30,
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-            once: true,
-          },
+      if (cards.length > 0) {
+        cards.forEach((card, index) => {
+          const isEven = index % 2 === 0;
+          gsap.from(card, {
+            opacity: 0,
+            x: isEven ? -50 : 50,
+            y: 30,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              once: true,
+            },
+          });
         });
-      });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -94,16 +58,9 @@ const Events = () => {
 
   const { data, isLoading, error } = useEvents(1, 3);
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "2rem" }}>
-        <div className="spinner" />
-      </div>
-    );
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  // Filter for published events safely
+  const publishedEvents =
+    data?.data?.filter((event: any) => event.status === "published") || [];
 
   return (
     <section
@@ -111,7 +68,7 @@ const Events = () => {
       className="font-dm-sans overflow-hidden py-20 bg-[#F2F4F7]"
     >
       <div className="container mx-auto px-6 md:px-12 lg:px-20 2xl:px-20">
-        {/* Header */}
+        {/* Header - Always Visible */}
         <div
           data-events-header
           className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6"
@@ -134,78 +91,86 @@ const Events = () => {
           </div>
         </div>
 
-        {/* Events List */}
-        <div className="space-y-8">
-          {data && (
-            <>
-              {data?.data
-                ?.filter((event: any) => event.status === "published")
-                .map((event: any, index: any) => (
-                  <div
-                    key={index}
-                    data-event-card
-                    className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
-                      index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                    } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
-                  >
-                    {/* Image */}
-                    <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
-                      <Image
-                        src={
-                          event.image ||
-                          "/images/dashboard/memberApproval/1.jpg"
-                        }
-                        alt={`${event.title} - ${event.location}`}
-                        fill
-                        className="object-cover hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        unoptimized={event.image?.startsWith("http")}
+        {/* Content Area */}
+        {isLoading ? (
+          <div className="text-center py-10">
+            <div className="spinner border-t-4 border-green-700 border-solid w-10 h-10 rounded-full animate-spin mx-auto"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-10 text-red-500">
+            Error: {error.message}
+          </div>
+        ) : publishedEvents.length === 0 ? (
+          // ✅ Empty State
+          <div className="text-center py-16  rounded-2xl  border-gray-300">
+            <p className=" text-gray-500 ">No events found</p>
+          </div>
+        ) : (
+          // ✅ Data Loaded - Events List
+          <div className="space-y-8">
+            {publishedEvents.map((event: any, index: number) => (
+              <div
+                key={event.id || index}
+                data-event-card
+                className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
+                  index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
+              >
+                {/* Image */}
+                <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
+                  <Image
+                    src={
+                      event.image || "/images/dashboard/memberApproval/1.jpg"
+                    }
+                    alt={`${event.title} - ${event.location}`}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    unoptimized={event.image?.startsWith("http")}
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="w-full lg:w-1/2 flex flex-col justify-center">
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
+                    {event.title}
+                  </h3>
+                  <p className="text-[#475467] text-base leading-relaxed mb-6">
+                    {event.description}
+                  </p>
+
+                  {/* Meta Info & Button */}
+                  <div className="flex flex-wrap gap-3 mb-8">
+                    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                      <FormateDateTime
+                        datetime={event.start_date}
+                        type="date"
+                        icon="calendar"
                       />
                     </div>
-
-                    {/* Content */}
-                    <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                      <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
-                        {event.title}
-                      </h3>
-                      <p className="text-[#475467] text-base leading-relaxed mb-6">
-                        {event.description}
-                      </p>
-
-                      {/* Meta Info */}
-                      <div className="flex flex-wrap gap-3 mb-8">
-                        <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                          <FormateDateTime
-                            datetime={event.start_date}
-                            type="date"
-                            icon="calendar"
-                          />
-                        </div>
-                        <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                          <MapPin size={16} className="text-[#667085]" />
-                          {event.location}
-                        </div>
-                        <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                          <FormateDateTime
-                            datetime={event.start_date}
-                            type="time"
-                            icon="clock"
-                          />
-                        </div>
-                        {/* Button */}
-
-                        <Link href={event.title}>
-                          <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
-                            Learn More
-                          </Button>
-                        </Link>
-                      </div>
+                    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                      <MapPin size={16} className="text-[#667085]" />
+                      {event.location}
+                    </div>
+                    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                      <FormateDateTime
+                        datetime={event.start_date}
+                        type="time"
+                        icon="clock"
+                      />
                     </div>
                   </div>
-                ))}
-            </>
-          )}
-        </div>
+
+                  <Link href={`/events/${event.slug || event.id}`}>
+                    <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                      Learn More
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
