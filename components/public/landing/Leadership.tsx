@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 const Leadership = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  const { data, isLoading, error } = useExproMembers(1, 50);
+  const { data, isLoading, error } = useExproMembers(1, 0);
 
   const latestExecutiveMembers =
     data?.data
@@ -124,14 +124,16 @@ const Leadership = () => {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />
               </div>
-
               {/* Top Right Icon */}
-              <div className="absolute top-4 right-4 z-10">
-                <div className="w-8 h-8 rounded-full bg-[#008A4B] flex items-center justify-center text-white">
-                  <ArrowUpRight size={16} strokeWidth={2.5} />
+              <Link
+                href={`/projects/projectScheme/expromembers/${String(member.id)}`}
+              >
+                <div className="absolute top-4 right-4 z-10">
+                  <div className="w-8 h-8 rounded-full bg-[#008A4B] flex items-center justify-center text-white">
+                    <ArrowUpRight size={16} strokeWidth={2.5} />
+                  </div>
                 </div>
-              </div>
-
+              </Link>{" "}
               {/* Bottom Content Card */}
               <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg p-5 shadow-sm">
                 <h3 className="text-[20px] font-bold text-[#101828] mb-1">

@@ -11,7 +11,7 @@ import {
 /**
  * Get paginated Expro members
  */
-export const useExproMembers = (page: number, per_page: number = 6) => {
+export const useExproMembers = (page: number, per_page: number) => {
   const options: UseQueryOptions<
     PaginatedResponse<ExproMember>,
     Error,
