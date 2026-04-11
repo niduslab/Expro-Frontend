@@ -144,7 +144,7 @@ const NewsArticles = () => {
                     {blogs[0].title}
                   </h3>
 
-                  <Link href={`/blog/${blogs[0].slug}`}>
+                  <Link href={`/blog/blogdetails/${blogs[0].id}`}>
                     <Button className="px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg">
                       Learn More
                     </Button>
@@ -181,7 +181,7 @@ const NewsArticles = () => {
                     </h4>
 
                     <Link
-                      href={`/blog/${blog.slug}`}
+                      href={`/blog/blogdetails/${blog.id}`}
                       className="inline-flex items-center gap-2 text-[#027A48] text-sm font-semibold hover:text-[#068847]"
                     >
                       Learn More

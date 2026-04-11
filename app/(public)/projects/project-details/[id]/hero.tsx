@@ -21,8 +21,7 @@ const Hero = () => {
   const description =
     project?.short_description ??
     "Investigating how strategic pension initiatives, accountability, and community-centered approaches foster lasting retirement security and social impact.";
-  const featuredImage =
-    project?.featured_image ?? "/images/projects/project/project-one.jpg";
+  const featuredImage = project?.featured_image ?? "/fallback.jpg";
   const category = project?.category ?? "";
   const status = project?.status ?? "";
 

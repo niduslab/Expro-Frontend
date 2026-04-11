@@ -39,7 +39,7 @@ export default function BlogPage() {
 
   const handleBlogClick = (slugOrId: string) => {
     // Assuming your route is dynamic like /blog/[slug]
-    router.push(`/blog/${slugOrId}`);
+    router.push(`/blog/blogdetails/${slugOrId}`);
   };
 
   if (isLoading)
@@ -83,7 +83,7 @@ export default function BlogPage() {
                 projects.map((blog: any) => (
                   <div
                     key={blog.id || blog.slug} // Use unique ID
-                    onClick={() => handleBlogClick(blog.slug || blog.id)}
+                    onClick={() => handleBlogClick(blog.id)}
                     className="w-full rounded-lg border border-gray-200 p-6 shadow-md hover:shadow-xl transition cursor-pointer bg-white group"
                   >
                     {/* Image */}
