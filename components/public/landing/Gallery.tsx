@@ -58,6 +58,7 @@ const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
                   alt={images[0].title || "Gallery Image 1"}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  unoptimized={images[0].image_path.startsWith("http")}
                 />
               </div>
             )}
@@ -71,6 +72,7 @@ const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
                     alt={images[1].title || "Gallery Image 2"}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[1].image_path.startsWith("http")}
                   />
                 </div>
               )}
@@ -81,6 +83,7 @@ const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
                     alt={images[2].title || "Gallery Image 3"}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[2].image_path.startsWith("http")}
                   />
                 </div>
               )}
@@ -95,6 +98,7 @@ const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
                     alt={images[3].title || "Gallery Image 4"}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[3].image_path.startsWith("http")}
                   />
                 </div>
               )}
@@ -105,6 +109,7 @@ const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
                     alt={images[4].title || "Gallery Image 5"}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized={images[4].image_path.startsWith("http")}
                   />
                 </div>
               )}

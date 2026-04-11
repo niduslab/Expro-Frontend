@@ -5,60 +5,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { MapPin } from "lucide-react"; // Removed unused Calendar/Clock if handled by FormateDateTime
 import { Button } from "@/components/ui/Button";
 import { useEvents } from "@/lib/hooks/public/useEventHooks";
 import FormateDateTime from "@/components/formateDateTime/page";
 import Pagination from "@/components/pagination/page";
-
-// const events = [
-//   {
-//     title: "Green Earth Initiative",
-//     description:
-//       "Join our massive tree plantation drive. Goal: Plant 10,000 trees to combat climate change and restore natural habitats.",
-//     date: "06 February, 2026",
-//     location: "Gulshan-1, Dhaka",
-//     time: "11.30 AM - 2.30 PM",
-//     image:
-//       "/images/landing-page/events/4054bc10557d09dffea4f8c04b8bc54930895f16.jpg", // Placeholder, using first available
-//     link: "events/event-details",
-//   },
-//   {
-//     title: "Disaster Relief Training",
-//     description:
-//       "Training volunteers for emergency response and disaster relief operations. Learn essential skills to help communities during crises.",
-//     date: "06 February, 2026",
-//     location: "National Training Center",
-//     time: "11.30 AM - 2.30 PM",
-//     image:
-//       "/images/landing-page/events/45cfcb47c1850f33fb81de1fcbb9c346e53f1581.jpg", // Placeholder, using second available
-//     link: "events/event-details",
-//   },
-//   {
-//     title: "Women Business Workshop",
-//     description:
-//       "Empowering women entrepreneurs with business skills, financial literacy, and networking opportunities to build sustainable livelihoods.",
-//     date: "06 February, 2026",
-//     location: "Community Center, Chittagong",
-//     time: "11.30 AM - 2.30 PM",
-//     image:
-//       "/images/landing-page/events/9d28340008ab0f8b020c34003fa1a49fdbe7cda1.jpg",
-//     link: "events/event-details",
-//   },
-// ];
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Events = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
+  // 1. State for pagination
+  const [page, setPage] = useState(1);
+  const perPage = 10;
+
+  // 2. Fetch Data
+  // Ensure useEvents refetches when 'page' changes
+  const { data, isLoading, error } = useEvents(page, perPage);
+
+  // Filter published events
+  const events = data?.data?.filter((e: any) => e.status === "published") || [];
+
+  // Calculate total pages safely
+  const totalItems = data?.pagination?.total || 0;
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  // 3. GSAP Animation (Unchanged)
   useEffect(() => {
-    if (!sectionRef.current) {
-      return;
-    }
+    if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Header Animation
       gsap.from("[data-events-header]", {
         opacity: 0,
         y: 20,
@@ -71,13 +48,12 @@ const Events = () => {
         },
       });
 
-      // Cards Animation
       const cards = gsap.utils.toArray<HTMLElement>("[data-event-card]");
       cards.forEach((card, index) => {
         const isEven = index % 2 === 0;
         gsap.from(card, {
           opacity: 0,
-          x: isEven ? -50 : 50, // Slide from left for even, right for odd (or simple fade up)
+          x: isEven ? -50 : 50,
           y: 30,
           duration: 0.8,
           ease: "power2.out",
@@ -91,23 +67,31 @@ const Events = () => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
-  const [page, setPage] = useState(1); // Initial page is 1
-  const perPage = 10; // Items per page
-  const { data, isLoading, error } = useEvents(page, perPage);
-  const events = data?.data?.filter((e: any) => e.status === "published") || [];
+  }, [events]); // Add events as dependency so animations re-run when data changes!
 
-  const nextPage = () => {
-    if (events.length === perPage) {
-      setPage((p) => p + 1);
+  // 4. Pagination Handlers
+  const handleNext = () => {
+    if (page < totalPages) {
+      setPage((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Optional: Scroll to top
     }
   };
 
-  const prevPage = () => {
+  const handlePrev = () => {
     if (page > 1) {
-      setPage((p) => p - 1);
+      setPage((prev) => prev - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Optional: Scroll to top
     }
   };
+
+  if (isLoading)
+    return <div className="py-20 text-center">Loading events...</div>;
+  if (error)
+    return (
+      <div className="py-20 text-center text-red-500">
+        Failed to load events.
+      </div>
+    );
 
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
@@ -125,145 +109,96 @@ const Events = () => {
           </h2>
         </div>
       </div>
+
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
-        {/* Header */}
-
-        {/* Events List */}
-        {/* <div className="space-y-8">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              data-event-card
-              className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
-                index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-              } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
-            >
-       
-              <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-
-              <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
-                  {event.title}
-                </h3>
-                <p className="text-[#475467] text-base leading-relaxed mb-6">
-                  {event.description}
-                </p>
-
-         
-                <div className="flex flex-wrap gap-3 mb-8">
-                  <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                    <Calendar size={16} className="text-[#667085]" />
-                    {event.date}
-                  </div>
-                  <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                    <MapPin size={16} className="text-[#667085]" />
-                    {event.location}
-                  </div>
-                  <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                    <Clock size={16} className="text-[#667085]" />
-                    {event.time}
-                  </div>
-                </div>
-
-              
-                <div>
-                  <Link href={event.link}>
-                    <Button className="inline-block px-8 py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
-                      Learn More
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div> */}
-
-        {/* Events List */}
         <div className="space-y-8">
-          {data && (
-            <>
-              {events.map((event: any, index: any) => (
-                <div
-                  key={index}
-                  data-event-card
-                  className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
-                    index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                  } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
-                >
-                  {/* Image */}
-                  <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
-                    <Image
-                      src={
-                        event.image || "/images/dashboard/memberApproval/1.jpg"
-                      }
-                      alt={`${event.title} - ${event.location}`}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      unoptimized={event.image?.startsWith("http")}
-                    />
-                  </div>
+          {events.length > 0 ? (
+            events.map((event: any, index: number) => (
+              <div
+                key={event.id || index} // Use unique ID if available
+                data-event-card
+                className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
+                  index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                } gap-8 items-center shadow-sm hover:shadow-md transition-shadow duration-300`}
+              >
+                {/* Image */}
+                <div className="w-full lg:w-1/2 h-75 lg:h-90 relative rounded-xl overflow-hidden shrink-0">
+                  <Image
+                    src={
+                      event.image || "/images/dashboard/memberApproval/1.jpg"
+                    }
+                    alt={event.title}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    unoptimized={event.image?.startsWith("http")}
+                  />
+                </div>
 
-                  {/* Content */}
-                  <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                    <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
-                      {event.title}
-                    </h3>
-                    <p className="text-[#475467] text-base leading-relaxed mb-6">
-                      {event.description}
-                    </p>
+                {/* Content */}
+                <div className="w-full lg:w-1/2 flex flex-col justify-center">
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
+                    {event.title}
+                  </h3>
+                  <p className="text-[#475467] text-base leading-relaxed mb-6">
+                    {event.description}
+                  </p>
 
-                    {/* Meta Info */}
-                    <div className="flex flex-wrap gap-3 mb-8">
-                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <FormateDateTime
-                          datetime={event.start_date}
-                          type="date"
-                          icon="calendar"
-                        />
-                      </div>
-                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <MapPin size={16} className="text-[#667085]" />
-                        {event.location}
-                      </div>
-                      <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
-                        <FormateDateTime
-                          datetime={event.start_date}
-                          type="time"
-                          icon="clock"
-                        />
-                      </div>
-                      {/* Button */}
-
-                      <Link href={event.title}>
-                        <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
-                          Learn More
-                        </Button>
-                      </Link>
+                  {/* Meta Info */}
+                  <div className="flex flex-wrap gap-3 mb-8">
+                    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                      <FormateDateTime
+                        datetime={event.start_date}
+                        type="date"
+                        icon="calendar"
+                      />
+                    </div>
+                    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                      <MapPin size={16} className="text-[#667085]" />
+                      {event.location}
+                    </div>
+                    <div className="inline-flex items-center gap-2 bg-[#F2F4F7] px-3 py-1.5 rounded-full text-sm text-[#344054]">
+                      <FormateDateTime
+                        datetime={event.start_date}
+                        type="time"
+                        icon="clock"
+                      />
                     </div>
                   </div>
+
+                  {/* Button */}
+                  <div>
+                    <Link href={`/events/${event.slug || event.id}`}>
+                      {/* FIX: Ensure href is valid. event.title is usually not a valid URL path */}
+                      <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
+                        Learn More
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
-              ))}
-            </>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">
+              No published events found.
+            </p>
           )}
         </div>
-        <Pagination
-          page={page}
-          perPage={perPage}
-          total={data?.pagination?.total}
-          dataLength={events.length}
-          onNext={nextPage}
-          onPrev={prevPage}
-          onPageChange={(p) => setPage(p)}
-        />
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex justify-center">
+            <Pagination
+              page={page}
+              perPage={perPage}
+              total={totalItems}
+              dataLength={events.length}
+              onNext={handleNext}
+              onPrev={handlePrev}
+              onPageChange={(p) => setPage(p)}
+            />
+          </div>
+        )}
       </div>
     </section>
   );

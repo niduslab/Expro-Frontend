@@ -9,6 +9,7 @@ import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useEvents } from "@/lib/hooks/public/useEventHooks";
 import FormateDateTime from "@/components/formateDateTime/page";
+import { EventType } from "@/lib/types/eventsType"; // Ensure this path matches your types file
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -56,11 +57,11 @@ const Events = () => {
     return () => ctx.revert();
   }, []);
 
-  const { data, isLoading, error } = useEvents(1, 3);
+  // Fetch specifically 'published' events, limit 3
+  const { data, isLoading, error } = useEvents(1, 3, "published");
 
-  // Filter for published events safely
-  const publishedEvents =
-    data?.data?.filter((event: any) => event.status === "published") || [];
+  // Since API filters by status, we just use the data directly
+  const publishedEvents = data?.data || [];
 
   return (
     <section
@@ -102,15 +103,15 @@ const Events = () => {
           </div>
         ) : publishedEvents.length === 0 ? (
           // ✅ Empty State
-          <div className="text-center py-16  rounded-2xl  border-gray-300">
-            <p className=" text-gray-500 ">No events found</p>
+          <div className="text-center py-16 rounded-2xl border-gray-300">
+            <p className="text-gray-500">No upcoming events found</p>
           </div>
         ) : (
           // ✅ Data Loaded - Events List
           <div className="space-y-8">
-            {publishedEvents.map((event: any, index: number) => (
+            {publishedEvents.map((event: EventType, index: number) => (
               <div
-                key={event.id || index}
+                key={event.id}
                 data-event-card
                 className={`bg-white rounded-2xl p-6 md:p-8 flex flex-col ${
                   index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
@@ -135,7 +136,7 @@ const Events = () => {
                   <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
                     {event.title}
                   </h3>
-                  <p className="text-[#475467] text-base leading-relaxed mb-6">
+                  <p className="text-[#475467] text-base leading-relaxed mb-6 line-clamp-3">
                     {event.description}
                   </p>
 
@@ -161,7 +162,7 @@ const Events = () => {
                     </div>
                   </div>
 
-                  <Link href={`/events/${event.slug || event.id}`}>
+                  <Link href={`/events/${event.id}`}>
                     <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
                       Learn More
                     </Button>
