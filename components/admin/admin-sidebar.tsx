@@ -21,7 +21,10 @@ export function AdminSidebar({ isAdmin = true }: AdminSidebarProps) {
     <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 shadow-sm flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center px-6 border-b border-gray-100">
-        <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex items-center">
+        <Link
+          href={isAdmin ? "/admin" : "/dashboard"}
+          className="flex items-center"
+        >
           <div className="relative w-32 h-10">
             <Image
               src="/logo.svg"
