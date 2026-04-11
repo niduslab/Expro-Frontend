@@ -162,7 +162,7 @@ const Events = () => {
                     </div>
                   </div>
 
-                  <Link href={`/events/${event.id}`}>
+                  <Link href={`/events/event-details/${event.id}`}>
                     <Button className="inline-block px-8 cursor-pointer py-3 bg-green-700 hover:bg-green-800 text-white text-[16px] font-semibold rounded-lg transition-colors duration-300 shadow-sm hover:shadow-md">
                       Learn More
                     </Button>
