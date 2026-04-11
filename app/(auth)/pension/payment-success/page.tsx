@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Package, Receipt, ArrowRight } from "lucide-react";
 import { usePensionPayment } from "@/lib/hooks/user/usePensionPayment";
@@ -14,6 +14,7 @@ export default function PensionPaymentSuccessPage() {
     "processing"
   );
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
+  const hasProcessed = useRef(false);
 
   const enrollmentId = searchParams.get("enrollment_id");
   const paymentId = searchParams.get("payment_id");
@@ -32,7 +33,12 @@ export default function PensionPaymentSuccessPage() {
     useMyPensionEnrollments();
 
   useEffect(() => {
+    // Prevent multiple executions
+    if (hasProcessed.current) return;
+
     const processPayment = async () => {
+      hasProcessed.current = true;
+
       // Get stored payment ID from localStorage (if available)
       const storedPaymentId =
         paymentId || localStorage.getItem("pending_pension_payment_id");
@@ -63,7 +69,7 @@ export default function PensionPaymentSuccessPage() {
     };
 
     processPayment();
-  }, [searchParams, paymentId, completePayment, refetchEnrollments]);
+  }, []);
 
   const enrollment = enrollmentsRes?.data?.find(
     (e) => e.id === parseInt(enrollmentId || "0")

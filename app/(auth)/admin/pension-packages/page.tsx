@@ -93,6 +93,10 @@ export default function AdminPensionPackages() {
     window.location.href = `/admin/team-collections?packageId=${packageId}&packageName=${encodeURIComponent(packageName)}`;
   };
 
+  const handleViewDetails = (packageId: number) => {
+    window.location.href = `/admin/pension-packages/${packageId}`;
+  };
+
   const handleEdit = (pkg: any) => {
     setSelectedPackage(pkg);
     setOpenModal(true);
@@ -252,18 +256,11 @@ export default function AdminPensionPackages() {
               {/* Action Buttons */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-[#E5E7EB]">
                 <button
-                  onClick={() => handleViewMembers(plan.id, plan.name)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#068847] text-[#068847] hover:bg-[#F0FDF4] transition-colors"
+                  onClick={() => handleViewDetails(plan.id)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#068847] text-white hover:bg-[#057038] transition-colors"
                 >
                   <Eye size={16} />
-                  <span className="text-sm font-medium">View Members</span>
-                </button>
-                <button
-                  onClick={() => handleTeamCollection(plan.id, plan.name)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-[#D1D5DC] text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
-                >
-                  <UsersRound size={16} />
-                  <span className="text-sm font-medium">Team Collection</span>
+                  <span className="text-sm font-medium">View Details</span>
                 </button>
                 
                 {/* Dropdown Menu */}
@@ -284,7 +281,28 @@ export default function AdminPensionPackages() {
                         onClick={() => setOpenDropdownId(null)}
                       />
                       
-                      <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-[#E5E7EB] py-1 z-20">
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-[#E5E7EB] py-1 z-20">
+                        <button
+                          onClick={() => {
+                            handleViewMembers(plan.id, plan.name);
+                            setOpenDropdownId(null);
+                          }}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
+                        >
+                          <Eye size={16} />
+                          <span>View Members</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleTeamCollection(plan.id, plan.name);
+                            setOpenDropdownId(null);
+                          }}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"
+                        >
+                          <UsersRound size={16} />
+                          <span>Team Collection</span>
+                        </button>
+                        <div className="border-t border-[#E5E7EB] my-1"></div>
                         <button
                           onClick={() => handleEdit(plan)}
                           className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#4A5565] hover:bg-[#F3F4F6] transition-colors"

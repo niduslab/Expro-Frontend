@@ -4,11 +4,30 @@ import {
   CircleCheck,
   CircleX,
   Eye,
+  Clock,
+  XCircle,
 } from "lucide-react";
-import { statusConfig } from "../wallet/recent-transactions";
 import Image from "next/image";
 
 type Status = "Approved" | "Pending" | "Rejected";
+
+const memberStatusConfig: Record<
+  Status,
+  { style: string; icon: React.ReactNode }
+> = {
+  Approved: {
+    style: "bg-[#29A36A26] border border-[#29A36A4D] text-[#29A36A]",
+    icon: <CheckCircle size={14} />,
+  },
+  Pending: {
+    style: "bg-[#FEF1DA] border border-[#FBD89C] text-[#F59F0A]",
+    icon: <Clock size={14} />,
+  },
+  Rejected: {
+    style: "bg-[#DC282826] border border-[#DC28284D] text-[#DC2828]",
+    icon: <XCircle size={14} />,
+  },
+};
 
 interface MemberApprovals {
   id: number;
@@ -193,9 +212,9 @@ export default function MemberApproval() {
 
                     <td className="py-4 px-2">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${statusConfig[tx.status].style}`}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${memberStatusConfig[tx.status].style}`}
                       >
-                        {statusConfig[tx.status].icon}
+                        {memberStatusConfig[tx.status].icon}
                         {tx.status}
                       </span>
                     </td>

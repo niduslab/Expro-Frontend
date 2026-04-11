@@ -19,7 +19,7 @@ export interface PensionPackage {
   allow_full_prepayment: boolean;
   prepayment_discount_percentage: number;
   maturity_on_schedule: boolean;
-  status: 'active' | 'inactive' | 'upcoming';
+  status: 'active' | 'inactive' | 'upcoming' | 'running';
   is_active: boolean;
   accepts_new_enrollment: boolean;
   description?: string;
@@ -27,6 +27,88 @@ export interface PensionPackage {
   enrolled_members_count?: number;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface PensionPackageDetails {
+  package_details: PensionPackage;
+  statistics: {
+    enrollments: {
+      total: number;
+      active: number;
+      completed: number;
+      suspended: number;
+    };
+    financial: {
+      total_collected: number;
+      total_maturity_amount: number;
+      total_installments_paid: number;
+      total_installments_remaining: number;
+      average_amount_per_enrollment: number;
+      total_payment_transactions: number;
+      total_payment_amount: number;
+    };
+    commissions: {
+      total_joining_commissions: number;
+      total_installment_commissions: number;
+      total_commissions_paid: number;
+    };
+    applications: {
+      total: number;
+      pending: number;
+      approved: number;
+      rejected: number;
+      approval_rate: number;
+    };
+    team_collections: {
+      total_pension_collection: number;
+      team_count: number;
+    };
+    roles: Record<string, number>;
+  };
+  recent_enrollments: Array<{
+    id: number;
+    enrollment_number: string;
+    user_name: string | null;
+    member_id: string;
+    status: string;
+    installments_paid: number;
+    total_amount_paid: number;
+    current_role: string;
+    enrolled_at: string;
+  }>;
+  recent_applications: Array<{
+    id: number;
+    application_number: string;
+    user_name: string | null;
+    member_id: string;
+    status: string;
+    applied_at: string;
+  }>;
+  recent_installments: Array<{
+    id: number;
+    enrollment_number: string;
+    user_name: string | null;
+    installment_number: number;
+    amount: number;
+    amount_paid: number;
+    due_date: string;
+    paid_date: string | null;
+    status: string;
+    payment_method: string | null;
+  }>;
+  overdue_installments: Array<{
+    id: number;
+    enrollment_number: string;
+    user_name: string | null;
+    installment_number: number;
+    amount: number;
+    amount_paid: number;
+    due_date: string;
+    paid_date: string | null;
+    status: string;
+    payment_method: string | null;
+  }>;
+  project_packages: any[];
 }
 
 export interface PensionPackagesParams {
@@ -111,8 +193,8 @@ export const usePensionPackage = (id: number) => {
   return useQuery({
     queryKey: ['pensionPackage', id],
     queryFn: async () => {
-      const response = await apiRequest.get<PensionPackage>(`/pensionpackage/${id}`);
-      return response.data;
+      const response = await apiRequest.get<PensionPackageDetails>(`/pensionpackage/${id}`);
+      return response.data.data; // Extract the actual data from ApiResponse wrapper
     },
     enabled: !!id,
   });

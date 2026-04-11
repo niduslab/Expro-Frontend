@@ -14,6 +14,7 @@ type Status = "active" | "pending" | "inactive" | "suspended";
 type MemberType = "executive" | "general";
 type SortKey = "name" | "status" | "balance" | "joined";
 type SortDir = "asc" | "desc";
+type MemberWithChildren = Member & { children: MemberWithChildren[] };
 
 const AVATAR_COLORS = [
   { bg: "#EEEDFE", color: "#534AB7" },
@@ -166,6 +167,8 @@ export default function MembersPage() {
   const [pensionRoleMember, setPensionRoleMember] = useState<{ id: number; name: string; enrollments: any[] } | null>(null);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [enrollmentRoleFilter, setEnrollmentRoleFilter] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"table" | "hierarchy">("table");
+  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -309,9 +312,9 @@ export default function MembersPage() {
 
   // Helper function to get sponsor info
   const getSponsorInfo = (member: Member) => {
-    // Try to get sponsor from pension enrollment first (more specific)
+    // Get sponsor from pension enrollment
     const enrollment = member.pension_enrollments?.[0];
-    const sponsorId = enrollment?.sponsored_by || member.sponsor_id;
+    const sponsorId = enrollment?.sponsored_by;
     
     if (!sponsorId) return null;
     
@@ -330,6 +333,179 @@ export default function MembersPage() {
     }
     
     return { id: sponsorId, name: 'Unknown Sponsor', isLeader: false };
+  };
+
+  // Build hierarchy tree
+  const buildHierarchy = (members: Member[]): MemberWithChildren[] => {
+    const memberMap = new Map<number, MemberWithChildren>();
+    const roots: MemberWithChildren[] = [];
+
+    // Initialize all members with children array
+    members.forEach(member => {
+      memberMap.set(member.id, { ...member, children: [] });
+    });
+
+    // Build parent-child relationships
+    members.forEach(member => {
+      const enrollment = member.pension_enrollments?.[0];
+      const sponsorId = enrollment?.sponsored_by;
+      
+      const memberWithChildren = memberMap.get(member.id)!;
+      
+      if (sponsorId && memberMap.has(sponsorId)) {
+        // Add to parent's children
+        memberMap.get(sponsorId)!.children.push(memberWithChildren);
+      } else {
+        // No sponsor or sponsor not in list - add to roots
+        roots.push(memberWithChildren);
+      }
+    });
+
+    return roots;
+  };
+
+  const hierarchyData = buildHierarchy(filtered);
+
+  const toggleNode = (id: number) => {
+    setExpandedNodes(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const expandAll = () => {
+    const allIds = new Set(apiMembers.map(m => m.id));
+    setExpandedNodes(allIds);
+  };
+
+  const collapseAll = () => {
+    setExpandedNodes(new Set());
+  };
+
+  // Recursive component for hierarchy tree
+  const HierarchyNode = ({ member, level = 0 }: { member: MemberWithChildren; level?: number }) => {
+    const isExpanded = expandedNodes.has(member.id);
+    const hasChildren = member.children.length > 0;
+    const memberName = member.member?.name_english || member.email || "Unknown";
+    const memberId = member.member?.member_id || `USR-${String(member.id).padStart(5, "0")}`;
+    let displayStatus = member.status;
+    if (displayStatus === "approved") displayStatus = "active";
+    const memberStatus = displayStatus as Status;
+    
+    // Get active package roles
+    const packageRoles = member.pension_enrollments?.flatMap((enrollment: any) => 
+      enrollment.package_roles?.filter((pkgRole: any) => pkgRole.is_active).map((pkgRole: any) => pkgRole.role) || []
+    ) || [];
+    const uniqueRoles = [...new Set(packageRoles)];
+    const isLeader = uniqueRoles.some(role => ['executive_member', 'project_presenter', 'assistant_pp'].includes(role));
+
+    return (
+      <div className="relative">
+        <div 
+          className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors ${
+            level > 0 ? 'ml-8' : ''
+          }`}
+          style={{ paddingLeft: `${level * 32 + 12}px` }}
+        >
+          {/* Expand/Collapse Button */}
+          {hasChildren && (
+            <button
+              onClick={() => toggleNode(member.id)}
+              className="w-5 h-5 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded transition-colors flex-shrink-0"
+            >
+              {isExpanded ? '▼' : '▶'}
+            </button>
+          )}
+          {!hasChildren && <div className="w-5" />}
+
+          {/* Member Avatar */}
+          {member.member?.photo ? (
+            <Image
+              src={
+                member.member.photo.startsWith('http') 
+                  ? member.member.photo 
+                  : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${member.member.photo}`
+              }
+              alt={memberName}
+              width={40}
+              height={40}
+              className="rounded-full object-cover w-10 h-10 flex-shrink-0"
+              unoptimized
+            />
+          ) : (
+            <Avatar name={memberName} index={member.id} />
+          )}
+
+          {/* Member Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-medium text-gray-900">{memberName}</p>
+              <span className="text-xs text-gray-500">({memberId})</span>
+              <StatusBadge status={memberStatus} />
+              {isLeader && (
+                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-medium">
+                  ⭐ Leader
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
+              {uniqueRoles.map((role: string) => {
+                const roleConfig: Record<string, { label: string; bg: string; text: string }> = {
+                  executive_member: { label: "EM", bg: "bg-indigo-100", text: "text-indigo-700" },
+                  project_presenter: { label: "PP", bg: "bg-blue-100", text: "text-blue-700" },
+                  assistant_pp: { label: "APP", bg: "bg-amber-100", text: "text-amber-700" },
+                  general_member: { label: "GM", bg: "bg-gray-100", text: "text-gray-700" },
+                };
+                const config = roleConfig[role] || { label: role.substring(0, 3).toUpperCase(), bg: "bg-gray-100", text: "text-gray-700" };
+                return (
+                  <span
+                    key={role}
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${config.bg} ${config.text}`}
+                  >
+                    {config.label}
+                  </span>
+                );
+              })}
+              {hasChildren && (
+                <span className="text-xs text-gray-600">
+                  • {member.children.length} sponsored member{member.children.length !== 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <button
+              onClick={() => router.push(`/admin/members/${member.id}`)}
+              title="View profile"
+              className="w-8 h-8 rounded-lg border border-gray-300 bg-white flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <EyeIcon />
+            </button>
+          </div>
+        </div>
+
+        {/* Children */}
+        {hasChildren && isExpanded && (
+          <div className="relative">
+            {/* Vertical line */}
+            <div 
+              className="absolute left-0 top-0 bottom-0 w-px bg-gray-300"
+              style={{ left: `${level * 32 + 22}px` }}
+            />
+            {member.children.map((child) => (
+              <HierarchyNode key={child.id} member={child} level={level + 1} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   // ── Page window (shows 5 buttons around current page) ──
@@ -477,6 +653,30 @@ export default function MembersPage() {
             />
           </div>
 
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-1 border border-[#E5E7EB] rounded-lg p-1">
+            <button
+              onClick={() => setViewMode("table")}
+              className={`px-3 py-1 text-xs rounded transition-colors ${
+                viewMode === "table"
+                  ? "bg-[#068847] text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Table
+            </button>
+            <button
+              onClick={() => setViewMode("hierarchy")}
+              className={`px-3 py-1 text-xs rounded transition-colors ${
+                viewMode === "hierarchy"
+                  ? "bg-[#068847] text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Hierarchy
+            </button>
+          </div>
+
           {/* Filters */}
           <div className="flex items-center gap-2 flex-wrap">
             <select
@@ -570,8 +770,51 @@ export default function MembersPage() {
         </div>
       )}
 
+      {/* ── Hierarchy View ── */}
+      {viewMode === "hierarchy" && (
+        <div className="bg-white border border-[#E5E7EB] rounded-lg overflow-hidden">
+          <div className="p-4 border-b border-[#E5E7EB] flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-900">Member Hierarchy</h3>
+              <p className="text-xs text-gray-600 mt-0.5">
+                Showing sponsor-member relationships
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={expandAll}
+                className="text-xs px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Expand All
+              </button>
+              <button
+                onClick={collapseAll}
+                className="text-xs px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Collapse All
+              </button>
+            </div>
+          </div>
+          <div className="p-4 max-h-[800px] overflow-y-auto">
+            {hierarchyData.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <p>No members found matching your filters</p>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {hierarchyData.map((member) => (
+                  <HierarchyNode key={member.id} member={member} level={0} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ── Table ── */}
-      {members.length === 0 && !isLoading ? (
+      {viewMode === "table" && (
+        <>
+          {members.length === 0 && !isLoading ? (
         <div className="flex items-center justify-center min-h-[300px] border border-[#E5E7EB] rounded-lg bg-white">
           <div className="text-center">
             <p className="text-[14px] text-gray-700">No members match your filters</p>
@@ -905,6 +1148,8 @@ export default function MembersPage() {
             </select>
           </div>
         </div>
+      )}
+        </>
       )}
 
       {/* Member Edit Modal - TODO: Create edit modal component */}
