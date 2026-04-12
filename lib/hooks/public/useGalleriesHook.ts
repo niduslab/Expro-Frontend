@@ -10,6 +10,7 @@ import {
   fetchGalleries,
   fetchGalleryImages,
   fetchGalleryById,
+  fetchGalleriespublic,
 } from "@/lib/api/functions/public/galleriesApi";
 
 /**
@@ -21,7 +22,12 @@ export const useGalleries = (page: number = 1, per_page: number = 10) => {
     queryFn: () => fetchGalleries(page, per_page),
   });
 };
-
+export const useGalleriespublic = () => {
+  return useQuery<PaginatedResponse<Gallery>, Error>({
+    queryKey: ["galleries"],
+    queryFn: () => fetchGalleriespublic(),
+  });
+};
 /**
  * Hook to fetch a single gallery by ID
  */

@@ -70,7 +70,10 @@ export default function GalleryDetailModal({
             <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
               Gallery Details
             </p>
-            <button onClick={onClose} className="text-gray-500 hover:text-black">
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-black"
+            >
               ✕
             </button>
           </div>
@@ -82,7 +85,6 @@ export default function GalleryDetailModal({
         {/* Scrollable Body */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-4">
           <div className="flex flex-col gap-6">
-
             {/* Section 1: Gallery Info */}
             <div className="flex flex-col gap-[16px]">
               <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -206,13 +208,13 @@ export default function GalleryDetailModal({
                 <div className="w-1/2">
                   <DetailField
                     label="Created By"
-                    value={gallery.created_by?.name}
+                    value={gallery.created_by?.email}
                   />
                 </div>
                 <div className="w-1/2">
                   <DetailField
                     label="Updated By"
-                    value={gallery.updated_by?.name}
+                    value={gallery.updated_by?.email}
                   />
                 </div>
               </div>
@@ -239,7 +241,6 @@ export default function GalleryDetailModal({
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
