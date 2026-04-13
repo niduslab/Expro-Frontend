@@ -160,7 +160,7 @@ export default function GalleryImagesTab({ galleryId }: GalleryImagesTabProps) {
                     src={img.image_path || "/fallback.jpg"}
                     alt={img.title ?? `Image ${img.id}`}
                     width={256}
-                    height={128}
+                    height={256}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     unoptimized={img.image_path?.startsWith("http")}
