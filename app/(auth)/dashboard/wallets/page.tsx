@@ -147,6 +147,9 @@ export default function WalletPage() {
             : tx.status === key,
         ).length;
 
+  // const totalBalance =
+  //   parseFloat(wallet?.balance ?? "0") +
+  //   parseFloat(wallet?.commission_balance ?? "0");
   const totalBalance =
     parseFloat(wallet?.balance ?? "0") +
     parseFloat(wallet?.commission_balance ?? "0");
@@ -215,10 +218,13 @@ export default function WalletPage() {
 
                 <div>
                   <p className="text-[14px] text-white/80 mb-2">
-                    Total Available Balance
+                    Total Available Balance (Deposite + Commission)
                   </p>
                   <p className="text-4xl font-bold text-white font-mono mb-6">
-                    ৳{fmtAmount(totalBalance)}
+                    ৳{fmtAmount(
+                      (parseFloat(wallet?.total_deposited || "0") + 
+                       parseFloat(wallet?.total_commission_earned || "0")).toString()
+                    )}
                   </p>
                 </div>
 
@@ -226,7 +232,7 @@ export default function WalletPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-4 border border-white/20">
                     <p className="text-[13px] text-white/70 mb-1">
-                      Main Balance
+                      Pension Balance
                     </p>
                     <p className="text-xl font-bold text-white font-mono">
                       {/* ৳{fmtAmount(wallet?.balance ?? "0")} */}

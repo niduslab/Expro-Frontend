@@ -3237,20 +3237,17 @@ const response = await api.post('/chairman/user/1/update-status', {
 
 ### List All Roles
 
-**Endpoint:** `GET /chairman/roles`  
-**Auth Required:** Yes (Chairman role)
+**Endpoint:** `GET /admin/roles`  
 
 ```javascript
-const response = await api.get('/chairman/roles');
+const response = await api.get('/admin/roles');
 ```
-
 ### Assign Role to User
 
-**Endpoint:** `POST /chairman/assignRole`  
-**Auth Required:** Yes (Chairman role)
+**Endpoint:** `POST /admin/assignRole`  
 
 ```javascript
-const response = await api.post('/chairman/assignRole', {
+const response = await api.post('/admin/assignRole', {
   user_id: 1,
   roles: ['member', 'coordinator']
 });

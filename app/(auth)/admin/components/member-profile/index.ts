@@ -1,0 +1,11 @@
+export { default as MemberHeader } from './MemberHeader';
+export { default as TabNavigation } from './TabNavigation';
+export { default as ProfileTab } from './ProfileTab';
+export { default as PensionEnrollmentsTab } from './PensionEnrollmentsTab';
+export { default as PensionInstallmentsTab } from './PensionInstallmentsTab';
+export { default as WalletTab } from './WalletTab';
+export { default as WalletTransactionsTab } from './WalletTransactionsTab';
+export { default as NomineesTab } from './NomineesTab';
+export { default as EditProfileModal } from './EditProfileModal';
+export { default as NomineeModal } from './NomineeModal';
+export { InfoItem } from './shared';

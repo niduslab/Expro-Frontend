@@ -14,6 +14,7 @@ import {
   SquareChartGantt,
   AudioLines,
   MessageSquareShare,
+  ShieldCheck,
   Images,
   Hd,
 } from "lucide-react";
@@ -27,6 +28,11 @@ export const sidebarItems = [
     name: "Membership Request",
     href: "/admin/membership-request",
     icon: AudioLines,
+  },
+  {
+    name: "Role Permission",
+    href: "/admin/role-permission",
+    icon: ShieldCheck,
   },
   // { name: "All Pension Members", href: "/admin/members", icon: Users },
 
