@@ -230,7 +230,7 @@ const WhatWeDo = () => {
                   </p>
 
                   <Link
-                    href={service.title}
+                    href={`/projects/project-details/${String(service.id)}`}
                     className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 mb-8 transition-colors group/link"
                   >
                     Learn More

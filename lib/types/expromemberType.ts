@@ -10,7 +10,6 @@ export interface ExproMember {
   image_url: string;
   created_at: string;
   updated_at: string;
-  role?: string;
 }
 
 /**

@@ -7,12 +7,6 @@ const OurFounder = () => {
   // Fetch all members (adjust per_page if you have more than 10)
   const { data, isLoading } = useExproMembers(1, 50);
 
-  const founder = data?.data.find(
-    (m) =>
-      m.designation === "Founder" || (m.designation === "Co-Founder" && false),
-    // only "Founder" here:
-  );
-  // cleaner:
   const founderMember = data?.data.find((m) => m.designation === "Founder");
 
   // Don't render the section at all if no founder exists

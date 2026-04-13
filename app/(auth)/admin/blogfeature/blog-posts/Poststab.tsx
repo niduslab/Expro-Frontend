@@ -199,10 +199,7 @@ export default function PostsTab() {
                     <td className="px-5 py-4">
                       <div className="relative w-20 h-14 rounded-lg overflow-hidden border border-[#E5E7EB]">
                         <Image
-                          src={
-                            post.featured_image_url ||
-                            "/images/dashboard/memberApproval/1.jpg"
-                          }
+                          src={post.featured_image_url || "/fallback.jpg"}
                           alt={`${post.title} - ${post.slug}`}
                           fill
                           className="object-cover"

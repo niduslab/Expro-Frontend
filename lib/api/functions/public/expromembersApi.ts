@@ -33,7 +33,7 @@ export const fetchExproMemberById = async (
     success: boolean;
     message: string;
     data: ExproMember;
-  }>(`/public/exproteammembers/${id}`);
+  }>(`/public/exproteammember/${id}`);
 
   return res.data.data;
 };

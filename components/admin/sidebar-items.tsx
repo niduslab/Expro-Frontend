@@ -10,11 +10,12 @@ import {
   UsersRound,
   FilePlusCorner,
   Percent,
-  UserRoundCheck,
   Activity,
   SquareChartGantt,
   AudioLines,
   MessageSquareShare,
+  Images,
+  Hd,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -37,6 +38,8 @@ export const sidebarItems = [
   { name: "Branch", href: "/admin/branch", icon: Split },
   { name: "Blog", href: "/admin/blogfeature", icon: NotebookPen },
   { name: "Event", href: "/admin/events", icon: Balloon },
+  { name: "Gallery", href: "/admin/gallery", icon: Images },
+  { name: "YT Videos", href: "/admin/ytvideos", icon: Hd },
   { name: "Documents", href: "/admin/documents", icon: FilePlusCorner },
   {
     name: "Expro Team Members",

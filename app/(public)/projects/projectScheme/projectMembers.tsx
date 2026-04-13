@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { useExproMembers } from "@/lib/hooks/public/useExpromembers";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,8 +23,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
 
   const { data, isLoading } = useExproMembers(1, 50);
 
-  const executiveMembers =
-    data?.data.filter((m) => m.designation === "Executive Member") ?? [];
+  const executiveMembers = data?.data.filter((m) => m) ?? [];
 
   useEffect(() => {
     if (!sectionRef.current || executiveMembers.length === 0) return;
@@ -111,10 +111,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
                 {/* Background Image */}
                 <div className="absolute inset-0">
                   <Image
-                    src={
-                      member.image_url ||
-                      "/images/dashboard/memberApproval/1.jpg"
-                    }
+                    src={member.image_url || "/fallback.jpg"}
                     alt={`${member.name} - ${member.designation}`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -125,11 +122,17 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
                 </div>
 
                 {/* Top Right Icon */}
-                <div className="absolute top-4 right-4 z-10">
-                  <div className="w-8 h-8 rounded-full bg-[#008A4B] flex items-center justify-center text-white">
-                    <ArrowUpRight size={16} strokeWidth={2.5} />
+
+                <Link
+                  href={`/projects/projectScheme/expromembers/${String(member.id)}`}
+                >
+                  {" "}
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className="w-8 h-8 rounded-full bg-[#008A4B] flex items-center justify-center text-white">
+                      <ArrowUpRight size={16} strokeWidth={2.5} />
+                    </div>
                   </div>
-                </div>
+                </Link>
 
                 {/* Bottom Content Card */}
                 <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg p-5 shadow-sm">
