@@ -1,6 +1,6 @@
 "use client";
 import Dropdown from "@/components/ui/dropdown";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useState } from "react";
 import { CompletedTabs } from "./new-project-modal";
 import { projectInfoSchema } from "@/components/zodschema/projectSchema";
@@ -27,48 +27,73 @@ export default function ProjectInfo({
   setCompletedTabs,
 }: ProjectInfoProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [preview, setPreview] = useState<string | null>(
-    formData.featured_image ?? null,
-  );
+  const [preview, setPreview] = useState<string | null>(() => {
+    if (formData.featuredImage) {
+      return URL.createObjectURL(formData.featuredImage);
+    }
+    return formData.featured_image ?? null;
+  });
   const handleNext = () => {
     const result = projectInfoSchema.safeParse(formData);
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
-
       result.error.issues.forEach((issue) => {
         if (issue.path[0]) fieldErrors[issue.path[0] as string] = issue.message;
       });
-
       setErrors(fieldErrors);
-
       const lastMessage = result.error.issues.slice(-1)[0]?.message;
       toast.error(lastMessage || "Validation failed");
-
       return;
     }
 
     setErrors({});
-
-    setCompletedTabs((prev) => ({
-      ...prev,
-      info: true,
-    }));
-
+    setCompletedTabs((prev) => ({ ...prev, info: true }));
     setActiveTab("budget");
   };
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleFeaturedImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = e.target.files?.[0] ?? null;
     setFormData((prev) => ({ ...prev, featuredImage: file }));
     if (file) {
-      setPreview(URL.createObjectURL(file)); // new file overrides existing URL
+      setPreview(URL.createObjectURL(file));
+    } else {
+      // Fall back to existing URL if user clears
+      setPreview(formData.featured_image ?? null);
     }
+  };
+
+  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files ?? []);
+    setFormData((prev) => ({
+      ...prev,
+      galleryImages: [...(prev.galleryImages ?? []), ...newFiles],
+    }));
+    // reset input so same file can be re-added after removal
+    e.target.value = "";
+  };
+
+  const removeNewGalleryImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      galleryImages: (prev.galleryImages ?? []).filter((_, i) => i !== index),
+    }));
+  };
+
+  const removeExistingGalleryImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      gallery: (prev.gallery ?? []).filter((_, i) => i !== index),
+    }));
   };
 
   return (
     <>
       <div className="flex flex-col relative pt-4 gap-[12px]">
-        <div className=" justify-between">
+        {/* Project Title */}
+        <div className="justify-between">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Project Title
@@ -77,25 +102,23 @@ export default function ProjectInfo({
               *
             </span>
           </div>
-
           <input
             value={formData.title}
             onChange={(e) => {
               setFormData({ ...formData, title: e.target.value });
-              // Clear the title error immediately when the user types
-              if (errors.title) {
-                setErrors((prev) => ({ ...prev, title: "" }));
-              }
+              if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
             }}
-            className="w-full h-[48px] gap-[129px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+            className="w-full h-[48px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
             placeholder="Healthcare Program"
           />
           {errors.title && (
             <span className="text-sm text-red-500 py-0.5">{errors.title}</span>
           )}
-        </div>{" "}
+        </div>
+
+        {/* Category + Status */}
         <div className="flex flex-col sm:flex-row gap-2 w-full">
-          <div className="relative w-full sm:w-1/2 ">
+          <div className="relative w-full sm:w-1/2">
             <Dropdown
               label="Category"
               required
@@ -124,7 +147,7 @@ export default function ProjectInfo({
           </div>
           <div className="relative w-full sm:w-1/2">
             <Dropdown
-              label="Status" // was "Priority"
+              label="Status"
               required
               placeholder="Select Status"
               options={[
@@ -134,10 +157,9 @@ export default function ProjectInfo({
                 "completed",
                 "cancelled",
               ]}
-              // ↑ must match your ProjectStatusEnum values on the backend
-              value={formData.status} // was formData.priority
+              value={formData.status}
               onChange={(value) => {
-                setFormData({ ...formData, status: value }); // was priority
+                setFormData({ ...formData, status: value });
                 if (errors.status)
                   setErrors((prev) => ({ ...prev, status: "" }));
               }}
@@ -149,6 +171,8 @@ export default function ProjectInfo({
             )}
           </div>
         </div>
+
+        {/* Short Description */}
         <div className="justify-between">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -180,7 +204,9 @@ export default function ProjectInfo({
             </span>
           </div>
         </div>
-        <div className=" justify-between">
+
+        {/* Description */}
+        <div className="justify-between">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Description
@@ -189,17 +215,14 @@ export default function ProjectInfo({
               *
             </span>
           </div>
-
           <textarea
             value={formData.description}
             onChange={(e) => {
               setFormData({ ...formData, description: e.target.value });
-
-              if (errors.description) {
+              if (errors.description)
                 setErrors((prev) => ({ ...prev, description: "" }));
-              }
             }}
-            className=" w-full h-[102px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
+            className="w-full h-[102px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
             placeholder="About Healthcare Program"
           />
           {errors.description && (
@@ -207,31 +230,127 @@ export default function ProjectInfo({
               {errors.description}
             </span>
           )}
-        </div>{" "}
+        </div>
+
+        {/* Featured Image */}
         <div className="justify-between">
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Featured Image
             </span>
           </div>
-
           <input
             type="file"
             accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml"
-            onChange={handleImageChange}
+            onChange={handleFeaturedImageChange}
             className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[10px] bg-[#FFFFFF] text-[#6A7282] text-sm"
           />
-
-          {/* Shows new file selection OR existing URL, whichever is available */}
           {preview && (
-            <img
-              src={preview}
-              alt="Featured preview"
-              className="mt-2 h-[80px] w-auto rounded-md object-cover"
-            />
+            <div className="relative mt-2 inline-block group">
+              <img
+                src={preview}
+                alt="Featured preview"
+                className="h-[80px] w-auto rounded-md object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setPreview(formData.featured_image ?? null); // revert to saved URL or null
+                  setFormData((prev) => ({ ...prev, featuredImage: null }));
+                }}
+                className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 text-white 
+                 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="h-3 w-3" />
+              </button>
+              {formData.featuredImage && (
+                <span className="block text-[11px] text-green-600 mt-1">
+                  New file selected: {formData.featuredImage.name}
+                </span>
+              )}
+            </div>
           )}
         </div>
-        <div className="flex relative justify-between w-full  ">
+
+        {/* Gallery Images */}
+        <div className="justify-between">
+          <div className="pb-2 flex items-center justify-between">
+            <div>
+              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+                Gallery Images
+              </span>
+              <span className="text-[#9CA3AF] text-[12px] ml-1">
+                (optional, multiple)
+              </span>
+            </div>
+            <label className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#068847] text-white text-[12px] font-medium hover:bg-green-700 transition-colors">
+              <span>+ Add Images</span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml"
+                multiple
+                onChange={handleGalleryChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          {/* Unified gallery grid */}
+          {(formData.gallery ?? []).length > 0 ||
+          (formData.galleryImages ?? []).length > 0 ? (
+            <div className="flex flex-wrap gap-2 mt-1">
+              {/* Existing URLs */}
+              {(formData.gallery ?? []).map((url, i) => (
+                <div key={`existing-${i}`} className="relative group">
+                  <img
+                    src={url}
+                    alt={`Gallery ${i + 1}`}
+                    className="h-20 w-20 object-cover rounded-lg border-2 border-[#E5E7EB]"
+                  />
+                  {/* "saved" badge */}
+                  <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] bg-black/40 text-white rounded-b-lg py-0.5">
+                    Saved
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeExistingGalleryImage(i)}
+                    className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+
+              {/* New files (not yet uploaded) */}
+              {(formData.galleryImages ?? []).map((file, i) => (
+                <div key={`new-${i}`} className="relative group">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`New ${i + 1}`}
+                    className="h-20 w-20 object-cover rounded-lg border-2 border-[#068847]"
+                  />
+                  {/* "new" badge */}
+                  <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] bg-[#068847]/80 text-white rounded-b-lg py-0.5">
+                    New
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeNewGalleryImage(i)}
+                    className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-1 h-20 border-2 border-dashed border-[#D1D5DC] rounded-lg flex items-center justify-center text-[#9CA3AF] text-[13px]">
+              No gallery images yet
+            </div>
+          )}
+        </div>
+        {/* Footer buttons */}
+        <div className="flex relative justify-between w-full">
           <button
             onClick={() => setOpenModal(false)}
             className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]"

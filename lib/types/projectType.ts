@@ -11,9 +11,9 @@ export interface Project {
   status?: string;
   start_date?: string;
   end_date?: string;
-  budget?: number; // was string — backend stores numeric
-  funds_raised?: number; // was string
-  funds_utilized?: number; // was string
+  budget?: number;
+  funds_raised?: number;
+  funds_utilized?: number;
   project_lead_id?: number;
   is_featured?: boolean;
   is_published?: boolean;
@@ -47,6 +47,7 @@ export interface ApiResponse<T> {
 }
 
 // ── Mutation payloads ──────────────────────────────────────────────
+
 export interface CreateProjectPayload {
   title: string;
   title_bangla?: string;
@@ -64,7 +65,13 @@ export interface CreateProjectPayload {
   is_featured?: boolean;
   is_published?: boolean;
   featured_image?: File;
+  gallery?: File[]; // new files to upload
 }
+
+export interface UpdateProjectPayload extends Partial<CreateProjectPayload> {
+  gallery_keep?: string[]; // existing URLs to retain (edit only)
+}
+
 export interface ProjectFormDataInterface {
   title: string;
   category: string;
@@ -73,13 +80,14 @@ export interface ProjectFormDataInterface {
   description: string;
   totalBudget: string;
   initialFund: string;
-  fundsUtilized: string; // ← replaces role
+  fundsUtilized: string;
   startDate: string;
   endDate: string;
   projectLeadId: number | null;
-  isFeatured: boolean; // ← replaces teamSize
-  isPublished: boolean; // ← replaces contribution
+  isFeatured: boolean;
+  isPublished: boolean;
   featuredImage: File | null;
-  featured_image?: string | null;
+  featured_image?: string | null; // existing featured image URL (edit mode)
+  galleryImages: File[]; // new gallery files to upload
+  gallery?: string[]; // existing gallery URLs (edit mode)
 }
-export type UpdateProjectPayload = Partial<CreateProjectPayload>;
