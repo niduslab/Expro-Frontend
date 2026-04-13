@@ -95,6 +95,7 @@ export interface ProjectMemberFilters {
   per_page?: number;
   sort_by?: string;
   sort_order?: "asc" | "desc";
+  q?: string;
 }
 
 export interface MyProjectsFilters {
