@@ -1,8 +1,5 @@
 "use client";
 
-// app/admin/projects/projectMember/[id]/page.tsx
-// Slim orchestrator: owns state, composes all feature components.
-
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { UserPlus } from "lucide-react";
@@ -36,13 +33,11 @@ export default function ProjectMemberPage() {
   const params = useParams();
   const projectId = Number(params.id);
 
-  // ── Local state ──────────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [modal, setModal] = useState<ModalState>(null);
 
-  // ── Data ─────────────────────────────────────────────────────────────────────
   const { data, isLoading, isError } = useProjectMembers({
     project_id: projectId,
     page,
@@ -54,14 +49,13 @@ export default function ProjectMemberPage() {
   const members = data?.data ?? [];
   const pagination = data?.pagination;
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
   const closeModal = () => setModal(null);
   const clearFilters = () => {
     setStatusFilter("");
     setRoleFilter("");
     setPage(1);
   };
-
+  const assignedUserIds = members.map((m) => m.user_id);
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-6xl mx-auto py-8">
@@ -149,20 +143,27 @@ export default function ProjectMemberPage() {
       {/* ── Modals ────────────────────────────────────────────────────────────── */}
       {modal?.type === "assign" && (
         <Modal title="Assign New Member" onClose={closeModal}>
-          <MemberForm projectId={projectId} onClose={closeModal} />
-        </Modal>
-      )}
-
-      {modal?.type === "edit" && (
-        <Modal title="Edit Member" onClose={closeModal}>
           <MemberForm
             projectId={projectId}
-            initial={modal.member}
             onClose={closeModal}
+            assignedUserIds={assignedUserIds}
           />
         </Modal>
       )}
-
+      <div className="max-w-7xl mx-auto">
+        {modal?.type === "edit" && (
+          <Modal title="Edit Member" onClose={closeModal}>
+            <MemberForm
+              projectId={projectId}
+              initial={modal.member}
+              onClose={closeModal}
+              assignedUserIds={assignedUserIds.filter(
+                (id) => id !== modal.member.user_id,
+              )}
+            />
+          </Modal>
+        )}
+      </div>
       {modal?.type === "delete" && (
         <Modal title="Remove Member" onClose={closeModal}>
           <DeleteConfirm member={modal.member} onClose={closeModal} />

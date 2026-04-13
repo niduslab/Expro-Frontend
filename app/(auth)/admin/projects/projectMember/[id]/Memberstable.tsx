@@ -116,138 +116,154 @@ export function MembersTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {members.map((member) => (
-              <tr key={member.id} className="hover:bg-slate-50/60 transition">
-                {/* Member */}
-                <td className="px-5 py-3.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-xs flex-shrink-0">
-                      {(member.user?.name ?? `U${member.user_id}`)
-                        .charAt(0)
-                        .toUpperCase()}
+            {members.map((member) => {
+              // Helper to get display name safely
+              const displayName =
+                member.user?.member?.name_english ||
+                member.user?.name ||
+                `User #${member.user_id}`;
+              const initial = displayName.charAt(0).toUpperCase();
+
+              return (
+                <tr key={member.id} className="hover:bg-slate-50/60 transition">
+                  {/* Member */}
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-xs flex-shrink-0">
+                        {initial}
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-800 leading-tight">
+                          {displayName}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {member.user?.email}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-slate-800 leading-tight">
-                        {member.user?.name ?? `User #${member.user_id}`}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {member.user?.email}
-                      </p>
-                    </div>
-                  </div>
-                </td>
+                  </td>
 
-                {/* Role */}
-                <td className="px-4 py-3.5">
-                  <RoleBadge role={member.project_role} />
-                </td>
+                  {/* Role */}
+                  <td className="px-4 py-3.5">
+                    <RoleBadge role={member.project_role} />
+                  </td>
 
-                {/* Status */}
-                <td className="px-4 py-3.5">
-                  <StatusBadge status={member.status} />
-                </td>
+                  {/* Status */}
+                  <td className="px-4 py-3.5">
+                    <StatusBadge status={member.status} />
+                  </td>
 
-                {/* Joined */}
-                <td className="px-4 py-3.5 text-slate-600">
-                  {member.joining_date ?? "—"}
-                </td>
+                  {/* Joined */}
+                  <td className="px-4 py-3.5 text-slate-600">
+                    {member.joining_date ?? "—"}
+                  </td>
 
-                {/* Fee */}
-                <td className="px-4 py-3.5 text-slate-600">
-                  ৳{Number(member.joining_fee_paid).toLocaleString()}
-                </td>
+                  {/* Fee */}
+                  <td className="px-4 py-3.5 text-slate-600">
+                    ৳{Number(member.joining_fee_paid).toLocaleString()}
+                  </td>
 
-                {/* Downline */}
-                <td className="px-4 py-3.5">
-                  <span className="text-slate-600">
-                    {member.current_downline_count}
-                  </span>
-                  {member.max_downline_members !== null && (
-                    <span className="text-slate-400">
-                      {" "}
-                      / {member.max_downline_members}
+                  {/* Downline */}
+                  <td className="px-4 py-3.5">
+                    <span className="text-slate-600">
+                      {member.current_downline_count}
                     </span>
-                  )}
-                </td>
+                    {member.max_downline_members !== null && (
+                      <span className="text-slate-400">
+                        {" "}
+                        / {member.max_downline_members}
+                      </span>
+                    )}
+                  </td>
 
-                {/* Actions */}
-                <td className="px-4 py-3.5">
-                  <div className="flex items-center gap-1 justify-end">
-                    <button
-                      onClick={() => onEdit(member)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
-                      title="Edit"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => onDelete(member)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
-                      title="Remove"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  {/* Actions */}
+                  <td className="px-4 py-3.5">
+                    <div className="flex items-center gap-1 justify-end">
+                      <button
+                        onClick={() => onEdit(member)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
+                        title="Edit"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => onDelete(member)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                        title="Remove"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
       {/* ── Mobile cards ──────────────────────────────────────────────────────── */}
       <div className="md:hidden divide-y divide-slate-100">
-        {members.map((member) => (
-          <div key={member.id} className="px-4 py-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm flex-shrink-0">
-                  {(member.user?.name ?? `U${member.user_id}`)
-                    .charAt(0)
-                    .toUpperCase()}
+        {members.map((member) => {
+          // Helper to get display name safely
+          const displayName =
+            member.user?.member?.name_english ||
+            member.user?.name ||
+            `User #${member.user_id}`;
+          const initial = displayName.charAt(0).toUpperCase();
+
+          return (
+            <div key={member.id} className="px-4 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm flex-shrink-0">
+                    {initial}
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-800 text-sm">
+                      {displayName}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {member.user?.email}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-slate-800 text-sm">
-                    {member.user?.name ?? `User #${member.user_id}`}
-                  </p>
-                  <p className="text-xs text-slate-400">{member.user?.email}</p>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => onEdit(member)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(member)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => onEdit(member)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => onDelete(member)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <RoleBadge role={member.project_role} />
+                <StatusBadge status={member.status} />
+              </div>
+
+              <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500">
+                <span>Joined: {member.joining_date ?? "—"}</span>
+                <span>
+                  Fee: ৳{Number(member.joining_fee_paid).toLocaleString()}
+                </span>
+                <span>
+                  Downline: {member.current_downline_count}
+                  {member.max_downline_members !== null
+                    ? ` / ${member.max_downline_members}`
+                    : ""}
+                </span>
               </div>
             </div>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              <RoleBadge role={member.project_role} />
-              <StatusBadge status={member.status} />
-            </div>
-
-            <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500">
-              <span>Joined: {member.joining_date ?? "—"}</span>
-              <span>
-                Fee: ৳{Number(member.joining_fee_paid).toLocaleString()}
-              </span>
-              <span>
-                Downline: {member.current_downline_count}
-                {member.max_downline_members !== null
-                  ? ` / ${member.max_downline_members}`
-                  : ""}
-              </span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ── Pagination ────────────────────────────────────────────────────────── */}

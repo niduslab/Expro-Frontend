@@ -131,10 +131,12 @@ export function UserCombobox({
   value,
   onChange,
   error,
+  assignedUserIds = [],
 }: {
   value: number | null;
   onChange: (id: number) => void;
   error?: boolean;
+  assignedUserIds?: number[];
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -156,10 +158,10 @@ export function UserCombobox({
 
   const filtered = users.filter(
     (u: any) =>
-      u.name?.toLowerCase().includes(search.toLowerCase()) ||
-      u.email?.toLowerCase().includes(search.toLowerCase()),
+      !assignedUserIds.includes(u.id) &&
+      (u.member?.name_english.toLowerCase().includes(search.toLowerCase()) ||
+        u.email?.toLowerCase().includes(search.toLowerCase())),
   );
-
   return (
     <div ref={ref} className="relative w-full">
       <button
@@ -233,7 +235,7 @@ export function UserCombobox({
                         : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    <div className="font-medium">{u.name}</div>
+                    <div className="font-medium">{u?.member?.name_english}</div>
                     <div className="text-xs text-slate-400">{u.email}</div>
                   </li>
                 ))

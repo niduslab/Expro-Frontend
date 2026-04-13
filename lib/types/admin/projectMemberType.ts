@@ -1,5 +1,7 @@
 // types/projectMember.ts
 
+import { MemberProfile } from "./memberType";
+
 export type ProjectMemberRole =
   | "chairman"
   | "admin"
@@ -28,6 +30,7 @@ export interface ProjectMemberUser {
   id: number;
   name: string;
   email: string;
+  member: MemberProfile;
   // extend as your UserResource returns more fields
   [key: string]: unknown;
 }

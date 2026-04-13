@@ -1,10 +1,10 @@
 "use client";
 
 // components/projectMember/MemberForm.tsx
-// Used inside the Assign and Edit modals.
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   useCreateProjectMember,
@@ -18,19 +18,49 @@ import type {
 } from "@/lib/types/admin/projectMemberType";
 import { EMPTY_FORM, ROLE_OPTIONS, STATUS_OPTIONS } from "./constent";
 import { Field, CustomSelect, UserCombobox } from "./Projectmemberui";
+import DatePicker from "@/components/ui/date-picker";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface MemberFormProps {
   projectId: number;
-  /** Pass to switch the form into edit mode */
   initial?: ProjectMember;
   onClose: () => void;
+  assignedUserIds?: number[];
 }
+
+// ─── Backend error shape ──────────────────────────────────────────────────────
+
+interface BackendError {
+  message?: string;
+  errors?: Record<string, string[]>;
+}
+
+// ─── Known form fields for inline error mapping ───────────────────────────────
+
+const KNOWN_FIELDS: (keyof CreateProjectMemberPayload)[] = [
+  "user_id",
+  "project_role",
+  "status",
+  "joining_date",
+  "expiry_date",
+  "joining_fee_paid",
+  "hierarchy_level",
+  "max_downline_members",
+  "current_downline_count",
+  "notes",
+  "payment_id",
+  "parent_member_id",
+];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
+export function MemberForm({
+  projectId,
+  initial,
+  onClose,
+  assignedUserIds,
+}: MemberFormProps) {
   const isEdit = !!initial;
   const createMutation = useCreateProjectMember();
   const updateMutation = useUpdateProjectMember();
@@ -66,6 +96,8 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
     setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
+  // ── Client-side validation ────────────────────────────────────────────────
+
   const validate = () => {
     const e: Record<string, string> = {};
     if (!form.user_id) e.user_id = "Please select a user.";
@@ -76,15 +108,66 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
     return Object.keys(e).length === 0;
   };
 
+  // ── Backend error handler ─────────────────────────────────────────────────
+
+  const handleBackendError = (error: unknown) => {
+    const responseData = (error as any)?.response?.data as
+      | BackendError
+      | undefined;
+
+    if (!responseData) {
+      toast.error("Something went wrong. Please try again.");
+      return;
+    }
+
+    const fieldErrors: Record<string, string> = {};
+
+    if (responseData.errors) {
+      for (const [field, messages] of Object.entries(responseData.errors)) {
+        const first = messages[0];
+        if (KNOWN_FIELDS.includes(field as keyof CreateProjectMemberPayload)) {
+          // Show inline under the field
+          fieldErrors[field] = first;
+        } else {
+          // Unknown field — toast only
+          toast.error(first);
+        }
+      }
+    }
+
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors((prev) => ({ ...prev, ...fieldErrors }));
+      // Summary toast so the user knows to check the form
+      toast.error(responseData.message ?? "Please fix the errors below.");
+    } else if (responseData.message) {
+      toast.error(responseData.message);
+    }
+  };
+
+  // ── Submit ────────────────────────────────────────────────────────────────
+
   const handleSubmit = () => {
     if (!validate()) return;
+
     if (isEdit) {
       updateMutation.mutate(
         { id: initial!.id, payload: form },
-        { onSuccess: onClose },
+        {
+          onSuccess: () => {
+            toast.success("Member updated successfully.");
+            onClose();
+          },
+          onError: handleBackendError,
+        },
       );
     } else {
-      createMutation.mutate(form, { onSuccess: onClose });
+      createMutation.mutate(form, {
+        onSuccess: () => {
+          toast.success("Member assigned successfully.");
+          onClose();
+        },
+        onError: handleBackendError,
+      });
     }
   };
 
@@ -98,6 +181,7 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
               value={form.user_id || null}
               onChange={(id) => set("user_id", id)}
               error={!!errors.user_id}
+              assignedUserIds={assignedUserIds ?? []}
             />
           </Field>
         </div>
@@ -127,27 +211,32 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
         </div>
 
         {/* Joining Date */}
-        <Field label="Joining Date" required error={errors.joining_date}>
-          <input
-            type="date"
+        <div className="col-span-1">
+          <DatePicker
+            label="Joining Date"
+            required
             value={form.joining_date}
-            onChange={(e) => set("joining_date", e.target.value)}
-            className="h-[42px] border border-slate-200 rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            onChange={(val) => set("joining_date", val)}
           />
-        </Field>
+          {errors.joining_date && (
+            <p className="mt-1 text-xs text-red-500">{errors.joining_date}</p>
+          )}
+        </div>
 
         {/* Expiry Date */}
-        <Field label="Expiry Date">
-          <input
-            type="date"
+        <div className="col-span-1">
+          <DatePicker
+            label="Expiry Date"
             value={form.expiry_date ?? ""}
-            onChange={(e) => set("expiry_date", e.target.value || null)}
-            className="h-[42px] border border-slate-200 rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            onChange={(val) => set("expiry_date", val || null)}
           />
-        </Field>
+          {errors.expiry_date && (
+            <p className="mt-1 text-xs text-red-500">{errors.expiry_date}</p>
+          )}
+        </div>
 
         {/* Joining Fee */}
-        <Field label="Joining Fee (BDT)">
+        <Field label="Joining Fee (BDT)" error={errors.joining_fee_paid}>
           <input
             type="number"
             min={0}
@@ -155,12 +244,16 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
             onChange={(e) =>
               set("joining_fee_paid", parseFloat(e.target.value) || 0)
             }
-            className="h-[42px] border border-slate-200 rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            className={`h-[42px] border rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:ring-1 transition ${
+              errors.joining_fee_paid
+                ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-500"
+            }`}
           />
         </Field>
 
         {/* Hierarchy Level */}
-        <Field label="Hierarchy Level">
+        <Field label="Hierarchy Level" error={errors.hierarchy_level}>
           <input
             type="number"
             min={0}
@@ -169,12 +262,16 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
             onChange={(e) =>
               set("hierarchy_level", parseInt(e.target.value) || 0)
             }
-            className="h-[42px] border border-slate-200 rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            className={`h-[42px] border rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:ring-1 transition ${
+              errors.hierarchy_level
+                ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-500"
+            }`}
           />
         </Field>
 
         {/* Max Downline */}
-        <Field label="Max Downline">
+        <Field label="Max Downline" error={errors.max_downline_members}>
           <input
             type="number"
             min={0}
@@ -186,12 +283,16 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
               )
             }
             placeholder="Unlimited"
-            className="h-[42px] border border-slate-200 rounded-lg px-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            className={`h-[42px] border rounded-lg px-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 transition ${
+              errors.max_downline_members
+                ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-500"
+            }`}
           />
         </Field>
 
         {/* Current Downline */}
-        <Field label="Current Downline">
+        <Field label="Current Downline" error={errors.current_downline_count}>
           <input
             type="number"
             min={0}
@@ -199,19 +300,27 @@ export function MemberForm({ projectId, initial, onClose }: MemberFormProps) {
             onChange={(e) =>
               set("current_downline_count", parseInt(e.target.value) || 0)
             }
-            className="h-[42px] border border-slate-200 rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+            className={`h-[42px] border rounded-lg px-3 text-sm text-slate-800 focus:outline-none focus:ring-1 transition ${
+              errors.current_downline_count
+                ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-500"
+            }`}
           />
         </Field>
 
         {/* Notes */}
         <div className="col-span-2">
-          <Field label="Notes">
+          <Field label="Notes" error={errors.notes}>
             <textarea
               value={form.notes ?? ""}
               onChange={(e) => set("notes", e.target.value || null)}
               rows={2}
               placeholder="Optional notes..."
-              className="border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 resize-none w-full"
+              className={`border rounded-lg px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 resize-none w-full transition ${
+                errors.notes
+                  ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                  : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-500"
+              }`}
             />
           </Field>
         </div>

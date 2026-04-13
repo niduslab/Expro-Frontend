@@ -3,18 +3,30 @@
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { useDeleteProjectMember } from "@/lib/hooks/admin/UseProjectMemberHook";
 import type { ProjectMember } from "@/lib/types/admin/projectMemberType";
-
-// ─── Props ────────────────────────────────────────────────────────────────────
+import { toast } from "sonner";
 
 interface DeleteConfirmProps {
   member: ProjectMember;
   onClose: () => void;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export function DeleteConfirm({ member, onClose }: DeleteConfirmProps) {
   const { mutate, isPending } = useDeleteProjectMember();
+
+  const handleDelete = () => {
+    mutate(member.id, {
+      onSuccess: () => {
+        toast.success("Member removed successfully.");
+        onClose();
+      },
+      onError: (error: unknown) => {
+        const message =
+          (error as any)?.response?.data?.message ??
+          "Failed to remove member. Please try again.";
+        toast.error(message);
+      },
+    });
+  };
 
   return (
     <>
@@ -26,7 +38,7 @@ export function DeleteConfirm({ member, onClose }: DeleteConfirmProps) {
           <p className="font-medium text-slate-800">Remove member?</p>
           <p className="text-sm text-slate-500 mt-1">
             <span className="font-medium text-slate-700">
-              {member.user?.name ?? `User #${member.user_id}`}
+              {member.user?.member?.name_english ?? `User #${member.user_id}`}
             </span>{" "}
             will be removed from this project. This action cannot be undone.
           </p>
@@ -41,7 +53,7 @@ export function DeleteConfirm({ member, onClose }: DeleteConfirmProps) {
           Cancel
         </button>
         <button
-          onClick={() => mutate(member.id, { onSuccess: onClose })}
+          onClick={handleDelete}
           disabled={isPending}
           className="px-5 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-60 transition flex items-center gap-2"
         >
