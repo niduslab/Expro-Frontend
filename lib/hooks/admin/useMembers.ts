@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest, ApiResponse, PaginatedResponse } from '@/lib/api/axios';
-import { AxiosError } from 'axios';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiRequest, ApiResponse, PaginatedResponse } from "@/lib/api/axios";
+import { AxiosError } from "axios";
 
 /**
  * Member Types
@@ -27,7 +27,7 @@ export interface MemberProfile {
   nid_front_photo: string | null;
   nid_back_photo: string | null;
   signature: string | null;
-  membership_type: 'general' | 'executive';
+  membership_type: "general" | "executive";
   member_fee_paid: string;
   membership_date: string | null;
   membership_expiry_date: string | null;
@@ -55,7 +55,7 @@ export interface Wallet {
 export interface Member {
   id: number;
   email: string;
-  status: 'active' | 'inactive' | 'pending' | 'suspended' | 'approved';
+  status: "active" | "inactive" | "pending" | "suspended" | "approved";
   last_login_at: string | null;
   roles: string[];
   permissions: string[];
@@ -80,20 +80,20 @@ export interface MembersParams {
 /**
  * Hook: Get All Members (Admin)
  * Fetches paginated list of all members
- * 
+ *
  * @param params - Query parameters for filtering
  * @returns React Query result with paginated members
- * 
+ *
  * @example
  * const { data, isLoading } = useMembers({ page: 1, status: 'active' });
  */
 export const useMembers = (params?: MembersParams) => {
   return useQuery({
-    queryKey: ['members', params],
+    queryKey: ["members", params],
     queryFn: async () => {
       const response = await apiRequest.get<PaginatedResponse<Member>>(
-        '/admin/members',
-        { params }
+        "/admin/members",
+        { params },
       );
       return response.data;
     },
@@ -104,16 +104,16 @@ export const useMembers = (params?: MembersParams) => {
 /**
  * Hook: Get Single Member (Admin)
  * Fetches details of a specific member
- * 
+ *
  * @param id - Member ID
  * @returns React Query result with member details
- * 
+ *
  * @example
  * const { data } = useMember(1);
  */
 export const useMember = (id: number) => {
   return useQuery({
-    queryKey: ['member', id],
+    queryKey: ["member", id],
     queryFn: async () => {
       const response = await apiRequest.get<Member>(`/admin/member/${id}`);
       return response.data;
@@ -125,12 +125,12 @@ export const useMember = (id: number) => {
 /**
  * Hook: Update Member Status (Admin)
  * Updates a member's status
- * 
+ *
  * @returns React Query mutation for updating member
- * 
+ *
  * @example
  * const { mutate } = useUpdateMemberStatus();
- * 
+ *
  * mutate({ id: 1, status: 'active' });
  */
 export const useUpdateMemberStatus = () => {
@@ -142,12 +142,14 @@ export const useUpdateMemberStatus = () => {
     { id: number; status: string }
   >({
     mutationFn: async ({ id, status }) => {
-      const response = await apiRequest.put<Member>(`/admin/member/${id}`, { status });
+      const response = await apiRequest.put<Member>(`/admin/member/${id}`, {
+        status,
+      });
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['member', variables.id] });
-      queryClient.invalidateQueries({ queryKey: ['members'] });
+      queryClient.invalidateQueries({ queryKey: ["member", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
   });
 };
@@ -203,18 +205,18 @@ export interface UpdateMemberProfileData {
   nid_front_photo?: File | string;
   nid_back_photo?: File | string;
   signature?: File | string;
-  membership_type?: 'general' | 'executive';
+  membership_type?: "general" | "executive";
 }
 
 /**
  * Hook: Update Member Profile (Admin)
  * Admin can update any member's profile information
- * 
+ *
  * @returns React Query mutation for updating member profile
- * 
+ *
  * @example
  * const { mutate } = useUpdateMemberProfile();
- * 
+ *
  * mutate({ userId: 1, data: { name_english: 'John Doe' } });
  */
 export const useUpdateMemberProfile = () => {
@@ -227,7 +229,7 @@ export const useUpdateMemberProfile = () => {
   >({
     mutationFn: async ({ userId, data }) => {
       const formData = new FormData();
-      
+
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           if (value instanceof File) {
@@ -243,16 +245,16 @@ export const useUpdateMemberProfile = () => {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
-          params: { _method: 'PUT' }
-        }
+          params: { _method: "PUT" },
+        },
       );
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['member', variables.userId] });
-      queryClient.invalidateQueries({ queryKey: ['members'] });
+      queryClient.invalidateQueries({ queryKey: ["member", variables.userId] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
   });
 };
@@ -260,19 +262,19 @@ export const useUpdateMemberProfile = () => {
 /**
  * Hook: Get User's Nominees (Admin)
  * Get all nominees for a specific user
- * 
+ *
  * @param userId - User ID
  * @returns React Query result with nominees
- * 
+ *
  * @example
  * const { data } = useNominees(1);
  */
 export const useNominees = (userId: number) => {
   return useQuery({
-    queryKey: ['nominees', userId],
+    queryKey: ["nominees", userId],
     queryFn: async () => {
       const response = await apiRequest.get<PaginatedResponse<Nominee>>(
-        `/admin/member/${userId}/nominees`
+        `/admin/member/${userId}/nominees`,
       );
       return response.data;
     },
@@ -283,19 +285,19 @@ export const useNominees = (userId: number) => {
 /**
  * Hook: Create Nominee for User (Admin)
  * Create a new nominee for a specific user
- * 
+ *
  * @returns React Query mutation for creating nominee
- * 
+ *
  * @example
  * const { mutate } = useCreateNominee();
- * 
- * mutate({ 
- *   userId: 1, 
- *   data: { 
+ *
+ * mutate({
+ *   userId: 1,
+ *   data: {
  *     nominee_name_english: 'John Doe',
  *     relation: 'Brother',
  *     percentage: 50
- *   } 
+ *   }
  * });
  */
 export const useCreateNominee = () => {
@@ -309,13 +311,15 @@ export const useCreateNominee = () => {
     mutationFn: async ({ userId, data }) => {
       const response = await apiRequest.post<Nominee>(
         `/admin/member/${userId}/nominee`,
-        data
+        data,
       );
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['nominees', variables.userId] });
-      queryClient.invalidateQueries({ queryKey: ['member', variables.userId] });
+      queryClient.invalidateQueries({
+        queryKey: ["nominees", variables.userId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["member", variables.userId] });
     },
   });
 };
@@ -323,16 +327,16 @@ export const useCreateNominee = () => {
 /**
  * Hook: Update User's Nominee (Admin)
  * Update a specific nominee for a user
- * 
+ *
  * @returns React Query mutation for updating nominee
- * 
+ *
  * @example
  * const { mutate } = useUpdateNominee();
- * 
- * mutate({ 
- *   userId: 1, 
+ *
+ * mutate({
+ *   userId: 1,
  *   nomineeId: 5,
- *   data: { percentage: 60 } 
+ *   data: { percentage: 60 }
  * });
  */
 export const useUpdateNominee = () => {
@@ -346,13 +350,15 @@ export const useUpdateNominee = () => {
     mutationFn: async ({ userId, nomineeId, data }) => {
       const response = await apiRequest.put<Nominee>(
         `/admin/member/${userId}/nominee/${nomineeId}`,
-        data
+        data,
       );
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['nominees', variables.userId] });
-      queryClient.invalidateQueries({ queryKey: ['member', variables.userId] });
+      queryClient.invalidateQueries({
+        queryKey: ["nominees", variables.userId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["member", variables.userId] });
     },
   });
 };
@@ -360,12 +366,12 @@ export const useUpdateNominee = () => {
 /**
  * Hook: Delete User's Nominee (Admin)
  * Delete a specific nominee for a user
- * 
+ *
  * @returns React Query mutation for deleting nominee
- * 
+ *
  * @example
  * const { mutate } = useDeleteNominee();
- * 
+ *
  * mutate({ userId: 1, nomineeId: 5 });
  */
 export const useDeleteNominee = () => {
@@ -378,13 +384,15 @@ export const useDeleteNominee = () => {
   >({
     mutationFn: async ({ userId, nomineeId }) => {
       const response = await apiRequest.delete<void>(
-        `/admin/member/${userId}/nominee/${nomineeId}`
+        `/admin/member/${userId}/nominee/${nomineeId}`,
       );
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['nominees', variables.userId] });
-      queryClient.invalidateQueries({ queryKey: ['member', variables.userId] });
+      queryClient.invalidateQueries({
+        queryKey: ["nominees", variables.userId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["member", variables.userId] });
     },
   });
 };

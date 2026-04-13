@@ -9,6 +9,7 @@ import {
   Search,
   X,
   MoreVertical,
+  Users,
 } from "lucide-react";
 import FundRaiseProgress from "./fund-raise-progress";
 import { useState, useEffect } from "react";
@@ -24,6 +25,7 @@ import EditProjectModal from "./edit-project-modal";
 import DeleteConfirmDialog from "./delete-confirmation";
 import Pagination from "@/components/pagination/page";
 import ProjectViewModal from "./project-view-modal";
+import Link from "next/link";
 
 const STATUS_OPTIONS = [
   "",
@@ -331,13 +333,19 @@ export default function AdminProjects() {
 
                     {openMenuId === proj.id && (
                       <div className="absolute bottom-[50px] right-0 z-30 bg-white border border-[#E5E7EB] rounded-[10px] shadow-lg min-w-[130px] overflow-hidden">
+                        <Link href={`/admin/projects/projectMember/${proj.id}`}>
+                          <button className="w-full text-left px-4 py-2.5 text-[13px] text-[#030712] hover:bg-gray-100 flex items-center gap-2 transition-colors cursor-pointer">
+                            <Users className="h-3.5 w-3.5 text-[#4A5565]" />
+                            Project Members
+                          </button>
+                        </Link>
                         <button
                           onMouseDown={(e) => {
                             e.stopPropagation();
                             setEditingProject(proj);
                             setOpenMenuId(null);
                           }}
-                          className="w-full text-left px-4 py-2.5 text-[13px] text-[#030712] hover:bg-gray-50 flex items-center gap-2 transition-colors cursor-pointer"
+                          className="w-full text-left px-4 py-2.5 text-[13px] text-[#030712] hover:bg-gray-100 flex items-center gap-2 transition-colors cursor-pointer"
                         >
                           <Pencil className="h-3.5 w-3.5 text-[#4A5565]" />
                           Edit

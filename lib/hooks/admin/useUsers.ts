@@ -5,9 +5,14 @@ import {
   fetchAllRoles,
   assignRoleToUser,
 } from "@/lib/api/functions/admin/userApi";
-import { UserListItem, UsersResponse } from "@/lib/types/admin/userType";
+import { UserListItem } from "@/lib/types/admin/userType";
 import { AssignRoleRequest, Role } from "@/lib/types/admin/roleType";
-import { useQuery, useMutation, useQueryClient, UseQueryOptions } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 
 export const useMyProfile = (
   options?: UseQueryOptions<UserListItem, Error>,
