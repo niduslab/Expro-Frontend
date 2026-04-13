@@ -62,7 +62,11 @@ const buildBlogFormData = (payload: BlogPostPayload): FormData => {
       form.append(`tags[${index}]`, tag);
     });
   }
-  if (payload.meta) form.append("meta", JSON.stringify(payload.meta));
+  if (payload.meta && typeof payload.meta === "object") {
+    Object.entries(payload.meta).forEach(([key, value]) => {
+      form.append(`meta[${key}]`, String(value ?? ""));
+    });
+  }
 
   // ✅ Only append if it's a real File — never send existing URL string back
   if (payload.featured_image instanceof File) {

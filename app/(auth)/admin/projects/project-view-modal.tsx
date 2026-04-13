@@ -262,7 +262,7 @@ export default function ProjectViewModal({
               </div>
             </div>
 
-            {/* {project.gallery && project.gallery.length > 0 && (
+            {project.gallery && project.gallery.length > 0 && (
               <div>
                 <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2">
                   Gallery
@@ -282,7 +282,7 @@ export default function ProjectViewModal({
                   ))}
                 </div>
               </div>
-            )} */}
+            )}
 
             {/* Metadata */}
             <div className="flex flex-wrap gap-x-6 gap-y-1 pt-1 pb-2 border-t border-[#F3F4F6]">
