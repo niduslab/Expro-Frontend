@@ -10,9 +10,12 @@ import {
   Shield,
   Mail,
   BadgeCheck,
-  BookOpen,
+  Wallet,
+  TrendingUp,
   Users,
-  Edit2,
+  FileText,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 import { useMyProfile } from "@/lib/hooks/admin/useUsers";
 
@@ -32,6 +35,9 @@ const fmtDate = (d?: string | null) =>
       })
     : "—";
 
+const fmtCurrency = (amount?: string | number | null) =>
+  amount ? `৳${parseFloat(String(amount)).toLocaleString()}` : "৳0";
+
 export default function ProfilePage() {
   const { data: profile, isLoading } = useMyProfile();
 
@@ -39,7 +45,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#068847] mx-auto mb-3" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#068847] mx-auto mb-4" />
           <p className="text-sm text-[#6B7280]">Loading your profile…</p>
         </div>
       </div>
@@ -49,6 +55,10 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   const m = profile.member;
+  const wallet = profile.wallet;
+  const pension = profile.pension_enrollments?.[0];
+  const nominee = profile.nominee?.[0];
+  
   const initials = (m?.name_english || profile.email || "?")
     .split(" ")
     .map((w: string) => w[0])
@@ -74,86 +84,80 @@ export default function ProfilePage() {
   const sc = statusConfig[status] || statusConfig.inactive;
 
   return (
-    <div className="container mx-auto  mb-4 ">
-      <div className="max-w-7xl mx-auto space-y-5">
-        {/* ── Page title row ── */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-semibold text-[#030712]">My Profile</h1>
-            <p className="text-sm text-[#6B7280] mt-0.5">
-              View and manage your personal information
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-[#F9FAFB] to-[#F3F4F6]">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-[#030712]">My Profile</h1>
+          <p className="text-sm text-[#6B7280] mt-1">
+            Manage your personal information and account settings
+          </p>
         </div>
 
-        {/* ── Profile hero card ── */}
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
-          {/* Avatar + name row */}
-          <div className="px-5 md:px-6 pb-5">
-            <div className="flex items-end justify-between -mt-10 mb-4">
+        {/* Profile Hero Card */}
+        <div className="bg-gradient-to-br from-[#068847] to-[#045a2e] rounded-2xl shadow-lg overflow-hidden mb-6">
+          <div className="px-6 py-8 md:px-8 md:py-10">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               {/* Avatar */}
               <div className="flex-shrink-0">
                 {m?.photo ? (
                   <Image
                     src={storageUrl(m.photo)}
                     alt={m.name_english || "Profile"}
-                    width={80}
-                    height={80}
+                    width={120}
+                    height={120}
                     unoptimized
-                    className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-sm"
+                    className="w-28 h-28 md:w-32 md:h-32 rounded-2xl object-cover border-4 border-white/20 shadow-xl"
                   />
                 ) : (
-                  <div className="w-20 h-20 rounded-2xl bg-[#068847] border-4 border-white shadow-sm flex items-center justify-center text-white text-2xl font-semibold tracking-tight">
+                  <div className="w-28 h-28 md:w-32 md:h-32 rounded-2xl bg-white/10 border-4 border-white/20 shadow-xl flex items-center justify-center text-white text-4xl font-bold backdrop-blur-sm">
                     {initials}
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* Name + meta */}
-            <div className="flex items-start justify-between flex-wrap gap-3">
-              <div>
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <h2 className="text-xl font-semibold text-[#030712]">
+              {/* Profile Info */}
+              <div className="flex-1 text-white">
+                <div className="flex items-center gap-3 flex-wrap mb-2">
+                  <h2 className="text-2xl md:text-3xl font-bold">
                     {m?.name_english || profile.email}
                   </h2>
                   <span
-                    className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full ${sc.bg} ${sc.text}`}
+                    className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${sc.bg} ${sc.text}`}
                   >
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${sc.dot} flex-shrink-0`}
+                      className={`w-2 h-2 rounded-full ${sc.dot} animate-pulse`}
                     />
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                   </span>
-                  {m?.membership_type && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#E0E7FF] text-[#4338CA]">
-                      <BadgeCheck className="w-3 h-3" />
-                      {m.membership_type.charAt(0).toUpperCase() +
-                        m.membership_type.slice(1)}
-                    </span>
-                  )}
                 </div>
+                
                 {m?.name_bangla && (
-                  <p className="text-sm text-[#6B7280] mt-0.5">
-                    {m.name_bangla}
-                  </p>
+                  <p className="text-white/80 text-lg mb-3">{m.name_bangla}</p>
                 )}
-                <div className="flex items-center gap-4 mt-2 flex-wrap">
-                  <span className="flex items-center gap-1.5 text-xs text-[#6B7280]">
-                    <Mail className="w-3.5 h-3.5" />
-                    {profile.email}
-                  </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+                  <div className="flex items-center gap-2 text-white/90">
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm">{profile.email}</span>
+                  </div>
                   {m?.mobile && (
-                    <span className="flex items-center gap-1.5 text-xs text-[#6B7280]">
-                      <Phone className="w-3.5 h-3.5" />
-                      {m.mobile}
-                    </span>
+                    <div className="flex items-center gap-2 text-white/90">
+                      <Phone className="w-4 h-4" />
+                      <span className="text-sm">{m.mobile}</span>
+                    </div>
                   )}
                   {m?.member_id && (
-                    <span className="flex items-center gap-1.5 text-xs text-[#6B7280] font-mono">
-                      <Shield className="w-3.5 h-3.5" />
-                      {m.member_id}
-                    </span>
+                    <div className="flex items-center gap-2 text-white/90">
+                      <Shield className="w-4 h-4" />
+                      <span className="text-sm font-mono">{m.member_id}</span>
+                    </div>
+                  )}
+                  {m?.membership_type && (
+                    <div className="flex items-center gap-2 text-white/90">
+                      <BadgeCheck className="w-4 h-4" />
+                      <span className="text-sm capitalize">{m.membership_type} Member</span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -161,196 +165,257 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* ── Main grid: 2/3 + 1/3 ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* ── Left column ── */}
-          <div className="lg:col-span-2 space-y-5">
+        {/* Financial Overview Cards */}
+        {wallet && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <StatCard
+              icon={<Wallet className="w-5 h-5" />}
+              label="Wallet Balance"
+              value={fmtCurrency(wallet.balance)}
+              bgColor="bg-blue-50"
+              iconColor="text-blue-600"
+            />
+            <StatCard
+              icon={<TrendingUp className="w-5 h-5" />}
+              label="Commission Earned"
+              value={fmtCurrency(wallet.total_commission_earned)}
+              bgColor="bg-emerald-50"
+              iconColor="text-emerald-600"
+            />
+            <StatCard
+              icon={<FileText className="w-5 h-5" />}
+              label="Total Pension Paid"
+              value={fmtCurrency(wallet.total_pension_paid)}
+              bgColor="bg-purple-50"
+              iconColor="text-purple-600"
+            />
+          </div>
+        )}
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Main Info */}
+          <div className="lg:col-span-2 space-y-6">
             {/* Personal Information */}
             <Section
-              icon={<User className="w-4 h-4 text-[#068847]" />}
+              icon={<User className="w-5 h-5 text-[#068847]" />}
               title="Personal Information"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
-                <InfoRow label="Full name (English)" value={m?.name_english} />
-                <InfoRow label="Full name (Bangla)" value={m?.name_bangla} />
-                <InfoRow
-                  label="Father / Husband"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem label="Full Name (English)" value={m?.name_english} />
+                <InfoItem label="Full Name (Bangla)" value={m?.name_bangla} />
+                <InfoItem
+                  label="Father/Husband"
                   value={m?.father_husband_name}
                 />
-                <InfoRow label="Mother's name" value={m?.mother_name} />
-                <InfoRow
-                  label="Date of birth"
+                <InfoItem label="Mother's Name" value={m?.mother_name} />
+                <InfoItem
+                  label="Date of Birth"
                   value={fmtDate(m?.user_date_of_birth)}
                 />
-                <InfoRow label="Gender" value={m?.gender} capitalize />
-                <InfoRow label="Religion" value={m?.religion} capitalize />
-                <InfoRow
+                <InfoItem label="Gender" value={m?.gender} capitalize />
+                <InfoItem label="Religion" value={m?.religion} capitalize />
+                <InfoItem
                   label="Education"
                   value={
                     m?.academic_qualification_other || m?.academic_qualification
                   }
                   capitalize
                 />
-                <InfoRow label="NID number" value={m?.nid_number} mono />
+                <InfoItem label="NID Number" value={m?.nid_number} mono />
               </div>
             </Section>
 
             {/* Contact Information */}
             <Section
-              icon={<Phone className="w-4 h-4 text-[#068847]" />}
+              icon={<Phone className="w-5 h-5 text-[#068847]" />}
               title="Contact Information"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
-                <InfoRow label="Email address" value={profile.email} />
-                <InfoRow label="Mobile" value={m?.mobile} />
-                <InfoRow label="Alternate mobile" value={m?.alternate_mobile} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem label="Email Address" value={profile.email} />
+                <InfoItem label="Mobile" value={m?.mobile} />
+                <InfoItem label="Alternate Mobile" value={m?.alternate_mobile} />
               </div>
             </Section>
 
             {/* Address */}
             <Section
-              icon={<MapPin className="w-4 h-4 text-[#068847]" />}
+              icon={<MapPin className="w-5 h-5 text-[#068847]" />}
               title="Address"
             >
               <div className="space-y-4">
-                <div>
-                  <p className="text-xs font-medium text-[#6B7280] mb-1.5">
-                    Present address
-                  </p>
-                  <p className="text-sm text-[#030712] leading-relaxed">
-                    {m?.present_address || (
-                      <span className="text-[#9CA3AF]">—</span>
-                    )}
-                  </p>
-                </div>
-                <div className="border-t border-[#F3F4F6] pt-4">
-                  <p className="text-xs font-medium text-[#6B7280] mb-1.5">
-                    Permanent address
-                  </p>
-                  <p className="text-sm text-[#030712] leading-relaxed">
-                    {m?.permanent_address || (
-                      <span className="text-[#9CA3AF]">—</span>
-                    )}
-                  </p>
+                <AddressBlock
+                  label="Present Address"
+                  address={m?.present_address}
+                />
+                <div className="border-t border-[#E5E7EB] pt-4">
+                  <AddressBlock
+                    label="Permanent Address"
+                    address={m?.permanent_address}
+                  />
                 </div>
               </div>
             </Section>
 
-            {/* Documents */}
+            {/* Pension Enrollment */}
+            {pension && (
+              <Section
+                icon={<FileText className="w-5 h-5 text-[#068847]" />}
+                title="Pension Enrollment"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <InfoItem
+                    label="Enrollment Number"
+                    value={pension.enrollment_number}
+                    mono
+                  />
+                  <InfoItem
+                    label="Status"
+                    value={pension.status}
+                    capitalize
+                  />
+                  <InfoItem
+                    label="Start Date"
+                    value={fmtDate(pension.start_date)}
+                  />
+                  <InfoItem
+                    label="Maturity Date"
+                    value={fmtDate(pension.maturity_date)}
+                  />
+                  <InfoItem
+                    label="Installment Amount"
+                    value={fmtCurrency(pension.amount_per_installment)}
+                  />
+                  <InfoItem
+                    label="Maturity Amount"
+                    value={fmtCurrency(pension.maturity_amount)}
+                  />
+                  <InfoItem
+                    label="Installments Paid"
+                    value={`${pension.installments_paid} / ${pension.total_installments}`}
+                  />
+                  <InfoItem
+                    label="Total Paid"
+                    value={fmtCurrency(pension.total_amount_paid)}
+                  />
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="mt-6">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-[#6B7280]">Progress</span>
+                    <span className="font-semibold text-[#030712]">
+                      {Math.round((pension.installments_paid / pension.total_installments) * 100)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-[#E5E7EB] rounded-full h-3 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-[#068847] to-[#0a9f54] h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${(pension.installments_paid / pension.total_installments) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </Section>
+            )}
+
+            {/* Identity Documents */}
             <Section
-              icon={<CreditCard className="w-4 h-4 text-[#068847]" />}
+              icon={<CreditCard className="w-5 h-5 text-[#068847]" />}
               title="Identity Documents"
             >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {[
-                  { label: "NID front", path: m?.nid_front_photo },
-                  { label: "NID back", path: m?.nid_back_photo },
-                  { label: "Signature", path: m?.signature, contain: true },
-                ].map(({ label, path, contain }) => (
-                  <div key={label}>
-                    <p className="text-xs font-medium text-[#6B7280] mb-2">
-                      {label}
-                    </p>
-                    {path ? (
-                      <a
-                        href={storageUrl(path)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block group"
-                      >
-                        <div className="relative w-full h-28 rounded-xl overflow-hidden border border-[#E5E7EB] bg-[#F9FAFB]">
-                          <Image
-                            src={storageUrl(path)}
-                            alt={label}
-                            fill
-                            unoptimized
-                            className={`${contain ? "object-contain p-2" : "object-cover"} group-hover:opacity-80 transition-opacity`}
-                          />
-                        </div>
-                      </a>
-                    ) : (
-                      <div className="w-full h-28 rounded-xl border border-dashed border-[#E5E7EB] bg-[#F9FAFB] flex flex-col items-center justify-center gap-1.5">
-                        <CreditCard className="w-5 h-5 text-[#D1D5DB]" />
-                        <p className="text-[11px] text-[#9CA3AF]">
-                          Not uploaded
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                {/* Profile photo */}
-                <div>
-                  <p className="text-xs font-medium text-[#6B7280] mb-2">
-                    Profile photo
-                  </p>
-                  {m?.photo ? (
-                    <a
-                      href={storageUrl(m.photo)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block group"
-                    >
-                      <div className="relative w-full h-28 rounded-xl overflow-hidden border border-[#E5E7EB]">
-                        <Image
-                          src={storageUrl(m.photo)}
-                          alt="Profile photo"
-                          fill
-                          unoptimized
-                          className="object-cover group-hover:opacity-80 transition-opacity"
-                        />
-                      </div>
-                    </a>
-                  ) : (
-                    <div className="w-full h-28 rounded-xl border border-dashed border-[#E5E7EB] bg-[#F9FAFB] flex flex-col items-center justify-center gap-1.5">
-                      <User className="w-5 h-5 text-[#D1D5DB]" />
-                      <p className="text-[11px] text-[#9CA3AF]">Not uploaded</p>
-                    </div>
-                  )}
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <DocumentCard label="NID Front" path={m?.nid_front_photo} />
+                <DocumentCard label="NID Back" path={m?.nid_back_photo} />
+                <DocumentCard
+                  label="Signature"
+                  path={m?.signature}
+                  contain
+                />
+                <DocumentCard label="Profile Photo" path={m?.photo} />
               </div>
             </Section>
           </div>
 
-          {/* ── Right column ── */}
-          <div className="space-y-5">
-            {/* Membership */}
+          {/* Right Column - Sidebar */}
+          <div className="space-y-6">
+            {/* Membership Card */}
             <Section
-              icon={<Calendar className="w-4 h-4 text-[#068847]" />}
+              icon={<Calendar className="w-5 h-5 text-[#068847]" />}
               title="Membership"
             >
-              <div className="space-y-0">
-                <InfoRow label="Member ID" value={m?.member_id} mono />
-                <InfoRow label="Type" value={m?.membership_type} capitalize />
-                <InfoRow
-                  label="Member since"
+              <div className="space-y-3">
+                <InfoItem label="Member ID" value={m?.member_id} mono />
+                <InfoItem label="Type" value={m?.membership_type} capitalize />
+                <InfoItem
+                  label="Member Since"
                   value={fmtDate(m?.membership_date)}
                 />
-                <InfoRow
-                  label="Expiry date"
+                <InfoItem
+                  label="Expiry Date"
                   value={fmtDate(m?.membership_expiry_date)}
                 />
-                <InfoRow
-                  label="Fee paid"
-                  value={`৳${parseFloat(String(m?.member_fee_paid ?? 0)).toLocaleString()}`}
+                <InfoItem
+                  label="Fee Paid"
+                  value={fmtCurrency(m?.member_fee_paid)}
                 />
-                <InfoRow
-                  label="Missed payments"
+                <InfoItem
+                  label="Missed Payments"
                   value={String(m?.consecutive_missed_payments ?? 0)}
                 />
               </div>
             </Section>
 
-            {/* Account */}
+            {/* Nominee Information */}
+            {nominee && (
+              <Section
+                icon={<Users className="w-5 h-5 text-[#068847]" />}
+                title="Nominee"
+              >
+                <div className="space-y-3">
+                  <InfoItem
+                    label="Name (English)"
+                    value={nominee.nominee_name_english}
+                  />
+                  <InfoItem
+                    label="Name (Bangla)"
+                    value={nominee.nominee_name_bangla}
+                  />
+                  <InfoItem
+                    label="Date of Birth"
+                    value={fmtDate(nominee.nominee_date_of_birth)}
+                  />
+                  <InfoItem label="Relation" value={nominee.relation} />
+                  <InfoItem
+                    label="Percentage"
+                    value={`${nominee.percentage}%`}
+                  />
+                  {nominee.nominee_mobile && (
+                    <InfoItem label="Mobile" value={nominee.nominee_mobile} />
+                  )}
+                  {nominee.is_primary && (
+                    <div className="pt-2">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-[#E0E7FF] text-[#4338CA]">
+                        <BadgeCheck className="w-3.5 h-3.5" />
+                        Primary Nominee
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Section>
+            )}
+
+            {/* Account Information */}
             <Section
-              icon={<Shield className="w-4 h-4 text-[#068847]" />}
+              icon={<Shield className="w-5 h-5 text-[#068847]" />}
               title="Account"
             >
-              <div className="space-y-0">
-                <InfoRow label="Email" value={profile.email} />
-                <InfoRow label="Status" value={status} capitalize />
-                <InfoRow
-                  label="Last login"
+              <div className="space-y-3">
+                <InfoItem label="Email" value={profile.email} />
+                <InfoItem label="Status" value={status} capitalize />
+                <InfoItem
+                  label="Last Login"
                   value={
                     profile.last_login_at
                       ? new Date(profile.last_login_at).toLocaleString(
@@ -367,13 +432,15 @@ export default function ProfilePage() {
                   }
                 />
                 {profile.roles?.length > 0 && (
-                  <div className="py-3 border-b border-[#F3F4F6] last:border-0">
-                    <p className="text-[11px] text-[#9CA3AF] mb-1.5">Roles</p>
-                    <div className="flex flex-wrap gap-1.5">
+                  <div className="pt-2">
+                    <p className="text-xs font-medium text-[#6B7280] mb-2">
+                      Roles
+                    </p>
+                    <div className="flex flex-wrap gap-2">
                       {profile.roles.map((r: string) => (
                         <span
                           key={r}
-                          className="text-[11px] px-2 py-0.5 bg-[#E0E7FF] text-[#4338CA] rounded-full font-medium capitalize"
+                          className="text-xs px-2.5 py-1 bg-[#E0E7FF] text-[#4338CA] rounded-full font-medium capitalize"
                         >
                           {r}
                         </span>
@@ -381,25 +448,59 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 )}
-                {profile.permissions?.length > 0 && (
-                  <div className="py-3">
-                    <p className="text-[11px] text-[#9CA3AF] mb-1.5">
-                      Permissions ({profile.permissions.length})
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {profile.permissions.map((p: string) => (
-                        <span
-                          key={p}
-                          className="text-[11px] px-2 py-0.5 bg-[#F3F4F6] text-[#4B5563] rounded-full capitalize"
-                        >
-                          {p.replace(/_/g, " ")}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </Section>
+
+            {/* Recent Transactions */}
+            {profile.wallet_transactions?.length > 0 && (
+              <Section
+                icon={<TrendingUp className="w-5 h-5 text-[#068847]" />}
+                title="Recent Transactions"
+              >
+                <div className="space-y-2">
+                  {profile.wallet_transactions.slice(0, 5).map((tx: any) => (
+                    <div
+                      key={tx.id}
+                      className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded-lg hover:bg-[#F3F4F6] transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            tx.type === "credit"
+                              ? "bg-emerald-100"
+                              : "bg-red-100"
+                          }`}
+                        >
+                          {tx.type === "credit" ? (
+                            <ArrowDownRight className="w-4 h-4 text-emerald-600" />
+                          ) : (
+                            <ArrowUpRight className="w-4 h-4 text-red-600" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-[#030712] capitalize">
+                            {tx.category.replace(/_/g, " ")}
+                          </p>
+                          <p className="text-[10px] text-[#9CA3AF]">
+                            {new Date(tx.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <span
+                        className={`text-sm font-semibold ${
+                          tx.type === "credit"
+                            ? "text-emerald-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {tx.type === "credit" ? "+" : "-"}
+                        {fmtCurrency(tx.amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
           </div>
         </div>
       </div>
@@ -407,7 +508,35 @@ export default function ProfilePage() {
   );
 }
 
-/* ── Shared sub-components ── */
+/* ── Shared Components ── */
+
+function StatCard({
+  icon,
+  label,
+  value,
+  bgColor,
+  iconColor,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  bgColor: string;
+  iconColor: string;
+}) {
+  return (
+    <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-3">
+        <div className={`w-12 h-12 rounded-xl ${bgColor} flex items-center justify-center ${iconColor}`}>
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs text-[#6B7280] mb-1">{label}</p>
+          <p className="text-xl font-bold text-[#030712]">{value}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Section({
   icon,
@@ -419,19 +548,19 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-[#F3F4F6]">
-        <div className="w-7 h-7 rounded-lg bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
+    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-[#F9FAFB] to-white border-b border-[#E5E7EB]">
+        <div className="w-9 h-9 rounded-lg bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
-        <h3 className="text-sm font-semibold text-[#030712]">{title}</h3>
+        <h3 className="text-base font-semibold text-[#030712]">{title}</h3>
       </div>
-      <div className="px-5 py-4">{children}</div>
+      <div className="px-5 py-5">{children}</div>
     </div>
   );
 }
 
-function InfoRow({
+function InfoItem({
   label,
   value,
   mono,
@@ -443,15 +572,69 @@ function InfoRow({
   capitalize?: boolean;
 }) {
   return (
-    <div className="flex items-start justify-between py-2.5  last:border-0 gap-4">
-      <span className="text-[11px] text-[#9CA3AF] flex-shrink-0 pt-px leading-relaxed">
-        {label}
-      </span>
+    <div className="flex flex-col gap-1">
+      <span className="text-xs font-medium text-[#9CA3AF]">{label}</span>
       <span
-        className={`text-[13px] text-[#030712] font-medium text-right leading-relaxed ${mono ? "font-mono" : ""} ${capitalize ? "capitalize" : ""}`}
+        className={`text-sm text-[#030712] font-medium ${mono ? "font-mono" : ""} ${capitalize ? "capitalize" : ""}`}
       >
-        {value ?? <span className="text-[#D1D5DB] font-normal">—</span>}
+        {value ?? <span className="text-[#D1D5DB]">—</span>}
       </span>
+    </div>
+  );
+}
+
+function AddressBlock({
+  label,
+  address,
+}: {
+  label: string;
+  address?: string | null;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-medium text-[#6B7280] mb-2">{label}</p>
+      <p className="text-sm text-[#030712] leading-relaxed">
+        {address || <span className="text-[#9CA3AF]">—</span>}
+      </p>
+    </div>
+  );
+}
+
+function DocumentCard({
+  label,
+  path,
+  contain,
+}: {
+  label: string;
+  path?: string | null;
+  contain?: boolean;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-medium text-[#6B7280] mb-2">{label}</p>
+      {path ? (
+        <a
+          href={storageUrl(path)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block group"
+        >
+          <div className="relative w-full h-32 rounded-xl overflow-hidden border border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#068847] transition-colors">
+            <Image
+              src={storageUrl(path)}
+              alt={label}
+              fill
+              unoptimized
+              className={`${contain ? "object-contain p-2" : "object-cover"} group-hover:scale-105 transition-transform duration-300`}
+            />
+          </div>
+        </a>
+      ) : (
+        <div className="w-full h-32 rounded-xl border border-dashed border-[#E5E7EB] bg-[#F9FAFB] flex flex-col items-center justify-center gap-2">
+          <CreditCard className="w-6 h-6 text-[#D1D5DB]" />
+          <p className="text-xs text-[#9CA3AF]">Not uploaded</p>
+        </div>
+      )}
     </div>
   );
 }
