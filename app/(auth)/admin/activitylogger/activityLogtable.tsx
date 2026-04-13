@@ -445,11 +445,35 @@ export function ActivityLogTable({
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <Image
-                            src={
-                              causer.photo ||
-                              "/images/dashboard/memberApproval/1.jpg"
-                            }
-                            alt={causer.name}
+                            src={(() => {
+                              const rawPhoto = causer.photo;
+                              const fallback =
+                                "/images/dashboard/memberApproval/1.jpg";
+
+                              // 1. Check if photo exists and is a valid string
+                              if (
+                                !rawPhoto ||
+                                typeof rawPhoto !== "string" ||
+                                rawPhoto.trim() === ""
+                              ) {
+                                return fallback;
+                              }
+
+                              // 2. If it's already an absolute URL, return as is
+                              if (
+                                rawPhoto.startsWith("http://") ||
+                                rawPhoto.startsWith("https://")
+                              ) {
+                                return rawPhoto;
+                              }
+
+                              // 3. If it's a relative path, ensure it starts with '/'
+                              //    This fixes "membershipapplication/..." -> "/membershipapplication/..."
+                              return rawPhoto.startsWith("/")
+                                ? rawPhoto
+                                : `/${rawPhoto}`;
+                            })()}
+                            alt={causer.name || "User"}
                             width={32}
                             height={32}
                             className="rounded-full object-cover w-8 h-8 flex-shrink-0"

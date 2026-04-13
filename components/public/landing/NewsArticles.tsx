@@ -30,30 +30,36 @@ const NewsArticles = () => {
         },
       });
 
-      gsap.from("[data-news-featured]", {
-        opacity: 0,
-        y: 20,
-        duration: 0.7,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: "[data-news-featured]",
-          start: "top 85%",
-          once: true,
-        },
-      });
+      // Only animate featured if it exists in DOM
+      if (document.querySelector("[data-news-featured]")) {
+        gsap.from("[data-news-featured]", {
+          opacity: 0,
+          y: 20,
+          duration: 0.7,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "[data-news-featured]",
+            start: "top 85%",
+            once: true,
+          },
+        });
+      }
 
-      gsap.from("[data-news-card]", {
-        opacity: 0,
-        y: 18,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: 0.12,
-        scrollTrigger: {
-          trigger: "[data-news-list]",
-          start: "top 85%",
-          once: true,
-        },
-      });
+      // Only animate list if it exists in DOM
+      if (document.querySelector("[data-news-list]")) {
+        gsap.from("[data-news-card]", {
+          opacity: 0,
+          y: 18,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: "[data-news-list]",
+            start: "top 85%",
+            once: true,
+          },
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -65,12 +71,17 @@ const NewsArticles = () => {
   const blogs =
     data?.data?.filter((b: any) => b.status === "published").slice(0, 4) || [];
 
-  if (error) return <div>Error: {error.message}</div>;
+  if (error)
+    return (
+      <div className="text-center py-10 text-red-500">
+        Error: {error.message}
+      </div>
+    );
 
   return (
     <section ref={sectionRef} className="font-dm-sans py-20 bg-white">
       <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
-        {/* Header */}
+        {/* Header - Always Visible */}
         <div
           data-news-header
           className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12"
@@ -92,14 +103,21 @@ const NewsArticles = () => {
           </Link>
         </div>
 
+        {/* Content Area */}
         {isLoading ? (
-          <div className="text-center mt-8">
-            <div className="spinner" />
+          <div className="text-center mt-8 py-10">
+            <div className="spinner border-t-4 border-green-700 border-solid w-10 h-10 rounded-full animate-spin mx-auto"></div>
+          </div>
+        ) : blogs.length === 0 ? (
+          // ✅ Empty State
+          <div className="text-center py-16 bg-gray-50 rounded-2xl  border-gray-300">
+            <p className=" text-gray-500">No news/blog found</p>
           </div>
         ) : (
+          // ✅ Data Loaded Grid
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] gap-8">
-            {/* ✅ Featured (first published only) */}
-            {blogs.length > 0 && (
+            {/* Featured (first published only) */}
+            {blogs[0] && (
               <article
                 data-news-featured
                 className="bg-white rounded-2xl border border-[#EAECF0] shadow-sm hover:shadow-md overflow-hidden"
@@ -107,13 +125,13 @@ const NewsArticles = () => {
                 <div className="relative h-70 md:h-90 w-full">
                   <Image
                     src={
-                      blogs[0]?.featured_image ||
+                      blogs[0].featured_image ||
                       "/images/dashboard/memberApproval/1.jpg"
                     }
-                    alt={blogs[0]?.title || "Featured blog"}
+                    alt={blogs[0].title || "Featured blog"}
                     fill
                     className="object-cover"
-                    unoptimized={blogs[0]?.featured_image?.startsWith("http")}
+                    unoptimized={blogs[0].featured_image?.startsWith("http")}
                   />
                 </div>
 
@@ -126,7 +144,7 @@ const NewsArticles = () => {
                     {blogs[0].title}
                   </h3>
 
-                  <Link href={`/blog/${blogs[0].slug}`}>
+                  <Link href={`/blog/blogdetails/${blogs[0].id}`}>
                     <Button className="px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg">
                       Learn More
                     </Button>
@@ -135,11 +153,11 @@ const NewsArticles = () => {
               </article>
             )}
 
-            {/* ✅ List (rest of published only) */}
+            {/* List (rest of published only) */}
             <div data-news-list className="flex flex-col gap-6">
               {blogs.slice(1).map((blog: any, index: number) => (
                 <article
-                  key={index}
+                  key={blog.id || index}
                   data-news-card
                   className="bg-white rounded-2xl border border-[#EAECF0] p-5 md:p-6 flex flex-col sm:flex-row gap-5 items-start shadow-sm hover:shadow-md"
                 >
@@ -163,7 +181,7 @@ const NewsArticles = () => {
                     </h4>
 
                     <Link
-                      href={`/blog/${blog.slug}`}
+                      href={`/blog/blogdetails/${blog.id}`}
                       className="inline-flex items-center gap-2 text-[#027A48] text-sm font-semibold hover:text-[#068847]"
                     >
                       Learn More

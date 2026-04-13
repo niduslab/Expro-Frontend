@@ -39,3 +39,9 @@ export const fetchGalleryById = async (id: number): Promise<Gallery> => {
   const res = await apiRequest.get<Gallery>(`/galleries/${id}`);
   return res.data.data;
 };
+export const fetchGalleriespublic = async (): Promise<
+  PaginatedResponse<Gallery>
+> => {
+  const res = await apiRequest.get(`/public/galleries`);
+  return res.data as PaginatedResponse<Gallery>;
+};

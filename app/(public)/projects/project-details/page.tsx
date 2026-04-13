@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Hero from "./hero";
 import Image from "next/image";
+import Hero from "../project/hero";
 
 export default function ProjectDetails() {
   const router = useRouter();

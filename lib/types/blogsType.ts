@@ -1,15 +1,19 @@
 // lib/types/blogType.ts
 
+import { MemberProfile } from "../hooks";
+
 export interface Author {
   id: number;
   email: string;
   status: string;
+  member: MemberProfile;
   last_login_at: string | null;
   roles: any[];
   permissions: any[];
 }
 
 export interface BlogPost {
+  id: number;
   title: string;
   title_bangla: string | null;
   slug: string;
