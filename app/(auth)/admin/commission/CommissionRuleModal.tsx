@@ -6,6 +6,7 @@ import {
   useCreateCommissionRule,
   useUpdateCommissionRule,
 } from "@/lib/hooks/admin/useCommissions";
+import { usePensionPackages } from "@/lib/hooks/admin/usePensionPackages";
 import { toast } from "sonner";
 
 interface CommissionRuleModalProps {
@@ -22,6 +23,7 @@ export default function CommissionRuleModal({
     slug: "",
     role_slug: "",
     rule_type: "referral",
+    pension_package_id: "",
     commission_type: "percentage" as "percentage" | "fixed",
     commission_value: "",
     min_collection: "",
@@ -35,6 +37,11 @@ export default function CommissionRuleModal({
 
   const { mutate: createRule, isPending: isCreating } = useCreateCommissionRule();
   const { mutate: updateRule, isPending: isUpdating } = useUpdateCommissionRule();
+  
+  // Fetch pension packages
+  const { data: packagesData, isLoading: isLoadingPackages } = usePensionPackages({
+    per_page: 100, // Get all packages
+  });
 
   useEffect(() => {
     if (ruleToEdit) {
@@ -43,6 +50,7 @@ export default function CommissionRuleModal({
         slug: ruleToEdit.slug || "",
         role_slug: ruleToEdit.role_slug || "",
         rule_type: ruleToEdit.rule_type || "referral",
+        pension_package_id: ruleToEdit.pension_package_id?.toString() || "",
         commission_type: ruleToEdit.commission_type || "percentage",
         commission_value: ruleToEdit.commission_value?.toString() || "",
         min_collection: ruleToEdit.min_collection?.toString() || "",
@@ -69,6 +77,7 @@ export default function CommissionRuleModal({
       slug: formData.slug,
       rule_type: formData.rule_type,
       role_slug: formData.role_slug || null,
+      pension_package_id: formData.pension_package_id ? parseInt(formData.pension_package_id) : null,
       commission_type: formData.commission_type,
       commission_value: parseFloat(formData.commission_value),
       min_collection: formData.min_collection ? parseFloat(formData.min_collection) : null,
@@ -212,6 +221,37 @@ export default function CommissionRuleModal({
               <option value="app">Assistant PP (APP)</option>
               <option value="member">Member</option>
             </select>
+          </div>
+
+          {/* Pension Package */}
+          <div>
+            <label className="block text-sm font-medium text-[#030712] mb-2">
+              Pension Package (Optional)
+            </label>
+            <select
+              value={formData.pension_package_id}
+              onChange={(e) =>
+                setFormData({ ...formData, pension_package_id: e.target.value })
+              }
+              disabled={isLoadingPackages}
+              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">None</option>
+              {isLoadingPackages ? (
+                <option disabled>Loading packages...</option>
+              ) : (
+                packagesData?.data?.map((pkg) => (
+                  <option key={pkg.id} value={pkg.id}>
+                    {pkg.name} - ৳{pkg.monthly_amount.toLocaleString()}/month
+                  </option>
+                ))
+              )}
+            </select>
+            {formData.pension_package_id && packagesData?.data && (
+              <p className="text-xs text-[#6A7282] mt-1">
+                Selected: {packagesData.data.find(p => p.id === parseInt(formData.pension_package_id))?.name}
+              </p>
+            )}
           </div>
 
           {/* Commission Type */}

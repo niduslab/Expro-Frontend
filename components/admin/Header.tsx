@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
-import { Search, Bell, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMyProfile } from "@/lib/hooks/admin/useUsers";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const { data } = useMyProfile();
@@ -36,13 +36,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
       {/* Right side */}
       <div className="flex items-center gap-4 ml-4">
         {/* Notifications */}
-        <button
-          onClick={() => router.push("/admin/notifications")}
-          className="relative p-2 hover:bg-gray-100 rounded-full"
-        >
-          <Bell className="h-5 w-5 text-gray-600" />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
-        </button>
+        <NotificationBell userId={profile?.id} />
 
         {/* Profile */}
         <div

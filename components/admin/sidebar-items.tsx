@@ -17,11 +17,13 @@ import {
   ShieldCheck,
   Images,
   Hd,
+  TrendingUp,
 } from "lucide-react";
 
 export const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Pension Packages", href: "/admin/pension-packages", icon: Package },
+  { name: "Pension Investments", href: "/admin/pension-investments", icon: TrendingUp },
 
   { name: "Manage Members", href: "/admin/members", icon: SquareChartGantt },
   {

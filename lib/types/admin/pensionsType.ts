@@ -8,6 +8,16 @@ export type PensionEnrollmentStatus =
   | "closed"
   | "cancelled";
 
+export interface PensionPackageRole {
+  id: number;
+  role: "executive_member" | "project_presenter" | "assistant_pp" | "general_member";
+  is_active: boolean;
+  assigned_at: string;
+  assigned_by: number;
+  deactivated_at: string | null;
+  notes: string | null;
+}
+
 export interface PensionEnrollment {
   id: number;
 
@@ -40,6 +50,10 @@ export interface PensionEnrollment {
   // Sponsor Commission
   sponsored_by: number | null; // foreignId users
   joining_commission_paid: boolean;
+
+  // Package Roles
+  package_roles?: PensionPackageRole[];
+  current_role?: string;
 
   notes: string | null; // text
 

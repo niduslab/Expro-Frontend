@@ -233,8 +233,13 @@ export default function AdminPensionPackages() {
               <div className="grid grid-cols-2 gap-2">
                 <Stat
                   icon={<Users size={14} />}
-                  label="Enrolled Members"
-                  value={plan.enrolled_members_count || 0}
+                  label="Total Enrollments"
+                  value={plan.enrollment_statistics?.total_enrollments || 0}
+                />
+                <Stat
+                  icon={<TrendingUp size={14} />}
+                  label="Active Enrollments"
+                  value={plan.enrollment_statistics?.active_enrollments || 0}
                 />
                 <Stat
                   icon={<Calendar size={14} />}
@@ -242,16 +247,40 @@ export default function AdminPensionPackages() {
                   value={`${plan.total_installments} months`}
                 />
                 <Stat
-                  icon={<TrendingUp size={14} />}
-                  label="Maturity"
+                  icon={<Package size={14} />}
+                  label="Maturity Amount"
                   value={`৳${parseFloat(plan.maturity_amount)?.toLocaleString()}`}
                 />
-                <Stat
-                  icon={<Package size={14} />}
-                  label="Commission"
-                  value={`৳${parseFloat(plan.installment_commission) || 0}/inst`}
-                />
               </div>
+
+              {/* Additional Enrollment Stats */}
+              {/* {plan.enrollment_statistics && (
+                <div className="mt-3 p-3 bg-[#F9FAFB] rounded-lg border border-[#E5E7EB]">
+                  <div className="flex items-center justify-between text-xs text-[#4A5565] mb-2">
+                    <span className="font-medium">Enrollment Breakdown</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="text-center">
+                      <div className="font-semibold text-[#068847]">
+                        {plan.enrollment_statistics.completed_enrollments || 0}
+                      </div>
+                      <div className="text-[#6B7280]">Completed</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-[#F59E0B]">
+                        {plan.enrollment_statistics.suspended_enrollments || 0}
+                      </div>
+                      <div className="text-[#6B7280]">Suspended</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-[#3B82F6]">
+                        ৳{parseFloat(plan.installment_commission) || 0}
+                      </div>
+                      <div className="text-[#6B7280]">Commission</div>
+                    </div>
+                  </div>
+                </div>
+              )} */}
 
               {/* Action Buttons */}
               <div className="flex gap-2 mt-4 pt-4 border-t border-[#E5E7EB]">
