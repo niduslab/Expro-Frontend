@@ -6,30 +6,37 @@ import { useQuery } from "@tanstack/react-query";
  */
 export interface Donation {
   id: number;
+  project_id: number; // Added based on API response
+  user_id: number | null; // Added based on API response
   donor_name: string;
   donor_email: string;
   donor_phone?: string;
-  amount: number;
+  amount: string; // API returns string "1000.00", not number
   currency: string;
-  donation_type: string;
-  purpose?: string;
-  is_anonymous: boolean;
+  type: string; // API returns "type", not "donation_type"
   status: "pending" | "completed" | "failed" | "refunded";
-  payment_method?: string;
-  transaction_id?: string;
+  purpose?: string;
+  message?: string | null;
+  is_anonymous: boolean;
+  payment_id?: string | null;
+  wallet_transaction_id?: string | null;
+  receipt_number?: string;
+  metadata?: string;
   created_at: string;
   updated_at: string;
 }
 
-export interface DonationsResponse {
-  data: Donation[];
+// This interface matches the ROOT of the API response
+export interface DonationsApiResponse {
+  success: boolean;
+  message: string;
+  data: Donation[]; // The list is directly here
   pagination: {
+    total: number;
+    per_page: number;
     current_page: number;
     last_page: number;
-    per_page: number;
-    total: number;
-    from: number;
-    to: number;
+    // Note: API response didn't show 'from' or 'to', so remove them if not present
   };
 }
 
@@ -66,13 +73,13 @@ export const useDonations = (
   return useQuery({
     queryKey: ["donations", page, params],
     queryFn: async () => {
-      const response = await apiClient.get<{
-        success: boolean;
-        data: DonationsResponse;
-      }>("/donations", {
+      // Axios response.data is the JSON body: { success, message, data: [], pagination: {} }
+      const response = await apiClient.get<DonationsApiResponse>("/donations", {
         params: { page, per_page: 15, ...params },
       });
-      return response.data.data; // ✅ Return DonationsResponse directly
+
+      // Return the whole parsed JSON object
+      return response.data;
     },
     staleTime: 1000 * 60 * 2,
   });

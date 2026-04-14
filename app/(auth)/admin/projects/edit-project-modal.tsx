@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ProjectInfo from "./project-info";
 import ProjectBudgetTimeline from "./project-budget-timeline";
 import ProjectTeamsRoles from "./project-teams-roles";
-import { Lock } from "lucide-react";
 import {
   Project,
   ProjectFormDataInterface,
@@ -35,9 +34,9 @@ export default function EditProjectModal({
 
   const formatDate = (date?: string) => {
     if (!date) return "";
-    return date.split("T")[0]; // converts ISO → YYYY-MM-DD
+    return date.split("T")[0];
   };
-  // Pre-fill form with existing project data
+
   const [formData, setFormData] = useState<ProjectFormDataInterface>({
     title: project.title ?? "",
     category: project.category ?? "",
@@ -56,6 +55,8 @@ export default function EditProjectModal({
     isPublished: project.is_published ?? false,
     featuredImage: null,
     featured_image: project.featured_image ?? null,
+    galleryImages: [], // ← new files to upload (starts empty)
+    gallery: project.gallery ?? [], // ← existing URLs pre-filled from project
   });
 
   // All tabs unlocked when editing
@@ -84,7 +85,12 @@ export default function EditProjectModal({
       is_featured: formData.isFeatured,
       is_published: formData.isPublished,
       project_lead_id: formData.projectLeadId ?? undefined,
-      featured_image: formData.featuredImage ?? undefined, // ← add
+      featured_image: formData.featuredImage ?? undefined,
+      // Only send new gallery files if user picked any
+      gallery:
+        formData.galleryImages.length > 0 ? formData.galleryImages : undefined,
+      // Send kept existing URLs so backend knows what to retain
+      gallery_keep: formData.gallery ?? [],
     };
 
     updateProject(

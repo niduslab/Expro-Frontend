@@ -228,8 +228,18 @@ export function useDeleteDocument(): UseMutationState & {
 }
 // Add to the bottom of your hooks file
 export function useDocumentsWithMutations(params: DocumentIndexParams) {
-  const { documents, pagination, isLoading, error, refetch } =
+  const { documents, pagination, isLoading, error, refetch, setParams } =
     useDocuments(params);
+
+  useEffect(() => {
+    setParams(params);
+  }, [
+    params.page,
+    params.search,
+    params.type,
+    params.status,
+    params.is_featured,
+  ]);
 
   const createHook = useCreateDocument();
   const updateHook = useUpdateDocument();

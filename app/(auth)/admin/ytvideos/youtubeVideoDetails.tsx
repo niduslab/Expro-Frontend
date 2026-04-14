@@ -187,13 +187,13 @@ export default function YouTubeVideoDetailModal({
                 <div className="w-1/2">
                   <DetailField
                     label="Created By"
-                    value={video.created_by?.name}
+                    value={video.created_by?.email}
                   />
                 </div>
                 <div className="w-1/2">
                   <DetailField
                     label="Updated By"
-                    value={video.updated_by?.name}
+                    value={video.updated_by?.email}
                   />
                 </div>
               </div>

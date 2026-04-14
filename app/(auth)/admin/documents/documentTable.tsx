@@ -18,7 +18,11 @@ function StatusBadge({ status }: { status: Document["status"] }) {
     inactive: "bg-red-50 text-red-600",
     archived: "bg-gray-100 text-gray-600",
   };
-  const labels = { active: "Active", inactive: "Inactive", archived: "Archived" };
+  const labels = {
+    active: "Active",
+    inactive: "Inactive",
+    archived: "Archived",
+  };
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${map[status] ?? map.inactive}`}
@@ -50,7 +54,15 @@ export default function DocumentTable({
       <table className="w-full min-w-[800px]">
         <thead>
           <tr className="border-b border-[#e3e8e0] bg-[#f8faf7]">
-            {["Name", "Type", "Size", "Downloads", "Status", "Featured", "Actions"].map((h) => (
+            {[
+              "Name",
+              "Type",
+              "Size",
+              "Downloads",
+              "Status",
+              "Featured",
+              "Actions",
+            ].map((h) => (
               <th
                 key={h}
                 className="px-5 py-3.5 text-left text-xs font-semibold text-[#8a8780] uppercase tracking-wider whitespace-nowrap"
