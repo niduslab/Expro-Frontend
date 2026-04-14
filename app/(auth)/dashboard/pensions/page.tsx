@@ -15,6 +15,8 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  Users,
+  Network,
 } from "lucide-react";
 import { useMyPensionEnrollments } from "@/lib/hooks/user/usePensionEnrollment";
 import { usePensionPayment } from "@/lib/hooks/user/usePensionPayment";
@@ -29,6 +31,7 @@ import { fmtDate, fmtMoney } from "./utils";
 import PensionPaymentModal from "@/components/dashboard/pensions/PensionPaymentModal";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 // ── Helper Functions ────────────────────────────────────────────────────────
 
@@ -331,13 +334,15 @@ function EnrollmentCard({
       <div className="p-5 border-b border-[#F3F4F6]">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-3">
+            {/* there will be two it's one is for my pensions another is  */}
             <div className="w-12 h-12 rounded-xl bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
               <Package className="w-6 h-6 text-[#068847]" />
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[14px] font-bold text-[#030712] font-mono">
-                  {enrollment.enrollment_number}
+                  {enrollment?.pension_package_id?.name} Plan
+                  {/* {enrollment.enrollment_number} */}
                 </span>
                 <span
                   className={`inline-flex items-center gap-1.5 text-[12px] font-medium px-2.5 py-1 rounded-full ${sc.bg} ${sc.text}`}
@@ -354,6 +359,9 @@ function EnrollmentCard({
                 <span className="flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4" />
                   Matures {fmtDate(enrollment.maturity_date)}
+                </span>
+                <span className="text-[14px] font-bold text-[#030712] font-mono">
+                  Enrollment Id: {enrollment.enrollment_number}
                 </span>
               </div>
             </div>
@@ -728,14 +736,92 @@ export default function PensionPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="max-w-7xl mx-auto space-y-6">
+
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-[#030712] mb-1">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-[#030712] mb-1">
+              Pension Plans
+            </h1>
+            <p className="text-[14px] text-[#6B7280]">
+              Manage your pension enrollments and track payment schedules
+            </p>
+          </div>
+          
+          {/* Show current highest role if user has leadership roles */}
+          {enrollments.some((enrollment) => 
+            enrollment.package_roles?.some((role) => 
+              role.is_active && role.role !== 'general_member'
+            )
+          ) && (
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-xs text-[#6B7280]">Your Role</span>
+              {enrollments
+                .filter((enrollment) => 
+                  enrollment.package_roles?.some((role) => 
+                    role.is_active && role.role !== 'general_member'
+                  )
+                )
+                .map((enrollment) => {
+                  const leadershipRole = enrollment.package_roles?.find((role) => 
+                    role.is_active && role.role !== 'general_member'
+                  );
+                  if (!leadershipRole) return null;
+                  
+                  const roleColors: Record<string, string> = {
+                    executive_member: "bg-[#FEF3C7] text-[#F59E0B]",
+                    project_presenter: "bg-[#DBEAFE] text-[#3B82F6]",
+                    assistant_pp: "bg-[#E0E7FF] text-[#6366F1]",
+                  };
+                  
+                  const formatRoleName = (role: string) => {
+                    return role
+                      .split("_")
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ");
+                  };
+                  
+                  return (
+                    <span
+                      key={enrollment.id}
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        roleColors[leadershipRole.role] || "bg-[#F3F4F6] text-[#6B7280]"
+                      }`}
+                    >
+                      {formatRoleName(leadershipRole.role)}
+                    </span>
+                  );
+                })[0]
+              }
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-2 border-b border-[#E5E7EB]">
+          <Link
+            href="/dashboard/pensions"
+            className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-[#068847] border-b-2 border-[#068847] transition-colors"
+          >
+            <Package className="w-4 h-4" />
             Pension Plans
-          </h1>
-          <p className="text-[14px] text-[#6B7280]">
-            Manage your pension enrollments and track payment schedules
-          </p>
+          </Link>
+          
+          {/* Check if user has leadership roles (not just general_member) */}
+          {enrollments.some((enrollment) => 
+            enrollment.package_roles?.some((role) => 
+              role.is_active && 
+              role.role !== 'general_member'
+            )
+          ) && (
+            <Link
+              href="/dashboard/pensions/team"
+              className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-[#6B7280] hover:text-[#030712] hover:bg-[#F9FAFB] rounded-t-lg transition-colors"
+            >
+              <Network className="w-4 h-4" />
+              My Team
+            </Link>
+          )}
         </div>
 
         {/* Payment Alert */}

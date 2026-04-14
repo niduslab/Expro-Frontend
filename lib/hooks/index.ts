@@ -11,6 +11,7 @@ export * from "./public/usePublicData";
 // User hooks (authentication required)
 export * from "./user/useProfile";
 export * from "./user/useWallet";
+export * from "./user/usePensionTeam";
 
 // Admin hooks (admin authentication required)
 
@@ -19,6 +20,7 @@ export * from './admin/useDashboard';
 export * from './admin/useMembershipRequests';
 export * from './admin/useWallet';
 export * from './admin/useTeamCollections';
+export * from './admin/usePensionHierarchy';
 
 export { useDonations, useDonation } from './admin/useDonations';
 export type { Donation, DonationsResponse, DonationsParams } from './admin/useDonations';
