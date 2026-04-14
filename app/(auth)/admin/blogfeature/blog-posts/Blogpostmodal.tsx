@@ -53,8 +53,18 @@ export default function BlogPostModal({
         status: String(post.status) as BlogPostPayload["status"],
         published_at: post.published_at ?? null,
         is_featured: post.is_featured,
-        tags: post.tags ?? [],
-        meta: post.meta ?? null,
+        tags: Array.isArray(post.tags) ? post.tags : [],
+        // In the useEffect where you set formData for editing
+        meta:
+          typeof post.meta === "string"
+            ? (() => {
+                try {
+                  return JSON.parse(post.meta);
+                } catch {
+                  return null;
+                }
+              })()
+            : (post.meta ?? null),
       });
     } else if (open && !post) {
       setFormData(defaultForm);
@@ -132,11 +142,23 @@ export default function BlogPostModal({
 
   const isPending = creating || updating;
 
+  // In Blogpostmodal.tsx — handleSubmit
   const handleSubmit = () => {
     if (!validate()) return;
 
+    // Parse meta if it was stored/received as a JSON string
+    let parsedMeta = formData.meta;
+    if (typeof parsedMeta === "string") {
+      try {
+        parsedMeta = JSON.parse(parsedMeta);
+      } catch {
+        parsedMeta = null;
+      }
+    }
+
     const payload: BlogPostPayload = {
       ...formData,
+      meta: parsedMeta,
       published_at: formData.published_at
         ? new Date(formData.published_at)
             .toISOString()

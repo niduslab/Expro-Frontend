@@ -11,15 +11,6 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-const formatCurrency = (value?: string | number) => {
-  if (value === undefined || value === null) return "N/A";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(Number(value));
-};
-
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "N/A";
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -68,8 +59,6 @@ const ProjectBody = () => {
   const id = Number(params?.id);
   const { data: project, isLoading } = useProject(id);
 
-  const fundsPercent = getFundsPercent(project?.funds_raised, project?.budget);
-
   if (isLoading) {
     return (
       <section className="container mx-auto px-6 md:px-12 lg:px-20 py-14">
@@ -103,38 +92,6 @@ const ProjectBody = () => {
               {project.description}
             </p>
           </div>
-
-          {/* <div className="bg-[#f0faf5] rounded-2xl p-6 space-y-3 border border-[#c3ecd5]">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#00341C]" />
-                Fundraising Progress
-              </span>
-              <span className="text-sm font-bold text-[#00341C]">
-                {fundsPercent}%
-              </span>
-            </div>
-            <div className="w-full bg-white rounded-full h-3 overflow-hidden border border-[#c3ecd5]">
-              <div
-                className="h-full bg-gradient-to-r from-[#36F293] to-[#00c97a] rounded-full transition-all duration-700"
-                style={{ width: `${fundsPercent}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-gray-500">
-              <span>
-                Raised:{" "}
-                <span className="text-gray-800 font-semibold">
-                  {formatCurrency(project.funds_raised)}
-                </span>
-              </span>
-              <span>
-                Goal:{" "}
-                <span className="text-gray-800 font-semibold">
-                  {formatCurrency(project.budget)}
-                </span>
-              </span>
-            </div>
-          </div> */}
         </div>
       </div>
 
@@ -144,22 +101,6 @@ const ProjectBody = () => {
           Project Overview
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* <StatCard
-            label="Total Budget"
-            value={formatCurrency(project.budget)}
-            icon={<Wallet className="w-5 h-5" />}
-            accent
-          /> */}
-          {/* <StatCard
-            label="Funds Raised"
-            value={formatCurrency(project.funds_raised)}
-            icon={<TrendingUp className="w-5 h-5" />}
-          />
-          <StatCard
-            label="Funds Utilized"
-            value={formatCurrency(project.funds_utilized)}
-            icon={<CheckCircle2 className="w-5 h-5" />}
-          /> */}
           <StatCard
             label="Category"
             value={
@@ -211,6 +152,31 @@ const ProjectBody = () => {
           </div>
         </div>
       </div>
+
+      {/* Gallery */}
+      {project.gallery && project.gallery.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Gallery
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {project.gallery.map((img, idx) => (
+              <div
+                key={idx}
+                className="relative aspect-square rounded-2xl overflow-hidden border border-gray-100 shadow-sm group"
+              >
+                <Image
+                  src={img}
+                  alt={`${project.title} gallery image ${idx + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  unoptimized={img?.startsWith("http")}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

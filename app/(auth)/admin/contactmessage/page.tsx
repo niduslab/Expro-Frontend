@@ -186,12 +186,6 @@ export default function ContactMessagesPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-1.5 bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[11px] text-green-700 font-medium">
-                  Live
-                </span>
-              </div>
               <button
                 onClick={refetch}
                 className="flex items-center gap-1.5 text-[12px] px-3 py-2 border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors cursor-pointer text-gray-600 font-medium"

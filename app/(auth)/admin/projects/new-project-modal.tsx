@@ -26,6 +26,7 @@ export default function NewProjectModal({
   );
   const { mutate: createProject, isPending } = useCreateProject();
   const { data: usersData } = useUsers();
+
   const [formData, setFormData] = useState<ProjectFormDataInterface>({
     title: "",
     category: "",
@@ -34,13 +35,15 @@ export default function NewProjectModal({
     description: "",
     totalBudget: "",
     initialFund: "",
-    fundsUtilized: "", // ← new
+    fundsUtilized: "",
     startDate: "",
     endDate: "",
     projectLeadId: null,
-    isFeatured: false, // ← new
-    isPublished: false, // ← new
+    isFeatured: false,
+    isPublished: false,
     featuredImage: null,
+    galleryImages: [], // ← required: initialize as empty array
+    gallery: [], // ← required: no existing URLs for new project
   });
 
   const [completedTabs, setCompletedTabs] = useState<CompletedTabs>({
@@ -64,11 +67,14 @@ export default function NewProjectModal({
         ? Number(formData.fundsUtilized)
         : undefined,
       featured_image: formData.featuredImage ?? undefined,
+      gallery:
+        formData.galleryImages.length > 0 ? formData.galleryImages : undefined,
       start_date: formData.startDate || undefined,
       end_date: formData.endDate || undefined,
       is_featured: formData.isFeatured,
       is_published: formData.isPublished,
-      project_lead_id: formData.projectLeadId ?? undefined, // ← now sends real ID
+      project_lead_id: formData.projectLeadId ?? undefined,
+      // ✅ No gallery_keep here — only UpdateProjectPayload needs it
     };
     createProject(payload, { onSuccess: () => setOpenModal(false) });
   };

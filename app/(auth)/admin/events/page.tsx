@@ -437,6 +437,7 @@ export default function EventsPage() {
                 <thead>
                   <tr className="border-b border-[#e3e8e0] bg-[#f8faf7]">
                     {[
+                      "photo",
                       "Title",
                       "Location",
                       "Start Date",
@@ -463,6 +464,19 @@ export default function EventsPage() {
                         key={ev.id}
                         className="hover:bg-[#f8faf7] transition-colors"
                       >
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          {ev.image ? (
+                            <img
+                              src={ev.image}
+                              alt={ev.title}
+                              className="w-10 h-10 rounded-full object-cover border border-[#E5E7EB]"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-[#d7efdc] flex items-center justify-center text-[#068847] font-semibold text-sm">
+                              {ev.title?.charAt(0)?.toUpperCase() ?? "?"}
+                            </div>
+                          )}
+                        </td>
                         <td className="px-5 py-4 max-w-[200px]">
                           <p className="text-sm font-medium text-[#1a1a2e] truncate">
                             {ev.title}

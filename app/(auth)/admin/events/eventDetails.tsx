@@ -102,6 +102,20 @@ export default function EventDetailModal({
                   {statusStyle.dot} {event.status}
                 </span>
               </div>
+              <div>
+                {" "}
+                {event.image ? (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-60 h-32 rounded-xs object-cover border border-[#E5E7EB]"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-[#d7efdc] flex items-center justify-center text-[#068847] font-semibold text-sm">
+                    {event.title?.charAt(0)?.toUpperCase() ?? "?"}
+                  </div>
+                )}
+              </div>
 
               <DetailField label="Title" value={event.title} />
 
