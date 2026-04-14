@@ -25,6 +25,7 @@ export default function ProfileTab({ member, memberProfile, wallet, pensionEnrol
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InfoItem label="Name (Bangla)" value={memberProfile?.name_bangla} />
+            <InfoItem label="Name (English)" value={memberProfile?.name_english} />
             <InfoItem label="Father/Husband" value={memberProfile?.father_husband_name} />
             <InfoItem label="Mother's Name" value={memberProfile?.mother_name} />
             <InfoItem label="Date of Birth" value={

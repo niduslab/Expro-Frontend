@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Check, Trash2, Filter, Search } from "lucide-react";
+import { Bell, Check, Trash2, Search } from "lucide-react";
 import { useNotifications } from "@/lib/hooks/useNotifications";
 import { useMyProfile } from "@/lib/hooks/admin/useUsers";
 import { toast } from "sonner";
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
             Notifications
           </p>
           <p className="text-sm text-[#4A5565]">
-            Manage all your notifications here
+            Stay updated with your latest notifications
           </p>
         </div>
         <div className="flex items-center justify-center py-20">
@@ -93,7 +93,7 @@ export default function NotificationsPage() {
           Notifications
         </p>
         <p className="text-sm text-[#4A5565]">
-          Manage all your notifications here
+          Stay updated with your latest notifications
         </p>
       </div>
 

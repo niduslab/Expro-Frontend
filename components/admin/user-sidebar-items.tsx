@@ -20,4 +20,5 @@ export const userSidebarItems = [
   { name: "Pensions", href: "/dashboard/pensions", icon: FileText },
   { name: "Nominee", href: "/dashboard/nominees", icon: Users },
   { name: "Branch", href: "/dashboard/branches", icon: LocationEdit },
+  { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
 ];
