@@ -270,7 +270,7 @@ export function Header() {
         { name: "Careers", href: "/careers" },
       ],
     },
-    { name: "Contracts", href: "/contact", hasDropdown: false },
+    { name: "Contacts", href: "/contact", hasDropdown: false },
   ];
 
   return (
