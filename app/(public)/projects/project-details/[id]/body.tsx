@@ -157,7 +157,7 @@ const ProjectBody = () => {
       {project.gallery && project.gallery.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Gallery
+            Project Gallery
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {project.gallery.map((img, idx) => (

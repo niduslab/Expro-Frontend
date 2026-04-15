@@ -119,16 +119,16 @@ const Videos = () => {
 
   return (
     <div className="container mx-auto px-6 md:px-12 lg:px-20">
-      <section className="bg-white min-h-screen pt-32 py-20">
+      <section className="bg-white min-h-screen pt-36 py-20">
         {/* Header */}
         <div className="text-center mb-10 pt-6 flex flex-col items-center gap-5">
-          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 text-sm font-medium text-[#027A48]">
+            <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+            Videos
+          </div>
+          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
             EWF Digital Content & Videos
           </h2>
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
-            Our Videos
-          </div>
         </div>
 
         {/* Initial skeleton */}

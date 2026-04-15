@@ -82,7 +82,7 @@ const Profile = () => {
             <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
             Profile
           </div>
-          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
             Profile Document
           </h2>
         </div>

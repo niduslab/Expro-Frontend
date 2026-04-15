@@ -260,15 +260,15 @@ const CalendarPage = () => {
 
   return (
     <div className="container mx-auto px-6 md:px-12 lg:px-20">
-      <section className="bg-white min-h-screen pt-20 lg:pt-24 pb-12">
+      <section className="bg-white min-h-screen pt-32  pb-12">
         <div className="text-center mb-10 pt-10 flex flex-col items-center gap-2">
-          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-            EWF Calendars
-          </h2>
           <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 text-sm font-medium text-[#027A48]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
             Calendar
           </div>
+          <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900 ">
+            EWF Calendars
+          </h2>
         </div>
 
         {error && !isLoading && (

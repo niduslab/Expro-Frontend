@@ -76,16 +76,16 @@ const Staff = () => {
   if (!isLoading && staffMembers.length === 0) return null;
 
   return (
-    <section ref={sectionRef} className="py-20 bg-white">
+    <section ref={sectionRef} className="py-20 bg-white pt-12 md:pt-24">
       <div className="container pt-[55px] mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
         <div className="text-center flex flex-col items-center gap-5">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] ">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+            Our Staffs
+          </div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
             Our Staffs
           </h2>
-          <p className="text-gray-500 max-w-2xl">
-            Get to know the journey, challenges, and purpose that started it
-            all.
-          </p>
         </div>
 
         {isLoading ? (

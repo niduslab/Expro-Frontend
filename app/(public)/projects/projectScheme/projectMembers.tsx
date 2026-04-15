@@ -23,7 +23,8 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({
 
   const { data, isLoading } = useExproMembers(1, 50);
 
-  const executiveMembers = data?.data.filter((m) => m) ?? [];
+  const executiveMembers =
+    data?.data.filter((m) => m.designation === "Executive Member") ?? [];
 
   useEffect(() => {
     if (!sectionRef.current || executiveMembers.length === 0) return;

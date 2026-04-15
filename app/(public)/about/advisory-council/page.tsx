@@ -77,16 +77,16 @@ export default function AdvisoryCounsil() {
   if (!isLoading && advisors.length === 0) return null;
 
   return (
-    <section ref={sectionRef} className="py-20 bg-white">
+    <section ref={sectionRef} className="py-20 bg-white pt-12 md:pt-20">
       <div className="container relative top-20 mx-auto px-6 md:px-12 lg:px-20 xl:px-20">
         <div className="text-center mb-8 flex flex-col items-center gap-5">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-            Advisory Council
-          </h2>
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48] ">
             <span className="h-1.5 w-1.5 rounded-full bg-[#027A48]" />
             Advisory Council
           </div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
+            Advisory Council
+          </h2>
         </div>
 
         {isLoading ? (

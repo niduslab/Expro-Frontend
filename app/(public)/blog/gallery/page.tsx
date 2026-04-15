@@ -79,18 +79,14 @@ const Galleries = () => {
   return (
     <main className="font-dm-sans bg-[#F2F4F7] min-h-screen">
       {/* Page Header — matches Events page hero style */}
-      <div className="flex flex-col items-center justify-center pt-32 pb-10 text-center">
-        <div className="inline-flex items-center gap-2 bg-[#ECFDF3] px-3 py-1 rounded-md text-sm font-semibold text-[#027A48] mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#027A48]" />
-          Our Galleries
+      <div className="flex flex-col items-center justify-center pt-40 pb-10 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-2 text-sm font-medium text-[#027A48]">
+          <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
+          Gallery
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-[#101828]">
           Moments That Define Our Community
         </h1>
-        <p className="text-gray-500 mt-2 text-base max-w-xl">
-          A visual record of events, programs, and milestones from our
-          community.
-        </p>
       </div>
 
       {/* Gallery Content */}

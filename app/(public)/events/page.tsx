@@ -94,7 +94,7 @@ const Events = () => {
     );
 
   return (
-    <section ref={sectionRef} className="font-dm-sans py-20 bg-[#F2F4F7]">
+    <section ref={sectionRef} className="font-dm-sans pt-32  bg-[#F2F4F7]">
       <div
         data-events-header
         className="flex flex-col items-center justify-between mb-12 gap-6"
@@ -110,7 +110,7 @@ const Events = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
         <div className="space-y-8">
           {events.length > 0 ? (
             events.map((event: any, index: number) => (
