@@ -10,7 +10,8 @@ import { ProjectFormDataInterface } from "@/lib/types/projectType";
 
 const tabs: ("info" | "budget" | "teams")[] = ["info", "budget", "teams"];
 
-interface NewProjectModalProps {
+// Renamed interface to avoid conflicts with other components
+interface ProjectBudgetTimelineProps {
   activeTab: "info" | "budget" | "teams";
   formData: ProjectFormDataInterface;
   setFormData: React.Dispatch<React.SetStateAction<ProjectFormDataInterface>>;
@@ -26,13 +27,12 @@ export default function ProjectBudgetTimeline({
   activeTab,
   setActiveTab,
   setCompletedTabs,
-}: NewProjectModalProps) {
+}: ProjectBudgetTimelineProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleNext = () => {
     const budgetData = {
       ...formData,
-
       totalBudget: formData.totalBudget
         ? Number(formData.totalBudget)
         : undefined,
@@ -68,6 +68,7 @@ export default function ProjectBudgetTimeline({
 
     setActiveTab("teams");
   };
+
   const handleBack = () => {
     const currentIndex = tabs.indexOf(activeTab);
     if (currentIndex > 0) {
@@ -76,118 +77,121 @@ export default function ProjectBudgetTimeline({
   };
 
   return (
-    <>
-      <div className="flex flex-col relative pt-4 w-full gap-[16px]">
-        <div className="flex flex-col sm:flex-row gap-2 w-full">
-          {/* Total Budget */}
-          <div className="relative w-full sm:w-1/2">
-            <div className="pb-2">
-              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Total Budget (৳)
-              </span>
-              <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                *
-              </span>
+    // 1. Wrapper: Flex column, full height of parent container
+    <div className="flex flex-col h-full">
+      {/* 2. Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto px-1 pb-4">
+        <div className="flex flex-col relative pt-4 w-full gap-[16px]">
+          <div className="flex flex-col sm:flex-row gap-2 w-full">
+            {/* Total Budget */}
+            <div className="relative w-full sm:w-1/2">
+              <div className="pb-2">
+                <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+                  Total Budget (৳)
+                </span>
+                <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
+                  *
+                </span>
+              </div>
+              <div>
+                <input
+                  type="number"
+                  value={formData.totalBudget}
+                  onChange={(e) => {
+                    setFormData({ ...formData, totalBudget: e.target.value });
+                    if (errors.totalBudget) {
+                      setErrors((prev) => ({ ...prev, totalBudget: "" }));
+                    }
+                  }}
+                  className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+                  placeholder="e.g. 250000"
+                />
+                {errors.totalBudget && (
+                  <span className="text-sm text-red-500 py-0.5">
+                    {errors.totalBudget}
+                  </span>
+                )}
+              </div>
             </div>
-            <div>
-              {" "}
-              <input
-                type="number"
-                value={formData.totalBudget}
-                onChange={(e) => {
-                  setFormData({ ...formData, totalBudget: e.target.value });
-                  if (errors.totalBudget) {
-                    setErrors((prev) => ({ ...prev, totalBudget: "" }));
+
+            {/* Initial Fund */}
+            <div className="relative w-full sm:w-1/2">
+              <div className="pb-2">
+                <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
+                  Initial Fund (৳)
+                </span>
+                <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
+                  *
+                </span>
+              </div>
+              <div>
+                <input
+                  type="number"
+                  value={formData.initialFund}
+                  onChange={(e) => {
+                    setFormData({ ...formData, initialFund: e.target.value });
+                    if (errors.initialFund) {
+                      setErrors((prev) => ({ ...prev, initialFund: "" }));
+                    }
+                  }}
+                  className="h-[48px] w-full text-[#6A7282] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
+                  placeholder="e.g. 50000"
+                />
+                {errors.initialFund && (
+                  <span className="text-sm text-red-500 py-0.5">
+                    {errors.initialFund}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 pb-2">
+            {/* Start Date */}
+            <div className="relative w-full sm:w-1/2">
+              <DatePicker
+                label="Start Date"
+                required
+                value={formData.startDate || ""}
+                onChange={(date) => {
+                  setFormData({ ...formData, startDate: date });
+                  if (errors.startDate) {
+                    setErrors((prev) => ({ ...prev, startDate: "" }));
                   }
                 }}
-                className="h-[48px] text-[#6A7282] w-full border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="e.g. 250000"
               />
-              {errors.totalBudget && (
+              {errors.startDate && (
                 <span className="text-sm text-red-500 py-0.5">
-                  {errors.totalBudget}
+                  {errors.startDate}
                 </span>
               )}
             </div>
-          </div>
 
-          {/* Initial Fund */}
-          <div className="relative w-full sm:w-1/2">
-            <div className="pb-2">
-              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
-                Initial Fund (৳)
-              </span>
-              <span className="text-[#FB2C36] font-medium text-[16px] leading-[150%] tracking-[-0.01em]">
-                *
-              </span>
-            </div>
-            <div>
-              <input
-                type="number"
-                value={formData.initialFund}
-                onChange={(e) => {
-                  setFormData({ ...formData, initialFund: e.target.value });
-                  if (errors.initialFund) {
-                    setErrors((prev) => ({ ...prev, initialFund: "" }));
+            {/* End Date */}
+            <div className="relative w-full sm:w-1/2">
+              <DatePicker
+                label="End Date"
+                required
+                value={formData.endDate || ""}
+                onChange={(date) => {
+                  setFormData({ ...formData, endDate: date });
+                  if (errors.endDate) {
+                    setErrors((prev) => ({ ...prev, endDate: "" }));
                   }
                 }}
-                className="h-[48px]  w-full text-[#6A7282] border border-[#D1D5DC] rounded-[8px] px-[16px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500"
-                placeholder="e.g. 50000"
               />
-              {errors.initialFund && (
+              {errors.endDate && (
                 <span className="text-sm text-red-500 py-0.5">
-                  {errors.initialFund}
+                  {errors.endDate}
                 </span>
               )}
             </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-2 ">
-          {/* Start Date */}
-          <div className="relative w-full sm:w-1/2">
-            <DatePicker
-              label="Start Date"
-              required
-              value={formData.startDate || ""} // ensure it's a valid 'yyyy-mm-dd'
-              onChange={(date) => {
-                // store the date in 'yyyy-mm-dd' format
-                setFormData({ ...formData, startDate: date });
-                if (errors.startDate) {
-                  setErrors((prev) => ({ ...prev, startDate: "" }));
-                }
-              }}
-            />
-            {errors.startDate && (
-              <span className="text-sm text-red-500 py-0.5">
-                {errors.startDate}
-              </span>
-            )}
-          </div>
-
-          {/* End Date */}
-          <div className="relative w-full sm:w-1/2">
-            <DatePicker
-              label="End Date"
-              required
-              value={formData.endDate || ""} // ensure it's a valid 'yyyy-mm-dd'
-              onChange={(date) => {
-                // store the date in 'yyyy-mm-dd' format
-                setFormData({ ...formData, endDate: date });
-                if (errors.endDate) {
-                  setErrors((prev) => ({ ...prev, endDate: "" }));
-                }
-              }}
-            />
-            {errors.endDate && (
-              <span className="text-sm text-red-500 py-0.5">
-                {errors.endDate}
-              </span>
-            )}
           </div>
         </div>
       </div>
-      <div className="flex relative justify-between w-full pt-43 gap-[16px] ">
+
+      {/* 3. Fixed Footer: shrink-0 ensures it stays at bottom */}
+      <div className="shrink-0 flex justify-between w-full pt-3 border-t border-[#E5E7EB] bg-white safe-area-bottom">
         <button
           onClick={handleBack}
           className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px]"
@@ -201,6 +205,6 @@ export default function ProjectBudgetTimeline({
           Next <ArrowRight className="h-5 w-5" />
         </button>
       </div>
-    </>
+    </div>
   );
 }

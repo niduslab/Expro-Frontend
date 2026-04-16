@@ -42,8 +42,8 @@ export default function NewProjectModal({
     isFeatured: false,
     isPublished: false,
     featuredImage: null,
-    galleryImages: [], // ← required: initialize as empty array
-    gallery: [], // ← required: no existing URLs for new project
+    galleryImages: [],
+    gallery: [],
   });
 
   const [completedTabs, setCompletedTabs] = useState<CompletedTabs>({
@@ -74,7 +74,6 @@ export default function NewProjectModal({
       is_featured: formData.isFeatured,
       is_published: formData.isPublished,
       project_lead_id: formData.projectLeadId ?? undefined,
-      // ✅ No gallery_keep here — only UpdateProjectPayload needs it
     };
     createProject(payload, { onSuccess: () => setOpenModal(false) });
   };
@@ -120,8 +119,10 @@ export default function NewProjectModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2">
-      <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-4 bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black">
-        <div className="p-2 flex flex-col gap-[6px]">
+      {/* Modal shell — fixed height, flex column, no overflow */}
+      <div className="flex flex-col w-full max-w-4xl h-[90vh] p-2 md:p-4 bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black overflow-hidden">
+        {/* Header — fixed, never scrolls */}
+        <div className="p-2 flex flex-col gap-[6px] shrink-0">
           <div className="flex justify-between items-center">
             <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
               Create New Project
@@ -138,9 +139,10 @@ export default function NewProjectModal({
           </p>
         </div>
 
-        <div className="container border border-[#E5E7EB] my-4"></div>
+        <div className="border border-[#E5E7EB] my-4 shrink-0"></div>
 
-        <div className="p-2 overflow-y-auto">
+        {/* Tab bar — fixed, never scrolls */}
+        <div className="px-2 shrink-0">
           <div className="h-[45px] gap-[12px] md:gap-[24px] flex overflow-x-auto md:overflow-visible">
             <button
               onClick={() => setActiveTab("info")}
@@ -187,8 +189,11 @@ export default function NewProjectModal({
               )}
             </button>
           </div>
+        </div>
 
-          <div className="flex-1 overflow-y-auto p-2">{renderTabContent()}</div>
+        {/* Tab content — takes remaining height, passes it to child */}
+        <div className="flex-1 overflow-hidden p-2 mt-2">
+          {renderTabContent()}
         </div>
       </div>
     </div>
