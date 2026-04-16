@@ -23,7 +23,15 @@ export const useExproMembers = (page: number, per_page: number) => {
     placeholderData: (previousData) => previousData,
   };
 
-  return useQuery(options);
+  // Destructure refetch from useQuery result
+  const { data, isLoading, refetch, ...rest } = useQuery(options);
+
+  return {
+    data,
+    isLoading,
+    refetch, // Return refetch so components can manually trigger a fetch
+    ...rest,
+  };
 };
 
 /**

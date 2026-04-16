@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { useExproMembers } from "@/lib/hooks/public/useExpromembers";
+import Link from "next/link";
 
 const GOVERNING_DESIGNATIONS = [
   "Founder & Chairman",
@@ -108,55 +109,64 @@ export default function GoverninBody() {
             ))}
           </div>
         ) : (
-          <div
-            data-leadership-grid
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-16"
-          >
-            {governingMembers.map((member) => (
-              <div
-                key={member.id}
-                data-leadership-card
-                className="group relative w-full max-w-105.25 h-125 bg-[#F3F4F6] rounded-lg overflow-hidden border border-b border-[#E5E7EB]"
-              >
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={
-                      member.image_url ||
-                      "/images/dashboard/memberApproval/1.jpg"
-                    }
-                    alt={`${member.name} - ${member.designation}`}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    unoptimized={member.image_url?.startsWith("http")}
-                  />
+          <>
+            <div
+              data-leadership-grid
+              className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-3 justify-items-center pt-[32px] mb-16"
+            >
+              {governingMembers.map((member) => (
+                <div
+                  key={member.id}
+                  data-leadership-card
+                  className="group relative w-full bg-white rounded-xl border border-[#E5E7EB] p-2 py-6 hover:z-10
+                  flex flex-col items-center gap-2 hover:border-[#D0D5DD] hover:scale-105 hover:shadow-lg"
+                >
+                  {/* Arrow Link */}
+                  <Link
+                    href={`/projects/projectScheme/expromembers/${String(member.id)}`}
+                    className="absolute top-2 right-2 z-10"
+                  >
+                    <div className="w-5 h-5 rounded-full bg-[#008A4B] flex items-center justify-center">
+                      <ArrowUpRight
+                        size={10}
+                        strokeWidth={2.5}
+                        className="text-white"
+                      />
+                    </div>
+                  </Link>
 
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />
-                </div>
+                  {/* Rounded Image */}
+                  <div
+                    className="w-[60px] h-[60px] rounded-full p-0.5 flex-shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, #D1FAE5, #6EE7B7)",
+                    }}
+                  >
+                    <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E5E7EB] flex-shrink-0">
+                      <Image
+                        src={member.image_url || "/fallback.jpg"}
+                        alt={`${member.name} - ${member.designation}`}
+                        width={56}
+                        height={56}
+                        className="object-cover w-full h-full"
+                        unoptimized={member.image_url?.startsWith("http")}
+                      />
+                    </div>
+                  </div>
 
-                {/* Top Right Icon */}
-                <div className="absolute top-4 right-4 z-10">
-                  <div className="w-8 h-8 rounded-full bg-[#008A4B] flex items-center justify-center text-white">
-                    <ArrowUpRight size={16} strokeWidth={2.5} />
+                  {/* Name & Role */}
+                  <div className="text-center pt-2">
+                    <p className="text-[12px] font-medium text-[#101828] leading-tight">
+                      {member.name}
+                    </p>
+                    <p className="text-[11px] text-[#475467] leading-tight mt-0.5">
+                      {member.designation}
+                    </p>
                   </div>
                 </div>
-
-                {/* Bottom Content Card */}
-                <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg p-5 shadow-sm">
-                  <h3 className="text-[20px] font-bold text-[#101828] mb-1">
-                    {member.name}
-                  </h3>
-                  <p className="text-[#475467] text-sm font-normal mb-1">
-                    {member.designation}
-                  </p>
-                  <p className="text-[#475467] text-xs font-normal">
-                    EM No: {String(member.id).padStart(2, "0")}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>

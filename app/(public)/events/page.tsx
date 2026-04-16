@@ -187,7 +187,7 @@ const Events = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex justify-center pb-2">
             <Pagination
               page={page}
               perPage={perPage}

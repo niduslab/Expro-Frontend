@@ -142,9 +142,9 @@ const Leadership = () => {
                 <p className="text-[#475467] text-sm font-normal mb-1">
                   {member.designation}
                 </p>
-                <p className="text-[#475467] text-xs font-normal">
+                {/* <p className="text-[#475467] text-xs font-normal">
                   EM No: {String(member.id).padStart(2, "0")}
-                </p>
+                </p> */}
               </div>
             </div>
           ))}

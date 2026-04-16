@@ -1,18 +1,30 @@
 "use client";
 
 import { useExproMembers } from "@/lib/hooks/public/useExpromembers";
-import { refresh } from "next/cache";
+// REMOVE: import { refresh } from "next/cache";
 import Image from "next/image";
+import { useState } from "react";
 
 const OurFounder = () => {
   // Fetch all members
-  const { data, isLoading } = useExproMembers(1, 50);
+  const { data, isLoading, refetch } = useExproMembers(1, 50);
+
+  // Local state for button loading indicator
+  const [isRetrying, setIsRetrying] = useState(false);
 
   // Find the founder specifically
   const founderMember = data?.data?.find((m) => m.designation === "Founder");
 
-  // 1. Loading State (Optional: You can return null if you prefer no flicker)
-  if (isLoading) {
+  // Handle retry click
+  const handleRetry = async () => {
+    if (!refetch) return;
+    setIsRetrying(true);
+    await refetch();
+    setIsRetrying(false);
+  };
+
+  // 1. Loading State (Initial load only)
+  if (isLoading && !data) {
     return (
       <section className="font-dm-sans py-12 md:py-16 lg:py-20 bg-white overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-16">
@@ -63,13 +75,13 @@ const OurFounder = () => {
               records at this time.
             </p>
             <button
-              onClick={() => refresh()}
-              disabled={isLoading}
+              onClick={handleRetry}
+              disabled={isRetrying || isLoading}
               className="inline-flex items-center gap-2 px-4 py-2 mt-2 bg-[#24a062] text-white rounded-md hover:bg-[#004d2a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
+                className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
