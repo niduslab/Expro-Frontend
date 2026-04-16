@@ -19,7 +19,10 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
-import { usePensionPackage, useDeletePensionPackage } from "@/lib/hooks/admin/usePensionPackages";
+import {
+  usePensionPackage,
+  useDeletePensionPackage,
+} from "@/lib/hooks/admin/usePensionPackages";
 import { toast } from "sonner";
 import NewPackageModal from "../new-package-modal";
 
@@ -37,7 +40,9 @@ function InfoCard({
   className?: string;
 }) {
   return (
-    <div className={`bg-white rounded-xl border border-[#E5E7EB] p-6 ${className}`}>
+    <div
+      className={`bg-white rounded-xl border border-[#E5E7EB] p-6 ${className}`}
+    >
       <div className="flex items-center gap-3 mb-3">
         <div className="h-10 w-10 rounded-lg bg-[#F0FDF4] flex items-center justify-center">
           {icon}
@@ -47,15 +52,16 @@ function InfoCard({
           <p className="text-2xl font-bold text-[#030712]">{value}</p>
         </div>
       </div>
-      {description && (
-        <p className="text-sm text-[#6B7280]">{description}</p>
-      )}
+      {description && <p className="text-sm text-[#6B7280]">{description}</p>}
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const statusConfig: Record<string, { text: string; className: string; icon: React.ReactNode }> = {
+  const statusConfig: Record<
+    string,
+    { text: string; className: string; icon: React.ReactNode }
+  > = {
     active: {
       text: "Active",
       className: "text-[#29A36A] bg-[#DFF1E9] border-[#A8DAC3]",
@@ -89,12 +95,13 @@ export default function PensionPackageDetails() {
   const params = useParams();
   const router = useRouter();
   const packageId = parseInt(params.id as string);
-  
+
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const { data: response, isLoading, error } = usePensionPackage(packageId);
-  const { mutate: deletePackage, isPending: isDeleting } = useDeletePensionPackage();
+  const { mutate: deletePackage, isPending: isDeleting } =
+    useDeletePensionPackage();
 
   const packageData = response?.package_details;
   const statistics = response?.statistics;
@@ -116,7 +123,7 @@ export default function PensionPackageDetails() {
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.message || "Failed to delete pension package",
-          { id: "delete-package" }
+          { id: "delete-package" },
         );
       },
     });
@@ -167,16 +174,16 @@ export default function PensionPackageDetails() {
             </button>
             <div>
               <h1 className="text-3xl font-bold text-[#030712]">
-                {packageData.name}
+                {packageData?.name}
               </h1>
               <p className="text-[#6B7280] mt-1">
                 Pension Package Details & Management
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <StatusBadge status={packageData.status} />
+            <StatusBadge status={packageData?.status || ""} />
             <button
               onClick={() => setEditModalOpen(true)}
               className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] text-[#6B7280] rounded-lg hover:bg-[#F9FAFB] transition-colors"
@@ -199,19 +206,19 @@ export default function PensionPackageDetails() {
           <InfoCard
             icon={<DollarSign className="h-5 w-5 text-[#068847]" />}
             label="Monthly Amount"
-            value={`৳${packageData.monthly_amount?.toLocaleString()}`}
+            value={`৳${packageData?.monthly_amount?.toLocaleString()}`}
             description="Per installment"
           />
           <InfoCard
             icon={<Calendar className="h-5 w-5 text-[#068847]" />}
             label="Total Installments"
-            value={`${packageData.total_installments} months`}
+            value={`${packageData?.total_installments} months`}
             description="Payment duration"
           />
           <InfoCard
             icon={<TrendingUp className="h-5 w-5 text-[#068847]" />}
             label="Maturity Amount"
-            value={`৳${packageData.maturity_amount?.toLocaleString()}`}
+            value={`৳${packageData?.maturity_amount?.toLocaleString()}`}
             description="Final payout"
           />
           <InfoCard
@@ -266,38 +273,42 @@ export default function PensionPackageDetails() {
                 <Package className="h-5 w-5 text-[#068847]" />
                 Package Information
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Package Name
                   </label>
-                  <p className="text-[#030712] font-medium">{packageData.name}</p>
+                  <p className="text-[#030712] font-medium">
+                    {packageData?.name}
+                  </p>
                 </div>
-                
-                {packageData.name_bangla && (
+
+                {packageData?.name_bangla && (
                   <div>
                     <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                       Package Name (Bangla)
                     </label>
-                    <p className="text-[#030712] font-medium">{packageData.name_bangla}</p>
+                    <p className="text-[#030712] font-medium">
+                      {packageData?.name_bangla}
+                    </p>
                   </div>
                 )}
-                
+
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Package Slug
                   </label>
                   <p className="text-[#030712] font-mono text-sm bg-[#F9FAFB] px-2 py-1 rounded">
-                    {packageData.slug}
+                    {packageData?.slug}
                   </p>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Status
                   </label>
-                  <StatusBadge status={packageData.status} />
+                  <StatusBadge status={packageData?.status || ""} />
                 </div>
               </div>
             </div>
@@ -308,72 +319,72 @@ export default function PensionPackageDetails() {
                 <CreditCard className="h-5 w-5 text-[#068847]" />
                 Commission & Settings
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Joining Commission
                   </label>
                   <p className="text-[#030712] font-medium">
-                    ৳{packageData.joining_commission?.toLocaleString()}
+                    ৳{packageData?.joining_commission?.toLocaleString()}
                   </p>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Installment Commission
                   </label>
                   <p className="text-[#030712] font-medium">
-                    ৳{packageData.installment_commission?.toLocaleString()}
+                    ৳{packageData?.installment_commission?.toLocaleString()}
                   </p>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Max Advance Installments
                   </label>
                   <p className="text-[#030712] font-medium">
-                    {packageData.max_advance_installments} months
+                    {packageData?.max_advance_installments} months
                   </p>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-[#6B7280] mb-1 block">
                     Prepayment Discount
                   </label>
                   <p className="text-[#030712] font-medium">
-                    {packageData.prepayment_discount_percentage}%
+                    {packageData?.prepayment_discount_percentage}%
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Description & Terms */}
-            {(packageData.description || packageData.terms_conditions) && (
+            {(packageData?.description || packageData?.terms_conditions) && (
               <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
                 <h2 className="text-xl font-semibold text-[#030712] mb-6 flex items-center gap-2">
                   <FileText className="h-5 w-5 text-[#068847]" />
                   Description & Terms
                 </h2>
-                
-                {packageData.description && (
+
+                {packageData?.description && (
                   <div className="mb-6">
                     <label className="text-sm font-medium text-[#6B7280] mb-2 block">
                       Description
                     </label>
                     <div className="text-[#030712] bg-[#F9FAFB] p-4 rounded-lg">
-                      {packageData.description}
+                      {packageData?.description}
                     </div>
                   </div>
                 )}
-                
-                {packageData.terms_conditions && (
+
+                {packageData?.terms_conditions && (
                   <div>
                     <label className="text-sm font-medium text-[#6B7280] mb-2 block">
                       Terms & Conditions
                     </label>
                     <div className="text-[#030712] bg-[#F9FAFB] p-4 rounded-lg">
-                      {packageData.terms_conditions}
+                      {packageData?.terms_conditions}
                     </div>
                   </div>
                 )}
@@ -388,33 +399,49 @@ export default function PensionPackageDetails() {
               <h3 className="text-lg font-semibold text-[#030712] mb-4">
                 Package Settings
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-[#6B7280]">Active Status</span>
-                  <span className={`text-sm font-medium ${packageData.is_active ? 'text-[#29A36A]' : 'text-[#DC2626]'}`}>
-                    {packageData.is_active ? 'Active' : 'Inactive'}
+                  <span
+                    className={`text-sm font-medium ${packageData?.is_active ? "text-[#29A36A]" : "text-[#DC2626]"}`}
+                  >
+                    {packageData?.is_active ? "Active" : "Inactive"}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-[#6B7280]">New Enrollment</span>
-                  <span className={`text-sm font-medium ${packageData.accepts_new_enrollment ? 'text-[#29A36A]' : 'text-[#DC2626]'}`}>
-                    {packageData.accepts_new_enrollment ? 'Allowed' : 'Disabled'}
+                  <span
+                    className={`text-sm font-medium ${packageData?.accepts_new_enrollment ? "text-[#29A36A]" : "text-[#DC2626]"}`}
+                  >
+                    {packageData?.accepts_new_enrollment
+                      ? "Allowed"
+                      : "Disabled"}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#6B7280]">Full Prepayment</span>
-                  <span className={`text-sm font-medium ${packageData.allow_full_prepayment ? 'text-[#29A36A]' : 'text-[#DC2626]'}`}>
-                    {packageData.allow_full_prepayment ? 'Allowed' : 'Not Allowed'}
+                  <span className="text-sm text-[#6B7280]">
+                    Full Prepayment
+                  </span>
+                  <span
+                    className={`text-sm font-medium ${packageData?.allow_full_prepayment ? "text-[#29A36A]" : "text-[#DC2626]"}`}
+                  >
+                    {packageData?.allow_full_prepayment
+                      ? "Allowed"
+                      : "Not Allowed"}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#6B7280]">Maturity on Schedule</span>
-                  <span className={`text-sm font-medium ${packageData.maturity_on_schedule ? 'text-[#29A36A]' : 'text-[#DC2626]'}`}>
-                    {packageData.maturity_on_schedule ? 'Yes' : 'No'}
+                  <span className="text-sm text-[#6B7280]">
+                    Maturity on Schedule
+                  </span>
+                  <span
+                    className={`text-sm font-medium ${packageData?.maturity_on_schedule ? "text-[#29A36A]" : "text-[#DC2626]"}`}
+                  >
+                    {packageData?.maturity_on_schedule ? "Yes" : "No"}
                   </span>
                 </div>
               </div>
@@ -425,18 +452,26 @@ export default function PensionPackageDetails() {
               <h3 className="text-lg font-semibold text-[#030712] mb-4">
                 Quick Actions
               </h3>
-              
+
               <div className="space-y-3">
                 <button
-                  onClick={() => router.push(`/admin/members?packageId=${packageId}&packageName=${encodeURIComponent(packageData.name)}`)}
+                  onClick={() =>
+                    router.push(
+                      `/admin/members?packageId=${packageId}&packageName=${encodeURIComponent(packageData?.name || "")}`,
+                    )
+                  }
                   className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#068847] border border-[#068847] rounded-lg hover:bg-[#F0FDF4] transition-colors"
                 >
                   <Users size={16} />
                   View Members
                 </button>
-                
+
                 <button
-                  onClick={() => router.push(`/admin/team-collections?packageId=${packageId}&packageName=${encodeURIComponent(packageData.name)}`)}
+                  onClick={() =>
+                    router.push(
+                      `/admin/team-collections?packageId=${packageId}&packageName=${encodeURIComponent(packageData?.name || "")}`,
+                    )
+                  }
                   className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors"
                 >
                   <TrendingUp size={16} />
@@ -446,35 +481,43 @@ export default function PensionPackageDetails() {
             </div>
 
             {/* Package Timeline */}
-            {(packageData.created_at || packageData.updated_at) && (
+            {(packageData?.created_at || packageData?.updated_at) && (
               <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
                 <h3 className="text-lg font-semibold text-[#030712] mb-4">
                   Timeline
                 </h3>
-                
+
                 <div className="space-y-3">
-                  {packageData.created_at && (
+                  {packageData?.created_at && (
                     <div>
                       <span className="text-sm text-[#6B7280]">Created</span>
                       <p className="text-sm font-medium text-[#030712]">
-                        {new Date(packageData.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {new Date(packageData?.created_at).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          },
+                        )}
                       </p>
                     </div>
                   )}
-                  
-                  {packageData.updated_at && (
+
+                  {packageData?.updated_at && (
                     <div>
-                      <span className="text-sm text-[#6B7280]">Last Updated</span>
+                      <span className="text-sm text-[#6B7280]">
+                        Last Updated
+                      </span>
                       <p className="text-sm font-medium text-[#030712]">
-                        {new Date(packageData.updated_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {new Date(packageData.updated_at).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          },
+                        )}
                       </p>
                     </div>
                   )}
@@ -488,7 +531,7 @@ export default function PensionPackageDetails() {
                 <h3 className="text-lg font-semibold text-[#030712] mb-4">
                   Applications
                 </h3>
-                
+
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#6B7280]">Total</span>
@@ -516,7 +559,9 @@ export default function PensionPackageDetails() {
                   </div>
                   <div className="pt-2 border-t border-[#E5E7EB]">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-[#6B7280]">Approval Rate</span>
+                      <span className="text-sm text-[#6B7280]">
+                        Approval Rate
+                      </span>
                       <span className="text-sm font-semibold text-[#068847]">
                         {statistics.applications.approval_rate}%
                       </span>
@@ -535,7 +580,7 @@ export default function PensionPackageDetails() {
               <Users className="h-5 w-5 text-[#068847]" />
               Recent Enrollments
             </h2>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -565,7 +610,10 @@ export default function PensionPackageDetails() {
                 </thead>
                 <tbody>
                   {recentEnrollments.map((enrollment: any) => (
-                    <tr key={enrollment.id} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]">
+                    <tr
+                      key={enrollment.id}
+                      className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]"
+                    >
                       <td className="py-3 px-4 text-sm font-medium text-[#030712]">
                         {enrollment.enrollment_number}
                       </td>
@@ -573,13 +621,15 @@ export default function PensionPackageDetails() {
                         {enrollment.member_id}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          enrollment.status === 'active' 
-                            ? 'bg-[#DFF1E9] text-[#29A36A]' 
-                            : enrollment.status === 'completed'
-                            ? 'bg-[#DBEAFE] text-[#2563EB]'
-                            : 'bg-[#FEE2E2] text-[#DC2626]'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            enrollment.status === "active"
+                              ? "bg-[#DFF1E9] text-[#29A36A]"
+                              : enrollment.status === "completed"
+                                ? "bg-[#DBEAFE] text-[#2563EB]"
+                                : "bg-[#FEE2E2] text-[#DC2626]"
+                          }`}
+                        >
                           {enrollment.status}
                         </span>
                       </td>
@@ -590,14 +640,17 @@ export default function PensionPackageDetails() {
                         ৳{enrollment.total_amount_paid?.toLocaleString()}
                       </td>
                       <td className="py-3 px-4 text-sm text-[#6B7280] capitalize">
-                        {enrollment.current_role?.replace('_', ' ')}
+                        {enrollment.current_role?.replace("_", " ")}
                       </td>
                       <td className="py-3 px-4 text-sm text-[#6B7280]">
-                        {new Date(enrollment.enrolled_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
+                        {new Date(enrollment.enrolled_at).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          },
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -614,7 +667,7 @@ export default function PensionPackageDetails() {
               <FileText className="h-5 w-5 text-[#068847]" />
               Recent Applications
             </h2>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -635,7 +688,10 @@ export default function PensionPackageDetails() {
                 </thead>
                 <tbody>
                   {recentApplications.map((application: any) => (
-                    <tr key={application.id} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]">
+                    <tr
+                      key={application.id}
+                      className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]"
+                    >
                       <td className="py-3 px-4 text-sm font-medium text-[#030712]">
                         {application.application_number}
                       </td>
@@ -643,22 +699,27 @@ export default function PensionPackageDetails() {
                         {application.member_id}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          application.status === 'approved' 
-                            ? 'bg-[#DFF1E9] text-[#29A36A]' 
-                            : application.status === 'pending'
-                            ? 'bg-[#FEF3C7] text-[#F59E0B]'
-                            : 'bg-[#FEE2E2] text-[#DC2626]'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            application.status === "approved"
+                              ? "bg-[#DFF1E9] text-[#29A36A]"
+                              : application.status === "pending"
+                                ? "bg-[#FEF3C7] text-[#F59E0B]"
+                                : "bg-[#FEE2E2] text-[#DC2626]"
+                          }`}
+                        >
                           {application.status}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-[#6B7280]">
-                        {new Date(application.applied_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
+                        {new Date(application.applied_at).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          },
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -678,7 +739,8 @@ export default function PensionPackageDetails() {
                   Overdue Installments
                 </h3>
                 <p className="text-sm text-[#991B1B] mb-4">
-                  There are {overdueInstallments.length} overdue installments that require attention.
+                  There are {overdueInstallments.length} overdue installments
+                  that require attention.
                 </p>
                 <div className="overflow-x-auto">
                   <table className="w-full bg-white rounded-lg">
@@ -699,26 +761,33 @@ export default function PensionPackageDetails() {
                       </tr>
                     </thead>
                     <tbody>
-                      {overdueInstallments.slice(0, 5).map((installment: any) => (
-                        <tr key={installment.id} className="border-b border-[#F3F4F6]">
-                          <td className="py-2 px-3 text-xs text-[#030712]">
-                            {installment.enrollment_number}
-                          </td>
-                          <td className="py-2 px-3 text-xs text-[#6B7280]">
-                            {installment.installment_number}
-                          </td>
-                          <td className="py-2 px-3 text-xs text-[#6B7280]">
-                            ৳{installment.amount?.toLocaleString()}
-                          </td>
-                          <td className="py-2 px-3 text-xs text-[#DC2626]">
-                            {new Date(installment.due_date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </td>
-                        </tr>
-                      ))}
+                      {overdueInstallments
+                        .slice(0, 5)
+                        .map((installment: any) => (
+                          <tr
+                            key={installment.id}
+                            className="border-b border-[#F3F4F6]"
+                          >
+                            <td className="py-2 px-3 text-xs text-[#030712]">
+                              {installment.enrollment_number}
+                            </td>
+                            <td className="py-2 px-3 text-xs text-[#6B7280]">
+                              {installment.installment_number}
+                            </td>
+                            <td className="py-2 px-3 text-xs text-[#6B7280]">
+                              ৳{installment.amount?.toLocaleString()}
+                            </td>
+                            <td className="py-2 px-3 text-xs text-[#DC2626]">
+                              {new Date(
+                                installment.due_date,
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -734,7 +803,7 @@ export default function PensionPackageDetails() {
               <Calendar className="h-5 w-5 text-[#068847]" />
               Recent Installments
             </h2>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -764,7 +833,10 @@ export default function PensionPackageDetails() {
                 </thead>
                 <tbody>
                   {recentInstallments.slice(0, 10).map((installment: any) => (
-                    <tr key={installment.id} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]">
+                    <tr
+                      key={installment.id}
+                      className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]"
+                    >
                       <td className="py-3 px-4 text-sm font-medium text-[#030712]">
                         {installment.enrollment_number}
                       </td>
@@ -778,27 +850,32 @@ export default function PensionPackageDetails() {
                         ৳{installment.amount_paid?.toLocaleString()}
                       </td>
                       <td className="py-3 px-4 text-sm text-[#6B7280]">
-                        {new Date(installment.due_date).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
+                        {new Date(installment.due_date).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          },
+                        )}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          installment.status === 'paid' 
-                            ? 'bg-[#DFF1E9] text-[#29A36A]' 
-                            : installment.status === 'upcoming'
-                            ? 'bg-[#DBEAFE] text-[#2563EB]'
-                            : installment.status === 'overdue'
-                            ? 'bg-[#FEE2E2] text-[#DC2626]'
-                            : 'bg-[#FEF3C7] text-[#F59E0B]'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            installment.status === "paid"
+                              ? "bg-[#DFF1E9] text-[#29A36A]"
+                              : installment.status === "upcoming"
+                                ? "bg-[#DBEAFE] text-[#2563EB]"
+                                : installment.status === "overdue"
+                                  ? "bg-[#FEE2E2] text-[#DC2626]"
+                                  : "bg-[#FEF3C7] text-[#F59E0B]"
+                          }`}
+                        >
                           {installment.status}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-[#6B7280]">
-                        {installment.payment_method || '-'}
+                        {installment.payment_method || "-"}
                       </td>
                     </tr>
                   ))}
@@ -836,12 +913,13 @@ export default function PensionPackageDetails() {
               <p className="text-[#4A5565] text-sm mb-3">
                 Are you sure you want to delete{" "}
                 <span className="font-semibold text-[#030712]">
-                  "{packageData.name}"
+                  "{packageData?.name}"
                 </span>
                 ?
               </p>
               <p className="text-[#DC2626] text-sm font-medium">
-                This action cannot be undone and will affect all enrolled members.
+                This action cannot be undone and will affect all enrolled
+                members.
               </p>
             </div>
 

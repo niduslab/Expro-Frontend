@@ -75,14 +75,14 @@ const ExproMemberPage = () => {
 
                 {/* Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-[#F9FAFB] rounded-xl px-5 py-4 border border-gray-100">
+                  {/* <div className="bg-[#F9FAFB] rounded-xl px-5 py-4 border border-gray-100">
                     <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
                       Member ID
                     </p>
                     <p className="text-base font-semibold text-gray-800">
                       EM-{String(member.id).padStart(2, "0")}
                     </p>
-                  </div>
+                  </div> */}
 
                   <div className="bg-[#F9FAFB] rounded-xl px-5 py-4 border border-gray-100">
                     <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">

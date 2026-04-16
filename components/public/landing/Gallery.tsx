@@ -2,15 +2,28 @@
 
 import React from "react";
 import Image from "next/image";
-import { useGalleryImages } from "@/lib/hooks/public/useGalleriesHook";
+import {
+  useGalleriespublic,
+  useGalleryImages,
+} from "@/lib/hooks/public/useGalleriesHook";
 
 type GalleryProps = {
   header2: string;
-  galleryId: number; // specify which gallery to display
 };
 
-const Gallery: React.FC<GalleryProps> = ({ header2, galleryId }) => {
-  const { data: images, isLoading } = useGalleryImages(galleryId);
+const Gallery: React.FC<GalleryProps> = ({ header2 }) => {
+  const { data: galleriesData, isLoading: galleriesLoading } =
+    useGalleriespublic();
+
+  const featuredGallery = galleriesData?.data
+    ?.slice() // avoid mutating original array
+    .sort((a, b) => b.id - a.id) // latest first
+    .find(
+      (g) => g.is_featured && g.status === "published" && g.images_count >= 5,
+    );
+  const { data: images, isLoading } = useGalleryImages(
+    featuredGallery?.id ?? 0,
+  );
 
   return (
     <section className="font-dm-sans py-20 bg-white">

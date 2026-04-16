@@ -33,6 +33,7 @@ export default function ProjectInfo({
     }
     return formData.featured_image ?? null;
   });
+
   const handleNext = () => {
     const result = projectInfoSchema.safeParse(formData);
 
@@ -60,7 +61,6 @@ export default function ProjectInfo({
     if (file) {
       setPreview(URL.createObjectURL(file));
     } else {
-      // Fall back to existing URL if user clears
       setPreview(formData.featured_image ?? null);
     }
   };
@@ -71,7 +71,6 @@ export default function ProjectInfo({
       ...prev,
       galleryImages: [...(prev.galleryImages ?? []), ...newFiles],
     }));
-    // reset input so same file can be re-added after removal
     e.target.value = "";
   };
 
@@ -90,10 +89,12 @@ export default function ProjectInfo({
   };
 
   return (
-    <>
-      <div className="flex flex-col relative pt-4 gap-[12px]">
+    // Fills the height given by the modal — split into scrollable body + fixed footer
+    <div className="flex flex-col h-full">
+      {/* Scrollable form area */}
+      <div className="flex-1 overflow-y-auto flex flex-col gap-[12px] pt-4 pr-1">
         {/* Project Title */}
-        <div className="justify-between">
+        <div>
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Project Title
@@ -173,7 +174,7 @@ export default function ProjectInfo({
         </div>
 
         {/* Short Description */}
-        <div className="justify-between">
+        <div>
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Short Description
@@ -206,7 +207,7 @@ export default function ProjectInfo({
         </div>
 
         {/* Description */}
-        <div className="justify-between">
+        <div>
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Description
@@ -233,7 +234,7 @@ export default function ProjectInfo({
         </div>
 
         {/* Featured Image */}
-        <div className="justify-between">
+        <div>
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
               Featured Image
@@ -255,11 +256,10 @@ export default function ProjectInfo({
               <button
                 type="button"
                 onClick={() => {
-                  setPreview(formData.featured_image ?? null); // revert to saved URL or null
+                  setPreview(formData.featured_image ?? null);
                   setFormData((prev) => ({ ...prev, featuredImage: null }));
                 }}
-                className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 text-white 
-                 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -273,7 +273,7 @@ export default function ProjectInfo({
         </div>
 
         {/* Gallery Images */}
-        <div className="justify-between">
+        <div className="pb-2">
           <div className="pb-2 flex items-center justify-between">
             <div>
               <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -295,11 +295,9 @@ export default function ProjectInfo({
             </label>
           </div>
 
-          {/* Unified gallery grid */}
           {(formData.gallery ?? []).length > 0 ||
           (formData.galleryImages ?? []).length > 0 ? (
             <div className="flex flex-wrap gap-2 mt-1">
-              {/* Existing URLs */}
               {(formData.gallery ?? []).map((url, i) => (
                 <div key={`existing-${i}`} className="relative group">
                   <img
@@ -307,7 +305,6 @@ export default function ProjectInfo({
                     alt={`Gallery ${i + 1}`}
                     className="h-20 w-20 object-cover rounded-lg border-2 border-[#E5E7EB]"
                   />
-                  {/* "saved" badge */}
                   <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] bg-black/40 text-white rounded-b-lg py-0.5">
                     Saved
                   </span>
@@ -320,8 +317,6 @@ export default function ProjectInfo({
                   </button>
                 </div>
               ))}
-
-              {/* New files (not yet uploaded) */}
               {(formData.galleryImages ?? []).map((file, i) => (
                 <div key={`new-${i}`} className="relative group">
                   <img
@@ -329,7 +324,6 @@ export default function ProjectInfo({
                     alt={`New ${i + 1}`}
                     className="h-20 w-20 object-cover rounded-lg border-2 border-[#068847]"
                   />
-                  {/* "new" badge */}
                   <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] bg-[#068847]/80 text-white rounded-b-lg py-0.5">
                     New
                   </span>
@@ -349,22 +343,23 @@ export default function ProjectInfo({
             </div>
           )}
         </div>
-        {/* Footer buttons */}
-        <div className="flex relative justify-between w-full">
-          <button
-            onClick={() => setOpenModal(false)}
-            className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleNext}
-            className="bg-[#068847] h-[48px] w-[158px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px]"
-          >
-            Next <ArrowRight className="h-5 w-5" />
-          </button>
-        </div>
       </div>
-    </>
+
+      {/* Footer — pinned to bottom, always visible */}
+      <div className="shrink-0 flex justify-between w-full pt-3 border-t border-[#E5E7EB] bg-white">
+        <button
+          onClick={() => setOpenModal(false)}
+          className="h-[48px] w-[83px] rounded-xl border border-[#E5E7EB] px-[16px] flex items-center justify-center text-[#6A7282] font-normal text-[16px] leading-[150%] tracking-[-0.01em]"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleNext}
+          className="bg-[#068847] h-[48px] w-[158px] rounded-xl px-[16px] text-[#FFFFFF] flex items-center justify-center font-semibold text-[16px]"
+        >
+          Next <ArrowRight className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
   );
 }

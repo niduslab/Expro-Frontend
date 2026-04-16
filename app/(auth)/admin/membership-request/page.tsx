@@ -3,10 +3,10 @@ import { ChevronRight, CircleCheck, CircleX, Eye, Clock } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { 
-  useMembershipRequests, 
+import {
+  useMembershipRequests,
   useApproveMembershipRequest,
-  useRejectMembershipRequest 
+  useRejectMembershipRequest,
 } from "@/lib/hooks/admin/useMembershipRequests";
 import { toast } from "sonner";
 import RejectModal from "./RejectModal";
@@ -36,18 +36,31 @@ export default function MembershipRequestPage() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState<{ id: number; name: string } | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
-  const { data: requestsData, isLoading, error } = useMembershipRequests({
+  const {
+    data: requestsData,
+    isLoading,
+    error,
+  } = useMembershipRequests({
     page: currentPage,
     per_page: 15,
   });
 
-  const { mutate: approveRequest, isPending: isApproving } = useApproveMembershipRequest();
-  const { mutate: rejectRequest, isPending: isRejecting } = useRejectMembershipRequest();
+  const { mutate: approveRequest, isPending: isApproving } =
+    useApproveMembershipRequest();
+  const { mutate: rejectRequest, isPending: isRejecting } =
+    useRejectMembershipRequest();
 
   const handleApprove = (id: number, fullName: string) => {
-    if (!confirm(`Are you sure you want to approve the application from "${fullName}"?`)) {
+    if (
+      !confirm(
+        `Are you sure you want to approve the application from "${fullName}"?`,
+      )
+    ) {
       return;
     }
 
@@ -55,10 +68,15 @@ export default function MembershipRequestPage() {
 
     approveRequest(id, {
       onSuccess: (res) => {
-        toast.success(res.message || "Application approved successfully!", { id: "approve-request" });
+        toast.success(res.message || "Application approved successfully!", {
+          id: "approve-request",
+        });
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.message || "Failed to approve application", { id: "approve-request" });
+        toast.error(
+          err?.response?.data?.message || "Failed to approve application",
+          { id: "approve-request" },
+        );
       },
     });
   };
@@ -77,14 +95,19 @@ export default function MembershipRequestPage() {
       { id: selectedRequest.id, reason },
       {
         onSuccess: (res) => {
-          toast.success(res.message || "Application rejected successfully!", { id: "reject-request" });
+          toast.success(res.message || "Application rejected successfully!", {
+            id: "reject-request",
+          });
           setRejectModalOpen(false);
           setSelectedRequest(null);
         },
         onError: (err: any) => {
-          toast.error(err?.response?.data?.message || "Failed to reject application", { id: "reject-request" });
+          toast.error(
+            err?.response?.data?.message || "Failed to reject application",
+            { id: "reject-request" },
+          );
         },
-      }
+      },
     );
   };
 
@@ -106,7 +129,7 @@ export default function MembershipRequestPage() {
           </div>
           <div>
             <button className="flex items-center justify-between w-[151px] gap-2">
-              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] text-center text-[#068847]">
+              <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] whitespace-nowrap text-center text-[#068847]">
                 View ALL Members
               </span>
               <ChevronRight className="text-[#068847]" size={16} />
@@ -124,15 +147,23 @@ export default function MembershipRequestPage() {
         ) : error ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <p className="text-red-500 mb-2">Failed to load membership requests</p>
-              <p className="text-sm text-[#4A5565]">{(error as any)?.message || "Please try again later"}</p>
+              <p className="text-red-500 mb-2">
+                Failed to load membership requests
+              </p>
+              <p className="text-sm text-[#4A5565]">
+                {(error as any)?.message || "Please try again later"}
+              </p>
             </div>
           </div>
         ) : !requests || requests.length === 0 ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <p className="text-[#4A5565] mb-2">No membership requests found</p>
-              <p className="text-sm text-[#6A7282]">New applications will appear here</p>
+              <p className="text-[#4A5565] mb-2">
+                No membership requests found
+              </p>
+              <p className="text-sm text-[#6A7282]">
+                New applications will appear here
+              </p>
             </div>
           </div>
         ) : (
@@ -183,9 +214,9 @@ export default function MembershipRequestPage() {
                               <Image
                                 src={
                                   request.photo
-                                    ? request.photo.startsWith('http')
+                                    ? request.photo.startsWith("http")
                                       ? request.photo
-                                      : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${request.photo}`
+                                      : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") || "http://localhost:8000"}/storage/${request.photo}`
                                     : "/images/dashboard/memberApproval/1.jpg"
                                 }
                                 alt={request.name_english}
@@ -222,21 +253,29 @@ export default function MembershipRequestPage() {
                         </td>
                         <td className="py-4 px-2">
                           <p className="font-normal text-[14px] leading-[20px] tracking-0 align-middle text-[#73808C]">
-                            {new Date(request.created_at).toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })}
+                            {new Date(request.created_at).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )}
                           </p>
                         </td>
                         <td className="py-4 px-2">
                           <span
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${
-                              statusConfig[request.status as Status]?.style || statusConfig.pending.style
+                              statusConfig[request.status as Status]?.style ||
+                              statusConfig.pending.style
                             }`}
                           >
-                            {statusConfig[request.status as Status]?.icon || statusConfig.pending.icon}
-                            {request.status === "payment_pending" ? "Payment Pending" : request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                            {statusConfig[request.status as Status]?.icon ||
+                              statusConfig.pending.icon}
+                            {request.status === "payment_pending"
+                              ? "Payment Pending"
+                              : request.status.charAt(0).toUpperCase() +
+                                request.status.slice(1)}
                           </span>
                         </td>
                         <td className="py-4 px-2 font-normal text-[14px] leading-[20px] tracking-0 align-middle">
@@ -244,7 +283,12 @@ export default function MembershipRequestPage() {
                             {request.status !== "approved" && (
                               <>
                                 <button
-                                  onClick={() => handleApprove(request.id, request.name_english)}
+                                  onClick={() =>
+                                    handleApprove(
+                                      request.id,
+                                      request.name_english,
+                                    )
+                                  }
                                   disabled={isApproving || isRejecting}
                                   className="disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Approve"
@@ -252,7 +296,12 @@ export default function MembershipRequestPage() {
                                   <CircleCheck className="text-[#29A36A] h-[22px] w-[22px]" />
                                 </button>
                                 <button
-                                  onClick={() => handleRejectClick(request.id, request.name_english)}
+                                  onClick={() =>
+                                    handleRejectClick(
+                                      request.id,
+                                      request.name_english,
+                                    )
+                                  }
                                   disabled={isApproving || isRejecting}
                                   className="disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Reject"
@@ -261,8 +310,12 @@ export default function MembershipRequestPage() {
                                 </button>
                               </>
                             )}
-                            <button 
-                              onClick={() => router.push(`/admin/membership-request/${request.id}`)}
+                            <button
+                              onClick={() =>
+                                router.push(
+                                  `/admin/membership-request/${request.id}`,
+                                )
+                              }
                               title="View Details"
                             >
                               <Eye className="text-[#73808C] h-[22px] w-[22px]" />
@@ -280,7 +333,8 @@ export default function MembershipRequestPage() {
             {pagination && pagination.last_page > 1 && (
               <div className="flex items-center justify-between mt-4">
                 <p className="text-sm text-[#6B7280]">
-                  Showing page {pagination.current_page} of {pagination.last_page} ({pagination.total} total results)
+                  Showing page {pagination.current_page} of{" "}
+                  {pagination.last_page} ({pagination.total} total results)
                 </p>
                 <div className="flex gap-2">
                   <button

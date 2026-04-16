@@ -55,8 +55,8 @@ export default function EditProjectModal({
     isPublished: project.is_published ?? false,
     featuredImage: null,
     featured_image: project.featured_image ?? null,
-    galleryImages: [], // ← new files to upload (starts empty)
-    gallery: project.gallery ?? [], // ← existing URLs pre-filled from project
+    galleryImages: [],
+    gallery: project.gallery ?? [],
   });
 
   // All tabs unlocked when editing
@@ -86,10 +86,8 @@ export default function EditProjectModal({
       is_published: formData.isPublished,
       project_lead_id: formData.projectLeadId ?? undefined,
       featured_image: formData.featuredImage ?? undefined,
-      // Only send new gallery files if user picked any
       gallery:
         formData.galleryImages.length > 0 ? formData.galleryImages : undefined,
-      // Send kept existing URLs so backend knows what to retain
       gallery_keep: formData.gallery ?? [],
     };
 
@@ -140,8 +138,9 @@ export default function EditProjectModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2">
-      <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-4 bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black">
-        <div className="p-2 flex flex-col gap-[6px]">
+      <div className="flex flex-col w-full max-w-4xl h-[90vh] p-2 md:p-4 bg-white rounded-2xl border border-[#E5E7EB] shadow-lg text-black overflow-hidden">
+        {/* Header */}
+        <div className="p-2 flex flex-col gap-[6px] shrink-0">
           <div className="flex justify-between items-center">
             <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
               Edit Project
@@ -161,9 +160,10 @@ export default function EditProjectModal({
           </p>
         </div>
 
-        <div className="container border border-[#E5E7EB] my-4"></div>
+        <div className="border border-[#E5E7EB] my-4 shrink-0"></div>
 
-        <div className="p-2 overflow-y-auto">
+        {/* Tab bar */}
+        <div className="px-2 shrink-0">
           <div className="h-[45px] gap-[12px] md:gap-[24px] flex overflow-x-auto md:overflow-visible">
             <button
               onClick={() => setActiveTab("info")}
@@ -198,8 +198,11 @@ export default function EditProjectModal({
               3. Team & Roles
             </button>
           </div>
+        </div>
 
-          <div className="flex-1 overflow-y-auto p-2">{renderTabContent()}</div>
+        {/* Tab content */}
+        <div className="flex-1 overflow-hidden p-2 mt-2">
+          {renderTabContent()}
         </div>
       </div>
     </div>

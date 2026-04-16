@@ -49,17 +49,16 @@ const CareerPage = () => {
     <>
       {" "}
       <div className="container mx-auto px-6 md:px-12 lg:px-20 ">
-        <section className="text-black min-h-screen  pt-20 lg:pt-24 pb-12">
+        <section className="text-black min-h-screen  pt-32 pb-12">
           {/* Header */}
           <div className="text-center mb-10 pt-10  flex flex-col items-center gap-5">
-            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-              Careers at EWF
-            </h2>
-
             <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
               <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
               Career
             </div>
+            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+              Careers at EWF
+            </h2>
           </div>
 
           <div className=" mx-auto grid md:grid-cols-2 lg:grid-cols-2 gap-10">
