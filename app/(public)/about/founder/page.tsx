@@ -4,9 +4,9 @@ import OurFounder from "@/components/public/about/OurFounder";
 export default function Founder() {
   return (
     <>
-      <div className="pt-36">
+      <div className="pt-32 md:pt-40">
         {/* Header */}
-        <div className="text-center flex flex-col items-center gap-4">
+        <div className="text-center flex flex-col items-center gap-4 px-6">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
             Meet Our Founders
           </h2>

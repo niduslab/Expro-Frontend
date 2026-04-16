@@ -20,7 +20,7 @@ export default function LandingPage() {
       <Events />
       <PensionPackages />
       <NewsArticles />
-      <Gallery header2="Visual Stories of Service" galleryId={1} />
+      <Gallery header2="Visual Stories of Service" />
     </>
   );
 }

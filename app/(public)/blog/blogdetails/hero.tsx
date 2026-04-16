@@ -70,17 +70,11 @@ const Hero = () => {
             </div>
           ) : blog ? (
             <>
-              {/* Category Badge */}
-              {blog.category?.name && (
-                <span className="inline-flex items-center gap-1.5 bg-[#ECFDF3]/20 border border-[#36F293]/30 text-[#36F293] text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
-                  {blog.category.name}
-                </span>
-              )}
-              <h1 className="font-dm-sans text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
+              <h1 className="font-dm-sans text-4xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white">
                 {blog.title}
               </h1>
               {blog.excerpt && (
-                <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
+                <p className="font-dm-sans text-[14px] font-normal leading-[160%] text-gray-200 max-w-xl">
                   {blog.excerpt}
                 </p>
               )}

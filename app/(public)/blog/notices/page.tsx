@@ -9,7 +9,6 @@ import {
   DownloadIcon,
   X,
   FileText,
-  Eye,
   ExternalLink,
   Loader2,
 } from "lucide-react";
@@ -37,34 +36,6 @@ function resolveFileUrl(fileUrl: string) {
     : `${apiClient.defaults.baseURL?.replace("/api/v1", "")}${fileUrl}`;
 }
 
-// ── PDF Preview Panel ─────────────────────────────────────────────────────────
-function PdfPreview({ doc }: { doc: Document }) {
-  const [show, setShow] = useState(false);
-  const fullUrl = resolveFileUrl(doc.file_url);
-
-  return (
-    <div className="space-y-2">
-      <button
-        onClick={() => setShow((s) => !s)}
-        className="font-dm-sans w-full flex items-center justify-center gap-2 text-sm font-medium border border-gray-200 text-gray-700 py-2.5 rounded-xl hover:bg-gray-50 transition"
-      >
-        <Eye size={15} />
-        {show ? "Hide Preview" : "Preview Document"}
-      </button>
-
-      {show && (
-        <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
-          <iframe
-            src={`${fullUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-            title={doc.file_name}
-            className="w-full h-[400px]"
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Detail Modal ──────────────────────────────────────────────────────────────
 function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
   const hasFile = !!doc.file_url;
@@ -82,8 +53,8 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-start justify-between gap-4 p-6 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
@@ -104,19 +75,6 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
 
         {/* Body */}
         <div className="p-6 space-y-5 overflow-y-auto flex-1">
-          {/* Date */}
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            <Calendar size={13} />
-            {formatDate(doc)}
-          </div>
-
-          {/* Description */}
-          {doc.description && (
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {doc.description}
-            </p>
-          )}
-
           {/* Attachment block */}
           {hasFile && (
             <div className="space-y-3">
@@ -134,6 +92,10 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
                       {doc.file_size_formatted}
                     </span>
                   )}
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <Calendar size={13} />
+                    {formatDate(doc)}
+                  </div>
                 </div>
 
                 {/* Action buttons */}
@@ -162,8 +124,22 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
                 </div>
               </div>
 
-              {/* Inline PDF preview toggle */}
-              {canPreview && <PdfPreview doc={doc} />}
+              {doc.description && (
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {doc.description}
+                </p>
+              )}
+
+              {/* Inline PDF — rendered directly, no toggle */}
+              {canPreview && (
+                <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
+                  <iframe
+                    src={`${fullUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                    title={doc.file_name}
+                    className="w-full h-[500px]"
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -211,16 +187,16 @@ const NoticePage = () => {
   return (
     <>
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
-        <section className="text-black min-h-screen pt-20 lg:pt-24 pb-12">
+        <section className="text-black min-h-screen pt-36 pb-12">
           {/* Header */}
           <div className="text-center mb-10 pt-10 flex flex-col items-center gap-5">
-            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
-              Notices of EWF
-            </h2>
             <div className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF3] px-4 py-1.5 text-sm font-medium text-[#027A48]">
               <span className="font-dm-sans h-1.5 w-1.5 rounded-full bg-[#027A48]" />
               Notices
             </div>
+            <h2 className="font-dm-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+              Notices of EWF
+            </h2>
           </div>
 
           {error && !isLoading && (

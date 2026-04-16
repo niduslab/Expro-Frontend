@@ -70,8 +70,7 @@ const Hero = () => {
             <span className="text-[#36F293]">Project Details</span>
           </div>
 
-          {/* Badges */}
-          {!isLoading && (category || status) && (
+          {/* {!isLoading && (category || status) && (
             <div className="flex items-center gap-3 flex-wrap">
               {category && (
                 <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#36F293] tracking-wide uppercase">
@@ -88,8 +87,7 @@ const Hero = () => {
                 </span>
               )}
             </div>
-          )}
-
+          )} */}
           {/* Title */}
           {isLoading ? (
             <div className="space-y-3">
@@ -98,7 +96,7 @@ const Hero = () => {
             </div>
           ) : (
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
+              <h1 className="text-3xl md:text-4xl lg:text-4xl font-bold leading-tight tracking-tight text-white">
                 {title}
               </h1>
               {titleBangla && (
@@ -108,7 +106,6 @@ const Hero = () => {
               )}
             </div>
           )}
-
           {/* Description */}
           {isLoading ? (
             <div className="space-y-2">
@@ -121,7 +118,6 @@ const Hero = () => {
               {description}
             </p>
           )}
-
           {isError && (
             <p className="text-red-400 text-sm">
               Failed to load project details.
