@@ -5,28 +5,39 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
-import { sidebarItems } from "./sidebar-items";
-import { DynamicUserSidebar } from "./DynamicUserSidebar";
+import { userSidebarItems } from "./user-sidebar-items";
 import { LogoutButton } from "./LogoutButton";
+import { useMemberDashboard } from "@/lib/hooks/admin/useUsers";
 
-interface AdminSidebarProps {
-  isAdmin?: boolean;
-}
-
-export function AdminSidebar({ isAdmin = true }: AdminSidebarProps) {
+export function DynamicUserSidebar() {
   const pathname = usePathname();
+  const { data: dashboardData } = useMemberDashboard();
 
-  // If not admin, use the dynamic user sidebar that checks for roles
-  if (!isAdmin) {
-    return <DynamicUserSidebar />;
-  }
+  // Get current pension role from dashboard data
+  const pensionEnrollments = dashboardData?.data?.pension_enrollments || [];
+  
+  // Check if user has any advanced role (executive_member, project_presenter, assistant_pp)
+  const hasAdvancedRole = pensionEnrollments.some((enrollment: any) => {
+    const roles = enrollment.pension_package_roles || [];
+    return roles.some((role: any) => 
+      role.is_active && 
+      ['executive_member', 'project_presenter', 'assistant_pp'].includes(role.role)
+    );
+  });
 
-  // Admin sidebar (unchanged)
+  // Filter out "Apply for Role" if user already has an advanced role
+  const filteredItems = userSidebarItems.filter(item => {
+    if (item.href === "/dashboard/role-application") {
+      return !hasAdvancedRole;
+    }
+    return true;
+  });
+
   return (
     <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 shadow-sm flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center px-6 border-b border-gray-100">
-        <Link href="/admin" className="flex items-center">
+        <Link href="/dashboard" className="flex items-center">
           <div className="relative w-32 h-10">
             <Image
               src="/logo.svg"
@@ -41,7 +52,7 @@ export function AdminSidebar({ isAdmin = true }: AdminSidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {sidebarItems.map((item) => {
+        {filteredItems.map((item) => {
           const isActive = pathname === item.href;
 
           return (
@@ -70,7 +81,7 @@ export function AdminSidebar({ isAdmin = true }: AdminSidebarProps) {
       {/* Bottom Actions */}
       <div className="p-4 border-t border-gray-100 space-y-1">
         <Link
-          href="/admin/settings"
+          href="/dashboard/settings"
           className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
         >
           <Settings className="w-5 h-5 text-gray-500" />

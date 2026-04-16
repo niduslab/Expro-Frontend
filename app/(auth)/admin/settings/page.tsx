@@ -134,7 +134,7 @@ const PREFERENCE_CARDS: SettingCard[] = [
     tagColor: "text-gray-700",
     tagBorder: "border-gray-300",
     tagBg: "bg-white",
-    href: "/settings/notifications",
+    href: "/admin/settings/notifications",
   },
   {
     title: "Appearance",
