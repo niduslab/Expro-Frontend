@@ -16,8 +16,11 @@ import {
   FileText,
   ArrowUpRight,
   ArrowDownRight,
+  IdCard,
 } from "lucide-react";
 import { useMyProfile } from "@/lib/hooks/admin/useUsers";
+import { useDigitalIdCard } from "@/lib/hooks/user/useDigitalIdCard";
+import { DigitalIdCard } from "@/components/user/DigitalIdCard";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ||
@@ -40,6 +43,13 @@ const fmtCurrency = (amount?: string | number | null) =>
 
 export default function ProfilePage() {
   const { data: profile, isLoading } = useMyProfile();
+  
+  // Use the user ID to fetch their digital ID card
+  const userId = profile?.id;
+  
+  const { data: digitalIdCardData, isLoading: isLoadingCard } = useDigitalIdCard(
+    userId || 0
+  );
 
   if (isLoading) {
     return (
@@ -58,6 +68,7 @@ export default function ProfilePage() {
   const wallet = profile.wallet;
   const pension = profile.pension_enrollments?.[0];
   const nominee = profile.nominee?.[0];
+  const digitalIdCard = digitalIdCardData?.data;
   
   const initials = (m?.name_english || profile.email || "?")
     .split(" ")
@@ -196,6 +207,50 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Digital ID Card Section */}
+            {userId && digitalIdCard && (
+              <Section
+                icon={<IdCard className="w-5 h-5 text-[#068847]" />}
+                title="Digital Identity Card"
+              >
+                <DigitalIdCard cardData={digitalIdCard} />
+              </Section>
+            )}
+
+            {userId && isLoadingCard && (
+              <Section
+                icon={<IdCard className="w-5 h-5 text-[#068847]" />}
+                title="Digital Identity Card"
+              >
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#068847] mx-auto mb-4" />
+                  <p className="text-sm text-[#6B7280]">Loading digital ID card...</p>
+                </div>
+              </Section>
+            )}
+
+            {userId && !digitalIdCard && !isLoadingCard && (
+              <Section
+                icon={<IdCard className="w-5 h-5 text-[#068847]" />}
+                title="Digital Identity Card"
+              >
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 mx-auto mb-4 bg-[#F3F4F6] rounded-full flex items-center justify-center">
+                    <IdCard className="w-10 h-10 text-[#9CA3AF]" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-[#030712] mb-2">
+                    No Digital ID Card
+                  </h3>
+                  <p className="text-sm text-[#6B7280] mb-4">
+                    Your digital identity card has not been issued yet.
+                  </p>
+                  <p className="text-xs text-[#9CA3AF]">
+                    Please contact the administrator for more information.
+                  </p>
+                </div>
+              </Section>
+            )}
+
             {/* Personal Information */}
             <Section
               icon={<User className="w-5 h-5 text-[#068847]" />}

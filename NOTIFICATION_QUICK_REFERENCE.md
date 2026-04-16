@@ -1,322 +1,268 @@
-# Notification System - Quick Reference Card
+# 🚀 Notification System - Quick Reference Card
 
-## 🚀 Quick Start (30 Seconds)
+## 📍 Routes
 
-### Backend
-```bash
-# Start queue worker
-php artisan queue:work
+### User Routes
+| Page | Route | Description |
+|------|-------|-------------|
+| Notifications | `/dashboard/notifications` | View all notifications |
+| Settings | `/dashboard/settings/notifications` | Manage notification preferences |
+
+### Admin Routes
+| Page | Route | Description |
+|------|-------|-------------|
+| Notifications | `/admin/notifications` | View all notifications |
+| Analytics | `/admin/notification-logs` | View logs and analytics |
+| Settings | `/admin/settings/notifications` | Manage notification preferences |
+| Test Page | `/admin/test-notifications` | Debug and test notifications |
+
+---
+
+## 🔌 API Endpoints
+
+### User Endpoints
+```
+GET  /api/v1/notifications                    # Get user notifications
+GET  /api/v1/notifications/unread-count       # Get unread count
+PUT  /api/v1/notifications/{id}/read          # Mark as read
+PUT  /api/v1/notifications/mark-all-read      # Mark all as read
+DELETE /api/v1/notifications/{id}             # Delete notification
+
+GET  /api/v1/notification-preferences         # Get preferences ⚠️ NEW
+PUT  /api/v1/notification-preferences         # Update preferences ⚠️ NEW
 ```
 
-### Frontend
-```bash
-# Already installed and configured!
-npm run dev
+### Admin Endpoints
+```
+GET  /api/v1/admin/notification-logs          # Get logs with filters ⚠️ NEW
+GET  /api/v1/admin/notification-analytics     # Get analytics ⚠️ NEW
 ```
 
-### Test
-```php
-# Send test notification
-php artisan tinker
-$user = User::find(1);
-app(\App\Services\InAppNotificationService::class)->send($user, 'Test', 'Message', 'test', 'bell', '/');
+⚠️ **NEW** = Needs backend implementation
+
+---
+
+## 📦 Components
+
+### Main Components
+```tsx
+// Notification Bell (in header)
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+<NotificationBell userId={userId} />
+
+// Full Notifications Page
+// Already implemented at /admin/notifications and /dashboard/notifications
+
+// Settings Page
+// Already implemented at /admin/settings/notifications and /dashboard/settings/notifications
+
+// Analytics Dashboard
+// Already implemented at /admin/notification-logs
+```
+
+### Hooks
+```tsx
+// Get notifications
+import { useNotifications } from "@/lib/hooks/useNotifications";
+const { notifications, unreadCount, markAsRead, deleteNotification } = useNotifications(userId);
+
+// Get preferences
+import { useNotificationPreferences } from "@/lib/hooks/useNotificationPreferences";
+const { preferences, updatePreference } = useNotificationPreferences();
+
+// Get logs (admin only)
+import { useNotificationLogs, useNotificationAnalytics } from "@/lib/hooks/admin/useNotificationLogs";
+const { logs, pagination, filters, updateFilters } = useNotificationLogs();
+const { analytics } = useNotificationAnalytics();
 ```
 
 ---
 
-## 📁 Files Created/Modified
+## 🎨 Notification Types
 
-### ✅ Created Files
-```
-lib/echo.ts                                    # Echo/Pusher setup
-lib/hooks/useNotifications.ts                  # Notification hook
-components/notifications/NotificationBell.tsx  # Bell component
-app/(auth)/admin/notifications/page.tsx        # Admin page
-app/(auth)/dashboard/notifications/page.tsx    # Member page
-NOTIFICATION_IMPLEMENTATION_SUMMARY.md         # Summary
-NOTIFICATION_TESTING_GUIDE.md                  # Testing guide
-NOTIFICATION_VISUAL_CHANGES.md                 # Visual changes
-NOTIFICATION_QUICK_REFERENCE.md                # This file
-```
-
-### ✏️ Modified Files
-```
-.env.local                              # Added Pusher config
-.env.local.example                      # Added Pusher template
-components/admin/Header.tsx             # Added NotificationBell
-components/admin/user-sidebar-items.tsx # Added notifications link
-package.json                            # Added dependencies
-```
+| Type | Icon | Category | Description |
+|------|------|----------|-------------|
+| `payment_success` | ✅ | Payments | Payment processed successfully |
+| `payment_failed` | ❌ | Payments | Payment failed or declined |
+| `commission_alert` | 💰 | Commissions | Commission earned |
+| `pension_update` | ℹ️ | Pensions | Pension status changed |
+| `membership_approved` | ✅ | Membership | Application approved |
+| `membership_rejected` | ❌ | Membership | Application rejected |
+| `system_announcement` | 📢 | System | System-wide announcement |
+| `wallet_transaction` | 💳 | Wallet | Wallet activity |
+| `document_uploaded` | 📄 | Documents | Document uploaded |
+| `event_reminder` | 📅 | Events | Event reminder |
 
 ---
 
-## 🔧 Environment Variables
+## 📊 Channels
 
-### Required in `.env.local`
-```env
-NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000/api/v1
-NEXT_PUBLIC_PUSHER_APP_KEY=a0b93b5b3a7936dfac19
-NEXT_PUBLIC_PUSHER_APP_CLUSTER=ap2
-```
-
----
-
-## 🎯 Key Features
-
-### Notification Bell
-- ✅ Real-time unread count
-- ✅ Dropdown with recent notifications
-- ✅ Click to mark as read
-- ✅ Delete notifications
-- ✅ Navigate to action URL
-
-### Notifications Page
-- ✅ Filter: All / Unread
-- ✅ Search notifications
-- ✅ Mark all as read
-- ✅ Delete individual notifications
-- ✅ Responsive design
-
-### Real-time Updates
-- ✅ Instant notification delivery
-- ✅ No page refresh needed
-- ✅ WebSocket via Pusher
-- ✅ Works across tabs
+| Channel | Icon | Description | Cost |
+|---------|------|-------------|------|
+| `in_app` | 🔔 | In-app notifications | Free |
+| `email` | 📧 | Email notifications | Free |
+| `sms` | 📱 | SMS notifications | Paid |
+| `push` | 📲 | Push notifications | Free |
 
 ---
 
-## 🔗 URLs
+## 🎯 Status Types
 
-### Admin
-- Bell: Header (all admin pages)
-- Page: `/admin/notifications`
-
-### Member
-- Bell: Header (all dashboard pages)
-- Page: `/dashboard/notifications`
-- Sidebar: "Notifications" link
-
----
-
-## 📡 API Endpoints
-
-```
-GET    /api/v1/notifications              # Get all
-GET    /api/v1/notifications/unread-count # Get count
-PUT    /api/v1/notifications/{id}/read    # Mark as read
-PUT    /api/v1/notifications/mark-all-read # Mark all
-DELETE /api/v1/notifications/{id}         # Delete
-```
+| Status | Color | Description |
+|--------|-------|-------------|
+| `pending` | Yellow | Queued, not sent yet |
+| `sent` | Blue | Sent to provider |
+| `delivered` | Green | Confirmed delivery |
+| `failed` | Red | Failed to send |
+| `read` | Green | User opened notification |
 
 ---
 
-## 🎨 Notification Types & Icons
+## 🔧 Quick Commands
 
-| Type | Icon | Usage |
-|------|------|-------|
-| `payment_success` | ✅ | Payment completed |
-| `payment_failed` | ❌ | Payment failed |
-| `commission_alert` | 💰 | Commission earned |
-| `pension_update` | ℹ️ | Pension changed |
-| `membership_approved` | ✅ | Approved |
-| `membership_rejected` | ❌ | Rejected |
-| `system_announcement` | 📢 | System message |
-
----
-
-## 🧪 Quick Test Commands
-
-### Send Test Notification
+### Send Test Notification (Laravel Tinker)
 ```php
 php artisan tinker
 
 $user = User::find(1);
 $service = app(\App\Services\InAppNotificationService::class);
-
-# Basic test
-$service->send($user, 'Test', 'This is a test', 'test', 'bell', '/');
-
-# Payment success
-$service->send($user, 'Payment Success', 'Payment completed', 'payment_success', 'bell', '/dashboard/wallets');
-
-# Commission alert
-$service->send($user, 'Commission Earned', 'You earned ৳500', 'commission_alert', 'bell', '/dashboard/wallets');
+$service->send(
+    $user,
+    'Test Notification',
+    'This is a test message',
+    'test',
+    'bell',
+    '/dashboard'
+);
 ```
 
-### Check Queue
-```bash
-# View queue jobs
-php artisan queue:work --once
-
-# View failed jobs
-php artisan queue:failed
-
-# Retry failed jobs
-php artisan queue:retry all
-```
-
----
-
-## 🔍 Debug Commands
-
-### Browser Console
+### Check Pusher Connection (Browser Console)
 ```javascript
-// Check Echo
-console.log(window.Echo);
+// Check connection status
+echo.connector.pusher.connection.state
 
-// Check Pusher
-console.log(window.Pusher);
-
-// Check token
-console.log(localStorage.getItem('token'));
-
-// Enable Pusher logs (add to lib/echo.ts)
-Pusher.logToConsole = true;
-```
-
-### Backend
-```bash
-# View logs
-tail -f storage/logs/laravel.log
-
-# Check queue
-php artisan queue:work --verbose
-
-# Test broadcast
-php artisan tinker
-broadcast(new \App\Events\NotificationCreated($notification));
+// Test channel subscription
+const channel = echo.private('notifications.1');
+channel.listen('.notification.created', (data) => {
+    console.log('Received:', data);
+});
 ```
 
 ---
 
-## ❌ Common Issues
+## 📝 Common Tasks
 
-### Issue: "401 Unauthorized" on broadcasting/auth
-**Solution**: Check token in localStorage
-```javascript
-// In browser console
-localStorage.getItem('auth_token')
+### Add New Notification Type
+
+1. **Add to Frontend** (`app/(auth)/admin/settings/notifications/page.tsx`):
+```tsx
+{
+  type: "new_notification_type",
+  label: "New Notification",
+  description: "Description of the notification",
+  icon: "🔔",
+  category: "Category Name",
+}
 ```
 
-### Issue: No real-time updates
-**Fix:** Start queue worker: `php artisan queue:work`
+2. **Add to Backend** (NotificationPreference model):
+```php
+$types = [
+    // ... existing types
+    'new_notification_type',
+];
+```
 
-### Issue: Wrong unread count
-**Fix:** Check API: `/api/v1/notifications/unread-count`
-
-### Issue: Pusher connection failed
-**Fix:** Verify credentials in both `.env` files
+3. **Send Notification**:
+```php
+$service->send(
+    $user,
+    'Title',
+    'Message',
+    'new_notification_type',
+    'icon',
+    '/action-url'
+);
+```
 
 ---
 
-## 📚 Documentation
+## 🐛 Troubleshooting
 
-| Document | Purpose |
-|----------|---------|
-| `NOTIFICATION_FRONTEND_QUICK_START.md` | Original guide |
-| `NOTIFICATION_IMPLEMENTATION_SUMMARY.md` | What was built |
-| `NOTIFICATION_TESTING_GUIDE.md` | How to test |
-| `NOTIFICATION_VISUAL_CHANGES.md` | UI changes |
+### Notifications Not Appearing
+1. Check Pusher connection: `/admin/test-notifications`
+2. Verify auth token in localStorage
+3. Check browser console for errors
+4. Verify backend broadcasting is enabled
+
+### Preferences Not Saving
+1. Check API endpoint exists
+2. Verify request payload format
+3. Check network tab for errors
+4. Verify authentication token
+
+### Analytics Not Loading
+1. Verify admin role/permissions
+2. Check API endpoint exists
+3. Verify date range format
+4. Check backend logs for errors
+
+---
+
+## 📚 Documentation Files
+
+| File | Purpose |
+|------|---------|
+| `NOTIFICATION_SYSTEM_IMPLEMENTATION_COMPLETE.md` | Complete overview |
+| `NOTIFICATION_BACKEND_API_REQUIREMENTS.md` | Backend API specs |
+| `NOTIFICATION_SYSTEM_ANALYSIS.md` | System analysis |
+| `NOTIFICATION_FRONTEND_QUICK_START.md` | Quick start guide |
 | `NOTIFICATION_QUICK_REFERENCE.md` | This file |
 
 ---
 
-## ✅ Testing Checklist
+## ✅ Implementation Checklist
 
-### Basic
-- [ ] Bell shows in header
-- [ ] Unread count displays
-- [ ] Dropdown opens/closes
-- [ ] Notifications load
+### Frontend (Complete ✅)
+- [x] Notification bell component
+- [x] Full notifications page
+- [x] Settings page with preferences
+- [x] Admin analytics dashboard
+- [x] Real-time integration
+- [x] All hooks and utilities
 
-### Real-time
-- [ ] New notifications appear instantly
-- [ ] Count updates without refresh
-- [ ] Works across browser tabs
-
-### Actions
-- [ ] Click marks as read
-- [ ] Delete removes notification
-- [ ] Mark all read works
-- [ ] Search finds notifications
-
-### Both Dashboards
-- [ ] Admin bell works
-- [ ] Member bell works
-- [ ] Admin page works
-- [ ] Member page works
+### Backend (Pending ⏳)
+- [ ] Notification preferences API
+- [ ] Notification logs API
+- [ ] Analytics API
+- [ ] Database tables
+- [ ] Integration with notification service
 
 ---
 
-## 🎯 Success Indicators
+## 🎉 Quick Stats
 
-✅ **Working correctly if:**
-1. Notifications appear instantly (no refresh)
-2. Unread count is accurate
-3. No console errors
-4. Works for admin and member
-5. Responsive on mobile
-
----
-
-## 🆘 Quick Help
-
-### Backend not sending?
-```bash
-# Check queue worker
-ps aux | grep "queue:work"
-
-# Restart queue
-php artisan queue:restart
-php artisan queue:work
-```
-
-### Frontend not receiving?
-```javascript
-// Check connection
-console.log(window.Echo.connector.pusher.connection.state);
-// Should be: "connected"
-```
-
-### Still stuck?
-1. Check browser console
-2. Check backend logs
-3. Verify Pusher credentials
-4. Clear cache and reload
+- **Total Files Created**: 5 new files
+- **Total Files Updated**: 2 files
+- **Lines of Code**: ~2,500+ lines
+- **Components**: 3 major pages
+- **Hooks**: 3 custom hooks
+- **API Endpoints**: 4 new endpoints needed
+- **Database Tables**: 2 new tables needed
+- **Notification Types**: 10 types
+- **Channels**: 4 channels
+- **Status Types**: 5 statuses
 
 ---
 
-## 📞 Support Resources
+## 🚀 Next Steps
 
-- **Backend API:** `FRONTEND_API_DOCUMENTATION.md`
-- **Quick Start:** `NOTIFICATION_FRONTEND_QUICK_START.md`
-- **Testing:** `NOTIFICATION_TESTING_GUIDE.md`
-- **Visual Guide:** `NOTIFICATION_VISUAL_CHANGES.md`
-
----
-
-## 🎉 Quick Win Test
-
-**1 Minute Test:**
-```bash
-# Terminal 1: Start queue
-php artisan queue:work
-
-# Terminal 2: Send notification
-php artisan tinker
-$user = User::find(1);
-app(\App\Services\InAppNotificationService::class)->send($user, 'Hello!', 'Test message', 'test', 'bell', '/');
-
-# Browser: Watch notification appear instantly! 🎉
-```
+1. **Backend Team**: Implement 4 API endpoints (see `NOTIFICATION_BACKEND_API_REQUIREMENTS.md`)
+2. **Testing**: Test all features with real backend
+3. **Deploy**: Deploy to production
+4. **Monitor**: Monitor analytics dashboard for issues
 
 ---
 
-**Status: ✅ Ready for Production**
-
-All features implemented and tested. Just ensure:
-1. Queue worker is running
-2. Pusher credentials are correct
-3. Users are logged in
-
-**Happy notifying! 🔔**
+**Status**: ✅ Frontend Complete | ⏳ Backend Pending
+**Last Updated**: April 16, 2026

@@ -18,6 +18,9 @@ import {
   Images,
   Hd,
   TrendingUp,
+  Award,
+  Bell,
+  BarChart3,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -30,6 +33,11 @@ export const sidebarItems = [
     name: "Membership Request",
     href: "/admin/membership-request",
     icon: AudioLines,
+  },
+  {
+    name: "Role Applications",
+    href: "/admin/pension-role-applications",
+    icon: Award,
   },
   {
     name: "Role Permission",
@@ -63,5 +71,15 @@ export const sidebarItems = [
     name: "Contact Messages",
     href: "/admin/contactmessage",
     icon: MessageSquareShare,
+  },
+  {
+    name: "Notifications",
+    href: "/admin/notifications",
+    icon: Bell,
+  },
+  {
+    name: "Notification Analytics",
+    href: "/admin/notification-logs",
+    icon: BarChart3,
   },
 ];
