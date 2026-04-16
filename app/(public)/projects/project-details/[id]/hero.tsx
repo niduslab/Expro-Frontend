@@ -114,9 +114,10 @@ const Hero = () => {
               <div className="h-4 bg-white/10 rounded animate-pulse w-4/6" />
             </div>
           ) : (
-            <p className="text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
-              {description}
-            </p>
+            <div
+              className="text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl [&>p]:mb-0"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
           )}
           {isError && (
             <p className="text-red-400 text-sm">

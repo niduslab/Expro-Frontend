@@ -1,4 +1,3 @@
-// hero.tsx
 "use client";
 
 import Image from "next/image";
@@ -75,9 +74,10 @@ const Hero = () => {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
                 {event.title}
               </h1>
-              <p className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl">
-                {event.description}
-              </p>
+              <div
+                className="font-dm-sans text-[16px] md:text-[18px] font-normal leading-[160%] text-gray-200 max-w-xl"
+                dangerouslySetInnerHTML={{ __html: event.description }}
+              />
             </>
           ) : null}
         </div>

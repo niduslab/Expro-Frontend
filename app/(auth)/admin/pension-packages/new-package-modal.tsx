@@ -2,7 +2,11 @@
 import { Plus, Save } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useCreatePensionPackage, useUpdatePensionPackage } from "@/lib/hooks/admin/usePensionPackages";
+import {
+  useCreatePensionPackage,
+  useUpdatePensionPackage,
+} from "@/lib/hooks/admin/usePensionPackages";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 interface NewPackageModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +18,7 @@ export default function NewPackageModal({
   packageToEdit,
 }: NewPackageModalProps) {
   const isEditMode = !!packageToEdit;
-  
+
   const [formData, setFormData] = useState({
     packageName: "",
     packageNameBangla: "",
@@ -44,10 +48,13 @@ export default function NewPackageModal({
         totalInstallments: packageToEdit.total_installments?.toString() || "",
         maturity: packageToEdit.maturity_amount?.toString() || "",
         joiningCommission: packageToEdit.joining_commission?.toString() || "",
-        installmentCommission: packageToEdit.installment_commission?.toString() || "",
-        maxAdvanceInstallments: packageToEdit.max_advance_installments?.toString() || "",
+        installmentCommission:
+          packageToEdit.installment_commission?.toString() || "",
+        maxAdvanceInstallments:
+          packageToEdit.max_advance_installments?.toString() || "",
         allowFullPrepayment: packageToEdit.allow_full_prepayment || false,
-        prepaymentDiscountPercentage: packageToEdit.prepayment_discount_percentage?.toString() || "",
+        prepaymentDiscountPercentage:
+          packageToEdit.prepayment_discount_percentage?.toString() || "",
         maturityOnSchedule: packageToEdit.maturity_on_schedule ?? true,
         isActive: packageToEdit.is_active ?? true,
         acceptsNewEnrollment: packageToEdit.accepts_new_enrollment ?? true,
@@ -58,40 +65,73 @@ export default function NewPackageModal({
   }, [packageToEdit]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { mutate: createPackage, isPending: isCreating } = useCreatePensionPackage();
-  const { mutate: updatePackage, isPending: isUpdating } = useUpdatePensionPackage();
-  
+  const { mutate: createPackage, isPending: isCreating } =
+    useCreatePensionPackage();
+  const { mutate: updatePackage, isPending: isUpdating } =
+    useUpdatePensionPackage();
+
   const isPending = isCreating || isUpdating;
 
   // Auto-generate slug from package name
   const generateSlug = (name: string) => {
     return name
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
   };
 
   // Auto-generate slug when package name changes
   useEffect(() => {
     if (formData.packageName && !isEditMode) {
-      setFormData(prev => ({ ...prev, slug: generateSlug(formData.packageName) }));
+      setFormData((prev) => ({
+        ...prev,
+        slug: generateSlug(formData.packageName),
+      }));
     }
   }, [formData.packageName, isEditMode]);
 
   const handleSubmit = () => {
     // Basic validation
     const validationErrors: Record<string, string> = {};
-    
-    if (!formData.packageName.trim()) validationErrors.packageName = "Package name is required";
+
+    if (!formData.packageName.trim())
+      validationErrors.packageName = "Package name is required";
     if (!formData.slug.trim()) validationErrors.slug = "Slug is required";
-    if (!formData.monthlyFee || parseFloat(formData.monthlyFee) <= 0) validationErrors.monthlyFee = "Valid monthly fee is required";
-    if (!formData.totalInstallments || parseInt(formData.totalInstallments) <= 0) validationErrors.totalInstallments = "Valid total installments is required";
-    if (!formData.maturity || parseFloat(formData.maturity) <= 0) validationErrors.maturity = "Valid maturity amount is required";
-    if (!formData.joiningCommission || parseFloat(formData.joiningCommission) < 0) validationErrors.joiningCommission = "Valid joining commission is required";
-    if (!formData.installmentCommission || parseFloat(formData.installmentCommission) < 0) validationErrors.installmentCommission = "Valid installment commission is required";
-    if (!formData.maxAdvanceInstallments || parseInt(formData.maxAdvanceInstallments) < 0) validationErrors.maxAdvanceInstallments = "Valid max advance installments is required";
-    if (formData.allowFullPrepayment && (!formData.prepaymentDiscountPercentage || parseFloat(formData.prepaymentDiscountPercentage) < 0)) {
-      validationErrors.prepaymentDiscountPercentage = "Valid prepayment discount is required";
+    if (!formData.monthlyFee || parseFloat(formData.monthlyFee) <= 0)
+      validationErrors.monthlyFee = "Valid monthly fee is required";
+    if (
+      !formData.totalInstallments ||
+      parseInt(formData.totalInstallments) <= 0
+    )
+      validationErrors.totalInstallments =
+        "Valid total installments is required";
+    if (!formData.maturity || parseFloat(formData.maturity) <= 0)
+      validationErrors.maturity = "Valid maturity amount is required";
+    if (
+      !formData.joiningCommission ||
+      parseFloat(formData.joiningCommission) < 0
+    )
+      validationErrors.joiningCommission =
+        "Valid joining commission is required";
+    if (
+      !formData.installmentCommission ||
+      parseFloat(formData.installmentCommission) < 0
+    )
+      validationErrors.installmentCommission =
+        "Valid installment commission is required";
+    if (
+      !formData.maxAdvanceInstallments ||
+      parseInt(formData.maxAdvanceInstallments) < 0
+    )
+      validationErrors.maxAdvanceInstallments =
+        "Valid max advance installments is required";
+    if (
+      formData.allowFullPrepayment &&
+      (!formData.prepaymentDiscountPercentage ||
+        parseFloat(formData.prepaymentDiscountPercentage) < 0)
+    ) {
+      validationErrors.prepaymentDiscountPercentage =
+        "Valid prepayment discount is required";
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -113,7 +153,8 @@ export default function NewPackageModal({
       installment_commission: parseFloat(formData.installmentCommission),
       max_advance_installments: parseInt(formData.maxAdvanceInstallments),
       allow_full_prepayment: formData.allowFullPrepayment,
-      prepayment_discount_percentage: parseFloat(formData.prepaymentDiscountPercentage) || 0,
+      prepayment_discount_percentage:
+        parseFloat(formData.prepaymentDiscountPercentage) || 0,
       maturity_on_schedule: formData.maturityOnSchedule,
       is_active: formData.isActive,
       accepts_new_enrollment: formData.acceptsNewEnrollment,
@@ -123,27 +164,43 @@ export default function NewPackageModal({
 
     if (isEditMode) {
       toast.loading("Updating pension package...", { id: "save-package" });
-      
-      updatePackage({ id: packageToEdit.id, ...payload }, {
-        onSuccess: (res) => {
-          toast.success(res.message || "Pension package updated successfully!", { id: "save-package" });
-          setOpenModal(false);
+
+      updatePackage(
+        { id: packageToEdit.id, ...payload },
+        {
+          onSuccess: (res) => {
+            toast.success(
+              res.message || "Pension package updated successfully!",
+              { id: "save-package" },
+            );
+            setOpenModal(false);
+          },
+          onError: (err: any) => {
+            toast.error(
+              err?.response?.data?.message ||
+                "Failed to update pension package",
+              { id: "save-package" },
+            );
+            setErrors(err?.response?.data?.errors || {});
+          },
         },
-        onError: (err: any) => {
-          toast.error(err?.response?.data?.message || "Failed to update pension package", { id: "save-package" });
-          setErrors(err?.response?.data?.errors || {});
-        },
-      });
+      );
     } else {
       toast.loading("Creating pension package...", { id: "save-package" });
 
       createPackage(payload, {
         onSuccess: (res) => {
-          toast.success(res.message || "Pension package created successfully!", { id: "save-package" });
+          toast.success(
+            res.message || "Pension package created successfully!",
+            { id: "save-package" },
+          );
           setOpenModal(false);
         },
         onError: (err: any) => {
-          toast.error(err?.response?.data?.message || "Failed to create pension package", { id: "save-package" });
+          toast.error(
+            err?.response?.data?.message || "Failed to create pension package",
+            { id: "save-package" },
+          );
           setErrors(err?.response?.data?.errors || {});
         },
       });
@@ -158,7 +215,9 @@ export default function NewPackageModal({
             {" "}
             <div className="flex justify-between items-center ">
               <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
-                {isEditMode ? "Edit Pension Package" : "Create New Pension Package"}
+                {isEditMode
+                  ? "Edit Pension Package"
+                  : "Create New Pension Package"}
               </p>
               <button
                 onClick={() => setOpenModal(false)}
@@ -211,7 +270,7 @@ export default function NewPackageModal({
                 </span>
               )}
             </div>
-            
+
             <div className=" justify-between">
               <div className="pb-2">
                 <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -224,7 +283,10 @@ export default function NewPackageModal({
                 placeholder="e.g. স্ট্যান্ডার্ড পেনশন"
                 value={formData.packageNameBangla}
                 onChange={(e) => {
-                  setFormData({ ...formData, packageNameBangla: e.target.value });
+                  setFormData({
+                    ...formData,
+                    packageNameBangla: e.target.value,
+                  });
                 }}
               />
             </div>
@@ -252,12 +314,10 @@ export default function NewPackageModal({
                 }}
               />
               {errors.slug && (
-                <span className="text-sm text-red-500">
-                  {errors.slug}
-                </span>
+                <span className="text-sm text-red-500">{errors.slug}</span>
               )}
             </div>
-            
+
             <div className="flex gap-2 w-full">
               <div className="relative w-1/2">
                 <div className="  justify-between w-full">
@@ -311,7 +371,10 @@ export default function NewPackageModal({
                       });
 
                       if (errors.totalInstallments) {
-                        setErrors((prev) => ({ ...prev, totalInstallments: "" }));
+                        setErrors((prev) => ({
+                          ...prev,
+                          totalInstallments: "",
+                        }));
                       }
                     }}
                   />
@@ -387,7 +450,10 @@ export default function NewPackageModal({
                       });
 
                       if (errors.maxAdvanceInstallments) {
-                        setErrors((prev) => ({ ...prev, maxAdvanceInstallments: "" }));
+                        setErrors((prev) => ({
+                          ...prev,
+                          maxAdvanceInstallments: "",
+                        }));
                       }
                     }}
                   />
@@ -655,17 +721,15 @@ export default function NewPackageModal({
                   Description
                 </span>
               </div>
-              <textarea
-                rows={4}
-                className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[12px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
-                placeholder="Enter package description..."
-                value={formData.description}
-                onChange={(e) => {
+              <RichTextEditor
+                value={formData.description || ""}
+                onChange={(html) => {
                   setFormData({
                     ...formData,
-                    description: e.target.value,
+                    description: html,
                   });
                 }}
+                placeholder="Enter package description..."
               />
             </div>
 
@@ -675,17 +739,15 @@ export default function NewPackageModal({
                   Terms & Conditions
                 </span>
               </div>
-              <textarea
-                rows={4}
-                className="w-full border border-[#D1D5DC] rounded-[8px] px-[16px] py-[12px] bg-[#FFFFFF] focus:outline-none focus:ring focus:ring-green-500 text-[#6A7282]"
-                placeholder="Enter terms and conditions..."
-                value={formData.termsConditions}
-                onChange={(e) => {
+              <RichTextEditor
+                value={formData.termsConditions || ""}
+                onChange={(html) => {
                   setFormData({
                     ...formData,
-                    termsConditions: e.target.value,
+                    termsConditions: html,
                   });
                 }}
+                placeholder="Enter terms and conditions..."
               />
             </div>
 

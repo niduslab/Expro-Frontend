@@ -122,7 +122,18 @@ export default function BlogCategoryDetailModal({
               </div>
 
               {category.description && (
-                <DetailField label="Description" value={category.description} />
+                <>
+                  {" "}
+                  <span className="font-semibold text-[12px] leading-[150%] tracking-[-0.01em] text-[#6A7282] uppercase">
+                    DESCRIPTION
+                  </span>{" "}
+                  <div
+                    className="font-normal text-[14px] leading-[160%] tracking-[-0.01em] text-[#030712]"
+                    dangerouslySetInnerHTML={{
+                      __html: category.description || "",
+                    }}
+                  ></div>
+                </>
               )}
 
               <SectionDivider />

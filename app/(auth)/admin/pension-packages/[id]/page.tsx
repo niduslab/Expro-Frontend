@@ -372,9 +372,12 @@ export default function PensionPackageDetails() {
                     <label className="text-sm font-medium text-[#6B7280] mb-2 block">
                       Description
                     </label>
-                    <div className="text-[#030712] bg-[#F9FAFB] p-4 rounded-lg">
-                      {packageData?.description}
-                    </div>
+                    <div
+                      className="text-[#030712] bg-[#F9FAFB] p-4 rounded-lg prose prose-sm max-w-none [&>p]:mb-2"
+                      dangerouslySetInnerHTML={{
+                        __html: packageData?.description || "",
+                      }}
+                    />
                   </div>
                 )}
 
@@ -383,9 +386,12 @@ export default function PensionPackageDetails() {
                     <label className="text-sm font-medium text-[#6B7280] mb-2 block">
                       Terms & Conditions
                     </label>
-                    <div className="text-[#030712] bg-[#F9FAFB] p-4 rounded-lg">
-                      {packageData?.terms_conditions}
-                    </div>
+                    <div
+                      className="text-[#030712] bg-[#F9FAFB] p-4 rounded-lg prose prose-sm max-w-none [&>p]:mb-2"
+                      dangerouslySetInnerHTML={{
+                        __html: packageData?.terms_conditions || "",
+                      }}
+                    />
                   </div>
                 )}
               </div>

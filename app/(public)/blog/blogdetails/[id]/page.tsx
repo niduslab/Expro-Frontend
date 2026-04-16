@@ -109,11 +109,12 @@ export default function BlogDetails() {
                     </div>
                   )}
 
-                  {/* Excerpt */}
+                  {/* Excerpt - Fixed: properly using dangerouslySetInnerHTML */}
                   {blog.excerpt && (
-                    <p className="text-gray-600 leading-relaxed text-base italic border-l-4 border-[#008A4B] pl-4 bg-[#F9FAFB] py-3 rounded-r-md">
-                      {blog.excerpt}
-                    </p>
+                    <div
+                      className="text-gray-600 leading-relaxed text-base italic border-l-4 border-[#008A4B] pl-4 bg-[#F9FAFB] py-3 rounded-r-md [&>p]:mb-0"
+                      dangerouslySetInnerHTML={{ __html: blog.excerpt }}
+                    />
                   )}
 
                   {/* Content — rendered as HTML */}

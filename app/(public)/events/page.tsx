@@ -140,9 +140,12 @@ const Events = () => {
                   <h3 className="text-2xl md:text-3xl font-bold text-[#101828] mb-4">
                     {event.title}
                   </h3>
-                  <p className="text-[#475467] text-base leading-relaxed mb-6">
-                    {event.description}
-                  </p>
+                  <div
+                    className="text-[#475467] text-base leading-relaxed mb-6 prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{
+                      __html: event.description ?? "",
+                    }}
+                  />
 
                   {/* Meta Info */}
                   <div className="flex flex-wrap gap-3 mb-8">
