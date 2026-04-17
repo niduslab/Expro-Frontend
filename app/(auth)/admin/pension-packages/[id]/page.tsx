@@ -164,36 +164,36 @@ export default function PensionPackageDetails() {
     <>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/admin/pension-packages")}
-              className="flex items-center justify-center h-10 w-10 rounded-lg border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors"
+              className="flex items-center justify-center h-10 w-10 shrink-0 rounded-lg border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors"
             >
               <ArrowLeft size={20} className="text-[#6B7280]" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-[#030712]">
+              <h1 className="text-xl font-bold text-[#030712] sm:text-2xl lg:text-3xl">
                 {packageData?.name}
               </h1>
-              <p className="text-[#6B7280] mt-1">
+              <p className="text-sm text-[#6B7280] mt-1">
                 Pension Package Details & Management
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-wrap sm:gap-3 sm:flex-nowrap">
             <StatusBadge status={packageData?.status || ""} />
             <button
               onClick={() => setEditModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] text-[#6B7280] rounded-lg hover:bg-[#F9FAFB] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 border border-[#E5E7EB] text-[#6B7280] rounded-lg hover:bg-[#F9FAFB] transition-colors text-sm sm:px-4"
             >
               <Edit size={16} />
               Edit
             </button>
             <button
               onClick={() => setDeleteModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 border border-[#DC2626] text-[#DC2626] rounded-lg hover:bg-[#FEE2E2] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 border border-[#DC2626] text-[#DC2626] rounded-lg hover:bg-[#FEE2E2] transition-colors text-sm sm:px-4"
             >
               <Trash2 size={16} />
               Delete

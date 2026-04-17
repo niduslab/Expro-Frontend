@@ -1,9 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { Clock, CheckCircle, XCircle, ArrowUpCircle, ArrowDownCircle, ChevronLeft, ChevronRight, Filter, Calendar, Wallet } from "lucide-react";
-import { useCompanyWalletTransactions } from "@/lib/hooks";
+import {
+  Clock,
+  CheckCircle,
+  XCircle,
+  ArrowUpCircle,
+  ArrowDownCircle,
+  Filter,
+  Calendar,
+  X,
+} from "lucide-react";
+import {
+  CompanyWalletTransaction,
+  useCompanyWalletTransactions,
+} from "@/lib/hooks";
 import { format } from "date-fns";
+import Pagination from "@/components/pagination/page"; // adjust path as needed
 
 type Status = "completed" | "pending" | "failed";
 type TransactionType = "credit" | "debit" | "all";
@@ -43,163 +56,148 @@ export default function RecentTransactions() {
   const [typeFilter, setTypeFilter] = useState<TransactionType>("all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [appliedFromDate, setAppliedFromDate] = useState("");
+  const [appliedToDate, setAppliedToDate] = useState("");
   const perPage = 10;
 
   const { data: transactionsData, isLoading } = useCompanyWalletTransactions({
     page: currentPage,
     per_page: perPage,
     type: typeFilter === "all" ? undefined : typeFilter,
-    from_date: fromDate || undefined,
-    to_date: toDate || undefined,
+    from_date: appliedFromDate || undefined,
+    to_date: appliedToDate || undefined,
   });
-
-  const transactions = transactionsData?.data || [];
+  const transactions: CompanyWalletTransaction[] = transactionsData?.data ?? [];
   const pagination = transactionsData?.pagination;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const handleTypeFilter = (type: TransactionType) => {
     setTypeFilter(type);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const handleDateFilter = () => {
-    setCurrentPage(1); // Reset to first page when date filter is applied
+    setAppliedFromDate(fromDate);
+    setAppliedToDate(toDate);
+    setCurrentPage(1);
   };
 
   const clearFilters = () => {
     setTypeFilter("all");
     setFromDate("");
     setToDate("");
+    setAppliedFromDate("");
+    setAppliedToDate("");
     setCurrentPage(1);
   };
 
+  const hasActiveFilters =
+    typeFilter !== "all" || appliedFromDate || appliedToDate;
+
   return (
-    <div className="bg-white rounded-xl shadow border border-gray-200 p-6">
+    <div className="bg-white rounded-xl shadow border border-gray-200 p-4 sm:p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-semibold text-[20px] leading-[120%] tracking-[-1%] align-middle text-[#131C20]">
+        <h2 className="font-semibold text-lg sm:text-[20px] leading-[120%] tracking-[-1%] text-[#131C20]">
           Recent Transactions
         </h2>
       </div>
 
       {/* Filters */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        {/* Transaction Type Filter */}
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-[#6B7280]" />
-          <span className="text-[14px] text-[#6B7280] mr-2">Type:</span>
-          <div className="flex gap-2">
+      <div className="mb-6 flex flex-col gap-3">
+        {/* Row 1: Type Filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Filter className="w-4 h-4 text-[#6B7280] shrink-0" />
+          <span className="text-[14px] text-[#6B7280]">Type:</span>
+          {(["all", "credit", "debit"] as TransactionType[]).map((type) => (
             <button
-              onClick={() => handleTypeFilter("all")}
-              className={`px-4 py-2 text-[14px] font-medium rounded-lg transition-colors ${
-                typeFilter === "all"
+              key={type}
+              onClick={() => handleTypeFilter(type)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium rounded-lg transition-colors ${
+                typeFilter === type
                   ? "bg-[#068847] text-white"
                   : "bg-white text-[#6B7280] border border-[#E5E7EB] hover:bg-[#F9FAFB]"
               }`}
             >
-              All
+              {type === "credit" && <ArrowDownCircle className="w-3.5 h-3.5" />}
+              {type === "debit" && <ArrowUpCircle className="w-3.5 h-3.5" />}
+              {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
-            <button
-              onClick={() => handleTypeFilter("credit")}
-              className={`px-4 py-2 text-[14px] font-medium rounded-lg transition-colors flex items-center gap-2 ${
-                typeFilter === "credit"
-                  ? "bg-[#068847] text-white"
-                  : "bg-white text-[#6B7280] border border-[#E5E7EB] hover:bg-[#F9FAFB]"
-              }`}
-            >
-              <ArrowDownCircle className="w-4 h-4" />
-              Credit
-            </button>
-            <button
-              onClick={() => handleTypeFilter("debit")}
-              className={`px-4 py-2 text-[14px] font-medium rounded-lg transition-colors flex items-center gap-2 ${
-                typeFilter === "debit"
-                  ? "bg-[#068847] text-white"
-                  : "bg-white text-[#6B7280] border border-[#E5E7EB] hover:bg-[#F9FAFB]"
-              }`}
-            >
-              <ArrowUpCircle className="w-4 h-4" />
-              Debit
-            </button>
-          </div>
+          ))}
         </div>
 
-        {/* Date Filter */}
-        <div className="flex items-center gap-3">
-          <Calendar className="w-4 h-4 text-[#6B7280]" />
-          <div className="flex items-center gap-2">
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="px-3 py-2 text-[14px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent"
-              placeholder="From"
-            />
-            <span className="text-[#6B7280]">to</span>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="px-3 py-2 text-[14px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent"
-              placeholder="To"
-            />
+        {/* Row 2: Date Filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Calendar className="w-4 h-4 text-[#6B7280] shrink-0" />
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="px-3 py-1.5 text-[13px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent w-full xs:w-auto max-w-[160px]"
+          />
+          <span className="text-[#6B7280] text-[13px]">to</span>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="px-3 py-1.5 text-[13px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent w-full xs:w-auto max-w-[160px]"
+          />
+          <button
+            onClick={handleDateFilter}
+            className="px-4 py-1.5 text-[13px] font-medium bg-[#068847] text-white rounded-lg hover:bg-[#057a3d] transition-colors"
+          >
+            Apply
+          </button>
+          {hasActiveFilters && (
             <button
-              onClick={handleDateFilter}
-              className="px-4 py-2 text-[14px] font-medium bg-[#068847] text-white rounded-lg hover:bg-[#057a3d] transition-colors"
+              onClick={clearFilters}
+              className="flex items-center gap-1 px-3 py-1.5 text-[13px] font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors"
             >
-              Apply
+              <X className="w-3.5 h-3.5" />
+              Clear
             </button>
-            {(typeFilter !== "all" || fromDate || toDate) && (
-              <button
-                onClick={clearFilters}
-                className="px-4 py-2 text-[14px] font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors"
-              >
-                Clear
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
-      <div className="border border-[#DEE3E7] rounded-2xl overflow-hidden min-w-0">
+      {/* Table */}
+      <div className="border border-[#DEE3E7] rounded-2xl overflow-hidden">
         <div className="w-full overflow-x-auto">
           {isLoading ? (
-            <div className="text-center py-8">Loading transactions...</div>
+            <div className="text-center py-12 text-[#6B7280] text-[14px]">
+              Loading transactions...
+            </div>
           ) : transactions.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-12 text-[#6B7280] text-[14px]">
               No transactions found
             </div>
           ) : (
             <>
-              <table className="w-full min-w-max">
+              <table className="w-full min-w-[700px]">
                 <thead>
-                  <tr className="text-[#030712] bg-[#EBEDF066] border-b relative border-[#DEE3E7] rounded-4xl">
-                    <th className="text-left py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                  <tr className="text-[#030712] bg-[#EBEDF066] border-b border-[#DEE3E7]">
+                    <th className="text-left py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Transaction ID
                     </th>
-                    <th className="text-left py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                    <th className="text-left py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Type
                     </th>
-                    <th className="text-left py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                    <th className="text-left py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Category & Description
                     </th>
-                    <th className="text-right py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                    <th className="text-right py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Amount
                     </th>
-                    <th className="text-right py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                    <th className="text-right py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Balance After
                     </th>
-                    <th className="text-left py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                    <th className="text-left py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Date
                     </th>
-                    <th className="text-left py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                    <th className="text-left py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Status
                     </th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {transactions.map((tx) => {
                     const isCredit = tx.type === "credit";
@@ -208,22 +206,22 @@ export default function RecentTransactions() {
                     return (
                       <tr
                         key={tx.id}
-                        className="rounded-2xl relative border-b last:border-none border-[#F3F4F6] hover:bg-gray-50"
+                        className="border-b last:border-none border-[#F3F4F6] hover:bg-gray-50 transition-colors"
                       >
                         <td className="py-4 px-4">
-                          <p className="font-mono text-[12px] text-[#4A5565]">
+                          <p className="font-mono text-[12px] text-[#4A5565] whitespace-nowrap">
                             {tx.transaction_id}
                           </p>
                         </td>
                         <td className="py-4 px-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5 whitespace-nowrap">
                             {isCredit ? (
-                              <ArrowDownCircle className="w-4 h-4 text-[#068847]" />
+                              <ArrowDownCircle className="w-4 h-4 text-[#068847] shrink-0" />
                             ) : (
-                              <ArrowUpCircle className="w-4 h-4 text-[#F14248]" />
+                              <ArrowUpCircle className="w-4 h-4 text-[#F14248] shrink-0" />
                             )}
                             <span
-                              className={`font-medium text-[14px] capitalize ${
+                              className={`font-medium text-[13px] capitalize ${
                                 isCredit ? "text-[#068847]" : "text-[#F14248]"
                               }`}
                             >
@@ -231,38 +229,38 @@ export default function RecentTransactions() {
                             </span>
                           </div>
                         </td>
-                        <td className="py-4 px-4 max-w-md">
-                          <p className="font-semibold text-[14px] text-[#030712] mb-1">
+                        <td className="py-4 px-4 max-w-[220px]">
+                          <p className="font-semibold text-[13px] text-[#030712] mb-0.5">
                             {categoryLabels[tx.category] || tx.category}
                           </p>
-                          <p className="font-normal text-[13px] text-[#6B7280] line-clamp-2">
+                          <p className="font-normal text-[12px] text-[#6B7280] line-clamp-2">
                             {tx.description}
                           </p>
                         </td>
                         <td
-                          className={`py-4 px-4 text-right font-semibold text-[14px] ${
+                          className={`py-4 px-4 text-right font-semibold text-[13px] whitespace-nowrap ${
                             isCredit ? "text-[#068847]" : "text-[#F14248]"
                           }`}
                         >
                           {isCredit ? "+" : "-"}৳
                           {Math.abs(tx.amount).toLocaleString()}
                         </td>
-                        <td className="py-4 px-4 text-right">
-                          <p className="font-medium text-[14px] text-[#030712]">
+                        <td className="py-4 px-4 text-right whitespace-nowrap">
+                          <p className="font-medium text-[13px] text-[#030712]">
                             ৳{tx.balance_after.toLocaleString()}
                           </p>
                         </td>
-                        <td className="py-4 px-4">
-                          <p className="font-normal text-[14px] text-[#73808C]">
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          <p className="font-normal text-[13px] text-[#73808C]">
                             {format(new Date(tx.created_at), "dd MMM yyyy")}
                           </p>
-                          <p className="font-normal text-[12px] text-[#9CA3AF]">
+                          <p className="font-normal text-[11px] text-[#9CA3AF]">
                             {format(new Date(tx.created_at), "hh:mm a")}
                           </p>
                         </td>
                         <td className="py-4 px-4">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-medium text-[11px] whitespace-nowrap ${
                               statusConfig[status].style
                             }`}
                           >
@@ -278,47 +276,20 @@ export default function RecentTransactions() {
 
               {/* Pagination */}
               {pagination && pagination.last_page > 1 && (
-                <div className="flex items-center justify-between px-6 py-4 border-t border-[#F3F4F6] bg-[#FAFAFA]">
-                  <div className="text-[14px] text-[#6B7280]">
-                    Showing {((pagination.current_page - 1) * pagination.per_page) + 1} to{" "}
-                    {Math.min(pagination.current_page * pagination.per_page, pagination.total)} of{" "}
-                    {pagination.total} transactions
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="inline-flex items-center gap-1 px-3 py-2 text-[14px] font-medium text-[#6B7280] bg-white border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      Previous
-                    </button>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map(
-                        (page) => (
-                          <button
-                            key={page}
-                            onClick={() => handlePageChange(page)}
-                            className={`px-3 py-2 text-[14px] font-medium rounded-lg transition-colors ${
-                              currentPage === page
-                                ? "bg-[#068847] text-white"
-                                : "text-[#6B7280] bg-white border border-[#E5E7EB] hover:bg-[#F9FAFB]"
-                            }`}
-                          >
-                            {page}
-                          </button>
-                        )
-                      )}
-                    </div>
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === pagination.last_page}
-                      className="inline-flex items-center gap-1 px-3 py-2 text-[14px] font-medium text-[#6B7280] bg-white border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      Next
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
+                <div className="px-4 sm:px-6 py-4 border-t border-[#F3F4F6] bg-[#FAFAFA]">
+                  <Pagination
+                    page={currentPage}
+                    perPage={perPage}
+                    total={pagination.total}
+                    dataLength={transactions.length}
+                    onNext={() =>
+                      setCurrentPage((p) =>
+                        Math.min(p + 1, pagination.last_page),
+                      )
+                    }
+                    onPrev={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    onPageChange={(page) => setCurrentPage(page)}
+                  />
                 </div>
               )}
             </>
