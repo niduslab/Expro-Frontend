@@ -150,7 +150,7 @@ export const useCompanyWalletTransactions = (
         "/admin/wallets/company/transactions",
         { params },
       );
-      return response.data.data as unknown as CompanyWalletTransactionsResponse;
+      return response.data as unknown as CompanyWalletTransactionsResponse; // ✅ remove the extra .data
     },
     staleTime: 1000 * 60 * 1,
   });
