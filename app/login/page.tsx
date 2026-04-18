@@ -9,13 +9,13 @@ import { toast, Toaster } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+  const [errors, setErrors] = useState<{ login?: string; password?: string }>(
     {},
   );
-  const { mutate: login, isPending, error: loginError } = useLogin();
+  const { mutate: loginMutation, isPending, error: loginError } = useLogin();
 
   // Validate email format
   const validateEmail = (email: string): boolean => {
@@ -23,15 +23,21 @@ export default function LoginPage() {
     return emailRegex.test(email);
   };
 
+  // Validate phone format (Bangladesh phone number: 11 digits starting with 01)
+  const validatePhone = (phone: string): boolean => {
+    const phoneRegex = /^01[0-9]{9}$/;
+    return phoneRegex.test(phone);
+  };
+
   // Validate form
   const validateForm = (): boolean => {
-    const newErrors: { email?: string; password?: string } = {};
+    const newErrors: { login?: string; password?: string } = {};
 
-    // Email validation
-    if (!email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(email)) {
-      newErrors.email = "Please enter a valid email address";
+    // Login validation (email or phone)
+    if (!login.trim()) {
+      newErrors.login = "Email or phone number is required";
+    } else if (!validateEmail(login) && !validatePhone(login)) {
+      newErrors.login = "Please enter a valid email or phone number (e.g., 01712345678)";
     }
 
     // Password validation
@@ -55,8 +61,8 @@ export default function LoginPage() {
     }
 
     // Call login mutation
-    login(
-      { email, password },
+    loginMutation(
+      { login, password },
       {
         onSuccess: () => {
           toast.success("Login successful! Redirecting...");
@@ -83,10 +89,10 @@ export default function LoginPage() {
   };
 
   // Clear error when user starts typing
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    if (errors.email) {
-      setErrors({ ...errors, email: undefined });
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLogin(e.target.value);
+    if (errors.login) {
+      setErrors({ ...errors, login: undefined });
     }
   };
 
@@ -172,29 +178,29 @@ export default function LoginPage() {
             >
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="login"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Email address
+                  Email or Phone Number
                 </label>
                 <div className="mt-1 ">
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
+                    id="login"
+                    name="login"
+                    type="text"
+                    autoComplete="username"
                     required
-                    value={email}
-                    onChange={handleEmailChange}
+                    value={login}
+                    onChange={handleLoginChange}
                     className={`appearance-none text-slate-600 block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm ${
-                      errors.email
+                      errors.login
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     }`}
-                    placeholder="admin@gmail.com"
+                    placeholder="admin@gmail.com or 01712345678"
                   />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  {errors.login && (
+                    <p className="mt-1 text-sm text-red-600">{errors.login}</p>
                   )}
                 </div>
               </div>

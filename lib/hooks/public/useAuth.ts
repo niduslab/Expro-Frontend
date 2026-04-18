@@ -27,7 +27,7 @@ export interface User {
  * Login Request/Response Types
  */
 interface LoginRequest {
-  email: string;
+  login: string; // Can be email or phone number
   password: string;
 }
 
@@ -72,7 +72,9 @@ async function getCsrfCookie(): Promise<void> {
  * const { mutate: login, isPending, error } = useLogin();
  *
  * const handleLogin = () => {
- *   login({ email: 'user@example.com', password: 'password' });
+ *   login({ login: 'user@example.com', password: 'password' });
+ *   // or
+ *   login({ login: '01712345678', password: 'password' });
  * };
  */
 export const useLogin = () => {
