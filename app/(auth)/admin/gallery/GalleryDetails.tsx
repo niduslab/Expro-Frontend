@@ -130,9 +130,17 @@ export default function GalleryDetailModal({
               </div>
 
               {gallery.description && (
-                <DetailField label="Description" value={gallery.description} />
+                <div className="flex flex-col gap-1">
+                  {/* Fixed: Removed the question mark from the label */}
+                  <span className="font-semibold text-[12px] leading-[150%] tracking-[-0.01em] text-[#6A7282] uppercase">
+                    Description
+                  </span>
+                  <div
+                    className="prose prose-sm max-w-none text-[#030712] [&>h2]:text-lg [&>h2]:font-bold [&>h2]:mt-2 [&>h2]:mb-1 [&>p]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: gallery.description }}
+                  />
+                </div>
               )}
-
               {/* Cover Image */}
               <div className="flex flex-col gap-2">
                 <span className="font-semibold text-[12px] text-[#6A7282] uppercase">

@@ -5,10 +5,13 @@ import {
   FieldError,
   Divider,
   inputClass,
-  textareaClass,
+  // textareaClass is no longer needed if only using RichTextEditor,
+  // but kept if used elsewhere in shared file
   STATUS_OPTIONS,
 } from "./blogPostModalShared";
 import { DateTimePicker } from "@/components/DateTimePicker";
+// Import the RichTextEditor
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import { UserListItem } from "@/lib/types/admin/userType";
 import { useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
@@ -65,27 +68,28 @@ export function PostDetailsSection({
         />
         <FieldError message={errors.slug} />
       </div>
+
+      {/* --- EXCERPT (Now RichTextEditor) --- */}
       <div>
         <FieldLabel label="Excerpt" />
-        <textarea
-          className={textareaClass}
-          rows={2}
-          placeholder="Short summary..."
+        <RichTextEditor
           value={String(formData.excerpt ?? "")}
-          onChange={(e) => set("excerpt", e.target.value)}
+          onChange={(html) => set("excerpt", html)}
+          placeholder="Short summary..."
         />
       </div>
+
+      {/* --- CONTENT (Now RichTextEditor) --- */}
       <div>
         <FieldLabel label="Content" required />
-        <textarea
-          className={textareaClass}
-          rows={6}
-          placeholder="Write your post content here..."
+        <RichTextEditor
           value={formData.content}
-          onChange={(e) => set("content", e.target.value)}
+          onChange={(html) => set("content", html)}
+          placeholder="Write your post content here..."
         />
         <FieldError message={errors.content} />
       </div>
+
       {/* ── Featured Image ── */}
       <div>
         <FieldLabel label="Featured Image" />

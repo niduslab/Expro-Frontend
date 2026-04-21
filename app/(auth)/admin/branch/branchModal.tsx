@@ -143,8 +143,8 @@ export default function BranchModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
-      <div className="flex flex-col w-full max-w-[600px] h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative my-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto p-2">
+      <div className="flex flex-col w-full max-w-4xl h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative my-4">
         <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden p-2">
           {/* ── Header ── */}
           <div className="flex flex-col gap-2">

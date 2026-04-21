@@ -9,6 +9,7 @@ import {
   type RiskLevel,
 } from "@/lib/hooks/admin/usePensionInvestments";
 import { toast } from "sonner";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 interface InvestmentModalProps {
   setOpenModal: (open: boolean) => void;
@@ -35,8 +36,10 @@ export default function InvestmentModal({
     notes: "",
   });
 
-  const { mutate: createInvestment, isPending: isCreating } = useCreateInvestment();
-  const { mutate: updateInvestment, isPending: isUpdating } = useUpdateInvestment();
+  const { mutate: createInvestment, isPending: isCreating } =
+    useCreateInvestment();
+  const { mutate: updateInvestment, isPending: isUpdating } =
+    useUpdateInvestment();
 
   useEffect(() => {
     if (investmentToEdit) {
@@ -48,8 +51,10 @@ export default function InvestmentModal({
         amount_invested: investmentToEdit.amount_invested || "",
         investment_date: investmentToEdit.investment_date || "",
         maturity_date: investmentToEdit.maturity_date || "",
-        investment_duration_months: investmentToEdit.investment_duration_months?.toString() || "",
-        expected_return_percentage: investmentToEdit.expected_return_percentage || "",
+        investment_duration_months:
+          investmentToEdit.investment_duration_months?.toString() || "",
+        expected_return_percentage:
+          investmentToEdit.expected_return_percentage || "",
         risk_level: investmentToEdit.risk_level || "medium",
         description: investmentToEdit.description || "",
         terms_conditions: investmentToEdit.terms_conditions || "",
@@ -61,7 +66,11 @@ export default function InvestmentModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.investment_name || !formData.amount_invested || !formData.investment_date) {
+    if (
+      !formData.investment_name ||
+      !formData.amount_invested ||
+      !formData.investment_date
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -77,7 +86,9 @@ export default function InvestmentModal({
       investment_duration_months: formData.investment_duration_months
         ? parseInt(formData.investment_duration_months)
         : undefined,
-      expected_return_percentage: parseFloat(formData.expected_return_percentage),
+      expected_return_percentage: parseFloat(
+        formData.expected_return_percentage,
+      ),
       risk_level: formData.risk_level,
       description: formData.description || undefined,
       terms_conditions: formData.terms_conditions || undefined,
@@ -98,10 +109,10 @@ export default function InvestmentModal({
           onError: (err: any) => {
             toast.error(
               err?.response?.data?.message || "Failed to update investment",
-              { id: "investment-action" }
+              { id: "investment-action" },
             );
           },
-        }
+        },
       );
     } else {
       toast.loading("Creating investment...", { id: "investment-action" });
@@ -115,7 +126,7 @@ export default function InvestmentModal({
         onError: (err: any) => {
           toast.error(
             err?.response?.data?.message || "Failed to create investment",
-            { id: "investment-action" }
+            { id: "investment-action" },
           );
         },
       });
@@ -167,7 +178,10 @@ export default function InvestmentModal({
                 type="text"
                 value={formData.investment_name_bangla}
                 onChange={(e) =>
-                  setFormData({ ...formData, investment_name_bangla: e.target.value })
+                  setFormData({
+                    ...formData,
+                    investment_name_bangla: e.target.value,
+                  })
                 }
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent"
                 placeholder="স্বাস্থ্যসেবা ক্লিনিক - ঢাকা"
@@ -184,7 +198,10 @@ export default function InvestmentModal({
               <select
                 value={formData.sector}
                 onChange={(e) =>
-                  setFormData({ ...formData, sector: e.target.value as InvestmentSector })
+                  setFormData({
+                    ...formData,
+                    sector: e.target.value as InvestmentSector,
+                  })
                 }
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent bg-white"
                 required
@@ -240,7 +257,10 @@ export default function InvestmentModal({
                 min="0"
                 value={formData.expected_return_percentage}
                 onChange={(e) =>
-                  setFormData({ ...formData, expected_return_percentage: e.target.value })
+                  setFormData({
+                    ...formData,
+                    expected_return_percentage: e.target.value,
+                  })
                 }
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent"
                 placeholder="12.5"
@@ -287,7 +307,10 @@ export default function InvestmentModal({
                 min="1"
                 value={formData.investment_duration_months}
                 onChange={(e) =>
-                  setFormData({ ...formData, investment_duration_months: e.target.value })
+                  setFormData({
+                    ...formData,
+                    investment_duration_months: e.target.value,
+                  })
                 }
                 className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent"
                 placeholder="24"
@@ -302,17 +325,25 @@ export default function InvestmentModal({
             </label>
             <div className="flex gap-4">
               {["low", "medium", "high"].map((risk) => (
-                <label key={risk} className="flex items-center gap-2 cursor-pointer">
+                <label
+                  key={risk}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <input
                     type="radio"
                     value={risk}
                     checked={formData.risk_level === risk}
                     onChange={(e) =>
-                      setFormData({ ...formData, risk_level: e.target.value as RiskLevel })
+                      setFormData({
+                        ...formData,
+                        risk_level: e.target.value as RiskLevel,
+                      })
                     }
                     className="w-4 h-4 text-[#068847] focus:ring-[#068847]"
                   />
-                  <span className="text-sm text-[#030712] capitalize">{risk} Risk</span>
+                  <span className="text-sm text-[#030712] capitalize">
+                    {risk} Risk
+                  </span>
                 </label>
               ))}
             </div>
@@ -323,13 +354,11 @@ export default function InvestmentModal({
             <label className="block text-sm font-medium text-[#030712] mb-2">
               Description
             </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+            <RichTextEditor
+              value={formData.description || ""}
+              onChange={(html) =>
+                setFormData({ ...formData, description: html })
               }
-              rows={3}
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent resize-none"
               placeholder="Enter investment description..."
             />
           </div>
@@ -339,13 +368,11 @@ export default function InvestmentModal({
             <label className="block text-sm font-medium text-[#030712] mb-2">
               Terms & Conditions
             </label>
-            <textarea
-              value={formData.terms_conditions}
-              onChange={(e) =>
-                setFormData({ ...formData, terms_conditions: e.target.value })
+            <RichTextEditor
+              value={formData.terms_conditions || ""}
+              onChange={(html) =>
+                setFormData({ ...formData, terms_conditions: html })
               }
-              rows={3}
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent resize-none"
               placeholder="Enter terms and conditions..."
             />
           </div>
@@ -355,13 +382,9 @@ export default function InvestmentModal({
             <label className="block text-sm font-medium text-[#030712] mb-2">
               Notes
             </label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) =>
-                setFormData({ ...formData, notes: e.target.value })
-              }
-              rows={2}
-              className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent resize-none"
+            <RichTextEditor
+              value={formData.notes || ""}
+              onChange={(html) => setFormData({ ...formData, notes: html })}
               placeholder="Internal notes..."
             />
           </div>
@@ -387,7 +410,9 @@ export default function InvestmentModal({
                   {investmentToEdit ? "Updating..." : "Creating..."}
                 </>
               ) : (
-                <>{investmentToEdit ? "Update Investment" : "Create Investment"}</>
+                <>
+                  {investmentToEdit ? "Update Investment" : "Create Investment"}
+                </>
               )}
             </button>
           </div>

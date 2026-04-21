@@ -73,10 +73,13 @@ const Hero = () => {
               <h1 className="font-dm-sans text-4xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white">
                 {blog.title}
               </h1>
+
+              {/* Excerpt - Fixed: properly using dangerouslySetInnerHTML */}
               {blog.excerpt && (
-                <p className="font-dm-sans text-[14px] font-normal leading-[160%] text-gray-200 max-w-xl">
-                  {blog.excerpt}
-                </p>
+                <div
+                  className="font-dm-sans text-[14px] font-normal leading-[160%] text-gray-200 max-w-xl"
+                  dangerouslySetInnerHTML={{ __html: blog.excerpt }}
+                />
               )}
             </>
           ) : null}

@@ -17,10 +17,20 @@ const GallerySection = ({ gallery }: { gallery: Gallery }) => {
           <h2 className="text-xl font-semibold text-gray-900">
             {gallery.title}
           </h2>
-          <p className="text-sm text-gray-500 mt-1 max-w-prose">
-            {gallery.description}
-          </p>
+
+          {/* Description - Rendered as HTML */}
+          {gallery.description && (
+            <div
+              className="text-sm text-gray-500 mt-1 max-w-prose 
+      [&>h1]:text-sm [&>h1]:font-semibold [&>h1]:mb-1
+      [&>h2]:text-sm [&>h2]:font-semibold [&>h2]:mb-1
+      [&>h3]:text-sm [&>h3]:font-semibold [&>h3]:mb-1
+      [&>p]:mb-1"
+              dangerouslySetInnerHTML={{ __html: gallery.description }}
+            />
+          )}
         </div>
+
         <div className="flex items-center gap-2 shrink-0">
           {gallery.is_featured && (
             <span className="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-800">

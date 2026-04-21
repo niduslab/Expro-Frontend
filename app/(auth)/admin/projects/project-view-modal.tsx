@@ -185,9 +185,12 @@ export default function ProjectViewModal({
                 <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-1.5">
                   Summary
                 </p>
-                <p className="text-[14px] text-[#4A5565] leading-[1.7]">
-                  {project.short_description}
-                </p>
+                <div
+                  className="text-[14px] text-[#4A5565] leading-[1.7] [&>p]:mb-0"
+                  dangerouslySetInnerHTML={{
+                    __html: project.short_description,
+                  }}
+                />
               </div>
             )}
 
@@ -197,12 +200,12 @@ export default function ProjectViewModal({
                 <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-1.5">
                   Description
                 </p>
-                <p className="text-[14px] text-[#4A5565] leading-[1.7] whitespace-pre-line">
-                  {project.description}
-                </p>
+                <div
+                  className="text-[14px] text-[#4A5565] leading-[1.7] prose prose-sm max-w-none [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5"
+                  dangerouslySetInnerHTML={{ __html: project.description }}
+                />
               </div>
             )}
-
             {/* Info grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 rounded-xl border border-[#E5E7EB] divide-y sm:divide-y-0 sm:divide-x divide-[#E5E7EB] overflow-hidden">
               {/* Left column */}

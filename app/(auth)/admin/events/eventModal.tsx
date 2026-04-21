@@ -6,9 +6,12 @@ import {
   useCreateEvent,
   useUpdateEvent,
 } from "@/lib/hooks/admin/useEventsHook";
+
 import { Plus, Loader2 } from "lucide-react";
+
 import { toast } from "sonner";
 import CustomSelect from "@/components/admin/CustomSelect";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 // Allowed MIME types for images
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -230,7 +233,7 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto px-2">
       <div className="flex flex-col w-full max-w-[620px] h-[85vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative my-4">
         <div className="flex flex-col gap-6  overflow-x-hidden p-2">
           {/* ── Header ── */}
@@ -277,12 +280,10 @@ export default function EventModal({ open, onClose, event }: EventModalProps) {
             {/* Description */}
             <div>
               <FieldLabel label="Description" />
-              <textarea
-                className={textareaClass}
-                rows={3}
-                placeholder="Brief description of the event..."
+              <RichTextEditor
                 value={formData.description ?? ""}
-                onChange={(e) => setField("description", e.target.value)}
+                onChange={(html) => setField("description", html || null)}
+                placeholder="Brief description of the event..."
               />
             </div>
 

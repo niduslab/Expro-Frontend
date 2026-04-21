@@ -176,7 +176,7 @@ export default function BlogPostModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 overflow-y-auto">
-      <div className="flex flex-col w-full max-w-[680px] h-[90vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative my-4">
+      <div className="flex flex-col w-full max-w-5xl h-[90vh] p-2 md:p-6 bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black relative my-4">
         <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden p-2">
           {/* Header */}
           <div className="flex flex-col gap-2">
