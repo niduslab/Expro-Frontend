@@ -33,6 +33,7 @@ const dateOfBirthPlaceholder = "mm/dd/yyyy";
 const nidPlaceholder = "Enter your NID number";
 
 import StepsNavigation from "./StepsNavigation";
+import DatePicker from "@/components/ui/date-picker";
 
 interface PersonalInformationProps {
   data: PersonalInfoState;
@@ -70,19 +71,19 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   const handleChange =
     (field: keyof PersonalInfoState) =>
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      onUpdate({
-        ...data,
-        [field]: value,
-      });
-      if (errors[field]) {
-        setErrors((prev) => ({
-          ...prev,
-          [field]: undefined,
-        }));
-      }
-    };
+      (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        onUpdate({
+          ...data,
+          [field]: value,
+        });
+        if (errors[field]) {
+          setErrors((prev) => ({
+            ...prev,
+            [field]: undefined,
+          }));
+        }
+      };
 
   const handleQualificationSelect = (qualification: string) => {
     let newQualifications: string[];
@@ -273,9 +274,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 onChange={handleChange("nameBangla")}
                 placeholder={nameBanglaPlaceholder}
                 aria-invalid={Boolean(errors.nameBangla)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nameBangla ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nameBangla ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nameBangla && (
                 <p className="text-xs text-red-500">{errors.nameBangla}</p>
@@ -293,9 +293,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 onChange={handleChange("nameEnglish")}
                 placeholder={nameEnglishPlaceholder}
                 aria-invalid={Boolean(errors.nameEnglish)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nameEnglish ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nameEnglish ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nameEnglish && (
                 <p className="text-xs text-red-500">{errors.nameEnglish}</p>
@@ -314,11 +313,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 onChange={handleChange("fatherHusbandName")}
                 placeholder={fatherHusbandPlaceholder}
                 aria-invalid={Boolean(errors.fatherHusbandName)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.fatherHusbandName
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.fatherHusbandName
                     ? "border-red-500"
                     : "border-gray-200"
-                }`}
+                  }`}
               />
               {errors.fatherHusbandName && (
                 <p className="text-xs text-red-500">
@@ -338,9 +336,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 onChange={handleChange("motherName")}
                 placeholder={motherNamePlaceholder}
                 aria-invalid={Boolean(errors.motherName)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.motherName ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.motherName ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.motherName && (
                 <p className="text-xs text-red-500">{errors.motherName}</p>
@@ -348,47 +345,19 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             </div>
 
             {/* Date of Birth */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900">
-                Date of Birth <span className="text-red-500">*</span>
-              </label>
-              <div className="relative bg-white rounded-md">
-                <input
-                  type="date"
+            <div className="space-y-2 mb-4">
+         
+                <DatePicker
+                  label="Date of Birth"
+                  required
                   value={data.memberDateOfBirth}
-                  onChange={handleChange("memberDateOfBirth")}
-                  onClick={(e) => {
-                    try {
-                      if (typeof (e.target as any).showPicker === "function") {
-                        (e.target as any).showPicker();
-                      }
-                    } catch (error) {
-                      // ignore
-                    }
-                  }}
-                  aria-invalid={Boolean(errors.memberDateOfBirth)}
-                  className={`peer relative z-10 w-full pl-4 pr-12 py-3 bg-transparent rounded-md border focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all cursor-pointer text-transparent focus:text-gray-900 ${
-                    errors.memberDateOfBirth
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  } [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
+                  onChange={(value) => handleChange("memberDateOfBirth")({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
                 />
-                {/* Custom Display */}
-                <div className="absolute inset-0 pl-4 pr-12 py-3 pointer-events-none flex items-center peer-focus:opacity-0">
-                  <span
-                    className={
-                      data.memberDateOfBirth ? "text-gray-900" : "text-gray-400"
-                    }
-                  >
-                    {data.memberDateOfBirth
-                      ? formatDate(data.memberDateOfBirth)
-                      : "mm/dd/yyyy"}
-                  </span>
-                </div>
-                <Calendar
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20"
-                  size={20}
-                />
+                {errors.memberDateOfBirth && (
+                  <p className="text-xs text-red-500">
+                    {errors.memberDateOfBirth}
+                  </p>
+                )}
               </div>
               {errors.memberDateOfBirth && (
                 <p className="text-xs text-red-500">
@@ -398,7 +367,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             </div>
 
             {/* National/Smart ID No */}
-            <div className="space-y-2">
+            <div className="space-y-2 mb-4">
               <label className="block text-sm font-medium text-gray-900">
                 National/Smart ID No <span className="text-red-500">*</span>
               </label>
@@ -408,9 +377,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 onChange={handleChange("nid")}
                 placeholder={nidPlaceholder}
                 aria-invalid={Boolean(errors.nid)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nid ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nid ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nid && (
                 <p className="text-xs text-red-500">{errors.nid}</p>
@@ -428,11 +396,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                     key={qual}
                     type="button"
                     onClick={() => handleQualificationSelect(qual)}
-                    className={`px-6 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#008543] ${
-                      data.qualification.includes(qual)
+                    className={`px-6 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#008543] ${data.qualification.includes(qual)
                         ? "bg-[#008543] text-white"
                         : "bg-[#F3F4F6] text-gray-600 hover:bg-gray-200"
-                    }`}
+                      }`}
                   >
                     {qual}
                   </button>
@@ -713,7 +680,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           </button>
         </div>
       </div>
-    </div>
+
   );
 };
 

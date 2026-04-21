@@ -23,6 +23,7 @@ const relationPlaceholder = "e.g. wife, son, daughter friend";
 const nidPlaceholder = "Nominee national ID number if available";
 
 import StepsNavigation from './StepsNavigation';
+import DatePicker from '@/components/ui/date-picker';
 
 interface NomineeInformationProps {
   data: NomineeInfoState;
@@ -57,19 +58,19 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
 
   const handleChange =
     (field: keyof NomineeInfoState) =>
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      onUpdate({
-        ...data,
-        [field]: value,
-      });
-      if (errors[field]) {
-        setErrors((prev) => ({
-          ...prev,
-          [field]: undefined,
-        }));
-      }
-    };
+      (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        onUpdate({
+          ...data,
+          [field]: value,
+        });
+        if (errors[field]) {
+          setErrors((prev) => ({
+            ...prev,
+            [field]: undefined,
+          }));
+        }
+      };
 
   const handlePhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
@@ -150,17 +151,17 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-7xl">
-        
+
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10">
-          
+
           {/* Header */}
           <div className="mb-8">
             <h2 className="text-[#00341C] text-3xl font-bold mb-2">Nominee Information</h2>
             <p className="text-gray-500 text-sm md:text-base">Please fill out all required fields to complete your application.</p>
           </div>
 
-          <StepsNavigation 
+          <StepsNavigation
             steps={steps}
             currentStep={currentStep}
             maxStepReached={maxStepReached}
@@ -169,7 +170,7 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
 
           {/* Form Content */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            
+
             {/* Nominee Name (Bangla) */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
@@ -181,9 +182,8 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 onChange={handleChange("nomineeNameBangla")}
                 placeholder={nameBanglaPlaceholder}
                 aria-invalid={Boolean(errors.nomineeNameBangla)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nomineeNameBangla ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nomineeNameBangla ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nomineeNameBangla && (
                 <p className="text-xs text-red-500">{errors.nomineeNameBangla}</p>
@@ -201,50 +201,27 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 onChange={handleChange("nomineeNameEnglish")}
                 placeholder={nameEnglishPlaceholder}
                 aria-invalid={Boolean(errors.nomineeNameEnglish)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nomineeNameEnglish ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nomineeNameEnglish ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nomineeNameEnglish && (
                 <p className="text-xs text-red-500">{errors.nomineeNameEnglish}</p>
               )}
             </div>
 
+
             {/* Date of Birth */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900">
-                Date of Birth <span className="text-red-500">*</span>
-              </label>
-              <div className="relative bg-white rounded-md">
-                <input
-                  type="date"
-                  value={data.nomineeDob}
-                  onChange={handleChange("nomineeDob")}
-                  onClick={(e) => {
-                    try {
-                      if (typeof (e.target as any).showPicker === "function") {
-                        (e.target as any).showPicker();
-                      }
-                    } catch (error) {
-                      // ignore
-                    }
-                  }}
-                  aria-invalid={Boolean(errors.nomineeDob)}
-                  className={`peer relative z-10 w-full pl-4 pr-12 py-3 bg-transparent rounded-md border focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all cursor-pointer text-transparent focus:text-gray-900 ${
-                    errors.nomineeDob ? "border-red-500" : "border-gray-200"
-                  } [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
-                />
-                {/* Custom Display */}
-                <div className="absolute inset-0 pl-4 pr-12 py-3 pointer-events-none flex items-center peer-focus:opacity-0">
-                  <span className={data.nomineeDob ? "text-gray-900" : "text-gray-400"}>
-                    {data.nomineeDob ? formatDate(data.nomineeDob) : "mm/dd/yyyy"}
-                  </span>
-                </div>
-                <Calendar 
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20" 
-                  size={20} 
-                />
-              </div>
+              <DatePicker
+                label="Date of Birth"
+                required
+                value={data.nomineeDob}
+                onChange={(value) =>
+                  handleChange("nomineeDob")({
+                    target: { value, type: "date" },
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }
+              />
               {errors.nomineeDob && (
                 <p className="text-xs text-red-500">{errors.nomineeDob}</p>
               )}
@@ -261,9 +238,8 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 onChange={handleChange("relation")}
                 placeholder={relationPlaceholder}
                 aria-invalid={Boolean(errors.relation)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.relation ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.relation ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.relation && (
                 <p className="text-xs text-red-500">{errors.relation}</p>
@@ -281,9 +257,8 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 onChange={handleChange("nid")}
                 placeholder={nidPlaceholder}
                 aria-invalid={Boolean(errors.nid)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nid ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nid ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nid && (
                 <p className="text-xs text-red-500">{errors.nid}</p>
@@ -301,9 +276,8 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 onChange={handleChange("nomineeMobile")}
                 placeholder="e.g. 01712345678"
                 aria-invalid={Boolean(errors.nomineeMobile)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${
-                  errors.nomineeMobile ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 ${errors.nomineeMobile ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nomineeMobile && (
                 <p className="text-xs text-red-500">{errors.nomineeMobile}</p>
@@ -333,9 +307,8 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 placeholder="Enter nominee's full address"
                 rows={3}
                 aria-invalid={Boolean(errors.nomineeAddress)}
-                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 resize-none ${
-                  errors.nomineeAddress ? "border-red-500" : "border-gray-200"
-                }`}
+                className={`w-full px-4 py-3 rounded-md border text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#008543] focus:border-transparent transition-all placeholder:text-gray-400 resize-none ${errors.nomineeAddress ? "border-red-500" : "border-gray-200"
+                  }`}
               />
               {errors.nomineeAddress && (
                 <p className="text-xs text-red-500">{errors.nomineeAddress}</p>
@@ -350,13 +323,13 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
               <p className="text-xs text-gray-500 mb-3">
                 Upload a recent passport size photograph (max 2MB, JPG/PNG)
               </p>
-              
+
               <div className="flex flex-col items-start space-y-3">
                 <div className="w-40 h-40 bg-[#F3F4F6] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 relative overflow-hidden">
                   {data.photo ? (
-                    <img 
-                      src={URL.createObjectURL(data.photo)} 
-                      alt="Preview" 
+                    <img
+                      src={URL.createObjectURL(data.photo)}
+                      alt="Preview"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -366,7 +339,7 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                     </>
                   )}
                 </div>
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -401,7 +374,7 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
             <ChevronLeft size={20} className="mr-2" />
             Previous
           </button>
-          
+
           <button
             type="button"
             onClick={handleNextClick}
