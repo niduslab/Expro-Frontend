@@ -26,6 +26,7 @@ export interface CreatePaymentGatewayConfigPayload {
 }
 
 export interface UpdatePaymentGatewayConfigPayload {
+    gateway_type?: string;
   is_active?: boolean;
  credentials: Record<string, string | boolean>;
 }

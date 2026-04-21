@@ -13,10 +13,8 @@ import { CustomSelect } from "../../projects/projectMember/[id]/Projectmemberui"
 
 const GATEWAY_OPTIONS = [
     { label: "bKash", value: "bkash" },
-    { label: "Nagad", value: "nagad" },
-    { label: "Rocket", value: "rocket" },
-    { label: "Stripe", value: "stripe" },
-    { label: "PayPal", value: "paypal" },
+    { label: "SSL Commerz", value: "sslcommerz" },
+
 ];
 
 const STATUS_OPTIONS = [
@@ -30,10 +28,11 @@ const STATUS_OPTIONS = [
  */
 const GATEWAY_CREDENTIAL_TEMPLATES: Record<string, string[]> = {
     bkash: ["app_key", "app_secret", "username", "password", "sandbox_mode"],
-    nagad: ["merchant_id", "merchant_number", "public_key", "private_key", "sandbox_mode"],
-    rocket: ["merchant_id", "api_key", "sandbox_mode"],
-    stripe: ["publishable_key", "secret_key", "webhook_secret"],
-    paypal: ["client_id", "client_secret", "sandbox_mode"],
+    sslcommerz: [
+        "store_id",
+        "store_password",
+        "test_mode"
+    ],
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -58,15 +57,7 @@ interface CredentialRow {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const credentialsToRows = (
-    creds: Record<string, string>,
-    requiredKeys: string[] = []
-): CredentialRow[] =>
-    Object.entries(creds).map(([key, value]) => ({
-        key,
-        value,
-        isRequired: requiredKeys.includes(key),
-    }));
+
 
 const rowsToCredentials = (rows: CredentialRow[]): Record<string, string | boolean> =>
     rows.reduce(
@@ -74,7 +65,7 @@ const rowsToCredentials = (rows: CredentialRow[]): Record<string, string | boole
             if (r.key.trim()) {
                 const val = r.value.trim();
                 // Cast sandbox_mode (and any boolean-like field) to real boolean
-                if (r.key === "sandbox_mode") {
+                if (r.key === "sandbox_mode" || r.key === "test_mode") {
                     acc[r.key] = val === "true" || val === "1";
                 } else {
                     acc[r.key] = val;
@@ -195,13 +186,18 @@ export default function PaymentGatewayConfigModal({
     };
 
     // ── Submit ──
+   
     const handleSubmit = () => {
         if (!validate()) return;
         const credentials = rowsToCredentials(credRows);
         if (mode === "create") {
             onCreate({ gateway_type: gatewayType, is_active: isActive === "true", credentials });
         } else {
-            onUpdate({ is_active: isActive === "true", credentials });
+            onUpdate({
+                gateway_type: gatewayType, // ← add this
+                is_active: isActive === "true",
+                credentials
+            });
         }
     };
 
@@ -303,7 +299,7 @@ export default function PaymentGatewayConfigModal({
                                                 }`}
                                         />
                                         <div className="flex-1 relative">
-                                            {row.key === "sandbox_mode" ? (
+                                            {row.key === "sandbox_mode" || row.key === "test_mode" ? (
                                                 <select
                                                     value={row.value}
                                                     onChange={(e) => updateRow(idx, "value", e.target.value)}
@@ -328,7 +324,7 @@ export default function PaymentGatewayConfigModal({
                                                         }`}
                                                 />
                                             )}
-                                          
+
                                         </div>
                                         {/* Only allow removing non-required rows */}
                                         {!row.isRequired && credRows.length > 1 ? (

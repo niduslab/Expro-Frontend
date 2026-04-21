@@ -13,6 +13,8 @@ import {
   RefreshCw,
   ServerCrash,
   Wallet,
+  Banknote,
+  Landmark,
 } from "lucide-react";
 
 import {
@@ -40,10 +42,8 @@ import { toast } from "sonner";
 const GATEWAY_FILTER_OPTIONS = [
   { label: "All Gateways", value: "" },
   { label: "bKash", value: "bkash" },
-  { label: "Nagad", value: "nagad" },
-  { label: "Rocket", value: "rocket" },
-  { label: "Stripe", value: "stripe" },
-  { label: "PayPal", value: "paypal" },
+  { label: "SSL Commerz", value: "sslcommerz" },
+
 ];
 
 const STATUS_FILTER_OPTIONS = [
@@ -60,16 +60,13 @@ const PER_PAGE_OPTIONS = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const GATEWAY_BADGE: Record<string, { bg: string; text: string; emoji: string }> = {
-  bkash:  { bg: "bg-pink-50",   text: "text-pink-700",   emoji: "💰" },
-  nagad:  { bg: "bg-orange-50", text: "text-orange-700", emoji: "🔶" },
-  rocket: { bg: "bg-purple-50", text: "text-purple-700", emoji: "🚀" },
-  stripe: { bg: "bg-blue-50",   text: "text-blue-700",   emoji: "💳" },
-  paypal: { bg: "bg-sky-50",    text: "text-sky-700",    emoji: "🌐" },
+const GATEWAY_BADGE: Record<string, { bg: string; text: string; emoji: any }> = {
+  bkash: { bg: "bg-pink-50", text: "text-pink-700", emoji: Banknote },
+  sslcommerz: { bg: "bg-orange-50", text: "text-orange-700", emoji: Landmark },
 };
 
 const getGatewayStyle = (type: string) =>
-  GATEWAY_BADGE[type] ?? { bg: "bg-gray-100", text: "text-gray-600", emoji: "⚙️" };
+  GATEWAY_BADGE[type] ?? { bg: "bg-gray-100", text: "text-gray-600" };
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -189,8 +186,8 @@ export default function PaymentGatewayConfigPage() {
   // ── Client-side search filter ──
   const displayConfigs = search
     ? configs.filter((c) =>
-        c.gateway_type.toLowerCase().includes(search.toLowerCase())
-      )
+      c.gateway_type.toLowerCase().includes(search.toLowerCase())
+    )
     : configs;
 
   // ── Render ──
@@ -245,11 +242,10 @@ export default function PaymentGatewayConfigPage() {
             {/* Filter toggle */}
             <button
               onClick={() => setShowFilters((v) => !v)}
-              className={`flex items-center gap-2 px-4 h-[44px] border rounded-[10px] text-sm font-medium transition whitespace-nowrap ${
-                showFilters || activeFiltersCount > 0
+              className={`flex items-center gap-2 px-4 h-[44px] border rounded-[10px] text-sm font-medium transition whitespace-nowrap ${showFilters || activeFiltersCount > 0
                   ? "border-green-500 text-green-700 bg-green-50"
                   : "border-[#D1D5DC] text-gray-600 bg-white hover:bg-gray-50"
-              }`}
+                }`}
             >
               <SlidersHorizontal className="w-4 h-4" />
               Filters
@@ -327,7 +323,7 @@ export default function PaymentGatewayConfigPage() {
             </div>
           ) : displayConfigs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 gap-2 text-gray-400">
-              <span className="text-5xl"><Wallet/></span>
+              <span className="text-5xl"><Wallet /></span>
               <p className="text-sm font-medium text-gray-500 mt-2">No configurations found</p>
               <p className="text-xs text-gray-400">Add a new gateway to get started</p>
             </div>
@@ -370,21 +366,23 @@ export default function PaymentGatewayConfigPage() {
                           {((params.page ?? 1) - 1) * (params.per_page ?? 10) + idx + 1}
                         </td>
 
+            
                         {/* Gateway */}
                         <td className="px-5 py-4">
                           <span
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold capitalize ${style.bg} ${style.text}`}
                           >
-                            {style.emoji} {config.gateway_type}
+                            {/* ✅ Correct: Render the component instance */}
+                            {style.emoji && <style.emoji className="w-3.5 h-3.5" />}
+                            {config.gateway_type}
                           </span>
                         </td>
 
                         {/* Status */}
                         <td className="px-5 py-4">
                           <span
-                            className={`inline-flex items-center gap-1.5 text-xs font-medium ${
-                              config.is_active ? "text-green-600" : "text-gray-400"
-                            }`}
+                            className={`inline-flex items-center gap-1.5 text-xs font-medium ${config.is_active ? "text-green-600" : "text-gray-400"
+                              }`}
                           >
                             {config.is_active ? (
                               <CheckCircle2 className="w-3.5 h-3.5" />

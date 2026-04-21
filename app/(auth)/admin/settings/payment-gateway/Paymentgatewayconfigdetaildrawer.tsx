@@ -1,6 +1,7 @@
 "use client";
 
-import { X, CheckCircle2, XCircle, Calendar, Hash } from "lucide-react";
+import { X, CheckCircle2, XCircle, Calendar, Hash, Eye, EyeOff, Wallet } from "lucide-react";
+import { useState } from "react";
 import type { PaymentGatewayConfig } from "@/lib/types/admin/Paymentgatewayconfig";
 
 interface Props {
@@ -10,12 +11,22 @@ interface Props {
     onEdit: () => void;
 }
 
-export default function PaymentGatewayConfigDetailDrawer({
+export default function PaymentGatewayConfigDetailModal({
     open,
     config,
     onClose,
     onEdit,
 }: Props) {
+    const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set());
+
+    const toggleKey = (key: string) => {
+        setVisibleKeys((prev) => {
+            const next = new Set(prev);
+            next.has(key) ? next.delete(key) : next.add(key);
+            return next;
+        });
+    };
+
     if (!open || !config) return null;
 
     return (
@@ -29,7 +40,7 @@ export default function PaymentGatewayConfigDetailDrawer({
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                            <span className="text-lg">💳</span>
+                            <span className="text-lg"><Wallet/></span>
                         </div>
                         <div>
                             <h2 className="text-[16px] font-semibold text-gray-900 capitalize">
@@ -89,24 +100,83 @@ export default function PaymentGatewayConfigDetailDrawer({
 
                     {/* Credentials */}
                     <div>
-                        <p className="text-sm font-medium text-gray-700 mb-3">Credentials</p>
+                        <div className="flex items-center justify-between mb-3">
+                            <p className="text-sm font-medium text-gray-700">Credentials</p>
+                            {config.credentials && Object.keys(config.credentials).length > 0 && (
+                                <button
+                                    onClick={() => {
+                                        const allKeys = Object.keys(config.credentials ?? {});
+                                        const allVisible = allKeys.every((k) => visibleKeys.has(k));
+                                        setVisibleKeys(allVisible ? new Set() : new Set(allKeys));
+                                    }}
+                                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition"
+                                >
+                                    {Object.keys(config.credentials ?? {}).every((k) =>
+                                        visibleKeys.has(k)
+                                    ) ? (
+                                        <>
+                                            <EyeOff className="w-3.5 h-3.5" /> Hide all
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Eye className="w-3.5 h-3.5" /> Show all
+                                        </>
+                                    )}
+                                </button>
+                            )}
+                        </div>
+
                         {config.credentials && Object.keys(config.credentials).length ? (
                             <div className="space-y-2">
-                                {Object.entries(config.credentials).map(([key, val]) => (
-                                    <div
-                                        key={key}
-                                        className="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50"
-                                    >
-                                        <span className="text-xs font-mono font-medium text-gray-500">
-                                            {key}
-                                        </span>
-                                        <span className="text-xs font-mono text-gray-800 truncate max-w-[55%]">
-                                            {typeof val === "boolean"
-                                                ? val ? "true" : "false"
-                                                : "•".repeat(Math.min(String(val).length, 16))}
-                                        </span>
-                                    </div>
-                                ))}
+                                {Object.entries(config.credentials).map(([key, val]) => {
+                                    const isVisible = visibleKeys.has(key);
+                                    const displayVal =
+                                        typeof val === "boolean"
+                                            ? val
+                                                ? "true"
+                                                : "false"
+                                            : String(val);
+
+                                    return (
+                                        <div
+                                            key={key}
+                                            className="flex items-center justify-between gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50 group"
+                                        >
+                                            {/* Key */}
+                                            <span className="text-xs font-mono font-medium text-gray-500 shrink-0">
+                                                {key}
+                                            </span>
+
+                                            {/* Value + Toggle */}
+                                            <div className="flex items-center gap-2 min-w-0">
+                                                <span
+                                                    className={`text-xs font-mono truncate transition-all ${
+                                                        isVisible
+                                                            ? "text-gray-800"
+                                                            : "text-gray-400 tracking-widest"
+                                                    }`}
+                                                >
+                                                    {isVisible
+                                                        ? displayVal
+                                                        : "•".repeat(
+                                                              Math.min(displayVal.length, 14)
+                                                          )}
+                                                </span>
+                                                <button
+                                                    onClick={() => toggleKey(key)}
+                                                    className="shrink-0 p-1 rounded text-gray-300 hover:text-gray-600 hover:bg-gray-200 transition"
+                                                    title={isVisible ? "Hide" : "Show"}
+                                                >
+                                                    {isVisible ? (
+                                                        <EyeOff className="w-3.5 h-3.5" />
+                                                    ) : (
+                                                        <Eye className="w-3.5 h-3.5" />
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <p className="text-sm text-gray-400 italic">No credentials stored</p>
