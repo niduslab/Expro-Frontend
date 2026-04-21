@@ -14,6 +14,7 @@ import {
   FileText,
   ChevronRight,
   Settings,
+  WalletCards,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────
@@ -52,17 +53,17 @@ const SECURITY_CARDS: SettingCard[] = [
     href: "/admin/settings/change-password",
   },
   {
-    title: "Two-factor authentication",
-    description: "Add an extra layer of protection with 2FA via SMS or app.",
-    icon: <Shield className="h-4 w-4" />,
+    title: "Payment Gateway Setup",
+    description: "set up your payment gateway for Bkash/SSL",
+    icon: <WalletCards className="h-4 w-4" />,
     iconBg: "bg-red-50",
     iconBorder: "border-red-200",
     iconColor: "text-red-500",
-    tag: "Security",
+    tag: "Config",
     tagColor: "text-red-600",
     tagBorder: "border-red-300",
     tagBg: "bg-white",
-    href: "/settings/two-factor",
+    href: "/admin/settings/payment-gateway",
   },
   {
     title: "Active sessions",
@@ -252,7 +253,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Sections ── */}
-        <Section label="Security" cards={SECURITY_CARDS} />
+        <Section label="Security & Configuration" cards={SECURITY_CARDS} />
         <Section label="Account" cards={ACCOUNT_CARDS} />
         <Section label="Preferences" cards={PREFERENCE_CARDS} />
       </div>
