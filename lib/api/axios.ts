@@ -120,6 +120,7 @@ apiClient.interceptors.response.use(
 
     // Handle 401 Unauthorized - Token expired or invalid
     // Only redirect to login if not a public endpoint and not explicitly skipped
+    // Handle 401 Unauthorized
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -131,25 +132,35 @@ apiClient.interceptors.response.use(
       const isPublicEndpoint =
         url.includes("/public/") || url.includes("/contactmessage");
 
-      // Only redirect if it's not a public endpoint and user has a token
       if (!isPublicEndpoint && typeof window !== "undefined") {
-        const hasToken = localStorage.getItem("auth_token");
-        if (hasToken) {
-          localStorage.removeItem("auth_token");
-          window.location.href = "/login";
-        }
+        // Remove token if it exists
+        localStorage.removeItem("auth_token");
+        document.cookie =
+          "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+        // Always redirect — don't gate on hasToken
+        window.location.href = "/login";
       }
     }
-    
+
     // Handle 429 Rate Limiting - Don't retry, just reject
     if (error.response?.status === 429) {
-      console.error('Rate limit exceeded. Please try again later.');
-      
+      console.error("Rate limit exceeded. Please try again later.");
+
       // Return a user-friendly error message
       return Promise.reject({
         ...error,
-        message: 'Too many requests. Please wait a moment and try again.',
+        message: "Too many requests. Please wait a moment and try again.",
+      });
+    }
+    if (!error.response && error.request) {
+      // Don't redirect, just reject with a clear message
+      // so your UI can show a "server unavailable" state
 
+      return Promise.reject({
+        ...error,
+        isNetworkError: true,
+        message: "Unable to connect to server. Please try again later.",
       });
     }
 

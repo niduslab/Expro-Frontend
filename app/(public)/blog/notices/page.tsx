@@ -123,11 +123,11 @@ function NoticeModal({ doc, onClose }: { doc: Document; onClose: () => void }) {
                   </button>
                 </div>
               </div>
-
               {doc.description && (
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {doc.description}
-                </p>
+                <div
+                  className="text-sm text-gray-600 leading-relaxed [&>p]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: doc.description }}
+                />
               )}
 
               {/* Inline PDF — rendered directly, no toggle */}
@@ -241,9 +241,10 @@ const NoticePage = () => {
 
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mt-2">
                     {doc.description && (
-                      <p className="text-gray-500 text-sm sm:text-[13px] max-w-full sm:max-w-[80%] line-clamp-2">
-                        {doc.description}
-                      </p>
+                      <div
+                        className="text-gray-500 text-sm sm:text-[13px] max-w-full sm:max-w-[80%] line-clamp-2"
+                        dangerouslySetInnerHTML={{ __html: doc.description }}
+                      />
                     )}
                     <div className="flex items-center gap-3">
                       {doc.file_url && (

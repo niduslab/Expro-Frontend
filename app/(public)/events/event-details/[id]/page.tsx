@@ -111,9 +111,13 @@ export default function EventDetails() {
                 )}
 
                 {/* Description */}
-                <p className="text-gray-700 leading-relaxed text-base">
-                  {event.description}
-                </p>
+
+                <div
+                  className="text-gray-700 leading-relaxed text-base"
+                  dangerouslySetInnerHTML={{
+                    __html: event.description ?? "",
+                  }}
+                />
 
                 <div className="h-px bg-gray-100" />
 

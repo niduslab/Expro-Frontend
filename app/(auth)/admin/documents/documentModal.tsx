@@ -12,6 +12,7 @@ import {
 
 import { Plus, Loader2, Upload, X, FileText } from "lucide-react";
 import DatePicker from "@/components/ui/date-picker";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 interface DocumentModalProps {
   open: boolean;
@@ -364,12 +365,10 @@ export default function DocumentModal({
             {/* Description */}
             <div>
               <FieldLabel label="Description" />
-              <textarea
-                className={textareaClass}
-                rows={2}
+              <RichTextEditor
+                value={formData.description || ""}
+                onChange={(html) => set("description", html)}
                 placeholder="Brief description of this document..."
-                value={formData.description}
-                onChange={(e) => set("description", e.target.value)}
               />
             </div>
 
