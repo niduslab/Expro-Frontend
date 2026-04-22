@@ -8,6 +8,7 @@ import { useMembers, Member } from "@/lib/hooks/admin/useMembers";
 import { usePensionPackages } from "@/lib/hooks/admin/usePensionPackages";
 import { ArrowLeft, ArrowRight, Users as UsersIcon } from "lucide-react";
 import PensionRoleModal from "./pensionRoleModal";
+import Pagination from "@/components/pagination/page";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Status = "active" | "pending" | "inactive" | "suspended";
@@ -201,8 +202,8 @@ export default function MembersPage() {
 
   // Fetch pension packages for filter
   const { data: pensionPackagesData } = usePensionPackages({ per_page: 100 });
-  const pensionPackages = Array.isArray(pensionPackagesData?.data) 
-    ? pensionPackagesData.data 
+  const pensionPackages = Array.isArray(pensionPackagesData?.data)
+    ? pensionPackagesData.data
     : [];
 
   // Get package name from URL if filtering
@@ -211,10 +212,10 @@ export default function MembersPage() {
   // Extract data from API response
   const paginatedData = response?.data;
   const rawMembers: Member[] = Array.isArray(paginatedData) ? paginatedData : (paginatedData?.data || []);
-  
+
   // Filter out users without member data (incomplete registrations)
   const apiMembers = rawMembers.filter((m) => m.member !== null);
-  
+
   const pagination = (paginatedData && !Array.isArray(paginatedData))
     ? paginatedData.pagination
     : { current_page: 1, last_page: 1, total: apiMembers.length, per_page: 50 };
@@ -224,7 +225,7 @@ export default function MembersPage() {
     let list = apiMembers.filter((m) => {
       // Type filter
       if (typeFilter && m.member?.membership_type !== typeFilter) return false;
-      
+
       // Pension package filter
       if (pensionFilter) {
         const hasPackage = m.pension_enrollments?.some(
@@ -232,7 +233,7 @@ export default function MembersPage() {
         );
         if (!hasPackage) return false;
       }
-      
+
       return true;
     });
 
@@ -315,23 +316,23 @@ export default function MembersPage() {
     // Get sponsor from pension enrollment
     const enrollment = member.pension_enrollments?.[0];
     const sponsorId = enrollment?.sponsored_by;
-    
+
     if (!sponsorId) return null;
-    
+
     // Find sponsor in members list
     const sponsor = apiMembers.find(m => m.id === sponsorId);
     if (sponsor) {
       return {
         id: sponsor.id,
         name: sponsor.member?.name_english || sponsor.email || 'Unknown',
-        isLeader: sponsor.pension_enrollments?.some((e: any) => 
-          e.package_roles?.some((r: any) => 
+        isLeader: sponsor.pension_enrollments?.some((e: any) =>
+          e.package_roles?.some((r: any) =>
             ['executive_member', 'project_presenter', 'assistant_pp'].includes(r.role) && r.is_active
           )
         ) || false
       };
     }
-    
+
     return { id: sponsorId, name: 'Unknown Sponsor', isLeader: false };
   };
 
@@ -349,9 +350,9 @@ export default function MembersPage() {
     members.forEach(member => {
       const enrollment = member.pension_enrollments?.[0];
       const sponsorId = enrollment?.sponsored_by;
-      
+
       const memberWithChildren = memberMap.get(member.id)!;
-      
+
       if (sponsorId && memberMap.has(sponsorId)) {
         // Add to parent's children
         memberMap.get(sponsorId)!.children.push(memberWithChildren);
@@ -396,9 +397,9 @@ export default function MembersPage() {
     let displayStatus = member.status;
     if (displayStatus === "approved") displayStatus = "active";
     const memberStatus = displayStatus as Status;
-    
+
     // Get active package roles
-    const packageRoles = member.pension_enrollments?.flatMap((enrollment: any) => 
+    const packageRoles = member.pension_enrollments?.flatMap((enrollment: any) =>
       enrollment.package_roles?.filter((pkgRole: any) => pkgRole.is_active).map((pkgRole: any) => pkgRole.role) || []
     ) || [];
     const uniqueRoles = [...new Set(packageRoles)];
@@ -406,10 +407,9 @@ export default function MembersPage() {
 
     return (
       <div className="relative">
-        <div 
-          className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors ${
-            level > 0 ? 'ml-8' : ''
-          }`}
+        <div
+          className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors ${level > 0 ? 'ml-8' : ''
+            }`}
           style={{ paddingLeft: `${level * 32 + 12}px` }}
         >
           {/* Expand/Collapse Button */}
@@ -427,8 +427,8 @@ export default function MembersPage() {
           {member.member?.photo ? (
             <Image
               src={
-                member.member.photo.startsWith('http') 
-                  ? member.member.photo 
+                member.member.photo.startsWith('http')
+                  ? member.member.photo
                   : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${member.member.photo}`
               }
               alt={memberName}
@@ -495,7 +495,7 @@ export default function MembersPage() {
         {hasChildren && isExpanded && (
           <div className="relative">
             {/* Vertical line */}
-            <div 
+            <div
               className="absolute left-0 top-0 bottom-0 w-px bg-gray-300"
               style={{ left: `${level * 32 + 22}px` }}
             />
@@ -540,13 +540,13 @@ export default function MembersPage() {
                 {packageNameFromUrl ? `${packageNameFromUrl} - Members` : 'Members'}
               </p>
               <p className="text-[13px] text-gray-700 mt-0.5">
-                {packageNameFromUrl 
-                  ? `Members enrolled in ${packageNameFromUrl}` 
+                {packageNameFromUrl
+                  ? `Members enrolled in ${packageNameFromUrl}`
                   : 'All registered members · Updated just now'}
               </p>
             </div>
           </div>
-          
+
           {/* Package Context Banner */}
           {packageNameFromUrl && pensionFilter && (
             <div className="flex items-center justify-between p-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg">
@@ -586,7 +586,7 @@ export default function MembersPage() {
               </div>
             </div>
           )}
-          
+
           {/* Action Buttons */}
           {!packageNameFromUrl && (
             <div className="flex items-center gap-2 mt-4">
@@ -626,560 +626,529 @@ export default function MembersPage() {
           />
         </div>
 
-      {/* ── Toolbar ── */}
-      <div className="bg-white rounded-lg border border-[#E5E7EB]">
-        <div className="p-4 flex flex-col sm:flex-row gap-3 items-center">
-          {/* Search */}
-          <div className="relative flex-1 w-full">
-            <svg
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600 font-[500]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search name, ID, email, phone…"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="w-full pl-8 pr-3 py-[6px] text-[13px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847]"
-            />
+        {/* ── Toolbar ── */}
+        <div className="bg-white rounded-lg border border-[#E5E7EB]">
+          <div className="p-4 flex flex-col gap-3">
+            {/* Row 1: Search + View Toggle */}
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              {/* Search */}
+              <div className="relative flex-1">
+                <svg
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search name, ID, email, phone…"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full pl-8 pr-3 py-[6px] text-[13px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847]"
+                />
+              </div>
+
+              {/* View Mode Toggle */}
+              <div className="flex items-center gap-1 border border-[#E5E7EB] rounded-lg p-1 self-start sm:self-auto">
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`px-3 py-1 text-xs rounded transition-colors ${viewMode === "table" ? "bg-[#068847] text-white" : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                >
+                  Table
+                </button>
+                <button
+                  onClick={() => setViewMode("hierarchy")}
+                  className={`px-3 py-1 text-xs rounded transition-colors ${viewMode === "hierarchy" ? "bg-[#068847] text-white" : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                >
+                  Hierarchy
+                </button>
+              </div>
+            </div>
+
+            {/* Row 2: Filters */}
+            <div className="flex flex-wrap gap-2 items-center">
+              <select
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value as Status | "");
+                  setPage(1);
+                }}
+                className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer flex-1 min-w-[110px]"
+              >
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+                <option value="inactive">Inactive</option>
+                <option value="suspended">Suspended</option>
+              </select>
+
+              <select
+                value={typeFilter}
+                onChange={(e) => {
+                  setTypeFilter(e.target.value as MemberType | "");
+                  setPage(1);
+                }}
+                className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer flex-1 min-w-[110px]"
+              >
+                <option value="">All Types</option>
+                <option value="executive">Executive</option>
+                <option value="general">General</option>
+              </select>
+
+              <select
+                value={pensionFilter}
+                onChange={(e) => {
+                  setPensionFilter(e.target.value ? Number(e.target.value) : "");
+                  setPage(1);
+                }}
+                className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer flex-1 min-w-[130px]"
+              >
+                <option value="">All Packages</option>
+                {pensionPackages.map((pkg: any) => (
+                  <option key={pkg.id} value={pkg.id}>
+                    {pkg.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={enrollmentRoleFilter}
+                onChange={(e) => {
+                  setEnrollmentRoleFilter(e.target.value);
+                  setPage(1);
+                }}
+                className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer flex-1 min-w-[110px]"
+              >
+                <option value="">All Roles</option>
+                <option value="executive_member">Executive Member</option>
+                <option value="project_presenter">Project Presenter</option>
+                <option value="assistant_pp">Assistant PP</option>
+              </select>
+
+              {/* Per page + count */}
+              <div className="flex items-center gap-2 ml-auto">
+                <span className="text-[12px] text-gray-600 font-[500] whitespace-nowrap hidden sm:inline">
+                  Showing {members.length} of {stats.total.toLocaleString()}
+                </span>
+                <select
+                  value={perPage}
+                  onChange={(e) => {
+                    setPerPage(Number(e.target.value));
+                    setPage(1);
+                  }}
+                  className="text-[12px] px-2 py-1 border border-[#E5E7EB] rounded-lg bg-white focus:outline-none cursor-pointer"
+                >
+                  <option value={50}>50 / page</option>
+                  <option value={100}>100 / page</option>
+                  <option value={200}>200 / page</option>
+                </select>
+              </div>
+            </div>
           </div>
+        </div>
 
-          {/* View Mode Toggle */}
-          <div className="flex items-center gap-1 border border-[#E5E7EB] rounded-lg p-1">
-            <button
-              onClick={() => setViewMode("table")}
-              className={`px-3 py-1 text-xs rounded transition-colors ${
-                viewMode === "table"
-                  ? "bg-[#068847] text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              Table
-            </button>
-            <button
-              onClick={() => setViewMode("hierarchy")}
-              className={`px-3 py-1 text-xs rounded transition-colors ${
-                viewMode === "hierarchy"
-                  ? "bg-[#068847] text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              Hierarchy
-            </button>
-          </div>
-
-          {/* Filters */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value as Status | "");
-                setPage(1);
-              }}
-              className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer"
-            >
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-              <option value="inactive">Inactive</option>
-              <option value="suspended">Suspended</option>
-            </select>
-
-            <select
-              value={typeFilter}
-              onChange={(e) => {
-                setTypeFilter(e.target.value as MemberType | "");
-                setPage(1);
-              }}
-              className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer"
-            >
-              <option value="">All Types</option>
-              <option value="executive">Executive</option>
-              <option value="general">General</option>
-            </select>
-
-            <select
-              value={pensionFilter}
-              onChange={(e) => {
-                setPensionFilter(e.target.value ? Number(e.target.value) : "");
-                setPage(1);
-              }}
-              className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer"
-            >
-              <option value="">All Packages</option>
-              {pensionPackages.map((pkg: any) => (
-                <option key={pkg.id} value={pkg.id}>
-                  {pkg.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={enrollmentRoleFilter}
-              onChange={(e) => {
-                setEnrollmentRoleFilter(e.target.value);
-                setPage(1);
-              }}
-              className="text-[12px] px-2 py-[5px] border border-[#E5E7EB] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#068847]/20 focus:border-[#068847] cursor-pointer"
-            >
-              <option value="">All Roles</option>
-              <option value="executive_member">Executive Member</option>
-              <option value="project_presenter">Project Presenter</option>
-              <option value="assistant_pp">Assistant PP</option>
-            </select>
-
-            {/*  */}
-
-            <span className="text-[12px] text-gray-600 font-[500] ml-2 hidden sm:inline">
-              Showing {members.length} of {stats.total.toLocaleString()}
+        {/* ── Bulk Action Bar ── */}
+        {selected.size > 0 && (
+          <div className="flex items-center gap-3 px-4 py-2.5 bg-[#EAF3DE] border border-[#C0DD97] rounded-lg text-[13px] text-[#3B6D11]">
+            <span className="font-medium">
+              {selected.size} member{selected.size !== 1 ? "s" : ""} selected
             </span>
+            <button className="text-[11px] px-3 py-1 border border-[#C0DD97] rounded-lg hover:bg-[#C0DD97]/30 transition-colors">
+              Approve
+            </button>
+            <button className="text-[11px] px-3 py-1 border border-[#C0DD97] rounded-lg hover:bg-[#C0DD97]/30 transition-colors">
+              Suspend
+            </button>
+            <button className="text-[11px] px-3 py-1 border border-[#F5C4B3] rounded-lg text-[#993C1D] hover:bg-[#F5C4B3]/30 transition-colors">
+              Delete
+            </button>
+            <button
+              onClick={clearSelection}
+              className="ml-auto text-[12px] underline underline-offset-2 text-[#5F8C5A]"
+            >
+              Clear
+            </button>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* ── Bulk Action Bar ── */}
-      {selected.size > 0 && (
-        <div className="flex items-center gap-3 px-4 py-2.5 bg-[#EAF3DE] border border-[#C0DD97] rounded-lg text-[13px] text-[#3B6D11]">
-          <span className="font-medium">
-            {selected.size} member{selected.size !== 1 ? "s" : ""} selected
-          </span>
-          <button className="text-[11px] px-3 py-1 border border-[#C0DD97] rounded-lg hover:bg-[#C0DD97]/30 transition-colors">
-            Approve
-          </button>
-          <button className="text-[11px] px-3 py-1 border border-[#C0DD97] rounded-lg hover:bg-[#C0DD97]/30 transition-colors">
-            Suspend
-          </button>
-          <button className="text-[11px] px-3 py-1 border border-[#F5C4B3] rounded-lg text-[#993C1D] hover:bg-[#F5C4B3]/30 transition-colors">
-            Delete
-          </button>
-          <button
-            onClick={clearSelection}
-            className="ml-auto text-[12px] underline underline-offset-2 text-[#5F8C5A]"
-          >
-            Clear
-          </button>
-        </div>
-      )}
-
-      {/* ── Hierarchy View ── */}
-      {viewMode === "hierarchy" && (
-        <div className="bg-white border border-[#E5E7EB] rounded-lg overflow-hidden">
-          <div className="p-4 border-b border-[#E5E7EB] flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-medium text-gray-900">Member Hierarchy</h3>
-              <p className="text-xs text-gray-600 mt-0.5">
-                Showing sponsor-member relationships
-              </p>
+        {/* ── Hierarchy View ── */}
+        {viewMode === "hierarchy" && (
+          <div className="bg-white border border-[#E5E7EB] rounded-lg overflow-hidden">
+            <div className="p-4 border-b border-[#E5E7EB] flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-gray-900">Member Hierarchy</h3>
+                <p className="text-xs text-gray-600 mt-0.5">
+                  Showing sponsor-member relationships
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={expandAll}
+                  className="text-xs px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Expand All
+                </button>
+                <button
+                  onClick={collapseAll}
+                  className="text-xs px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Collapse All
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={expandAll}
-                className="text-xs px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Expand All
-              </button>
-              <button
-                onClick={collapseAll}
-                className="text-xs px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Collapse All
-              </button>
+            <div className="p-4 max-h-[800px] overflow-y-auto">
+              {hierarchyData.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <p>No members found matching your filters</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {hierarchyData.map((member) => (
+                    <HierarchyNode key={member.id} member={member} level={0} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-          <div className="p-4 max-h-[800px] overflow-y-auto">
-            {hierarchyData.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <p>No members found matching your filters</p>
+        )}
+
+        {/* ── Table ── */}
+        {viewMode === "table" && (
+          <>
+            {members.length === 0 && !isLoading ? (
+              <div className="flex items-center justify-center min-h-[300px] border border-[#E5E7EB] rounded-lg bg-white">
+                <div className="text-center">
+                  <p className="text-[14px] text-gray-700">No members match your filters</p>
+                  <button
+                    onClick={() => {
+                      setSearch("");
+                      setStatusFilter("");
+                      setTypeFilter("");
+                      setPensionFilter("");
+                      setEnrollmentRoleFilter("");
+                    }}
+                    className="mt-2 text-[12px] text-[#068847] underline"
+                  >
+                    Clear filters
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="space-y-1">
-                {hierarchyData.map((member) => (
-                  <HierarchyNode key={member.id} member={member} level={0} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ── Table ── */}
-      {viewMode === "table" && (
-        <>
-          {members.length === 0 && !isLoading ? (
-        <div className="flex items-center justify-center min-h-[300px] border border-[#E5E7EB] rounded-lg bg-white">
-          <div className="text-center">
-            <p className="text-[14px] text-gray-700">No members match your filters</p>
-            <button
-              onClick={() => {
-                setSearch("");
-                setStatusFilter("");
-                setTypeFilter("");
-                setPensionFilter("");
-                setEnrollmentRoleFilter("");
-              }}
-              className="mt-2 text-[12px] text-[#068847] underline"
-            >
-              Clear filters
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white border border-[#E5E7EB] rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-[13px]">
-              {/* ── Table Head ── */}
-              <thead className="bg-[#F9FAFB] sticky top-0 z-10">
-                <tr className="border-b border-[#E5E7EB]">
-                  <th className="w-10 px-4 py-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={allPageSelected}
-                      onChange={toggleAll}
-                      className="accent-[#068847] cursor-pointer"
-                    />
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors min-w-[200px]"
-                    onClick={() => handleSort("name")}
-                  >
-                    Member <SortChevron active={sortKey === "name"} dir={sortDir} />
-                  </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
-                    Contact
-                  </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
-                    Sponsor
-                  </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider">
-                    Package Roles
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
-                    onClick={() => handleSort("status")}
-                  >
-                    Status <SortChevron active={sortKey === "status"} dir={sortDir} />
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
-                    onClick={() => handleSort("balance")}
-                  >
-                    Wallet <SortChevron active={sortKey === "balance"} dir={sortDir} />
-                  </th>
-                  <th
-                    className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
-                    onClick={() => handleSort("joined")}
-                  >
-                    Joined <SortChevron active={sortKey === "joined"} dir={sortDir} />
-                  </th>
-                  {/* <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[120px]">
-                    Enrollment Role
-                  </th> */}
-                  <th className="px-4 py-3 text-center text-[11px] font-medium text-gray-700 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              {/* ── Table Body ── */}
-              <tbody className="divide-y divide-[#F3F4F6]">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={9} className="px-4 py-8 text-center text-gray-700">
-                      Loading members...
-                    </td>
-                  </tr>
-                ) : (
-                  members.map((member, index) => {
-                    const isSelected = selected.has(member.id);
-                    const memberName = member.member?.name_english || member.email || "Unknown";
-                    const memberNameBangla = member.member?.name_bangla || "";
-                    const memberId = member.member?.member_id || `USR-${String(member.id).padStart(5, "0")}`;
-                    const memberPhone = member.member?.mobile || "N/A";
-                    const memberType = (member.member?.membership_type || "general") as MemberType;
-                    const memberProfile = member.member;
-                    let displayStatus = member.status;
-                    if (displayStatus === "approved") displayStatus = "active";
-                    const memberStatus = displayStatus as Status;
-                    const walletBalance = parseFloat(member.wallet?.balance || "0");
-                    const pensionCount = member.pension_enrollments?.length || 0;
-                    const joinDate = member.member?.membership_date || member.member?.created_at;
-                    const sponsorInfo = getSponsorInfo(member);
-                    
-                    // Get active package roles from all enrollments
-                    const packageRoles = member.pension_enrollments?.flatMap((enrollment: any) => 
-                      enrollment.package_roles?.filter((pkgRole: any) => pkgRole.is_active).map((pkgRole: any) => pkgRole.role) || []
-                    ) || [];
-                    const uniqueRoles = [...new Set(packageRoles)];
-
-                    return (
-                      <tr
-                        key={member.id}
-                        className={`transition-colors ${isSelected ? "bg-[#EAF3DE]" : "hover:bg-[#FAFAFA]"}`}
-                      >
-                        <td className="px-4 py-[9px]">
+              <div className="bg-white border border-[#E5E7EB] rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-[13px]">
+                    {/* ── Table Head ── */}
+                    <thead className="bg-[#F9FAFB] sticky top-0 z-10">
+                      <tr className="border-b border-[#E5E7EB]">
+                        <th className="w-10 px-4 py-3 text-left">
                           <input
                             type="checkbox"
-                            checked={isSelected}
-                            onChange={() => toggleOne(member.id)}
+                            checked={allPageSelected}
+                            onChange={toggleAll}
                             className="accent-[#068847] cursor-pointer"
                           />
-                        </td>
-                        <td className="px-4 py-[9px]">
-                          <div className="flex items-center gap-2.5">
-                            {memberProfile?.photo ? (
-                              <Image
-                                src={
-                                  memberProfile.photo.startsWith('http') 
-                                    ? memberProfile.photo 
-                                    : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${memberProfile.photo}`
-                                }
-                                alt={memberName}
-                                width={32}
-                                height={32}
-                                className="rounded-full object-cover w-8 h-8 flex-shrink-0"
-                                unoptimized
-                              />
-                            ) : (
-                              <Avatar name={memberName} index={index} />
-                            )}
-                            <div className="min-w-0">
-                              <p className="font-medium text-gray-900 truncate">{memberName}</p>
-                              <p className="text-[11px] text-gray-600 font-[500] truncate">
-                                {memberId}
-                                {memberNameBangla && ` · ${memberNameBangla}`}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-[9px]">
-                          <p className="text-[12px] text-gray-900">{memberPhone}</p>
-                          <p className="text-[11px] text-gray-600 font-[500]">{member.email}</p>
-                        </td>
-                        <td className="px-4 py-[9px]">
-                          {sponsorInfo ? (
-                            <div>
-                              <Link
-                                href={`/admin/members/${sponsorInfo.id}`}
-                                className="text-[12px] font-medium text-[#2563EB] hover:underline"
-                              >
-                                {sponsorInfo.name}
-                              </Link>
-                              {sponsorInfo.isLeader && (
-                                <p className="text-[10px] text-[#068847] font-medium mt-0.5">
-                                  ⭐ Team Leader
+                        </th>
+                        <th
+                          className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors min-w-[200px]"
+                          onClick={() => handleSort("name")}
+                        >
+                          Member <SortChevron active={sortKey === "name"} dir={sortDir} />
+                        </th>
+                        <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
+                          Contact
+                        </th>
+                        <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
+                          Sponsor
+                        </th>
+                        <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider">
+                          Package Roles
+                        </th>
+                        <th
+                          className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
+                          onClick={() => handleSort("status")}
+                        >
+                          Status <SortChevron active={sortKey === "status"} dir={sortDir} />
+                        </th>
+                        <th
+                          className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
+                          onClick={() => handleSort("balance")}
+                        >
+                          Wallet <SortChevron active={sortKey === "balance"} dir={sortDir} />
+                        </th>
+                        <th
+                          className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider cursor-pointer select-none hover:text-gray-900 transition-colors"
+                          onClick={() => handleSort("joined")}
+                        >
+                          Joined <SortChevron active={sortKey === "joined"} dir={sortDir} />
+                        </th>
+                        {/* <th className="px-4 py-3 text-left text-[11px] font-medium text-gray-700 uppercase tracking-wider min-w-[120px]">
+                    Enrollment Role
+                  </th> */}
+                        <th className="px-4 py-3 text-center text-[11px] font-medium text-gray-700 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+
+                    {/* ── Table Body ── */}
+                    <tbody className="divide-y divide-[#F3F4F6]">
+                      {isLoading ? (
+                        <tr>
+                          <td colSpan={9} className="px-4 py-8 text-center text-gray-700">
+                            Loading members...
+                          </td>
+                        </tr>
+                      ) : (
+                        members.map((member, index) => {
+                          const isSelected = selected.has(member.id);
+                          const memberName = member.member?.name_english || member.email || "Unknown";
+                          const memberNameBangla = member.member?.name_bangla || "";
+                          const memberId = member.member?.member_id || `USR-${String(member.id).padStart(5, "0")}`;
+                          const memberPhone = member.member?.mobile || "N/A";
+                          const memberType = (member.member?.membership_type || "general") as MemberType;
+                          const memberProfile = member.member;
+                          let displayStatus = member.status;
+                          if (displayStatus === "approved") displayStatus = "active";
+                          const memberStatus = displayStatus as Status;
+                          const walletBalance = parseFloat(member.wallet?.balance || "0");
+                          const pensionCount = member.pension_enrollments?.length || 0;
+                          const joinDate = member.member?.membership_date || member.member?.created_at;
+                          const sponsorInfo = getSponsorInfo(member);
+
+                          // Get active package roles from all enrollments
+                          const packageRoles = member.pension_enrollments?.flatMap((enrollment: any) =>
+                            enrollment.package_roles?.filter((pkgRole: any) => pkgRole.is_active).map((pkgRole: any) => pkgRole.role) || []
+                          ) || [];
+                          const uniqueRoles = [...new Set(packageRoles)];
+
+                          return (
+                            <tr
+                              key={member.id}
+                              className={`transition-colors ${isSelected ? "bg-[#EAF3DE]" : "hover:bg-[#FAFAFA]"}`}
+                            >
+                              <td className="px-4 py-[9px]">
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => toggleOne(member.id)}
+                                  className="accent-[#068847] cursor-pointer"
+                                />
+                              </td>
+                              <td className="px-4 py-[9px]">
+                                <div className="flex items-center gap-2.5">
+                                  {memberProfile?.photo ? (
+                                    <Image
+                                      src={
+                                        memberProfile.photo.startsWith('http')
+                                          ? memberProfile.photo
+                                          : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${memberProfile.photo}`
+                                      }
+                                      alt={memberName}
+                                      width={32}
+                                      height={32}
+                                      className="rounded-full object-cover w-8 h-8 flex-shrink-0"
+                                      unoptimized
+                                    />
+                                  ) : (
+                                    <Avatar name={memberName} index={index} />
+                                  )}
+                                  <div className="min-w-0">
+                                    <p className="font-medium text-gray-900 truncate">{memberName}</p>
+                                    <p className="text-[11px] text-gray-600 font-[500] truncate">
+                                      {memberId}
+                                      {memberNameBangla && ` · ${memberNameBangla}`}
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-4 py-[9px]">
+                                <p className="text-[12px] text-gray-900">{memberPhone}</p>
+                                <p className="text-[11px] text-gray-600 font-[500]">{member.email}</p>
+                              </td>
+                              <td className="px-4 py-[9px]">
+                                {sponsorInfo ? (
+                                  <div>
+                                    <Link
+                                      href={`/admin/members/${sponsorInfo.id}`}
+                                      className="text-[12px] font-medium text-[#2563EB] hover:underline"
+                                    >
+                                      {sponsorInfo.name}
+                                    </Link>
+                                    {sponsorInfo.isLeader && (
+                                      <p className="text-[10px] text-[#068847] font-medium mt-0.5">
+                                        ⭐ Team Leader
+                                      </p>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="text-[11px] text-gray-500">No sponsor</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-2">
+                                {uniqueRoles.length > 0 ? (
+                                  <div className="flex flex-col gap-1.5">
+                                    {uniqueRoles.map((role: string) => {
+                                      const roleConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
+                                        executive_member: { label: "Executive Member", bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
+                                        project_presenter: { label: "Project Presenter", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+                                        assistant_pp: { label: "Assistant PP", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+                                        general_member: { label: "General Member", bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200" },
+                                      };
+                                      const config = roleConfig[role] || {
+                                        label: role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                                        bg: "bg-gray-100",
+                                        text: "text-gray-700",
+                                        border: "border-gray-200"
+                                      };
+                                      return (
+                                        <span
+                                          key={role}
+                                          className={`inline-flex items-center justify-start h-6 px-2.5 text-[11px] font-medium rounded-full border whitespace-nowrap ${config.bg} ${config.text} ${config.border}`}
+                                        >
+                                          {config.label}
+                                        </span>
+                                      );
+                                    })}
+                                  </div>
+                                ) : (
+                                  <span className="text-[12px] text-gray-500">No roles</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-[9px]">
+                                <StatusBadge status={memberStatus} />
+                              </td>
+                              <td className="px-4 py-[9px]">
+                                <p className="text-[12px] font-medium text-gray-900">
+                                  ৳{walletBalance.toLocaleString()}
                                 </p>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-[11px] text-gray-500">No sponsor</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2">
-                          {uniqueRoles.length > 0 ? (
-                            <div className="flex flex-col gap-1.5">
-                              {uniqueRoles.map((role: string) => {
-                                const roleConfig: Record<string, { label: string; bg: string; text: string; border: string }> = {
-                                  executive_member: { label: "Executive Member", bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
-                                  project_presenter: { label: "Project Presenter", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-                                  assistant_pp: { label: "Assistant PP", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-                                  general_member: { label: "General Member", bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200" },
-                                };
-                                const config = roleConfig[role] || { 
-                                  label: role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), 
-                                  bg: "bg-gray-100", 
-                                  text: "text-gray-700", 
-                                  border: "border-gray-200" 
-                                };
-                                return (
-                                  <span
-                                    key={role}
-                                    className={`inline-flex items-center justify-start h-6 px-2.5 text-[11px] font-medium rounded-full border whitespace-nowrap ${config.bg} ${config.text} ${config.border}`}
-                                  >
-                                    {config.label}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <span className="text-[12px] text-gray-500">No roles</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-[9px]">
-                          <StatusBadge status={memberStatus} />
-                        </td>
-                        <td className="px-4 py-[9px]">
-                          <p className="text-[12px] font-medium text-gray-900">
-                            ৳{walletBalance.toLocaleString()}
-                          </p>
-                          <p className="text-[11px] text-gray-600 font-[500]">
-                            {pensionCount} plan{pensionCount !== 1 ? "s" : ""}
-                          </p>
-                        </td>
-                        <td className="px-4 py-[9px] text-[12px] text-gray-700">
-                          {joinDate
-                            ? new Date(joinDate).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })
-                            : "N/A"}
-                        </td>
-                        {/* <td className="px-4 py-[9px]">
+                                <p className="text-[11px] text-gray-600 font-[500]">
+                                  {pensionCount} plan{pensionCount !== 1 ? "s" : ""}
+                                </p>
+                              </td>
+                              <td className="px-4 py-[9px] text-[12px] text-gray-700">
+                                {joinDate
+                                  ? new Date(joinDate).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  })
+                                  : "N/A"}
+                              </td>
+                              {/* <td className="px-4 py-[9px]">
                           
                         </td> */}
-                        <td className="px-4 py-[9px]">
-                          <div className="flex items-center justify-center gap-1">
-                            <button
-                              onClick={() => router.push(`/admin/members/${member.id}`)}
-                              title="View profile"
-                              className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F0FDF4] hover:text-[#068847] hover:border-[#068847] transition-colors cursor-pointer"
-                            >
-                              <EyeIcon />
-                            </button>
-                            <button
-                              onClick={() => setEditMemberId(member.id)}
-                              title="Edit"
-                              className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F3F4F6] hover:text-gray-900 transition-colors cursor-pointer"
-                            >
-                              <EditIcon />
-                            </button>
-                            
-                            {/* More Actions Dropdown */}
-                            <div className="relative" ref={openDropdownId === member.id ? dropdownRef : null}>
-                              <button
-                                onClick={() => setOpenDropdownId(openDropdownId === member.id ? null : member.id)}
-                                title="More actions"
-                                className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F3F4F6] hover:text-gray-900 transition-colors cursor-pointer"
-                              >
-                                <MoreIcon />
-                              </button>
-                              
-                              {openDropdownId === member.id && (
-                                <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-[#E5E7EB] py-1 z-50">
+                              <td className="px-4 py-[9px]">
+                                <div className="flex items-center justify-center gap-1">
                                   <button
-                                    onClick={() => {
-                                      setPensionRoleMember({
-                                        id: member.id,
-                                        name: memberName,
-                                        enrollments: member.pension_enrollments || []
-                                      });
-                                      setOpenDropdownId(null);
-                                    }}
-                                    className="w-full px-4 py-2 text-left text-sm text-[#030712] hover:bg-[#F9FAFB] flex items-center gap-2 transition-colors"
+                                    onClick={() => router.push(`/admin/members/${member.id}`)}
+                                    title="View profile"
+                                    className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F0FDF4] hover:text-[#068847] hover:border-[#068847] transition-colors cursor-pointer"
                                   >
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                    </svg>
-                                    Manage Pension Roles
+                                    <EyeIcon />
                                   </button>
+                                  <button
+                                    onClick={() => setEditMemberId(member.id)}
+                                    title="Edit"
+                                    className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F3F4F6] hover:text-gray-900 transition-colors cursor-pointer"
+                                  >
+                                    <EditIcon />
+                                  </button>
+
+                                  {/* More Actions Dropdown */}
+                                  <div className="relative" ref={openDropdownId === member.id ? dropdownRef : null}>
+                                    <button
+                                      onClick={() => setOpenDropdownId(openDropdownId === member.id ? null : member.id)}
+                                      title="More actions"
+                                      className="w-[26px] h-[26px] rounded-lg border border-[#E5E7EB] bg-transparent flex items-center justify-center text-gray-700 hover:bg-[#F3F4F6] hover:text-gray-900 transition-colors cursor-pointer"
+                                    >
+                                      <MoreIcon />
+                                    </button>
+
+                                    {openDropdownId === member.id && (
+                                      <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-[#E5E7EB] py-1 z-50">
+                                        <button
+                                          onClick={() => {
+                                            setPensionRoleMember({
+                                              id: member.id,
+                                              name: memberName,
+                                              enrollments: member.pension_enrollments || []
+                                            });
+                                            setOpenDropdownId(null);
+                                          }}
+                                          className="w-full px-4 py-2 text-left text-sm text-[#030712] hover:bg-[#F9FAFB] flex items-center gap-2 transition-colors"
+                                        >
+                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                          </svg>
+                                          Manage Pension Roles
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
 
-          {/* ── Pagination ── */}
-          <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E7EB] flex-wrap gap-3">
-            <p className="text-[12px] text-gray-700">
-              Page {pagination.current_page} of {pagination.last_page} · {stats.total.toLocaleString()} results
-            </p>
+                <div className="px-4 py-3 border-t border-[#E5E7EB]">
+                  <Pagination
+                    page={pagination.current_page}
+                    perPage={pagination.per_page}
+                    total={stats.total}
+                    dataLength={members.length}
+                    onNext={() => setPage(Math.min(pagination.last_page, pagination.current_page + 1))}
+                    onPrev={() => setPage(Math.max(1, pagination.current_page - 1))}
+                    onPageChange={(p) => setPage(p)}
+                  />
+                </div>
 
-            {/* Page number buttons */}
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setPage(Math.max(1, pagination.current_page - 1))}
-                disabled={pagination.current_page === 1}
-                className="h-7 px-2 text-[12px] border border-[#E5E7EB] rounded-lg disabled:opacity-40 hover:bg-[#F3F4F6] transition-colors cursor-pointer"
-              >
-                ‹
-              </button>
+              </div>
+            )}
+          </>
+        )}
 
-              {pageWindow().map((p) => (
+        {/* Member Edit Modal - TODO: Create edit modal component */}
+        {editMemberId && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold text-[#030712] mb-4">Edit Member</h3>
+                <p className="text-[#4A5565] mb-6">Edit functionality will be implemented here</p>
                 <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`w-7 h-7 text-[12px] rounded-lg border transition-colors cursor-pointer ${
-                    p === pagination.current_page
-                      ? "bg-[#068847] text-white border-[#068847]"
-                      : "border-[#E5E7EB] hover:bg-[#F3F4F6] text-gray-900"
-                  }`}
+                  onClick={() => setEditMemberId(null)}
+                  className="px-4 py-2 bg-[#068847] text-white rounded-lg hover:bg-[#057038] transition-colors"
                 >
-                  {p}
+                  Close
                 </button>
-              ))}
-
-              <button
-                onClick={() => setPage(Math.min(pagination.last_page, pagination.current_page + 1))}
-                disabled={pagination.current_page === pagination.last_page}
-                className="h-7 px-2 text-[12px] border border-[#E5E7EB] rounded-lg disabled:opacity-40 hover:bg-[#F3F4F6] transition-colors cursor-pointer"
-              >
-                ›
-              </button>
-            </div>
-
-            {/* Per page selector */}
-            <select
-              value={perPage}
-              onChange={(e) => {
-                setPerPage(Number(e.target.value));
-                setPage(1);
-              }}
-              className="text-[12px] px-2 py-1 border border-[#E5E7EB] rounded-lg bg-white focus:outline-none cursor-pointer"
-            >
-              <option value={50}>50 / page</option>
-              <option value={100}>100 / page</option>
-              <option value={200}>200 / page</option>
-            </select>
-          </div>
-        </div>
-      )}
-        </>
-      )}
-
-      {/* Member Edit Modal - TODO: Create edit modal component */}
-      {editMemberId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
-            <div className="text-center">
-              <h3 className="text-xl font-semibold text-[#030712] mb-4">Edit Member</h3>
-              <p className="text-[#4A5565] mb-6">Edit functionality will be implemented here</p>
-              <button
-                onClick={() => setEditMemberId(null)}
-                className="px-4 py-2 bg-[#068847] text-white rounded-lg hover:bg-[#057038] transition-colors"
-              >
-                Close
-              </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Pension Role Modal */}
-      {pensionRoleMember && (
-        <PensionRoleModal
-          isOpen={!!pensionRoleMember}
-          onClose={() => setPensionRoleMember(null)}
-          memberId={pensionRoleMember.id}
-          memberName={pensionRoleMember.name}
-          pensionEnrollments={pensionRoleMember.enrollments}
-        />
-      )}
+        {/* Pension Role Modal */}
+        {pensionRoleMember && (
+          <PensionRoleModal
+            isOpen={!!pensionRoleMember}
+            onClose={() => setPensionRoleMember(null)}
+            memberId={pensionRoleMember.id}
+            memberName={pensionRoleMember.name}
+            pensionEnrollments={pensionRoleMember.enrollments}
+          />
+        )}
       </div>
     </div>
   );
