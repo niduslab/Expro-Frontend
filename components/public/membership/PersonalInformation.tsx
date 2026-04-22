@@ -364,9 +364,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                   {errors.memberDateOfBirth}
                 </p>
               )}
-            </div>
-
-            {/* National/Smart ID No */}
+              {/* National/Smart ID No */}
             <div className="space-y-2 mb-4">
               <label className="block text-sm font-medium text-gray-900">
                 National/Smart ID No <span className="text-red-500">*</span>
@@ -384,6 +382,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 <p className="text-xs text-red-500">{errors.nid}</p>
               )}
             </div>
+            </div>
+
+            
 
             {/* Academic Qualification */}
             <div className="space-y-2">
@@ -657,9 +658,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Navigation Buttons */}
+          {/* Navigation Buttons */}
         <div className="flex justify-between items-center mt-8">
           <button
             type="button"
@@ -679,6 +678,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             <ChevronRight size={20} className="ml-2" />
           </button>
         </div>
+        </div>
+
+        
       </div>
 
   );

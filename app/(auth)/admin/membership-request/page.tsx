@@ -10,6 +10,7 @@ import {
 } from "@/lib/hooks/admin/useMembershipRequests";
 import { toast } from "sonner";
 import RejectModal from "./RejectModal";
+import ApproveModal from "./ApproveModal";
 
 type Status = "approved" | "pending" | "rejected" | "payment_pending";
 
@@ -36,6 +37,7 @@ export default function MembershipRequestPage() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<{
     id: number;
     name: string;
@@ -54,23 +56,20 @@ export default function MembershipRequestPage() {
     useApproveMembershipRequest();
   const { mutate: rejectRequest, isPending: isRejecting } =
     useRejectMembershipRequest();
-
-  const handleApprove = (id: number, fullName: string) => {
-    if (
-      !confirm(
-        `Are you sure you want to approve the application from "${fullName}"?`,
-      )
-    ) {
-      return;
-    }
-
+  const handleApproveClick = (id: number, fullName: string) => {
+    setSelectedRequest({ id, name: fullName });
+    setApproveModalOpen(true);
+  };
+  const handleApproveConfirm = () => {
+    if (!selectedRequest) return;
     toast.loading("Approving application...", { id: "approve-request" });
-
-    approveRequest(id, {
+    approveRequest(selectedRequest.id, {
       onSuccess: (res) => {
         toast.success(res.message || "Application approved successfully!", {
           id: "approve-request",
         });
+        setApproveModalOpen(false);
+        setSelectedRequest(null);
       },
       onError: (err: any) => {
         toast.error(
@@ -80,7 +79,6 @@ export default function MembershipRequestPage() {
       },
     });
   };
-
   const handleRejectClick = (id: number, fullName: string) => {
     setSelectedRequest({ id, name: fullName });
     setRejectModalOpen(true);
@@ -265,17 +263,16 @@ export default function MembershipRequestPage() {
                         </td>
                         <td className="py-4 px-2">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${
-                              statusConfig[request.status as Status]?.style ||
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium text-[12px] leading-[150%] tracking-[-1%] ${statusConfig[request.status as Status]?.style ||
                               statusConfig.pending.style
-                            }`}
+                              }`}
                           >
                             {statusConfig[request.status as Status]?.icon ||
                               statusConfig.pending.icon}
                             {request.status === "payment_pending"
                               ? "Payment Pending"
                               : request.status.charAt(0).toUpperCase() +
-                                request.status.slice(1)}
+                              request.status.slice(1)}
                           </span>
                         </td>
                         <td className="py-4 px-2 font-normal text-[14px] leading-[20px] tracking-0 align-middle">
@@ -283,12 +280,7 @@ export default function MembershipRequestPage() {
                             {request.status !== "approved" && (
                               <>
                                 <button
-                                  onClick={() =>
-                                    handleApprove(
-                                      request.id,
-                                      request.name_english,
-                                    )
-                                  }
+                                  onClick={() => handleApproveClick(request.id, request.name_english)}
                                   disabled={isApproving || isRejecting}
                                   className="disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Approve"
@@ -365,6 +357,13 @@ export default function MembershipRequestPage() {
         onConfirm={handleRejectConfirm}
         applicantName={selectedRequest?.name || ""}
         isLoading={isRejecting}
+      />
+      <ApproveModal
+        isOpen={approveModalOpen}
+        onClose={() => setApproveModalOpen(false)}
+        onConfirm={handleApproveConfirm}
+        applicantName={selectedRequest?.name || ""}
+        isLoading={isApproving}
       />
     </>
   );
