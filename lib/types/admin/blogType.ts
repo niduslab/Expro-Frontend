@@ -86,7 +86,7 @@ export interface BlogPost {
   published_at?: string | null;
   view_count: number;
   is_featured: boolean;
-  tags?: string[] | null;
+  tags?: string[] | string | null;
   meta?: Record<string, unknown> | null;
   created_at?: string;
   updated_at?: string;

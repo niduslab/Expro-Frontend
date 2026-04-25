@@ -60,7 +60,12 @@ export default function BlogPostDetailModal({
   };
 
   const statusStr = String(post.status);
-
+  console.log(post.tags, typeof post.tags)
+  const tags = Array.isArray(post.tags)
+    ? post.tags
+    : typeof post.tags === "string" && post.tags.length > 0
+      ? post.tags.split(",").map((t) => t.trim())
+      : [];
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="flex flex-col w-full max-w-[680px] h-[90vh] bg-white rounded-xl border border-[#E5E7EB] shadow-[0px_4px_40px_0px_#00000014] text-black overflow-hidden">
@@ -197,13 +202,13 @@ export default function BlogPostDetailModal({
                 </div>
               </div>
 
-              {(post.tags ?? []).length > 0 && (
+             {tags.length > 0 && (
                 <div className="flex flex-col gap-1">
                   <span className="font-semibold text-[12px] text-[#6A7282] uppercase">
                     Tags
                   </span>
                   <div className="flex flex-wrap gap-2 mt-1">
-                    {(post.tags ?? []).map((tag) => (
+                    {tags.map((tag) => (
                       <span
                         key={tag}
                         className="inline-flex px-2.5 py-1 rounded-full bg-[#d7efdc] text-[#068847] text-xs font-medium"
