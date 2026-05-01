@@ -21,6 +21,7 @@ import {
   Award,
   Bell,
   BarChart3,
+  ArrowLeftRight,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -33,6 +34,11 @@ export const sidebarItems = [
     name: "Membership Request",
     href: "/admin/membership-request",
     icon: AudioLines,
+  },
+  {
+    name: "Add Membership",
+    href: "/admin/membership",
+    icon: UsersRound,
   },
   {
     name: "Role Applications",
@@ -48,6 +54,7 @@ export const sidebarItems = [
 
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Wallet Balance", href: "/admin/wallet", icon: Wallet },
+  { name: "Account Transfers", href: "/admin/account-transfers", icon: ArrowLeftRight },
   { name: "Commission", href: "/admin/commission", icon: Percent },
   { name: "Donation", href: "/admin/donation", icon: Banknote },
 

@@ -1,0 +1,13 @@
+{
+  "name": "Account Transfer Review",
+  "version": "1.0.0",
+  "description": "Validates account transfer review process before moving to review status",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ".*useReviewTransfer.*"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before moving this transfer to review, verify: 1) Transfer is in 'requested' status, 2) All required documents are uploaded, 3) New member information is complete and valid. Confirm these checks before proceeding."
+  }
+}

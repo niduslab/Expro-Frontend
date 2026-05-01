@@ -1,0 +1,13 @@
+{
+  "name": "Account Transfer Completion",
+  "version": "1.0.0",
+  "description": "Validates account transfer completion requirements before finalizing",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ".*useCompleteTransfer.*"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before completing this transfer, verify: 1) Transfer is in 'approved' status, 2) Outstanding balance is cleared, 3) New member has registered (new_member_registered = true), 4) to_user_id is set. This action is IRREVERSIBLE and will transfer pension ownership. Confirm all requirements are met."
+  }
+}

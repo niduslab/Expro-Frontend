@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, FileText, Users, CheckCircle, XCircle, Clock, Package } from "lucide-react";
+import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, FileText, Users, CheckCircle, XCircle, Clock, Package, FileImage, X, ZoomIn } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { 
@@ -41,6 +41,8 @@ export default function MembershipRequestDetailsPage() {
   const params = useParams();
   const id = Number(params.id);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
 
   const { data: requestData, isLoading, error } = useMembershipRequest(id);
   const { mutate: approveRequest, isPending: isApproving } = useApproveMembershipRequest();
@@ -49,6 +51,16 @@ export default function MembershipRequestDetailsPage() {
   const application = requestData?.data?.application;
   const payment = requestData?.data?.payment;
   const pensionPackage = requestData?.data?.pension_package;
+  const documents = requestData?.data?.documents;
+
+  // Debug: Log the documents to see what we're getting
+  console.log('Documents data:', documents);
+  console.log('Full request data:', requestData);
+
+  const handleImageClick = (url: string, title: string) => {
+    setSelectedImage({ url, title });
+    setImageModalOpen(true);
+  };
 
   const handleApprove = () => {
     if (!application) return;
@@ -289,6 +301,93 @@ export default function MembershipRequestDetailsPage() {
                 </div>
               </div>
             )}
+
+            {/* Documents Card */}
+            {documents && (documents.nid_front || documents.nid_back || documents.signature) ? (
+              <div className="bg-white rounded-xl shadow border border-gray-200 p-6">
+                <h2 className="text-[18px] font-semibold text-[#030712] mb-4 flex items-center gap-2">
+                  <FileImage size={20} className="text-[#068847]" />
+                  Documents
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* NID Front */}
+                  {documents.nid_front && (
+                    <div className="space-y-2">
+                      <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
+                        NID Front
+                      </label>
+                      <div 
+                        className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
+                        onClick={() => handleImageClick(documents.nid_front, "NID Front")}
+                      >
+                        <Image
+                          src={documents.nid_front}
+                          alt="NID Front"
+                          width={300}
+                          height={160}
+                          className="w-full h-40 object-cover"
+                          unoptimized
+                        />
+                        {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center pointer-events-none">
+                          <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
+                        </div> */}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* NID Back */}
+                  {documents.nid_back && (
+                    <div className="space-y-2">
+                      <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
+                        NID Back
+                      </label>
+                      <div 
+                        className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
+                        onClick={() => handleImageClick(documents.nid_back, "NID Back")}
+                      >
+                        <Image
+                          src={documents.nid_back}
+                          alt="NID Back"
+                          width={300}
+                          height={160}
+                          className="w-full h-40 object-cover"
+                          unoptimized
+                        />
+                        {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center pointer-events-none">
+                          <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
+                        </div> */}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Signature */}
+                  {documents.signature && (
+                    <div className="space-y-2">
+                      <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
+                        Signature
+                      </label>
+                      <div 
+                        className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-white"
+                        onClick={() => handleImageClick(documents.signature, "Signature")}
+                      >
+                        <Image
+                          src={documents.signature}
+                          alt="Signature"
+                          width={300}
+                          height={160}
+                          className="w-full h-40 object-contain p-4"
+                          unoptimized
+                        />
+                        {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center pointer-events-none">
+                          <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
+                        </div> */}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
           </div>
 
           {/* Right Column - Application Info */}
@@ -408,6 +507,54 @@ export default function MembershipRequestDetailsPage() {
         applicantName={application.name_english}
         isLoading={isRejecting}
       />
+
+      {/* Image Zoom Modal */}
+      {imageModalOpen && selectedImage && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+          onClick={() => setImageModalOpen(false)}
+        >
+          <div 
+            className="relative max-w-5xl max-h-[90vh] w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setImageModalOpen(false)}
+              className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
+            >
+              <X size={32} />
+            </button>
+
+            {/* Title */}
+            <div className="absolute -top-12 left-0 text-white text-lg font-semibold">
+              {selectedImage.title}
+            </div>
+
+            {/* Image */}
+            <div className="bg-white rounded-lg p-4 max-h-[90vh] overflow-auto">
+              <Image
+                src={selectedImage.url}
+                alt={selectedImage.title}
+                width={1200}
+                height={800}
+                className="w-full h-auto object-contain max-h-[80vh]"
+                unoptimized
+              />
+            </div>
+
+            {/* Download Button */}
+            <a
+              href={selectedImage.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute -bottom-12 right-0 px-4 py-2 bg-[#068847] text-white rounded-lg hover:bg-[#057038] transition-colors text-sm font-medium"
+            >
+              Open in New Tab
+            </a>
+          </div>
+        </div>
+      )}
     </>
   );
 }
