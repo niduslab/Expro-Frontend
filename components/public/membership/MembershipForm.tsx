@@ -73,14 +73,19 @@ const steps = [
   { label: 'Review', id: 'review' },
 ];
 
-const MembershipForm = () => {
+interface MembershipFormProps {
+  initialSponsorInfo?: Partial<SponsorInfoState>;
+  lockSponsor?: boolean;
+}
+
+const MembershipForm = ({ initialSponsorInfo, lockSponsor = false }: MembershipFormProps = {}) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [maxStepReached, setMaxStepReached] = useState(0);
   const [formData, setFormData] = useState<MembershipData>({
     personalInfo: initialPersonalInfo,
     addressInfo: initialAddressInfo,
     nomineeInfo: initialNomineeInfo,
-    sponsorInfo: initialSponsorInfo,
+    sponsorInfo: { ...initialSponsorInfo, sponsorName: initialSponsorInfo?.sponsorName ?? "", sponsorMemberId: initialSponsorInfo?.sponsorMemberId ?? "" },
     pensionInfo: initialPensionInfo,
   });
 
@@ -113,9 +118,9 @@ const MembershipForm = () => {
         // Note: File objects (photo) cannot be stored in localStorage, so they will be null
         setFormData(prev => ({
           ...prev,
-          personalInfo: { 
-            ...prev.personalInfo, 
-            ...parsedData.personalInfo, 
+          personalInfo: {
+            ...prev.personalInfo,
+            ...parsedData.personalInfo,
             memberDateOfBirth: convertDateFormat(parsedData.personalInfo?.memberDateOfBirth || parsedData.personalInfo?.dateOfBirth || ''),
             photo: null,
             nidFrontPhoto: null,
@@ -123,13 +128,14 @@ const MembershipForm = () => {
             signature: null
           },
           addressInfo: { ...prev.addressInfo, ...parsedData.addressInfo },
-          nomineeInfo: { 
-            ...prev.nomineeInfo, 
-            ...parsedData.nomineeInfo, 
+          nomineeInfo: {
+            ...prev.nomineeInfo,
+            ...parsedData.nomineeInfo,
             nomineeDob: convertDateFormat(parsedData.nomineeInfo?.nomineeDob || parsedData.nomineeInfo?.dateOfBirth || ''),
-            photo: null 
+            photo: null
           },
-          sponsorInfo: { ...prev.sponsorInfo, ...parsedData.sponsorInfo },
+          // When sponsor is locked (member dashboard), never restore from localStorage
+          sponsorInfo: lockSponsor ? prev.sponsorInfo : { ...prev.sponsorInfo, ...parsedData.sponsorInfo },
           pensionInfo: { ...prev.pensionInfo, ...parsedData.pensionInfo },
         }));
       } catch (error) {
@@ -265,9 +271,10 @@ const MembershipForm = () => {
         );
       case 3:
         return (
-          <SponsorInformation 
+          <SponsorInformation
             data={formData.sponsorInfo}
             onUpdate={(data) => updateFormData('sponsorInfo', data)}
+            locked={lockSponsor}
             {...commonProps}
           />
         );

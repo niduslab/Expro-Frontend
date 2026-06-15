@@ -186,14 +186,32 @@ export const useRejectMembershipRequest = () => {
 };
 
 /**
+ * Hook: Get My Sponsored Membership Requests (Member)
+ * Fetches membership applications where the current user is the sponsor
+ */
+export const useMyMembershipRequests = (params?: MembershipRequestsParams) => {
+  return useQuery({
+    queryKey: ['my-membership-requests', params],
+    queryFn: async () => {
+      const response = await apiRequest.get<any>(
+        '/membership-applications/hierarchy/my-sponsored',
+        { params }
+      );
+      return response.data as PaginatedResponse<MembershipRequest>;
+    },
+    staleTime: 1000 * 60 * 3,
+  });
+};
+
+/**
  * Hook: Delete Membership Request (Admin)
  * Deletes a membership application
- * 
+ *
  * @returns React Query mutation for deleting membership request
- * 
+ *
  * @example
  * const { mutate } = useDeleteMembershipRequest();
- * 
+ *
  * mutate(1);
  */
 export const useDeleteMembershipRequest = () => {

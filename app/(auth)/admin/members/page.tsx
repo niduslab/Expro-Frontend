@@ -8,6 +8,7 @@ import { useMembers, Member } from "@/lib/hooks/admin/useMembers";
 import { usePensionPackages } from "@/lib/hooks/admin/usePensionPackages";
 import { ArrowLeft, ArrowRight, Users as UsersIcon } from "lucide-react";
 import PensionRoleModal from "./pensionRoleModal";
+import ChangeHierarchyModal from "./changeHierarchyModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Status = "active" | "pending" | "inactive" | "suspended";
@@ -166,6 +167,7 @@ export default function MembersPage() {
   const [editMemberId, setEditMemberId] = useState<number | null>(null);
   const [pensionRoleMember, setPensionRoleMember] = useState<{ id: number; name: string; enrollments: any[] } | null>(null);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [changeHierarchyMember, setChangeHierarchyMember] = useState<{ id: number; name: string } | null>(null);
   const [enrollmentRoleFilter, setEnrollmentRoleFilter] = useState<string>("");
   const [viewMode, setViewMode] = useState<"table" | "hierarchy">("table");
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
@@ -1081,6 +1083,21 @@ export default function MembersPage() {
                                     </svg>
                                     Manage Pension Roles
                                   </button>
+                                  <button
+                                    onClick={() => {
+                                      setChangeHierarchyMember({ id: member.id, name: memberName });
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className="w-full px-4 py-2 text-left text-sm text-[#030712] hover:bg-[#F9FAFB] flex items-center gap-2 transition-colors"
+                                  >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <line x1="6" y1="3" x2="6" y2="15" />
+                                      <circle cx="18" cy="6" r="3" />
+                                      <circle cx="6" cy="18" r="3" />
+                                      <path d="M18 9a9 9 0 0 1-9 9" />
+                                    </svg>
+                                    Change Hierarchy
+                                  </button>
                                 </div>
                               )}
                             </div>
@@ -1178,6 +1195,17 @@ export default function MembersPage() {
           memberId={pensionRoleMember.id}
           memberName={pensionRoleMember.name}
           pensionEnrollments={pensionRoleMember.enrollments}
+        />
+      )}
+
+      {/* Change Hierarchy Modal */}
+      {changeHierarchyMember && (
+        <ChangeHierarchyModal
+          isOpen={!!changeHierarchyMember}
+          onClose={() => setChangeHierarchyMember(null)}
+          memberId={changeHierarchyMember.id}
+          memberName={changeHierarchyMember.name}
+          allMembers={apiMembers}
         />
       )}
       </div>

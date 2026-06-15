@@ -1,12 +1,13 @@
 "use client";
-import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, FileText, Users, CheckCircle, XCircle, Clock, Package, FileImage, X, ZoomIn } from "lucide-react";
+import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, FileText, Users, CheckCircle, XCircle, Clock, Package, FileImage, X, ZoomIn, ScanText, Loader2 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { 
+import {
   useMembershipRequest,
   useApproveMembershipRequest,
-  useRejectMembershipRequest 
+  useRejectMembershipRequest
 } from "@/lib/hooks/admin/useMembershipRequests";
+import { useNidExtractFront, useNidExtractBack, NidFrontData, NidBackData } from "@/lib/hooks/admin/useNidExtract";
 import { toast } from "sonner";
 import { useState } from "react";
 import RejectModal from "../RejectModal";
@@ -36,6 +37,23 @@ const statusConfig: Record<Status, { icon: React.ReactNode; style: string; text:
   },
 };
 
+interface ExtractedNidData {
+  name_bn?: string;
+  name_en?: string;
+  father_name_bn?: string;
+  mother_name_bn?: string;
+  date_of_birth?: string;
+  nid_number?: string;
+  address?: string;
+}
+
+function getStoragePath(url: string): string {
+  // Convert full URL like http://localhost:8000/storage/membershipapplication/nid/xxx.jpg
+  // to the relative path: membershipapplication/nid/xxx.jpg
+  const match = url.match(/\/storage\/(.+)$/);
+  return match ? match[1] : url;
+}
+
 export default function MembershipRequestDetailsPage() {
   const router = useRouter();
   const params = useParams();
@@ -43,23 +61,56 @@ export default function MembershipRequestDetailsPage() {
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
+  const [extractedData, setExtractedData] = useState<ExtractedNidData>({});
 
   const { data: requestData, isLoading, error } = useMembershipRequest(id);
   const { mutate: approveRequest, isPending: isApproving } = useApproveMembershipRequest();
   const { mutate: rejectRequest, isPending: isRejecting } = useRejectMembershipRequest();
+  const { mutate: extractFront, isPending: isExtractingFront } = useNidExtractFront();
+  const { mutate: extractBack, isPending: isExtractingBack } = useNidExtractBack();
 
   const application = requestData?.data?.application;
   const payment = requestData?.data?.payment;
   const pensionPackage = requestData?.data?.pension_package;
   const documents = requestData?.data?.documents;
 
-  // Debug: Log the documents to see what we're getting
-  console.log('Documents data:', documents);
-  console.log('Full request data:', requestData);
-
   const handleImageClick = (url: string, title: string) => {
     setSelectedImage({ url, title });
     setImageModalOpen(true);
+  };
+
+  const handleExtractFront = () => {
+    if (!documents?.nid_front) return;
+    const image_path = getStoragePath(documents.nid_front);
+    extractFront(
+      { image_path, side: 'front' },
+      {
+        onSuccess: (data: NidFrontData) => {
+          setExtractedData(prev => ({ ...prev, ...Object.fromEntries(Object.entries(data).filter(([, v]) => v !== null)) }));
+          toast.success('NID front data extracted successfully');
+        },
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || 'Failed to extract NID front data');
+        },
+      }
+    );
+  };
+
+  const handleExtractBack = () => {
+    if (!documents?.nid_back) return;
+    const image_path = getStoragePath(documents.nid_back);
+    extractBack(
+      { image_path, side: 'back' },
+      {
+        onSuccess: (data: NidBackData) => {
+          setExtractedData(prev => ({ ...prev, ...Object.fromEntries(Object.entries(data).filter(([, v]) => v !== null)) }));
+          toast.success('NID back data extracted successfully');
+        },
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || 'Failed to extract NID back data');
+        },
+      }
+    );
   };
 
   const handleApprove = () => {
@@ -124,6 +175,8 @@ export default function MembershipRequestDetailsPage() {
       </div>
     );
   }
+
+  const hasExtractedData = Object.keys(extractedData).length > 0;
 
   return (
     <>
@@ -317,7 +370,7 @@ export default function MembershipRequestDetailsPage() {
                       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
                         NID Front
                       </label>
-                      <div 
+                      <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
                         onClick={() => handleImageClick(documents.nid_front, "NID Front")}
                       >
@@ -329,10 +382,18 @@ export default function MembershipRequestDetailsPage() {
                           className="w-full h-40 object-cover"
                           unoptimized
                         />
-                        {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center pointer-events-none">
-                          <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
-                        </div> */}
                       </div>
+                      <button
+                        onClick={handleExtractFront}
+                        disabled={isExtractingFront}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-[13px] font-medium bg-[#068847] text-white rounded-lg hover:bg-[#057038] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {isExtractingFront ? (
+                          <><Loader2 size={14} className="animate-spin" /> Extracting...</>
+                        ) : (
+                          <><ScanText size={14} /> Extract NID Data</>
+                        )}
+                      </button>
                     </div>
                   )}
 
@@ -342,7 +403,7 @@ export default function MembershipRequestDetailsPage() {
                       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
                         NID Back
                       </label>
-                      <div 
+                      <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
                         onClick={() => handleImageClick(documents.nid_back, "NID Back")}
                       >
@@ -354,10 +415,18 @@ export default function MembershipRequestDetailsPage() {
                           className="w-full h-40 object-cover"
                           unoptimized
                         />
-                        {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center pointer-events-none">
-                          <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
-                        </div> */}
                       </div>
+                      <button
+                        onClick={handleExtractBack}
+                        disabled={isExtractingBack}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-[13px] font-medium bg-[#068847] text-white rounded-lg hover:bg-[#057038] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {isExtractingBack ? (
+                          <><Loader2 size={14} className="animate-spin" /> Extracting...</>
+                        ) : (
+                          <><ScanText size={14} /> Extract Address</>
+                        )}
+                      </button>
                     </div>
                   )}
 
@@ -367,7 +436,7 @@ export default function MembershipRequestDetailsPage() {
                       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
                         Signature
                       </label>
-                      <div 
+                      <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-white"
                         onClick={() => handleImageClick(documents.signature, "Signature")}
                       >
@@ -379,13 +448,48 @@ export default function MembershipRequestDetailsPage() {
                           className="w-full h-40 object-contain p-4"
                           unoptimized
                         />
-                        {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center pointer-events-none">
-                          <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
-                        </div> */}
                       </div>
                     </div>
                   )}
                 </div>
+
+                {/* Extracted NID Data Panel */}
+                {hasExtractedData && (
+                  <div className="mt-6 p-4 bg-[#F0FDF4] border border-[#A8DAC3] rounded-xl">
+                    <h3 className="text-[15px] font-semibold text-[#068847] mb-3 flex items-center gap-2">
+                      <ScanText size={16} />
+                      Extracted NID Information
+                    </h3>
+                    <p className="text-[12px] text-[#4A5565] mb-4">
+                      Review and verify the extracted data below. These are read from the NID card via AI OCR.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {extractedData.name_bn && (
+                        <ExtractedField label="নাম (বাংলা)" value={extractedData.name_bn} />
+                      )}
+                      {extractedData.name_en && (
+                        <ExtractedField label="Name (English)" value={extractedData.name_en} />
+                      )}
+                      {extractedData.father_name_bn && (
+                        <ExtractedField label="পিতার নাম" value={extractedData.father_name_bn} />
+                      )}
+                      {extractedData.mother_name_bn && (
+                        <ExtractedField label="মাতার নাম" value={extractedData.mother_name_bn} />
+                      )}
+                      {extractedData.date_of_birth && (
+                        <ExtractedField label="Date of Birth" value={extractedData.date_of_birth} />
+                      )}
+                      {extractedData.nid_number && (
+                        <ExtractedField label="NID Number" value={extractedData.nid_number} />
+                      )}
+                      {extractedData.address && (
+                        <div className="md:col-span-2">
+                          <ExtractedField label="ঠিকানা (Address)" value={extractedData.address} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : null}
           </div>
@@ -402,21 +506,21 @@ export default function MembershipRequestDetailsPage() {
               <div className="space-y-4">
                 <InfoItem label="Application Number" value={application.application_number} />
                 <InfoItem label="Status" value={statusConfig[application.status as Status]?.text || "Pending"} />
-                <InfoItem 
-                  label="Applied On" 
+                <InfoItem
+                  label="Applied On"
                   value={new Date(application.created_at).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
-                  })} 
+                  })}
                 />
-                <InfoItem 
-                  label="Last Updated" 
+                <InfoItem
+                  label="Last Updated"
                   value={new Date(application.updated_at).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
-                  })} 
+                  })}
                 />
               </div>
             </div>
@@ -434,8 +538,8 @@ export default function MembershipRequestDetailsPage() {
                   <InfoItem label="Amount" value={`৳${parseFloat(payment.amount).toLocaleString()}`} />
                   <InfoItem label="Gateway Fee" value={`৳${parseFloat(payment.gateway_fee).toLocaleString()}`} />
                   <InfoItem label="Payment Method" value={payment.payment_method.toUpperCase()} />
-                  <InfoItem 
-                    label="Payment Status" 
+                  <InfoItem
+                    label="Payment Status"
                     value={
                       <span className={`inline-flex items-center px-2 py-1 rounded text-[12px] font-medium ${
                         payment.status === 'completed' ? 'bg-[#DFF1E9] text-[#29A36A]' :
@@ -444,7 +548,7 @@ export default function MembershipRequestDetailsPage() {
                       }`}>
                         {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
                       </span>
-                    } 
+                    }
                   />
                   {payment.gateway_transaction_id && (
                     <InfoItem label="Transaction ID" value={payment.gateway_transaction_id} />
@@ -467,8 +571,8 @@ export default function MembershipRequestDetailsPage() {
                   <InfoItem label="Monthly Amount" value={`৳${parseFloat(pensionPackage.monthly_amount).toLocaleString()}`} />
                   <InfoItem label="Total Installments" value={`${pensionPackage.total_installments} months`} />
                   <InfoItem label="Maturity Amount" value={`৳${parseFloat(pensionPackage.maturity_amount).toLocaleString()}`} />
-                  <InfoItem 
-                    label="Package Status" 
+                  <InfoItem
+                    label="Package Status"
                     value={
                       <span className={`inline-flex items-center px-2 py-1 rounded text-[12px] font-medium ${
                         pensionPackage.status === 'active' ? 'bg-[#DFF1E9] text-[#29A36A]' :
@@ -476,7 +580,7 @@ export default function MembershipRequestDetailsPage() {
                       }`}>
                         {pensionPackage.status.charAt(0).toUpperCase() + pensionPackage.status.slice(1)}
                       </span>
-                    } 
+                    }
                   />
                 </div>
               </div>
@@ -510,15 +614,14 @@ export default function MembershipRequestDetailsPage() {
 
       {/* Image Zoom Modal */}
       {imageModalOpen && selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
           onClick={() => setImageModalOpen(false)}
         >
-          <div 
+          <div
             className="relative max-w-5xl max-h-[90vh] w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               onClick={() => setImageModalOpen(false)}
               className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
@@ -526,12 +629,10 @@ export default function MembershipRequestDetailsPage() {
               <X size={32} />
             </button>
 
-            {/* Title */}
             <div className="absolute -top-12 left-0 text-white text-lg font-semibold">
               {selectedImage.title}
             </div>
 
-            {/* Image */}
             <div className="bg-white rounded-lg p-4 max-h-[90vh] overflow-auto">
               <Image
                 src={selectedImage.url}
@@ -543,7 +644,6 @@ export default function MembershipRequestDetailsPage() {
               />
             </div>
 
-            {/* Download Button */}
             <a
               href={selectedImage.url}
               target="_blank"
@@ -563,6 +663,17 @@ function InfoItem({ label, value }: { label: string; value: string | React.React
   return (
     <div>
       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider mb-1 block">
+        {label}
+      </label>
+      <p className="text-[14px] text-[#030712] font-medium">{value}</p>
+    </div>
+  );
+}
+
+function ExtractedField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-white rounded-lg p-3 border border-[#D1FAE5]">
+      <label className="text-[11px] font-medium text-[#059669] uppercase tracking-wider mb-1 block">
         {label}
       </label>
       <p className="text-[14px] text-[#030712] font-medium">{value}</p>

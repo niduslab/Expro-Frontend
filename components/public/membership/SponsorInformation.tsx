@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, Search, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Search, CheckCircle, XCircle, Loader2, Lock } from 'lucide-react';
 import StepsNavigation from './StepsNavigation';
 import { 
   useValidateSponsor, 
@@ -31,6 +31,7 @@ interface SponsorInformationProps {
   currentStep: number;
   maxStepReached: number;
   onStepClick: (index: number) => void;
+  locked?: boolean;
 }
 
 const SponsorInformation: React.FC<SponsorInformationProps> = ({
@@ -42,6 +43,7 @@ const SponsorInformation: React.FC<SponsorInformationProps> = ({
   currentStep,
   maxStepReached,
   onStepClick,
+  locked = false,
 }) => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -160,6 +162,8 @@ const SponsorInformation: React.FC<SponsorInformationProps> = ({
   };
 
   const validate = () => {
+    if (locked) return true;
+
     const nextErrors: FormErrors = {};
 
     if (!data.sponsorMemberId.trim()) {
@@ -193,19 +197,51 @@ const SponsorInformation: React.FC<SponsorInformationProps> = ({
           <div className="mb-8">
             <h2 className="text-[#00341C] text-3xl font-bold mb-2">Sponsor Information</h2>
             <p className="text-gray-500 text-sm md:text-base">
-              If you are referred by any existing member, please provide their details
+              {locked
+                ? "You are the sponsor for this application"
+                : "If you are referred by any existing member, please provide their details"}
             </p>
           </div>
 
           {/* Steps Navigation */}
-          <StepsNavigation 
+          <StepsNavigation
             steps={steps}
             currentStep={currentStep}
             maxStepReached={maxStepReached}
             onStepClick={onStepClick}
           />
 
-          {/* Search Sponsor Section */}
+          {/* Locked sponsor view */}
+          {locked && (
+            <div className="p-6 bg-green-50 border-2 border-green-200 rounded-xl mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-green-700" />
+                </div>
+                <div>
+                  <p className="font-semibold text-green-900 text-sm">Sponsor Auto-Set</p>
+                  <p className="text-xs text-green-700">You are automatically set as the sponsor for this member</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-4 border border-green-200">
+                  <p className="text-xs text-gray-500 mb-1">Sponsor Name</p>
+                  <p className="font-semibold text-gray-900">{data.sponsorName || "—"}</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-green-200">
+                  <p className="text-xs text-gray-500 mb-1">Sponsor Member ID</p>
+                  <p className="font-semibold text-gray-900 font-mono">{data.sponsorMemberId || "—"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mt-4 text-green-700">
+                <CheckCircle size={16} />
+                <span className="text-sm font-medium">Verified and eligible to be a sponsor</span>
+              </div>
+            </div>
+          )}
+
+          {/* Search + manual input — hidden when sponsor is locked */}
+          {!locked && (<>
           <div className="mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Search for Sponsor</h3>
             <p className="text-sm text-gray-600 mb-4">
@@ -421,6 +457,7 @@ const SponsorInformation: React.FC<SponsorInformationProps> = ({
             </div>
 
           </div>
+          </>)}
         </div>
 
         {/* Navigation Buttons */}

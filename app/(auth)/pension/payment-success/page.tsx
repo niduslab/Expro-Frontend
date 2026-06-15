@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { CheckCircle2, Loader2, Package, Receipt, ArrowRight } from "lucide-react";
+import { CheckCircle2, Loader2, Package, Receipt, ArrowRight, Download } from "lucide-react";
+import { downloadPaymentPDF } from "@/lib/utils/downloadPaymentPDF";
 import { usePensionPayment } from "@/lib/hooks/user/usePensionPayment";
 import { useMyPensionEnrollments } from "@/lib/hooks/user/usePensionEnrollment";
 import { fmtMoney } from "@/app/(auth)/dashboard/pensions/utils";
@@ -262,6 +263,25 @@ export default function PensionPaymentSuccessPage() {
                 >
                   View Pension Details
                   <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() =>
+                    downloadPaymentPDF({
+                      transactionId: paymentId ? `PAY-${paymentId}` : `PAY-${Date.now()}`,
+                      type: "debit",
+                      category: "pension_installment",
+                      amount: paymentDetails?.amount ?? enrollment?.amount_per_installment ?? 0,
+                      status: "completed",
+                      description: enrollment
+                        ? `Pension installment for enrollment ${enrollment.enrollment_number}`
+                        : "Pension installment payment",
+                      createdAt: new Date().toISOString(),
+                    })
+                  }
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-medium text-[#068847] border border-[#068847] hover:bg-[#F0FDF4] transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Receipt
                 </button>
                 <button
                   onClick={handleViewDashboard}

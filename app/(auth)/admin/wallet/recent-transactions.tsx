@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Clock, CheckCircle, XCircle, ArrowUpCircle, ArrowDownCircle, ChevronLeft, ChevronRight, Filter, Calendar, Wallet } from "lucide-react";
+import { Clock, CheckCircle, XCircle, ArrowUpCircle, ArrowDownCircle, ChevronLeft, ChevronRight, Filter, Calendar, Wallet, Download } from "lucide-react";
 import { useCompanyWalletTransactions } from "@/lib/hooks";
 import { format } from "date-fns";
+import { downloadPaymentPDF } from "@/lib/utils/downloadPaymentPDF";
 
 type Status = "completed" | "pending" | "failed";
 type TransactionType = "credit" | "debit" | "all";
@@ -197,6 +198,9 @@ export default function RecentTransactions() {
                     <th className="text-left py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
                       Status
                     </th>
+                    <th className="text-center py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                      Receipt
+                    </th>
                   </tr>
                 </thead>
 
@@ -269,6 +273,27 @@ export default function RecentTransactions() {
                             {statusConfig[status].icon}
                             {statusConfig[status].label}
                           </span>
+                        </td>
+                        <td className="py-4 px-4 text-center">
+                          <button
+                            onClick={() =>
+                              downloadPaymentPDF({
+                                transactionId: tx.transaction_id,
+                                type: tx.type as "credit" | "debit",
+                                category: tx.category,
+                                amount: tx.amount,
+                                balanceAfter: tx.balance_after,
+                                status: tx.status || "completed",
+                                description: tx.description,
+                                createdAt: tx.created_at,
+                              })
+                            }
+                            title="Download receipt PDF"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-[#068847] border border-[#068847] rounded-lg hover:bg-[#F0FDF4] transition-colors"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            PDF
+                          </button>
                         </td>
                       </tr>
                     );

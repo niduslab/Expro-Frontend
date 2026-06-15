@@ -12,23 +12,25 @@ import {
   AccountTransfer,
   AccountTransferStatistics,
 } from "@/lib/hooks/admin/useAccountTransfers";
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Eye, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Clock,
   DollarSign,
   FileText,
   Download,
-  Search
+  Search,
+  Zap
 } from "lucide-react";
 import TransferDetailsModal from "./TransferDetailsModal";
 import ReviewModal from "./ReviewModal";
 import ApproveModal from "./ApproveModal";
 import RejectModal from "./RejectModal";
 import ClearOutstandingModal from "./ClearOutstandingModal";
+import DirectTransferModal from "./DirectTransferModal";
 
 type Status = "requested" | "under_review" | "approved" | "rejected" | "completed" | "cancelled";
 
@@ -97,6 +99,7 @@ export default function AccountTransfersPage() {
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showClearOutstandingModal, setShowClearOutstandingModal] = useState(false);
+  const [showDirectTransferModal, setShowDirectTransferModal] = useState(false);
 
   // Fetch data
   const { data: response, isLoading } = useAccountTransfers({
@@ -191,13 +194,23 @@ export default function AccountTransfersPage() {
                 Manage pension account transfer requests
               </p>
             </div>
-            <button
-              onClick={() => router.push('/admin/dashboard')}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowDirectTransferModal(true)}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors"
+                title="Directly transfer an enrollment to an existing member (bypasses member request flow)"
+              >
+                <Zap className="h-4 w-4" />
+                Direct Transfer
+              </button>
+              <button
+                onClick={() => router.push('/admin/dashboard')}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Dashboard
+              </button>
+            </div>
           </div>
         </div>
 
@@ -588,6 +601,13 @@ export default function AccountTransfersPage() {
             setShowClearOutstandingModal(false);
             setSelectedTransfer(null);
           }}
+        />
+      )}
+
+      {showDirectTransferModal && (
+        <DirectTransferModal
+          onClose={() => setShowDirectTransferModal(false)}
+          onSuccess={() => setShowDirectTransferModal(false)}
         />
       )}
     </div>

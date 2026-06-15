@@ -35,9 +35,9 @@ export interface AdminCreateMemberResponse {
   success: boolean;
   message: string;
   data: {
-    member: {
+    application: {
       id: number;
-      member_id: string;
+      application_number: string;
       name_english: string;
       email: string;
       mobile: string;
@@ -108,7 +108,7 @@ export const createMemberByAdmin = async (
   }
 
   const { data } = await apiClient.post(
-    "/admin/members/create",
+    "/public/membership-application",
     formData,
     {
       headers: {

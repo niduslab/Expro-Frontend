@@ -821,6 +821,7 @@ export default function DashboardPage() {
                   { label: "Wallet", href: "/dashboard/wallets", icon: Wallet, color: "text-emerald-600", bg: "bg-emerald-50" },
                   { label: "Pension Plans", href: "/dashboard/pension", icon: Package, color: "text-amber-600", bg: "bg-amber-50" },
                   { label: "Nominees", href: "/dashboard/nominees", icon: Users, color: "text-purple-600", bg: "bg-purple-50" },
+                  { label: "My Members", href: "/dashboard/membership", icon: Building2, color: "text-green-600", bg: "bg-green-50" },
                 ].map(({ label, href, icon: Icon, color, bg }) => (
                   <Link
                     key={label}

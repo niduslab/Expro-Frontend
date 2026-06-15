@@ -21,6 +21,7 @@ export const userSidebarItems = [
   { name: "Project", href: "/dashboard/projects", icon: FolderKanban },
   { name: "My Pensions", href: "/dashboard/pensions", icon: FileText },
   { name: "Account Transfers", href: "/dashboard/account-transfers", icon: ArrowLeftRight },
+  { name: "My Members", href: "/dashboard/membership", icon: User2 },
   { name: "Apply for Role", href: "/dashboard/role-application", icon: Award },
   { name: "Nominee", href: "/dashboard/nominees", icon: Users },
   { name: "Branch", href: "/dashboard/branches", icon: LocationEdit },

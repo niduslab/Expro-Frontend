@@ -137,6 +137,14 @@ export interface ClearOutstandingPayload {
   notes?: string;
 }
 
+export interface DirectTransferPayload {
+  pension_enrollment_id: number;
+  to_user_id: number;
+  transfer_reason: 'unable_to_continue' | 'financial_hardship' | 'relocation' | 'health_issues' | 'death' | 'other';
+  reason_details?: string;
+  review_notes?: string;
+}
+
 /**
  * Hook: Get All Account Transfers (Admin)
  * Fetches paginated list of all account transfers
@@ -332,6 +340,33 @@ export const useClearOutstanding = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['accountTransfer', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['accountTransfers'] });
+      queryClient.invalidateQueries({ queryKey: ['accountTransferStatistics'] });
+    },
+  });
+};
+
+/**
+ * Hook: Admin Direct Transfer (Admin)
+ * Transfers enrollment + wallet balance + commissions directly to an existing member.
+ * Used for admin-initiated transfers (death, incapacity, etc.).
+ */
+export const useDirectTransfer = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    ApiResponse<AccountTransfer>,
+    AxiosError,
+    DirectTransferPayload
+  >({
+    mutationFn: async (payload) => {
+      const response = await apiRequest.post<AccountTransfer>(
+        '/admin/account-transfers/direct',
+        payload
+      );
+      return response.data;
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accountTransfers'] });
       queryClient.invalidateQueries({ queryKey: ['accountTransferStatistics'] });
     },

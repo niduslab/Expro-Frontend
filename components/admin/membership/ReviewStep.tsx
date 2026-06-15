@@ -140,7 +140,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
           const paymentData = res.data.payment;
           
           // Store member and payment details
-          setMemberId(res.data.member?.id || null);
+          setMemberId(res.data.application?.id || null);
           
           console.log("🔗 Redirecting to payment URL:", paymentData.bkashURL);
           
@@ -158,7 +158,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         } else {
           console.error("❌ No payment data in response");
           // Fallback: show payment modal
-          setMemberId(res.data?.member?.id || null);
+          setMemberId(res.data?.application?.id || null);
           setShowPaymentModal(true);
         }
       },

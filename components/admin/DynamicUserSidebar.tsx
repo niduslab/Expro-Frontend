@@ -7,29 +7,20 @@ import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
 import { userSidebarItems } from "./user-sidebar-items";
 import { LogoutButton } from "./LogoutButton";
-import { useMemberDashboard } from "@/lib/hooks/admin/useUsers";
+import { useAvailableRoles } from "@/lib/hooks/user/usePensionRoleApplications";
+
+const ELIGIBLE_ROLES = ["executive_member", "project_presenter", "assistant_pp"];
 
 export function DynamicUserSidebar() {
   const pathname = usePathname();
-  const { data: dashboardData } = useMemberDashboard();
+  const { data: availableRolesData } = useAvailableRoles();
 
-  // Get current pension role from dashboard data
-  const pensionEnrollments = dashboardData?.data?.pension_enrollments || [];
-  
-  // Check if user has any advanced role (executive_member, project_presenter, assistant_pp)
-  const hasAdvancedRole = pensionEnrollments.some((enrollment: any) => {
-    const roles = enrollment.pension_package_roles || [];
-    return roles.some((role: any) => 
-      role.is_active && 
-      ['executive_member', 'project_presenter', 'assistant_pp'].includes(role.role)
-    );
-  });
+  const currentRole = availableRolesData?.data?.current_role;
+  const hasAdvancedRole = currentRole && ELIGIBLE_ROLES.includes(currentRole.value);
 
-  // Filter out "Apply for Role" if user already has an advanced role
-  const filteredItems = userSidebarItems.filter(item => {
-    if (item.href === "/dashboard/role-application") {
-      return !hasAdvancedRole;
-    }
+  const filteredItems = userSidebarItems.filter((item) => {
+    if (item.href === "/dashboard/role-application") return !hasAdvancedRole;
+    if (item.href === "/dashboard/membership") return !!hasAdvancedRole;
     return true;
   });
 

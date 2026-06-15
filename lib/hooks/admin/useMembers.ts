@@ -396,3 +396,24 @@ export const useDeleteNominee = () => {
     },
   });
 };
+
+export const useChangeHierarchy = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    ApiResponse<void>,
+    AxiosError,
+    { userId: number; new_sponsor_id: number; reason?: string }
+  >({
+    mutationFn: async ({ userId, ...payload }) => {
+      const response = await apiRequest.post<void>(
+        `/admin/member/${userId}/change-hierarchy`,
+        payload,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+    },
+  });
+};
