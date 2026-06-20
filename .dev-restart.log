@@ -124,3 +124,27 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities (f
  GET /dashboard/membership 200 in 58ms (next.js: 6ms, proxy.ts: 8ms, application-code: 44ms)
  GET /dashboard/membershipsdf 404 in 466ms (next.js: 135ms, proxy.ts: 10ms, application-code: 320ms)
  GET /nope-xyz 404 in 47ms (next.js: 5ms, proxy.ts: 3ms, application-code: 38ms)
+ GET /dashboard/membershipsdf 404 in 101ms (next.js: 10ms, proxy.ts: 5ms, application-code: 85ms)
+✓ Compiled in 134ms
+ GET /admin/membersss 404 in 352ms (next.js: 111ms, proxy.ts: 9ms, application-code: 233ms)
+✓ Compiled in 306ms
+✓ Compiled in 228ms
+✓ Compiled in 160ms
+✓ Compiled in 135ms
+✓ Compiled in 114ms
+✓ Compiled in 135ms
+✓ Compiled in 112ms
+ GET / 200 in 286ms (next.js: 212ms, proxy.ts: 6ms, application-code: 67ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin/membersss 404 in 357ms (next.js: 113ms, proxy.ts: 6ms, application-code: 238ms)
+ GET /admin/members 200 in 546ms (next.js: 115ms, proxy.ts: 5ms, application-code: 425ms)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin 200 in 217ms (next.js: 145ms, proxy.ts: 8ms, application-code: 64ms)
+ GET /admin/members 200 in 113ms (next.js: 6ms, proxy.ts: 9ms, application-code: 98ms)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+✓ Compiled in 107ms
+✓ Compiled in 147ms
+✓ Compiled in 108ms
+✓ Compiled in 100ms
