@@ -198,7 +198,6 @@ export default function MembersPage() {
     per_page: perPage,
     search: search || undefined,
     status: statusFilter || undefined,
-    pension_role: enrollmentRoleFilter || undefined, // Filter by enrollment role
   });
 
   // Fetch pension packages for filter
@@ -234,7 +233,17 @@ export default function MembersPage() {
         );
         if (!hasPackage) return false;
       }
-      
+
+      // Package role filter — match against the active roles shown in the table
+      if (enrollmentRoleFilter) {
+        const hasRole = m.pension_enrollments?.some((enrollment: any) =>
+          enrollment.package_roles?.some(
+            (pkgRole: any) => pkgRole.is_active && pkgRole.role === enrollmentRoleFilter
+          )
+        );
+        if (!hasRole) return false;
+      }
+
       return true;
     });
 
@@ -265,7 +274,7 @@ export default function MembersPage() {
     });
 
     return list;
-  }, [apiMembers, typeFilter, pensionFilter, sortKey, sortDir]);
+  }, [apiMembers, typeFilter, pensionFilter, enrollmentRoleFilter, sortKey, sortDir]);
 
   const members = filtered;
 
@@ -737,6 +746,7 @@ export default function MembersPage() {
               <option value="executive_member">Executive Member</option>
               <option value="project_presenter">Project Presenter</option>
               <option value="assistant_pp">Assistant PP</option>
+              <option value="general_member">General Member</option>
             </select>
 
             {/*  */}
