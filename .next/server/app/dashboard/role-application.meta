@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(auth)/layout,_N_T_/(auth)/dashboard/layout,_N_T_/(auth)/dashboard/role-application/layout,_N_T_/(auth)/dashboard/role-application/page,_N_T_/dashboard/role-application"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KGF1dGgp/dashboard/role-application/__PAGE__",
+    "/!KGF1dGgp/dashboard/role-application",
+    "/!KGF1dGgp/dashboard",
+    "/!KGF1dGgp",
+    "/_index",
+    "/_head"
+  ]
+}
