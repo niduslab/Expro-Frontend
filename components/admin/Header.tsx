@@ -13,23 +13,28 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const pathname = usePathname();
 
   const roles = profile?.roles || [];
-  
+
   // Check if user has admin role (admin, chairman) OR advanced pension roles
-  const hasAdminRole = roles.some(role => role === 'admin' || role === 'chairman');
-  
+  const hasAdminRole = roles.some(
+    (role) => role === "admin" || role === "chairman",
+  );
+
   // Check for pension package roles (executive_member, project_presenter, assistant_pp)
   const pensionEnrollments = profile?.pension_enrollments || [];
   const hasAdvancedPensionRole = pensionEnrollments.some((enrollment: any) => {
     const pensionRoles = enrollment.pension_package_roles || [];
-    return pensionRoles.some((role: any) => 
-      role.is_active && 
-      ['executive_member', 'project_presenter', 'assistant_pp'].includes(role.role)
+    return pensionRoles.some(
+      (role: any) =>
+        role.is_active &&
+        ["executive_member", "project_presenter", "assistant_pp"].includes(
+          role.role,
+        ),
     );
   });
-  
+
   // User can access admin if they have admin role OR advanced pension role
   const canAccessAdmin = hasAdminRole || hasAdvancedPensionRole;
-  
+
   const isAdminRoute = pathname?.startsWith("/admin");
 
   const handleProfileClick = () => {
@@ -87,7 +92,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
             title="Go to Member Dashboard"
           >
             <Users className="w-4 h-4" />
-            <span className="hidden md:inline text-sm font-medium">
+            <span className="hidden md:inline text-sm md:text-[10px] lg:text-sm font-medium">
               Member Dashboard
             </span>
           </button>
@@ -114,9 +119,9 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
             <Image
               src={
                 profile?.member?.photo
-                  ? profile.member.photo.startsWith('http')
+                  ? profile.member.photo.startsWith("http")
                     ? profile.member.photo
-                    : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000'}/storage/${profile.member.photo}`
+                    : `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") || "http://localhost:8000"}/storage/${profile.member.photo}`
                   : "/images/default-avatar.svg"
               }
               alt="avatar"
@@ -126,11 +131,13 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
             />
           </div>
 
-          <div className="hidden md:block text-sm">
+          <div className="hidden md:block text-sm md:text-[10px] xl:text-sm">
             <p className="font-semibold text-gray-900">
               {profile?.member?.name_english}
             </p>
-            <p className="text-xs text-gray-500 capitalize">{profile?.roles[0]}</p>
+            <p className="text-xs text-gray-500 capitalize">
+              {profile?.roles[0]}
+            </p>
           </div>
         </div>
       </div>

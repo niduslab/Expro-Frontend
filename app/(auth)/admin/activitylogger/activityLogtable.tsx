@@ -17,7 +17,7 @@ import {
   parseCauser,
   parseSubject,
 } from "./activityLogUI";
-import { Search, X, Filter, Calendar, Layers } from "lucide-react";
+import { Search, X, Filter, Layers } from "lucide-react";
 import CustomSelect from "@/components/admin/CustomSelect";
 import DatePicker from "@/components/ui/date-picker";
 import Image from "next/image";

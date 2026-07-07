@@ -124,9 +124,10 @@ export default function EventDetailModal({
                   <span className="font-semibold text-[12px] leading-[150%] tracking-[-0.01em] text-[#6A7282] uppercase">
                     Description
                   </span>
-                  <p className="font-normal text-[14px] leading-[160%] tracking-[-0.01em] text-[#030712] whitespace-pre-wrap">
-                    {event.description}
-                  </p>
+                  <div
+                    className="font-normal text-[14px] leading-[160%] tracking-[-0.01em] text-[#030712] prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: event.description }}
+                  />
                 </div>
               )}
 

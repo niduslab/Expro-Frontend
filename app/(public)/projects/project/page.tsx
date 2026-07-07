@@ -155,10 +155,10 @@ export default function Project() {
                     <h3 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-green-700 transition-colors">
                       {service.title}
                     </h3>
-                    <p className="text-gray-600 mb-6 flex-grow leading-relaxed line-clamp-4">
-                      {service.description}
-                    </p>
-
+                    <div
+                      className="text-gray-600 mb-6 flex-grow leading-relaxed line-clamp-4 [&>p]:mb-0"
+                      dangerouslySetInnerHTML={{ __html: service.description }}
+                    />
                     <Link
                       href={`/projects/project-details/${String(service.id)}`}
                       className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 mb-8 transition-colors group/link"

@@ -7,7 +7,7 @@ import {
   SquareArrowRightExit,
 } from "lucide-react";
 import RecentTransactions from "./recent-transactions";
-import { useCompanyWalletTransactions } from "@/lib/hooks";
+import { useCompanyWalletTransactions } from "@/lib/hooks/admin/useWallet";
 
 const WalletBallance = () => {
   // Fetch wallet data from transactions API (first page to get wallet info)
@@ -16,7 +16,7 @@ const WalletBallance = () => {
     per_page: 1, // Just need 1 item to get wallet data
   });
 
-  const wallet = transactionsData?.data?.wallet;
+  const wallet = transactionsData?.wallet;
 
   const stats = [
     {

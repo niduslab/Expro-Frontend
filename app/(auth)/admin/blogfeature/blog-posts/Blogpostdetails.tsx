@@ -127,7 +127,10 @@ export default function BlogPostDetailModal({
               </div>
 
               {post.excerpt && (
-                <DetailField label="Excerpt" value={post.excerpt} />
+                <div
+                  className="prose prose-sm max-w-none text-[#030712] [&>p]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: post.excerpt }}
+                />
               )}
 
               <div className="flex flex-col gap-2">
@@ -158,9 +161,10 @@ export default function BlogPostDetailModal({
               <p className="font-semibold text-[18px] leading-[150%] tracking-[-0.01em] text-[#030712]">
                 Content
               </p>
-              <div className="bg-[#f8faf7] rounded-xl p-4 text-sm text-[#4a4845] leading-relaxed max-h-40 overflow-y-auto whitespace-pre-wrap border border-[#e8e6e0]">
-                {post.content || "—"}
-              </div>
+              <div
+                className="bg-[#f8faf7] rounded-xl p-4 text-sm text-[#4a4845] leading-relaxed max-h-40 overflow-y-auto whitespace-pre-wrap border border-[#e8e6e0]"
+                dangerouslySetInnerHTML={{ __html: post.excerpt || "" }}
+              ></div>
               <SectionDivider />
             </div>
 

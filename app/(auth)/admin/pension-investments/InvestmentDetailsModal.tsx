@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { X, TrendingUp, DollarSign, Calendar, AlertCircle, CheckCircle, Users } from "lucide-react";
+import {
+  X,
+  TrendingUp,
+  DollarSign,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  Users,
+} from "lucide-react";
 import {
   useUpdateValuation,
   useApproveInvestment,
@@ -23,10 +31,14 @@ export default function InvestmentDetailsModal({
   const [currentValue, setCurrentValue] = useState(investment.current_value);
   const [valuationNotes, setValuationNotes] = useState("");
 
-  const { mutate: updateValuation, isPending: isUpdatingValuation } = useUpdateValuation();
-  const { mutate: approveInvestment, isPending: isApproving } = useApproveInvestment();
-  const { mutate: distributeProfits, isPending: isDistributing } = useDistributeProfits();
-  const { mutate: processDistributions, isPending: isProcessing } = useProcessDistributions();
+  const { mutate: updateValuation, isPending: isUpdatingValuation } =
+    useUpdateValuation();
+  const { mutate: approveInvestment, isPending: isApproving } =
+    useApproveInvestment();
+  const { mutate: distributeProfits, isPending: isDistributing } =
+    useDistributeProfits();
+  const { mutate: processDistributions, isPending: isProcessing } =
+    useProcessDistributions();
 
   const handleUpdateValuation = () => {
     if (!currentValue || parseFloat(currentValue) <= 0) {
@@ -52,10 +64,10 @@ export default function InvestmentDetailsModal({
         onError: (err: any) => {
           toast.error(
             err?.response?.data?.message || "Failed to update valuation",
-            { id: "update-valuation" }
+            { id: "update-valuation" },
           );
         },
-      }
+      },
     );
   };
 
@@ -71,7 +83,7 @@ export default function InvestmentDetailsModal({
         onError: (err: any) => {
           toast.error(
             err?.response?.data?.message || "Failed to approve investment",
-            { id: "approve-investment" }
+            { id: "approve-investment" },
           );
         },
       });
@@ -84,19 +96,25 @@ export default function InvestmentDetailsModal({
       return;
     }
 
-    if (confirm("This will create profit distribution records for all completed pension enrollments. Continue?")) {
-      toast.loading("Creating profit distributions...", { id: "distribute-profits" });
+    if (
+      confirm(
+        "This will create profit distribution records for all completed pension enrollments. Continue?",
+      )
+    ) {
+      toast.loading("Creating profit distributions...", {
+        id: "distribute-profits",
+      });
       distributeProfits(investment.id, {
         onSuccess: (res) => {
           toast.success(
             `${res.data?.total_distributions || 0} distributions created successfully!`,
-            { id: "distribute-profits" }
+            { id: "distribute-profits" },
           );
         },
         onError: (err: any) => {
           toast.error(
             err?.response?.data?.message || "Failed to create distributions",
-            { id: "distribute-profits" }
+            { id: "distribute-profits" },
           );
         },
       });
@@ -104,19 +122,25 @@ export default function InvestmentDetailsModal({
   };
 
   const handleProcessDistributions = () => {
-    if (confirm("This will credit profits to member wallets. This action cannot be undone. Continue?")) {
-      toast.loading("Processing distributions...", { id: "process-distributions" });
+    if (
+      confirm(
+        "This will credit profits to member wallets. This action cannot be undone. Continue?",
+      )
+    ) {
+      toast.loading("Processing distributions...", {
+        id: "process-distributions",
+      });
       processDistributions(investment.id, {
         onSuccess: (res) => {
           toast.success(
             `${res.data?.processed || 0} distributions processed successfully!`,
-            { id: "process-distributions" }
+            { id: "process-distributions" },
           );
         },
         onError: (err: any) => {
           toast.error(
             err?.response?.data?.message || "Failed to process distributions",
-            { id: "process-distributions" }
+            { id: "process-distributions" },
           );
         },
       });
@@ -181,7 +205,9 @@ export default function InvestmentDetailsModal({
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className="w-5 h-5 text-blue-600" />
-                <p className="text-sm font-medium text-blue-900">Amount Invested</p>
+                <p className="text-sm font-medium text-blue-900">
+                  Amount Invested
+                </p>
               </div>
               <p className="text-2xl font-bold text-blue-900">
                 ৳{parseFloat(investment.amount_invested).toLocaleString()}
@@ -191,7 +217,9 @@ export default function InvestmentDetailsModal({
             <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-green-600" />
-                <p className="text-sm font-medium text-green-900">Current Value</p>
+                <p className="text-sm font-medium text-green-900">
+                  Current Value
+                </p>
               </div>
               <p className="text-2xl font-bold text-green-900">
                 ৳{parseFloat(investment.current_value).toLocaleString()}
@@ -201,7 +229,9 @@ export default function InvestmentDetailsModal({
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-purple-600" />
-                <p className="text-sm font-medium text-purple-900">Profit Generated</p>
+                <p className="text-sm font-medium text-purple-900">
+                  Profit Generated
+                </p>
               </div>
               <p className="text-2xl font-bold text-purple-900">
                 ৳{parseFloat(investment.profit_generated).toLocaleString()}
@@ -221,14 +251,16 @@ export default function InvestmentDetailsModal({
 
           {/* Investment Details */}
           <div className="bg-[#F9FAFB] rounded-xl p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-[#030712]">Investment Details</h3>
-            
+            <h3 className="text-lg font-semibold text-[#030712]">
+              Investment Details
+            </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-[#6A7282] mb-1">Sector</p>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getSectorBadgeColor(
-                    investment.sector
+                    investment.sector,
                   )}`}
                 >
                   {investment.sector.replace("_", " ")}
@@ -238,7 +270,9 @@ export default function InvestmentDetailsModal({
               {investment.sub_sector && (
                 <div>
                   <p className="text-sm text-[#6A7282] mb-1">Sub-sector</p>
-                  <p className="text-sm font-medium text-[#030712]">{investment.sub_sector}</p>
+                  <p className="text-sm font-medium text-[#030712]">
+                    {investment.sub_sector}
+                  </p>
                 </div>
               )}
 
@@ -246,7 +280,7 @@ export default function InvestmentDetailsModal({
                 <p className="text-sm text-[#6A7282] mb-1">Status</p>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeColor(
-                    investment.status
+                    investment.status,
                   )}`}
                 >
                   {investment.status}
@@ -257,7 +291,7 @@ export default function InvestmentDetailsModal({
                 <p className="text-sm text-[#6A7282] mb-1">Risk Level</p>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getRiskBadgeColor(
-                    investment.risk_level
+                    investment.risk_level,
                   )}`}
                 >
                   {investment.risk_level}
@@ -289,7 +323,8 @@ export default function InvestmentDetailsModal({
               <div>
                 <p className="text-sm text-[#6A7282] mb-1">Expected Return</p>
                 <p className="text-sm font-medium text-[#030712]">
-                  {parseFloat(investment.expected_return_percentage).toFixed(2)}%
+                  {parseFloat(investment.expected_return_percentage).toFixed(2)}
+                  %
                 </p>
               </div>
 
@@ -297,16 +332,19 @@ export default function InvestmentDetailsModal({
                 <div>
                   <p className="text-sm text-[#6A7282] mb-1">Actual Return</p>
                   <p className="text-sm font-medium text-[#030712]">
-                    {parseFloat(investment.actual_return_percentage).toFixed(2)}%
+                    {parseFloat(investment.actual_return_percentage).toFixed(2)}
+                    %
                   </p>
                 </div>
               )}
             </div>
-
             {investment.description && (
               <div>
                 <p className="text-sm text-[#6A7282] mb-1">Description</p>
-                <p className="text-sm text-[#030712]">{investment.description}</p>
+                <div
+                  className="text-sm text-[#030712] [&>p]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: investment.description }}
+                />
               </div>
             )}
 
@@ -328,7 +366,8 @@ export default function InvestmentDetailsModal({
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-600" />
                   <p className="text-sm font-medium text-[#030712]">
-                    Approved on {new Date(investment.approved_at).toLocaleDateString()}
+                    Approved on{" "}
+                    {new Date(investment.approved_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -338,7 +377,9 @@ export default function InvestmentDetailsModal({
           {/* Update Valuation */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[#030712]">Update Valuation</h3>
+              <h3 className="text-lg font-semibold text-[#030712]">
+                Update Valuation
+              </h3>
               {!showValuationForm && (
                 <button
                   onClick={() => setShowValuationForm(true)}
@@ -399,7 +440,9 @@ export default function InvestmentDetailsModal({
 
           {/* Actions */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-[#030712] mb-4">Actions</h3>
+            <h3 className="text-lg font-semibold text-[#030712] mb-4">
+              Actions
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {!investment.approved_by && (
                 <button
@@ -414,7 +457,9 @@ export default function InvestmentDetailsModal({
 
               <button
                 onClick={handleDistributeProfits}
-                disabled={isDistributing || parseFloat(investment.profit_generated) <= 0}
+                disabled={
+                  isDistributing || parseFloat(investment.profit_generated) <= 0
+                }
                 className="flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Users className="w-4 h-4" />
@@ -435,7 +480,9 @@ export default function InvestmentDetailsModal({
               <div className="flex gap-2">
                 <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-900">
-                  <p className="font-medium mb-1">Profit Distribution Process:</p>
+                  <p className="font-medium mb-1">
+                    Profit Distribution Process:
+                  </p>
                   <ol className="list-decimal list-inside space-y-1 text-blue-800">
                     <li>Update valuation to calculate profit</li>
                     <li>Create distributions for all completed enrollments</li>

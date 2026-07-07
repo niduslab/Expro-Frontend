@@ -8,6 +8,7 @@ import {
   GALLERY_STATUS_OPTIONS,
 } from "./galleryModalShared";
 import CustomSelect from "@/components/admin/CustomSelect";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 type Setter = (field: keyof CreateGalleryPayload, value: unknown) => void;
 
@@ -57,12 +58,10 @@ export function GalleryDetailsSection({
 
       <div>
         <FieldLabel label="Description" />
-        <textarea
-          className={textareaClass}
-          rows={3}
-          placeholder="Short description of this gallery..."
+        <RichTextEditor
           value={String(formData.description ?? "")}
-          onChange={(e) => set("description", e.target.value)}
+          onChange={(html) => set("description", html)}
+          placeholder="Short description of this gallery..."
         />
       </div>
 

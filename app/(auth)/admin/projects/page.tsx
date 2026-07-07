@@ -265,9 +265,12 @@ export default function AdminProjects() {
 
                 {/* Body */}
                 <div className="flex flex-col gap-4 flex-1">
-                  <span className="text-[#4A5565] font-normal text-[12px] leading-[160%]">
-                    {proj.short_description ?? proj.description}
-                  </span>
+                  <div
+                    className="text-[#4A5565] font-normal text-[12px] leading-[160%] [&>p]:mb-0"
+                    dangerouslySetInnerHTML={{
+                      __html: proj.short_description ?? proj.description ?? "",
+                    }}
+                  />
 
                   <FundRaiseProgress
                     raised={Number(proj.funds_raised ?? 0)}

@@ -80,7 +80,10 @@ export default function DocumentDetailModal({
             <p className="text-[#030712] font-semibold text-[20px] leading-[120%] tracking-[-0.01em]">
               Document Details
             </p>
-            <button onClick={onClose} className="text-gray-500 hover:text-black">
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-black"
+            >
               ✕
             </button>
           </div>
@@ -111,7 +114,15 @@ export default function DocumentDetailModal({
               </div>
 
               {document.description && (
-                <DetailField label="Description" value={document.description} />
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-[12px] leading-[150%] tracking-[-0.01em] text-[#6A7282] uppercase">
+                    Description
+                  </span>
+                  <div
+                    className="prose prose-sm max-w-none text-[#030712] [&>p]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: document.description }}
+                  />
+                </div>
               )}
 
               <div className="flex gap-4 w-full">

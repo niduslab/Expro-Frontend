@@ -6,6 +6,8 @@ import { CompletedTabs } from "./new-project-modal";
 import { projectInfoSchema } from "@/components/zodschema/projectSchema";
 import { toast } from "sonner";
 import { ProjectFormDataInterface } from "@/lib/types/projectType";
+// 1. Import the RichTextEditor
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 interface ProjectInfoProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -173,7 +175,7 @@ export default function ProjectInfo({
           </div>
         </div>
 
-        {/* Short Description */}
+        {/* Short Description (Plain Text) */}
         <div>
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -183,17 +185,17 @@ export default function ProjectInfo({
               *
             </span>
           </div>
-          <textarea
-            value={formData.shortDescription}
-            maxLength={500}
-            onChange={(e) => {
-              setFormData({ ...formData, shortDescription: e.target.value });
+
+          <RichTextEditor
+            value={formData.shortDescription || ""}
+            onChange={(html) => {
+              setFormData({ ...formData, shortDescription: html });
               if (errors.shortDescription)
                 setErrors((prev) => ({ ...prev, shortDescription: "" }));
             }}
-            className="w-full h-[80px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
-            placeholder="Brief summary shown on project cards (max 500 chars)"
+            placeholder="Detailed description of the project..."
           />
+
           <div className="flex justify-between items-start">
             {errors.shortDescription && (
               <span className="text-sm text-red-500 py-0.5">
@@ -206,7 +208,7 @@ export default function ProjectInfo({
           </div>
         </div>
 
-        {/* Description */}
+        {/* Description (Rich Text) */}
         <div>
           <div className="pb-2">
             <span className="font-semibold text-[14px] leading-[150%] tracking-[-0.01em] p-0.5">
@@ -216,16 +218,18 @@ export default function ProjectInfo({
               *
             </span>
           </div>
-          <textarea
-            value={formData.description}
-            onChange={(e) => {
-              setFormData({ ...formData, description: e.target.value });
+
+          {/* 2. Replaced Textarea with RichTextEditor */}
+          <RichTextEditor
+            value={formData.description || ""}
+            onChange={(html) => {
+              setFormData({ ...formData, description: html });
               if (errors.description)
                 setErrors((prev) => ({ ...prev, description: "" }));
             }}
-            className="w-full h-[102px] text-[#6A7282] opacity-100 border border-[#D1D5DC] rounded-[8px] px-[16px] py-[16px] bg-[#FFFFFF] resize-none focus:outline-none focus:ring focus:ring-green-500"
-            placeholder="About Healthcare Program"
+            placeholder="Detailed description of the project..."
           />
+
           {errors.description && (
             <span className="text-sm text-red-500 py-0.5">
               {errors.description}
