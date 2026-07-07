@@ -1,0 +1,3 @@
+{
+  "/(auth)/admin/test-notifications/page": "app/(auth)/admin/test-notifications/page.js"
+}

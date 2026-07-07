@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(auth)/layout,_N_T_/(auth)/dashboard/layout,_N_T_/(auth)/dashboard/membership/layout,_N_T_/(auth)/dashboard/membership/page,_N_T_/dashboard/membership"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KGF1dGgp/dashboard/membership/__PAGE__",
+    "/!KGF1dGgp/dashboard/membership",
+    "/!KGF1dGgp/dashboard",
+    "/!KGF1dGgp",
+    "/_index",
+    "/_head"
+  ]
+}
