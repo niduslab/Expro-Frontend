@@ -272,7 +272,7 @@ export const useInvestmentStatistics = () => {
   return useQuery({
     queryKey: ['investmentStatistics'],
     queryFn: async () => {
-      const response = await apiRequest.get<ApiResponse<InvestmentStatistics>>(
+      const response = await apiRequest.get<InvestmentStatistics>(
         '/public/pension-investments/statistics'
       );
       return response.data.data;

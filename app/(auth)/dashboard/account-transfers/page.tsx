@@ -88,9 +88,9 @@ export default function MemberAccountTransfersPage() {
   // Calculate stats
   const stats = {
     total: myRequests.length,
-    pending: myRequests.filter(t => ['requested', 'under_review'].includes(t.status)).length,
-    approved: myRequests.filter(t => t.status === 'approved').length,
-    completed: myRequests.filter(t => t.status === 'completed').length,
+    pending: myRequests.filter((t: MemberAccountTransfer) => ['requested', 'under_review'].includes(t.status)).length,
+    approved: myRequests.filter((t: MemberAccountTransfer) => t.status === 'approved').length,
+    completed: myRequests.filter((t: MemberAccountTransfer) => t.status === 'completed').length,
   };
 
   // Format currency
@@ -201,7 +201,7 @@ export default function MemberAccountTransfersPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {transfers.map((transfer) => (
+                {transfers.map((transfer: MemberAccountTransfer) => (
                   <div
                     key={transfer.id}
                     className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all"
@@ -229,7 +229,7 @@ export default function MemberAccountTransfersPage() {
                           <div>
                             <p className="text-xs text-gray-600">New Member</p>
                             <p className="text-sm font-medium text-gray-900">
-                              {transfer.new_member_data?.name_english || transfer.new_member_data?.name_bangla || "N/A"}
+                              {transfer.new_member_data?.name || "N/A"}
                             </p>
                             <p className="text-xs text-gray-500">
                               {transfer.new_member_registered ? (
@@ -296,7 +296,7 @@ export default function MemberAccountTransfersPage() {
                     {transfer.status === 'completed' && (
                       <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
                         <p className="text-sm text-purple-800">
-                          <strong>Transfer Completed!</strong> The pension account has been successfully transferred to {transfer.new_member_data?.name_english || transfer.new_member_data?.name_bangla || "the new member"}.
+                          <strong>Transfer Completed!</strong> The pension account has been successfully transferred to {transfer.new_member_data?.name || "the new member"}.
                         </p>
                       </div>
                     )}

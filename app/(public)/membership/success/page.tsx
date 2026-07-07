@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle, Home, FileText } from 'lucide-react';
 
-export default function MembershipSuccessPage() {
+function MembershipSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const paymentStatus = searchParams.get('payment');
@@ -99,5 +99,22 @@ export default function MembershipSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MembershipSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-12 text-center">
+            <CheckCircle className="w-12 h-12 text-gray-400 animate-pulse mx-auto mb-4" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <MembershipSuccessContent />
+    </Suspense>
   );
 }

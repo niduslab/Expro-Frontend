@@ -53,42 +53,18 @@ async function callGroqVision(
   mimeType: string,
   prompt: string
 ): Promise<string> {
-  const apiKey = process.env.NEXT_PUBLIC_GROQ_API_KEY;
-  if (!apiKey) throw new Error("NEXT_PUBLIC_GROQ_API_KEY is not set in .env.local");
-
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const response = await fetch("/api/nid-ocr", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: "meta-llama/llama-4-scout-17b-16e-instruct",
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image_url",
-              image_url: { url: `data:${mimeType};base64,${base64}` },
-            },
-            { type: "text", text: prompt },
-          ],
-        },
-      ],
-      temperature: 0,
-      max_completion_tokens: 512,
-      stream: false,
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ base64, mimeType, prompt }),
   });
 
+  const json = await response.json();
   if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Groq API error ${response.status}: ${err}`);
+    throw new Error(json?.error ?? `NID OCR request failed with status ${response.status}`);
   }
 
-  const json = await response.json();
-  return json?.choices?.[0]?.message?.content ?? "";
+  return json?.content ?? "";
 }
 
 const FRONT_PROMPT = `You are reading a Bangladesh National ID card image. Extract these fields exactly as printed:

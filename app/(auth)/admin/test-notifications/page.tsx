@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMyProfile } from '@/lib/hooks/admin/useUsers';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { getConnectionState } from '@/lib/echo';
@@ -9,8 +9,15 @@ export default function TestNotificationsPage() {
   const { data: profile } = useMyProfile();
   const { notifications, unreadCount, connectionState } = useNotifications(profile?.id);
   const [testResult, setTestResult] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const runConnectionTest = () => {
+    if (!isMounted || typeof window === 'undefined') return; // Guard against SSR
+    
     const token = localStorage.getItem('auth_token');
     const userId = profile?.id;
     const pusherKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY;
@@ -93,7 +100,7 @@ export default function TestNotificationsPage() {
               Status: {connectionState}
             </div>
             <div>User ID: {profile?.id || 'Not loaded'}</div>
-            <div>Token: {localStorage.getItem('auth_token') ? 'Present' : 'Missing'}</div>
+            <div>Token: {isMounted && typeof window !== 'undefined' && localStorage.getItem('auth_token') ? 'Present' : 'Missing'}</div>
             <div>Notifications: {notifications.length}</div>
             <div>Unread: {unreadCount}</div>
           </div>

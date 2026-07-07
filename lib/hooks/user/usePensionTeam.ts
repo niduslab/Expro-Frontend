@@ -104,10 +104,10 @@ export const useTeamStats = () => {
  * @returns React Query result with collection data
  * 
  * @example
- * const { data, isLoading } = useTeamCollections('2026-04');
+ * const { data, isLoading } = useMyPensionTeamCollections('2026-04');
  * const totalCollection = data?.data.total_collection;
  */
-export const useTeamCollections = (month?: string) => {
+export const useMyPensionTeamCollections = (month?: string) => {
   return useQuery<ApiResponse<TeamCollections>, AxiosError>({
     queryKey: ["pensionTeamCollections", month],
     queryFn: () => getTeamCollections(month),

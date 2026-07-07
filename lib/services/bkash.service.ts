@@ -2,6 +2,16 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
 
+export interface BkashPaymentRequest {
+  amount: number;
+  payment_type: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  user_id?: number;
+  reference_id?: string;
+}
+
 export interface PaymentSuccessRequest {
   payment_id: number;
   gateway_transaction_id?: string;

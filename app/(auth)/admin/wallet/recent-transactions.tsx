@@ -54,8 +54,8 @@ export default function RecentTransactions() {
     to_date: toDate || undefined,
   });
 
-  const transactions = transactionsData?.data || [];
-  const pagination = transactionsData?.pagination;
+  const transactions = transactionsData?.data?.data || [];
+  const pagination = transactionsData?.data?.pagination;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

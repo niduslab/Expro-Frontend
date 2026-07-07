@@ -69,10 +69,13 @@ export default function MembershipRequestDetailsPage() {
   const { mutate: extractFront, isPending: isExtractingFront } = useNidExtractFront();
   const { mutate: extractBack, isPending: isExtractingBack } = useNidExtractBack();
 
-  const application = requestData?.data?.application;
-  const payment = requestData?.data?.payment;
-  const pensionPackage = requestData?.data?.pension_package;
-  const documents = requestData?.data?.documents;
+  const application = requestData?.application;
+  const payment = requestData?.payment;
+  const pensionPackage = requestData?.pension_package;
+  const documents = requestData?.documents;
+  const nidFrontUrl = documents?.nid_front;
+  const nidBackUrl = documents?.nid_back;
+  const signatureUrl = documents?.signature;
 
   const handleImageClick = (url: string, title: string) => {
     setSelectedImage({ url, title });
@@ -365,17 +368,17 @@ export default function MembershipRequestDetailsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* NID Front */}
-                  {documents.nid_front && (
+                  {nidFrontUrl && (
                     <div className="space-y-2">
                       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
                         NID Front
                       </label>
                       <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
-                        onClick={() => handleImageClick(documents.nid_front, "NID Front")}
+                        onClick={() => handleImageClick(nidFrontUrl, "NID Front")}
                       >
                         <Image
-                          src={documents.nid_front}
+                          src={nidFrontUrl}
                           alt="NID Front"
                           width={300}
                           height={160}
@@ -398,17 +401,17 @@ export default function MembershipRequestDetailsPage() {
                   )}
 
                   {/* NID Back */}
-                  {documents.nid_back && (
+                  {nidBackUrl && (
                     <div className="space-y-2">
                       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
                         NID Back
                       </label>
                       <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
-                        onClick={() => handleImageClick(documents.nid_back, "NID Back")}
+                        onClick={() => handleImageClick(nidBackUrl, "NID Back")}
                       >
                         <Image
-                          src={documents.nid_back}
+                          src={nidBackUrl}
                           alt="NID Back"
                           width={300}
                           height={160}
@@ -431,17 +434,17 @@ export default function MembershipRequestDetailsPage() {
                   )}
 
                   {/* Signature */}
-                  {documents.signature && (
+                  {signatureUrl && (
                     <div className="space-y-2">
                       <label className="text-[12px] font-medium text-[#6B7280] uppercase tracking-wider block">
                         Signature
                       </label>
                       <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-white"
-                        onClick={() => handleImageClick(documents.signature, "Signature")}
+                        onClick={() => handleImageClick(signatureUrl, "Signature")}
                       >
                         <Image
-                          src={documents.signature}
+                          src={signatureUrl}
                           alt="Signature"
                           width={300}
                           height={160}
@@ -535,8 +538,8 @@ export default function MembershipRequestDetailsPage() {
 
                 <div className="space-y-4">
                   <InfoItem label="Payment ID" value={payment.payment_id} />
-                  <InfoItem label="Amount" value={`৳${parseFloat(payment.amount).toLocaleString()}`} />
-                  <InfoItem label="Gateway Fee" value={`৳${parseFloat(payment.gateway_fee).toLocaleString()}`} />
+                  <InfoItem label="Amount" value={`৳${Number(payment.amount).toLocaleString()}`} />
+                  <InfoItem label="Gateway Fee" value={`৳${Number(payment.gateway_fee).toLocaleString()}`} />
                   <InfoItem label="Payment Method" value={payment.payment_method.toUpperCase()} />
                   <InfoItem
                     label="Payment Status"
@@ -568,9 +571,9 @@ export default function MembershipRequestDetailsPage() {
                 <div className="space-y-4">
                   <InfoItem label="Package Name" value={pensionPackage.name} />
                   <InfoItem label="Package Name (Bangla)" value={pensionPackage.name_bangla} />
-                  <InfoItem label="Monthly Amount" value={`৳${parseFloat(pensionPackage.monthly_amount).toLocaleString()}`} />
+                  <InfoItem label="Monthly Amount" value={`৳${Number(pensionPackage.monthly_amount).toLocaleString()}`} />
                   <InfoItem label="Total Installments" value={`${pensionPackage.total_installments} months`} />
-                  <InfoItem label="Maturity Amount" value={`৳${parseFloat(pensionPackage.maturity_amount).toLocaleString()}`} />
+                  <InfoItem label="Maturity Amount" value={`৳${Number(pensionPackage.maturity_amount).toLocaleString()}`} />
                   <InfoItem
                     label="Package Status"
                     value={

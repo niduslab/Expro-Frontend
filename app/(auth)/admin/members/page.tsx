@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -152,7 +152,7 @@ function IconBtn({ title, children }: { title: string; children: React.ReactNode
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function MembersPage() {
+function MembersPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
@@ -1220,5 +1220,39 @@ export default function MembersPage() {
       )}
       </div>
     </div>
+  );
+}
+
+// ─── Default Export with Suspense ──────────────────────────────────────────────
+export default function MembersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen p-6">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="bg-white rounded-lg border border-[#E5E7EB] p-6">
+              <div className="animate-pulse space-y-4">
+                <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-[#F5F4ED] rounded-xl p-4 animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-6 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 bg-white rounded-lg border border-[#E5E7EB] p-8">
+              <div className="text-center text-gray-500">Loading members...</div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <MembersPageContent />
+    </Suspense>
   );
 }

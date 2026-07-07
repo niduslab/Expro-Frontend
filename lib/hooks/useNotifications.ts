@@ -34,8 +34,8 @@ export function useNotifications(userId?: number) {
 
   const fetchUnreadCount = useCallback(async () => {
     try {
-      const response = await apiRequest.get('/notifications/unread-count');
-      setUnreadCount(response.data.unread_count || 0);
+      const response = await apiRequest.get<{ unread_count: number }>('/notifications/unread-count');
+      setUnreadCount(response.data.data?.unread_count || 0);
     } catch (error) {
       console.error('Failed to fetch unread count:', error);
     }

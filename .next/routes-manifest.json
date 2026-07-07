@@ -71,14 +71,6 @@
       "namedRegex": "^/dashboard/digitalidcard/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
-      "page": "/dashboard/membership/[id]",
-      "regex": "^/dashboard/membership/([^/]+?)(?:/)?$",
-      "routeKeys": {
-        "nxtPid": "nxtPid"
-      },
-      "namedRegex": "^/dashboard/membership/(?<nxtPid>[^/]+?)(?:/)?$"
-    },
-    {
       "page": "/events/event-details/[id]",
       "regex": "^/events/event\\-details/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -381,12 +373,6 @@
       "namedRegex": "^/admin/test\\-notifications(?:/)?$"
     },
     {
-      "page": "/admin/users",
-      "regex": "^/admin/users(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/admin/users(?:/)?$"
-    },
-    {
       "page": "/admin/wallet",
       "regex": "^/admin/wallet(?:/)?$",
       "routeKeys": {},
@@ -397,6 +383,12 @@
       "regex": "^/admin/ytvideos(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/admin/ytvideos(?:/)?$"
+    },
+    {
+      "page": "/api/nid-ocr",
+      "regex": "^/api/nid\\-ocr(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/nid\\-ocr(?:/)?$"
     },
     {
       "page": "/blog",
@@ -541,12 +533,6 @@
       "regex": "^/donate(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/donate(?:/)?$"
-    },
-    {
-      "page": "/donate/success",
-      "regex": "^/donate/success(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/donate/success(?:/)?$"
     },
     {
       "page": "/events",

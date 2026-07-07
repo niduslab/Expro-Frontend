@@ -42,10 +42,12 @@ export function ConnectionTest({ userId }: { userId?: number }) {
           Accept: 'application/json',
         },
         customHandler: (params, callback) => {
-          fetch(params.authEndpoint!, {
+          const authEndpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '')}/api/broadcasting/auth`;
+          fetch(authEndpoint, {
             method: 'POST',
             headers: {
-              ...params.authOptions!.headers,
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/json',
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({

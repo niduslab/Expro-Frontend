@@ -44,6 +44,51 @@ export interface MembershipRequestsParams {
 }
 
 /**
+ * Membership Request Detail Types (single-application show endpoint)
+ * See Expro-Backend MEMBERSHIP_APPLICATION_SHOW_API.md
+ */
+export interface MembershipRequestPayment {
+  id: number;
+  payment_id: string;
+  amount: number;
+  gateway_fee: number;
+  net_amount: number;
+  currency: string;
+  payment_method: string;
+  payment_type: string;
+  status: string;
+  gateway_transaction_id: string | null;
+  paid_at: string | null;
+  created_at: string;
+}
+
+export interface MembershipRequestPensionPackage {
+  id: number;
+  name: string;
+  name_bangla: string;
+  monthly_amount: number;
+  total_installments: number;
+  maturity_amount: number;
+  joining_commission: number;
+  installment_commission: number;
+  description: string;
+  status: string;
+}
+
+export interface MembershipRequestDocuments {
+  nid_front: string | null;
+  nid_back: string | null;
+  signature: string | null;
+}
+
+export interface MembershipRequestDetail {
+  application: MembershipRequest;
+  payment: MembershipRequestPayment | null;
+  pension_package: MembershipRequestPensionPackage | null;
+  documents: MembershipRequestDocuments;
+}
+
+/**
  * Hook: Get All Membership Requests (Admin)
  * Fetches paginated list of all membership applications
  * 
@@ -82,10 +127,10 @@ export const useMembershipRequest = (id: number) => {
   return useQuery({
     queryKey: ['membership-request', id],
     queryFn: async () => {
-      const response = await apiRequest.get<MembershipRequest>(
+      const response = await apiRequest.get<MembershipRequestDetail>(
         `/public/membership-applications/${id}`
       );
-      return response.data;
+      return response.data.data;
     },
     enabled: !!id,
   });

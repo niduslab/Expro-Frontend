@@ -168,16 +168,13 @@ export const useTransferEligibility = (enrollmentId: number | null) => {
   return useQuery({
     queryKey: ['transferEligibility', enrollmentId],
     queryFn: async () => {
-      const response = await apiRequest.get<any>(
+      const response = await apiRequest.get<{ eligible: boolean; [key: string]: any }>(
         `/pension-enrollment/${enrollmentId}/transfer-eligibility`
       );
       
-      // API returns: { success: true, eligible: true, data: {...} }
-      // We need to merge eligible with data
-      return {
-        eligible: response.data.eligible,
-        ...response.data.data,
-      };
+      // API returns: { success: true, data: { eligible: true, ...other_fields } }
+      // response.data.data contains the actual eligibility data
+      return response.data.data;
     },
     enabled: !!enrollmentId,
   });

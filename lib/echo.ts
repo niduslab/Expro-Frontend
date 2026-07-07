@@ -6,7 +6,7 @@ if (typeof window !== 'undefined') {
   (window as any).Pusher = Pusher;
 }
 
-let echoInstance: Echo | null = null;
+let echoInstance: Echo<any> | null = null;
 
 function getAuthToken() {
   if (typeof window !== 'undefined') {
@@ -15,7 +15,7 @@ function getAuthToken() {
   return '';
 }
 
-export const getEcho = (token?: string): Echo => {
+export const getEcho = (token?: string): Echo<any> => {
   // Always create a new instance if token is provided (for token refresh)
   if (token && echoInstance) {
     echoInstance.disconnect();

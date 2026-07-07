@@ -16,7 +16,7 @@ const WalletBallance = () => {
     per_page: 1, // Just need 1 item to get wallet data
   });
 
-  const wallet = transactionsData?.wallet;
+  const wallet = transactionsData?.data?.wallet;
 
   const stats = [
     {

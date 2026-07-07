@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Package, Receipt, ArrowRight, Download } from "lucide-react";
 import { downloadPaymentPDF } from "@/lib/utils/downloadPaymentPDF";
@@ -8,7 +8,7 @@ import { usePensionPayment } from "@/lib/hooks/user/usePensionPayment";
 import { useMyPensionEnrollments } from "@/lib/hooks/user/usePensionEnrollment";
 import { fmtMoney } from "@/app/(auth)/dashboard/pensions/utils";
 
-export default function PensionPaymentSuccessPage() {
+function PensionPaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<"processing" | "success" | "error">(
@@ -325,5 +325,26 @@ export default function PensionPaymentSuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PensionPaymentSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden p-12 text-center">
+            <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-6">
+              <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+            </div>
+            <h1 className="text-2xl font-bold text-[#030712] mb-3">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      }
+    >
+      <PensionPaymentSuccessContent />
+    </Suspense>
   );
 }
