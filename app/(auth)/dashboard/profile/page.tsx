@@ -65,7 +65,7 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   const m = profile.member;
-  const wallet = profile.wallet;
+  const wallet = profile.wallet?.[0]; // wallet is an array, get the first one
   const pension = profile.pension_enrollments?.[0];
   const nominee = profile.nominee?.[0];
   const digitalIdCard = digitalIdCardData?.data;

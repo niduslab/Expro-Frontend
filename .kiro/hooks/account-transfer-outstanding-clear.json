@@ -1,0 +1,13 @@
+{
+  "name": "Account Transfer Outstanding Clear",
+  "version": "1.0.0",
+  "description": "Validates outstanding balance clearance before marking as cleared",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ".*useClearOutstanding.*"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before clearing outstanding balance, verify: 1) Payment has been received and confirmed, 2) Payment method and transaction details are documented, 3) Amount matches the outstanding balance. Confirm payment verification before proceeding."
+  }
+}

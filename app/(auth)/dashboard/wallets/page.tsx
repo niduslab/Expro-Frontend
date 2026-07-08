@@ -9,7 +9,9 @@ import {
   RotateCcw,
   ShieldAlert,
   TrendingUp,
+  Download,
 } from "lucide-react";
+import { downloadPaymentPDF } from "@/lib/utils/downloadPaymentPDF";
 import { useState } from "react";
 import {
   TransactionStatus,
@@ -442,6 +444,28 @@ function TransactionRow({ tx }: { tx: WalletTransaction }) {
         <p className="text-[12px] text-[#9CA3AF] mt-1 font-mono">
           Balance: ৳{fmtAmount(tx.balance_after)}
         </p>
+        <button
+          onClick={() =>
+            downloadPaymentPDF({
+              transactionId: tx.transaction_id,
+              type: tx.type,
+              category: tx.category,
+              amount: tx.amount,
+              balanceBefore: tx.balance_before,
+              balanceAfter: tx.balance_after,
+              status: tx.status,
+              description: tx.description,
+              notes: tx.notes,
+              createdAt: tx.created_at,
+              processedAt: tx.processed_at,
+            })
+          }
+          title="Download receipt PDF"
+          className="mt-2 inline-flex items-center gap-1 text-[11px] text-[#068847] hover:text-[#057a3d] font-medium transition-colors"
+        >
+          <Download className="w-3 h-3" />
+          Receipt
+        </button>
       </div>
     </div>
   );

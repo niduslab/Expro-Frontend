@@ -173,7 +173,7 @@ export const usePensionPackages = (params?: PensionPackagesParams) => {
         '/pensionpackages',
         { params }
       );
-      return response.data;
+      return response.data.data;
     },
     staleTime: 1000 * 60 * 3, // 3 minutes
   });

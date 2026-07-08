@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Award,
@@ -28,7 +28,7 @@ import { getApplicationDetails } from "@/lib/api/functions/user/pensionRoleAppli
 import { toast } from "sonner";
 import { useMemberDashboard } from "@/lib/hooks/admin/useUsers";
 
-export default function RoleApplicationPage() {
+function RoleApplicationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedRole, setSelectedRole] = useState<string>("");
@@ -598,5 +598,23 @@ export default function RoleApplicationPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Default export with Suspense boundary
+export default function RoleApplicationPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin text-green-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading role applications...</p>
+          </div>
+        </div>
+      }
+    >
+      <RoleApplicationContent />
+    </Suspense>
   );
 }

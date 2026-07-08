@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, Loader2, ArrowRight, Home, FileText } from "lucide-react";
 import Link from "next/link";
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState(5);
@@ -116,5 +116,34 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Default export with Suspense boundary
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center p-4">
+          <div className="max-w-md w-full">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+              <div className="mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                  <Loader2 className="w-12 h-12 text-white animate-spin" />
+                </div>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                Loading Payment Status
+              </h1>
+              <p className="text-gray-600 mb-6">
+                Please wait...
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

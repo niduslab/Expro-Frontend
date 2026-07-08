@@ -1,0 +1,3 @@
+{
+  "/(auth)/admin/pension-packages/[id]/page": "app/(auth)/admin/pension-packages/[id]/page.js"
+}

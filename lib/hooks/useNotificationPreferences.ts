@@ -27,7 +27,8 @@ export function useNotificationPreferences() {
       setIsLoading(true);
       setError(null);
       const response = await apiRequest.get<NotificationPreferencesResponse>('/notification-preferences');
-      setPreferences(response.data.data || []);
+      const preferencesData = response.data.data;
+      setPreferences(preferencesData.data || []);
     } catch (err: any) {
       console.error('Failed to fetch notification preferences:', err);
       setError(err.response?.data?.message || 'Failed to load preferences');

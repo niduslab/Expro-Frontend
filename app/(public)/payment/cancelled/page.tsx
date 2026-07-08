@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AlertCircle, RefreshCw, Home, Info } from 'lucide-react';
 
-export default function PaymentCancelledPage() {
+function PaymentCancelledContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const paymentId = searchParams.get('payment_id');
@@ -139,5 +140,22 @@ export default function PaymentCancelledPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentCancelledPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-12 text-center">
+            <AlertCircle className="w-12 h-12 text-gray-400 animate-pulse mx-auto mb-4" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <PaymentCancelledContent />
+    </Suspense>
   );
 }

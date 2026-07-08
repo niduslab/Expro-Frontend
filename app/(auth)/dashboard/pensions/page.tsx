@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import {
   Package,
   AlertCircle,
@@ -341,7 +341,9 @@ function EnrollmentCard({
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[14px] font-bold text-[#030712] font-mono">
-                  {enrollment?.pension_package_id?.name} Plan
+                  {typeof enrollment?.pension_package_id === 'object' && enrollment.pension_package_id?.name 
+                    ? enrollment.pension_package_id.name 
+                    : "Pension"} Plan
                   {/* {enrollment.enrollment_number} */}
                 </span>
                 <span
@@ -596,7 +598,7 @@ function EnrollmentCard({
 
 // ── Main Page ───────────────────────────────────────────────────────────────
 
-export default function PensionPage() {
+function PensionPageContent() {
   const searchParams = useSearchParams();
   const [selectedEnrollment, setSelectedEnrollment] =
     useState<PensionEnrollment | null>(null);
@@ -893,5 +895,22 @@ export default function PensionPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// ── Default Export with Suspense ──────────────────────────────────────────────
+export default function PensionPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 py-6">
+          <div className="max-w-7xl mx-auto">
+            <LoadingState />
+          </div>
+        </div>
+      }
+    >
+      <PensionPageContent />
+    </Suspense>
   );
 }

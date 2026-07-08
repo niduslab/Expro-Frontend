@@ -949,6 +949,13 @@ export default function DashboardPage() {
                     color: "text-purple-600",
                     bg: "bg-purple-50",
                   },
+                  {
+                    label: "My Members",
+                    href: "/dashboard/membership",
+                    icon: Building2,
+                    color: "text-green-600",
+                    bg: "bg-green-50",
+                  },
                 ].map(({ label, href, icon: Icon, color, bg }) => (
                   <Link
                     key={label}

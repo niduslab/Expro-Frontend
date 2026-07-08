@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactElement, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Users,
@@ -18,7 +18,7 @@ import {
   usePackageHierarchy,
 } from "@/lib/hooks";
 
-export default function TeamCollectionsPage() {
+function TeamCollectionsContent() {
   const searchParams = useSearchParams();
   const packageId = searchParams.get("packageId");
   const packageName = searchParams.get("packageName");
@@ -292,8 +292,8 @@ export default function TeamCollectionsPage() {
 }
 
 // Helper function to render tree members recursively
-function renderTreeMembers(tree: any[], packageId: string | null): JSX.Element[] {
-  const elements: JSX.Element[] = [];
+function renderTreeMembers(tree: any[], packageId: string | null): ReactElement[] {
+  const elements: ReactElement[] = [];
 
   // Helper to get role badge color
   const getRoleBadgeColor = (role: string) => {
@@ -417,4 +417,23 @@ function renderTreeMembers(tree: any[], packageId: string | null): JSX.Element[]
 
   tree.forEach((member) => renderMember(member, 0));
   return elements;
+}
+
+export default function TeamCollectionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#068847] mx-auto mb-4"></div>
+              <p className="text-[#4A5565]">Loading...</p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <TeamCollectionsContent />
+    </Suspense>
+  );
 }

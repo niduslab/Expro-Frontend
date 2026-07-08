@@ -35,7 +35,7 @@ export default function BkashPayment({
     phone: initialCustomerInfo?.phone || '',
   });
 
-  const { initiatePayment, cancelPayment, loading } = useBkashPayment({
+  const { openPaymentGateway, cancelPayment, loading } = useBkashPayment({
     onSuccess,
     onError,
   });
@@ -47,17 +47,11 @@ export default function BkashPayment({
       return;
     }
 
-    const paymentData: BkashPaymentRequest = {
-      amount,
-      payment_type: paymentType,
-      customer_name: customerInfo.name,
-      customer_email: customerInfo.email,
-      customer_phone: customerInfo.phone,
-      user_id: userId,
-      reference_id: referenceId,
-    };
-
-    await initiatePayment(paymentData);
+    // Note: This component seems to be incomplete - it should receive payment data
+    // with bkashURL from the backend after creating a payment record
+    // For now, we'll just log an error
+    console.error('BkashPayment component needs to receive payment data with bkashURL');
+    onError?.({ message: 'Payment flow not properly configured' });
   };
 
   return (

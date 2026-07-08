@@ -8,15 +8,17 @@ import {
   ArrowUpCircle,
   ArrowDownCircle,
   Filter,
+  Calendar,
   X,
+  Download,
 } from "lucide-react";
 import {
   CompanyWalletTransaction,
   useCompanyWalletTransactions,
-} from "@/lib/hooks/admin/useWallet";
+} from "@/lib/hooks";
 import { format } from "date-fns";
-import Pagination from "@/components/pagination/page";
-import DatePicker from "@/components/ui/date-picker";
+import { downloadPaymentPDF } from "@/lib/utils/downloadPaymentPDF";
+import Pagination from "@/components/pagination/page"; // adjust path as needed
 
 type Status = "completed" | "pending" | "failed";
 type TransactionType = "credit" | "debit" | "all";
@@ -54,18 +56,12 @@ const categoryLabels: Record<string, string> = {
 export default function RecentTransactions() {
   const [currentPage, setCurrentPage] = useState(1);
   const [typeFilter, setTypeFilter] = useState<TransactionType>("all");
-
-  // Staged date inputs (not yet sent to API)
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
-  // Applied dates (actually sent to the hook/API)
   const [appliedFromDate, setAppliedFromDate] = useState("");
   const [appliedToDate, setAppliedToDate] = useState("");
-
   const perPage = 10;
 
-  // ✅ All active filters are now passed to the hook
   const { data: transactionsData, isLoading } = useCompanyWalletTransactions({
     page: currentPage,
     per_page: perPage,
@@ -73,7 +69,6 @@ export default function RecentTransactions() {
     from_date: appliedFromDate || undefined,
     to_date: appliedToDate || undefined,
   });
-
   const transactions: CompanyWalletTransaction[] = transactionsData?.data ?? [];
   const pagination = transactionsData?.pagination;
 
@@ -98,7 +93,7 @@ export default function RecentTransactions() {
   };
 
   const hasActiveFilters =
-    typeFilter !== "all" || !!appliedFromDate || !!appliedToDate;
+    typeFilter !== "all" || appliedFromDate || appliedToDate;
 
   return (
     <div className="bg-white rounded-xl shadow border border-gray-200 p-4 sm:p-6">
@@ -133,25 +128,31 @@ export default function RecentTransactions() {
         </div>
 
         {/* Row 2: Date Filter */}
-        <div className="flex flex-row items-center gap-2">
-          <span className="text-[#6B7280] text-[13px] shrink-0">From</span>
-          <div className="w-[160px]">
-            <DatePicker value={fromDate} onChange={(val) => setFromDate(val)} />
-          </div>
-          <span className="text-[#6B7280] text-[13px] shrink-0">to</span>
-          <div className="w-[160px]">
-            <DatePicker value={toDate} onChange={(val) => setToDate(val)} />
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Calendar className="w-4 h-4 text-[#6B7280] shrink-0" />
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="px-3 py-1.5 text-[13px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent w-full xs:w-auto max-w-[160px]"
+          />
+          <span className="text-[#6B7280] text-[13px]">to</span>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="px-3 py-1.5 text-[13px] border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#068847] focus:border-transparent w-full xs:w-auto max-w-[160px]"
+          />
           <button
             onClick={handleDateFilter}
-            className="shrink-0 px-4 py-1.5 text-[13px] font-medium bg-[#068847] text-white rounded-lg hover:bg-[#057a3d] transition-colors"
+            className="px-4 py-1.5 text-[13px] font-medium bg-[#068847] text-white rounded-lg hover:bg-[#057a3d] transition-colors"
           >
             Apply
           </button>
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="shrink-0 flex items-center gap-1 px-3 py-1.5 text-[13px] font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 text-[13px] font-medium text-[#6B7280] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors"
             >
               <X className="w-3.5 h-3.5" />
               Clear
@@ -196,6 +197,9 @@ export default function RecentTransactions() {
                     </th>
                     <th className="text-left py-3 px-4 font-medium text-[13px] text-[#6B7280]">
                       Status
+                    </th>
+                    <th className="text-center py-3 px-4 font-normal text-[14px] leading-[150%] tracking-[-1%] align-middle">
+                      Receipt
                     </th>
                   </tr>
                 </thead>
@@ -269,12 +273,34 @@ export default function RecentTransactions() {
                             {statusConfig[status].label}
                           </span>
                         </td>
+                        <td className="py-4 px-4 text-center">
+                          <button
+                            onClick={() =>
+                              downloadPaymentPDF({
+                                transactionId: tx.transaction_id,
+                                type: tx.type as "credit" | "debit",
+                                category: tx.category,
+                                amount: tx.amount,
+                                balanceAfter: tx.balance_after,
+                                status: tx.status || "completed",
+                                description: tx.description,
+                                createdAt: tx.created_at,
+                              })
+                            }
+                            title="Download receipt PDF"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-[#068847] border border-[#068847] rounded-lg hover:bg-[#F0FDF4] transition-colors"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            PDF
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
 
+              {/* Pagination */}
               {pagination && pagination.last_page > 1 && (
                 <div className="px-4 sm:px-6 py-4 border-t border-[#F3F4F6] bg-[#FAFAFA]">
                   <Pagination
@@ -284,7 +310,7 @@ export default function RecentTransactions() {
                     dataLength={transactions.length}
                     onNext={() =>
                       setCurrentPage((p) =>
-                        Math.min(p + 1, pagination.last_page)
+                        Math.min(p + 1, pagination.last_page),
                       )
                     }
                     onPrev={() => setCurrentPage((p) => Math.max(p - 1, 1))}

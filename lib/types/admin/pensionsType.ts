@@ -23,7 +23,7 @@ export interface PensionEnrollment {
 
   enrollment_number: string; // unique string(30)
   user_id: number;
-  pension_package_id: number;
+  pension_package_id: number | { id: number; name: string; [key: string]: any };
 
   // Dates
   enrollment_date: string; // date
@@ -54,6 +54,9 @@ export interface PensionEnrollment {
   // Package Roles
   package_roles?: PensionPackageRole[];
   current_role?: string;
+  
+  // Installments (included when fetched with relations)
+  pension_installments?: any[]; // PensionInstallment[]
 
   notes: string | null; // text
 

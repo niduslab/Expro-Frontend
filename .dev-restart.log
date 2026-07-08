@@ -1,0 +1,150 @@
+
+> my-next-app@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.68.109:3000
+- Environments: .env.local
+✓ Ready in 485ms
+
+○ Compiling /admin/membership-request ...
+ GET / 200 in 2.3s (next.js: 2.2s, proxy.ts: 6ms, application-code: 157ms)
+ GET /admin/membership-request 200 in 8.4s (next.js: 7.7s, proxy.ts: 141ms, application-code: 498ms)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin/membership-request 200 in 80ms (next.js: 3ms, proxy.ts: 5ms, application-code: 72ms)
+ GET /admin/members 200 in 656ms (next.js: 541ms, proxy.ts: 5ms, application-code: 110ms)
+ GET /admin/dashboard/commission 200 in 467ms (next.js: 368ms, proxy.ts: 4ms, application-code: 94ms)
+ GET /payment 404 in 283ms (next.js: 253ms, proxy.ts: 4ms, application-code: 26ms)
+ GET /admin/membership-request 200 in 27ms (next.js: 6ms, proxy.ts: 8ms, application-code: 14ms)
+ GET /admin/membership-request 200 in 41ms (next.js: 6ms, proxy.ts: 7ms, application-code: 28ms)
+ GET /admin/membership 200 in 642ms (next.js: 617ms, proxy.ts: 7ms, application-code: 19ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin/membership-request 200 in 39ms (next.js: 7ms, proxy.ts: 5ms, application-code: 28ms)
+ GET /admin/members 200 in 36ms (next.js: 6ms, proxy.ts: 7ms, application-code: 23ms)
+ GET /admin/pension-investments 200 in 633ms (next.js: 595ms, proxy.ts: 5ms, application-code: 33ms)
+ GET /admin/members 200 in 38ms (next.js: 5ms, proxy.ts: 6ms, application-code: 28ms)
+ GET /admin/pension-investments 200 in 38ms (next.js: 5ms, proxy.ts: 7ms, application-code: 26ms)
+ GET /admin/members 200 in 33ms (next.js: 5ms, proxy.ts: 6ms, application-code: 23ms)
+ GET /admin/membership-request 200 in 37ms (next.js: 4ms, proxy.ts: 5ms, application-code: 28ms)
+ GET /admin/pension-investments 200 in 35ms (next.js: 4ms, proxy.ts: 6ms, application-code: 25ms)
+ GET /admin/members 200 in 58ms (next.js: 8ms, proxy.ts: 7ms, application-code: 42ms)
+ GET /admin/membership-request 200 in 34ms (next.js: 5ms, proxy.ts: 5ms, application-code: 24ms)
+ GET /admin/members 200 in 43ms (next.js: 6ms, proxy.ts: 6ms, application-code: 31ms)
+✓ Compiled in 1399ms
+ GET /admin/members 200 in 1223ms (next.js: 982ms, proxy.ts: 7ms, application-code: 235ms)
+ GET /admin/members 200 in 307ms (next.js: 60ms, proxy.ts: 58ms, application-code: 189ms)
+ GET /admin/members 200 in 177ms (next.js: 9ms, proxy.ts: 9ms, application-code: 160ms)
+ GET /admin/members 200 in 204ms (next.js: 34ms, proxy.ts: 9ms, application-code: 160ms)
+ GET /admin/members 200 in 203ms (next.js: 61ms, proxy.ts: 9ms, application-code: 133ms)
+ GET /admin/members 200 in 208ms (next.js: 97ms, proxy.ts: 10ms, application-code: 101ms)
+ GET /admin/members 200 in 177ms (next.js: 8ms, proxy.ts: 7ms, application-code: 162ms)
+ GET /admin/members 200 in 209ms (next.js: 29ms, proxy.ts: 7ms, application-code: 174ms)
+ GET /admin/members 200 in 221ms (next.js: 18ms, proxy.ts: 10ms, application-code: 194ms)
+ GET /admin/members 200 in 247ms (next.js: 34ms, proxy.ts: 13ms, application-code: 200ms)
+ GET /admin/members 200 in 247ms (next.js: 60ms, proxy.ts: 15ms, application-code: 172ms)
+ GET /admin/members 200 in 246ms (next.js: 93ms, proxy.ts: 16ms, application-code: 137ms)
+ GET /admin/members 200 in 234ms (next.js: 12ms, proxy.ts: 10ms, application-code: 212ms)
+ GET /admin/members 200 in 266ms (next.js: 64ms, proxy.ts: 12ms, application-code: 190ms)
+ GET /admin/members 200 in 217ms (next.js: 15ms, proxy.ts: 10ms, application-code: 191ms)
+ GET /admin/members 200 in 215ms (next.js: 45ms, proxy.ts: 13ms, application-code: 156ms)
+ GET /admin/members 200 in 246ms (next.js: 76ms, proxy.ts: 15ms, application-code: 156ms)
+ GET /admin/members 200 in 253ms (next.js: 108ms, proxy.ts: 12ms, application-code: 132ms)
+ GET /admin/members 200 in 209ms (next.js: 9ms, proxy.ts: 11ms, application-code: 189ms)
+ GET /admin/members 200 in 229ms (next.js: 40ms, proxy.ts: 9ms, application-code: 180ms)
+ GET /admin/members 200 in 180ms (next.js: 17ms, proxy.ts: 18ms, application-code: 145ms)
+ GET /admin/members 200 in 180ms (next.js: 49ms, proxy.ts: 19ms, application-code: 112ms)
+ GET /admin/members 200 in 197ms (next.js: 72ms, proxy.ts: 14ms, application-code: 111ms)
+ GET /admin/members 200 in 197ms (next.js: 93ms, proxy.ts: 16ms, application-code: 89ms)
+ GET /admin/members 200 in 138ms (next.js: 9ms, proxy.ts: 11ms, application-code: 118ms)
+ GET /admin/members 200 in 153ms (next.js: 24ms, proxy.ts: 10ms, application-code: 119ms)
+ GET /admin/members 200 in 102ms (next.js: 26ms, proxy.ts: 11ms, application-code: 64ms)
+ GET /admin/members 200 in 104ms (next.js: 10ms, proxy.ts: 10ms, application-code: 83ms)
+ GET /admin/members 200 in 100ms (next.js: 47ms, proxy.ts: 10ms, application-code: 43ms)
+ GET /admin/members 200 in 95ms (next.js: 23ms, proxy.ts: 46ms, application-code: 26ms)
+ GET /this-route-does-not-exist-xyz 404 in 210ms (next.js: 65ms, proxy.ts: 4ms, application-code: 141ms)
+ GET /contact 200 in 633ms (next.js: 498ms, proxy.ts: 4ms, application-code: 131ms)
+ GET /admin/3423 404 in 74ms (next.js: 13ms, proxy.ts: 7ms, application-code: 54ms)
+ GET / 200 in 180ms (next.js: 108ms, proxy.ts: 6ms, application-code: 66ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+✓ Compiled in 582ms
+ GET / 200 in 520ms (next.js: 242ms, proxy.ts: 113ms, application-code: 165ms)
+ GET / 200 in 233ms (next.js: 8ms, proxy.ts: 58ms, application-code: 168ms)
+ GET / 200 in 185ms (next.js: 40ms, proxy.ts: 10ms, application-code: 135ms)
+ GET / 200 in 186ms (next.js: 10ms, proxy.ts: 8ms, application-code: 168ms)
+ GET / 200 in 185ms (next.js: 59ms, proxy.ts: 10ms, application-code: 116ms)
+ GET / 200 in 180ms (next.js: 12ms, proxy.ts: 86ms, application-code: 82ms)
+ GET / 200 in 131ms (next.js: 6ms, proxy.ts: 26ms, application-code: 99ms)
+ GET / 200 in 111ms (next.js: 5ms, proxy.ts: 6ms, application-code: 100ms)
+ GET / 200 in 84ms (next.js: 13ms, proxy.ts: 7ms, application-code: 64ms)
+ GET / 200 in 84ms (next.js: 43ms, proxy.ts: 7ms, application-code: 34ms)
+ GET /about 200 in 866ms (next.js: 526ms, proxy.ts: 4ms, application-code: 336ms)
+ GET /membership 200 in 921ms (next.js: 420ms, proxy.ts: 4ms, application-code: 497ms)
+ GET /contact 200 in 267ms (next.js: 72ms, proxy.ts: 5ms, application-code: 190ms)
+ GET /this-does-not-exist-xyz 404 in 214ms (next.js: 69ms, proxy.ts: 3ms, application-code: 143ms)
+ GET /asdfadsf 404 in 85ms (next.js: 16ms, proxy.ts: 6ms, application-code: 64ms)
+✓ Compiled in 396ms
+✓ Compiled in 398ms
+ GET /admin 200 in 2.8s (next.js: 2.2s, proxy.ts: 4ms, application-code: 539ms)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+✓ Compiled in 298ms
+Image with src "/images/contact-us/talk-with-us-expro.jpg" is using quality "90" which is not configured in images.qualities [75, 100]. Please update your config to [100, 75, 90].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET /login 200 in 993ms (next.js: 682ms, proxy.ts: 9ms, application-code: 303ms)
+[browser] Image with src "/images/contact-us/talk-with-us-expro.jpg" is using quality "90" which is not configured in images.qualities [75, 100]. Please update your config to [100, 75, 90].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/contact-us/talk-with-us-expro.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin/members 200 in 220ms (next.js: 140ms, proxy.ts: 7ms, application-code: 73ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /dashboard 200 in 633ms (next.js: 597ms, proxy.ts: 5ms, application-code: 31ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /dashboard/account-transfers 200 in 687ms (next.js: 650ms, proxy.ts: 5ms, application-code: 33ms)
+ GET /dashboard/membership 200 in 675ms (next.js: 626ms, proxy.ts: 5ms, application-code: 43ms)
+ GET /admin/membership-request/19 200 in 1545ms (next.js: 1477ms, proxy.ts: 6ms, application-code: 63ms)
+[browser] Image with src "http://127.0.0.1:8000/storage/membershipapplication/nid/WPu1McOxvdlpSGv2mRk2x1hJrSfq3DLrLAyYFd7E.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "http://127.0.0.1:8000/storage/membershipapplication/nid/Cj1IkxBDnrWojQ3TMsoq6gMjFuedeN1Cjvjqtp8p.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /dashboard/projects 200 in 829ms (next.js: 795ms, proxy.ts: 6ms, application-code: 27ms)
+ GET /dashboard/pensions 200 in 936ms (next.js: 896ms, proxy.ts: 10ms, application-code: 31ms)
+ GET /dashboard/pensions/team 200 in 795ms (next.js: 750ms, proxy.ts: 7ms, application-code: 38ms)
+ GET /dashboard/membership 200 in 49ms (next.js: 6ms, proxy.ts: 8ms, application-code: 35ms)
+ GET /dashboard/nominees 200 in 768ms (next.js: 729ms, proxy.ts: 8ms, application-code: 31ms)
+ GET /dashboard/branches 200 in 816ms (next.js: 760ms, proxy.ts: 6ms, application-code: 50ms)
+ GET /dashboard/membership 200 in 59ms (next.js: 13ms, proxy.ts: 6ms, application-code: 40ms)
+ GET /dashboard/account-transfers 200 in 47ms (next.js: 5ms, proxy.ts: 10ms, application-code: 32ms)
+ GET /dashboard/pensions 200 in 57ms (next.js: 7ms, proxy.ts: 6ms, application-code: 44ms)
+ GET /dashboard/projects 200 in 57ms (next.js: 8ms, proxy.ts: 8ms, application-code: 41ms)
+○ Compiling /dashboard/wallets ...
+ GET /dashboard/wallets 200 in 4.0s (next.js: 3.9s, proxy.ts: 9ms, application-code: 57ms)
+ GET /dashboard/profile 200 in 1259ms (next.js: 1196ms, proxy.ts: 9ms, application-code: 53ms)
+ GET /dashboard 200 in 49ms (next.js: 6ms, proxy.ts: 5ms, application-code: 39ms)
+ GET /dashboard/membership 200 in 58ms (next.js: 6ms, proxy.ts: 8ms, application-code: 44ms)
+ GET /dashboard/membershipsdf 404 in 466ms (next.js: 135ms, proxy.ts: 10ms, application-code: 320ms)
+ GET /nope-xyz 404 in 47ms (next.js: 5ms, proxy.ts: 3ms, application-code: 38ms)
+ GET /dashboard/membershipsdf 404 in 101ms (next.js: 10ms, proxy.ts: 5ms, application-code: 85ms)
+✓ Compiled in 134ms
+ GET /admin/membersss 404 in 352ms (next.js: 111ms, proxy.ts: 9ms, application-code: 233ms)
+✓ Compiled in 306ms
+✓ Compiled in 228ms
+✓ Compiled in 160ms
+✓ Compiled in 135ms
+✓ Compiled in 114ms
+✓ Compiled in 135ms
+✓ Compiled in 112ms
+ GET / 200 in 286ms (next.js: 212ms, proxy.ts: 6ms, application-code: 67ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin/membersss 404 in 357ms (next.js: 113ms, proxy.ts: 6ms, application-code: 238ms)
+ GET /admin/members 200 in 546ms (next.js: 115ms, proxy.ts: 5ms, application-code: 425ms)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+ GET /admin 200 in 217ms (next.js: 145ms, proxy.ts: 8ms, application-code: 64ms)
+ GET /admin/members 200 in 113ms (next.js: 6ms, proxy.ts: 9ms, application-code: 98ms)
+[browser] Image with src "/logo.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+[browser] Image with src "/images/default-avatar.svg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (file://S:/Client Projects/Expro/expro-v0.1/Expro-Frontend/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+✓ Compiled in 107ms
+✓ Compiled in 147ms
+✓ Compiled in 108ms
+✓ Compiled in 100ms

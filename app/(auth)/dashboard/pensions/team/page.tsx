@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import {
   Package,
   Network,
@@ -825,8 +825,8 @@ function CommissionsTab({
 }
 
 // Helper function to render tree members recursively
-function renderTreeMembers(tree: any[]): JSX.Element[] {
-  const elements: JSX.Element[] = [];
+function renderTreeMembers(tree: any[]): ReactElement[] {
+  const elements: ReactElement[] = [];
 
   const formatRoleName = (role: string) => {
     return role

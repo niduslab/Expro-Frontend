@@ -1,0 +1,13 @@
+{
+  "name": "Account Transfer Approval",
+  "version": "1.0.0",
+  "description": "Validates account transfer approval requirements before approving",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ".*useApproveTransfer.*"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before approving this transfer, verify: 1) Transfer is in 'under_review' status, 2) Outstanding balance is cleared, 3) All documents are verified, 4) New member data is validated (unique email, phone, NID). Confirm all requirements are met."
+  }
+}

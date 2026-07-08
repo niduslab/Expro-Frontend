@@ -1,0 +1,3 @@
+{
+  "/(auth)/dashboard/pensions/payment-callback/page": "app/(auth)/dashboard/pensions/payment-callback/page.js"
+}

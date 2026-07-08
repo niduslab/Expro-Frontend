@@ -35,6 +35,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { LogoutButton } from "./LogoutButton";
+import { userSidebarItems as memberSidebarItems } from "./user-sidebar-items";
+import { useAvailableRoles } from "@/lib/hooks/user/usePensionRoleApplications";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -99,14 +101,7 @@ const sidebarItems: SidebarItem[] = [
   },
 ];
 
-const userSidebarItems: SidebarItem[] = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Pension Packages", href: "/admin/pension-packages", icon: Package },
-  { name: "All Pension Members", href: "/admin/members", icon: Users },
-  { name: "Projects", href: "/admin/projects", icon: FolderKanban },
-  { name: "Board Members", href: "/admin/board-members", icon: UserCheck },
-  { name: "Wallet Balance", href: "/admin/wallet", icon: Wallet },
-];
+const ELIGIBLE_ROLES = ["executive_member", "project_presenter", "assistant_pp"];
 
 // ---------------------------------------------------------------------------
 // Component
@@ -114,7 +109,18 @@ const userSidebarItems: SidebarItem[] = [
 export function MobileSidebar({ open, setOpen, isAdmin = true }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const items = isAdmin ? sidebarItems : userSidebarItems;
+  const { data: availableRolesData } = useAvailableRoles();
+
+  const currentRole = availableRolesData?.data?.current_role;
+  const hasAdvancedRole = currentRole && ELIGIBLE_ROLES.includes(currentRole.value);
+
+  const filteredMemberItems = memberSidebarItems.filter((item) => {
+    if (item.href === "/dashboard/role-application") return !hasAdvancedRole;
+    if (item.href === "/dashboard/membership") return !!hasAdvancedRole;
+    return true;
+  });
+
+  const items = isAdmin ? sidebarItems : filteredMemberItems;
 
   // Lock body scroll while sidebar is open
   useEffect(() => {

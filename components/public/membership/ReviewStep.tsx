@@ -145,7 +145,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
 
     membership_type: "general", // or dynamic
 
-    sponsor_id: data.sponsorInfo.sponsorMemberId ? Number(data.sponsorInfo.sponsorMemberId) : undefined,
+    sponsor_id: data.sponsorInfo.sponsorUserId || undefined,
     // Use the actual package ID from the API (or undefined if skipped)
     pension_package_id: data.pensionInfo.selectedPackage === "skip" ? undefined : data.pensionInfo.selectedPackage,
 
