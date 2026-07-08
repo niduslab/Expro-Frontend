@@ -53,7 +53,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
     } else {
       // If currently in member dashboard and can access admin, go to admin dashboard
       if (canAccessAdmin) {
-        router.push("/admin/dashboard");
+        router.push("/admin/");
       }
     }
   };

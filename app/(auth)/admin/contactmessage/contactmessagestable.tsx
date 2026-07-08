@@ -71,10 +71,7 @@ function StatusLegend() {
           );
         },
       )}
-      <span className="ml-auto text-[10px] text-gray-400 flex items-center gap-1.5">
-        <span className="inline-block w-3 h-3 border-l-[3px] border-l-blue-500 rounded-sm bg-blue-50/40" />
-        Unread row highlighted
-      </span>
+    
     </div>
   );
 }

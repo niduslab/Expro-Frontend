@@ -18,12 +18,15 @@ export default function DatePicker({
 }: DatePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    if (!raw) return;
-    onChange?.(raw);
-  };
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const raw = e.target.value; // format: "YYYY-MM-DD"
+  if (!raw) return;
 
+  const [year] = raw.split("-");
+  if (year && year.length > 4) return; // reject if year exceeds 4 digits
+
+  onChange?.(raw);
+};
   return (
     <div className="w-full">
       {label && (
@@ -37,10 +40,7 @@ export default function DatePicker({
         </div>
       )}
 
-      <div
-        className="relative cursor-pointer"
-        onClick={() => inputRef.current?.showPicker()}
-      >
+      <div className="relative">
         <input
           ref={inputRef}
           type="date"
@@ -55,16 +55,18 @@ export default function DatePicker({
             text-[14px]
             text-[#6A7282]
             bg-white
-            cursor-pointer
-            pointer-events-none
+            cursor-text
             [&::-webkit-calendar-picker-indicator]:hidden
           "
         />
 
-        <Calendar
-          size={14}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282] pointer-events-none"
-        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.showPicker()}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6A7282] cursor-pointer"
+        >
+          <Calendar size={14} />
+        </button>
       </div>
     </div>
   );

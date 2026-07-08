@@ -78,10 +78,12 @@ export interface CompanyWalletTransactionsParams {
   per_page?: number;
   type?: "credit" | "debit";
   category?: string;
-  from_date?: string;
+  status?: "completed" | "pending" | "failed";
+  user_id?: number;
+  search?: string;
+  from_date?: string; // ✅ add these
   to_date?: string;
 }
-
 /**
  * Hook: Get Company Wallet
  * Fetches the company wallet information (Admin only)
