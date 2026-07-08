@@ -1,3 +1,0 @@
-{
-  "/(auth)/dashboard/digitalidcard/[id]/page": "app/(auth)/dashboard/digitalidcard/[id]/page.js"
-}
