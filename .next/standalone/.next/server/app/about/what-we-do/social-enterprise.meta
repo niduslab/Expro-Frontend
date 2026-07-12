@@ -1,0 +1,18 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(public)/layout,_N_T_/(public)/about/layout,_N_T_/(public)/about/what-we-do/layout,_N_T_/(public)/about/what-we-do/social-enterprise/layout,_N_T_/(public)/about/what-we-do/social-enterprise/page,_N_T_/about/what-we-do/social-enterprise"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KHB1YmxpYyk/about/what-we-do/social-enterprise/__PAGE__",
+    "/!KHB1YmxpYyk/about/what-we-do/social-enterprise",
+    "/!KHB1YmxpYyk/about/what-we-do",
+    "/!KHB1YmxpYyk/about",
+    "/!KHB1YmxpYyk",
+    "/_index",
+    "/_head"
+  ]
+}
