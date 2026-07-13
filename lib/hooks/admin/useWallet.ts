@@ -144,7 +144,7 @@ export const useCompanyWalletTransactions = (params?: CompanyWalletTransactionsP
         '/admin/wallets/company/transactions',
         { params }
       );
-      return response.data;
+      return response.data.data;
     },
     staleTime: 1000 * 60 * 1, // 1 minute
   });

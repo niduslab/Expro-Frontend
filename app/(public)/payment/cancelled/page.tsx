@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AlertCircle, RefreshCw, Home, Info } from 'lucide-react';
 
-export default function PaymentCancelledPage() {
+function PaymentCancelledContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const paymentId = searchParams.get('payment_id');
@@ -139,5 +140,13 @@ export default function PaymentCancelledPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentCancelledPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaymentCancelledContent />
+    </Suspense>
   );
 }

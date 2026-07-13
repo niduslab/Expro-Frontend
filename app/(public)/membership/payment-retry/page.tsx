@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useBkashPayment } from '@/lib/hooks/useBkashPayment';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
-export default function PaymentRetryPage() {
+function PaymentRetryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const applicationId = searchParams.get('application_id');
@@ -184,5 +184,13 @@ export default function PaymentRetryPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentRetryPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaymentRetryContent />
+    </Suspense>
   );
 }

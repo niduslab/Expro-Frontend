@@ -19,7 +19,6 @@ export const useGSAPInit = () => {
     // Global GSAP configuration
     gsap.config({
       nullTargetWarn: false,
-      trialWarn: false,
     });
 
     return () => {

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Search, Menu, LayoutDashboard, Users } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useMyProfile } from "@/lib/hooks/admin/useUsers";
+import { canAccessAdmin as canEnterAdminPanel } from "@/lib/utils/permissions";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
@@ -12,23 +13,24 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const roles = profile?.roles || [];
-  
-  // Check if user has admin role (admin, chairman) OR advanced pension roles
-  const hasAdminRole = roles.some(role => role === 'admin' || role === 'chairman');
-  
+  // Can the user reach the admin panel via their roles/permissions?
+  // This mirrors the gate used by the admin layout: full access, the
+  // `admin_access` gate, any granted `access_*` page permission, or a legacy
+  // admin/chairman role.
+  const hasAdminPanelAccess = canEnterAdminPanel(profile ?? null);
+
   // Check for pension package roles (executive_member, project_presenter, assistant_pp)
   const pensionEnrollments = profile?.pension_enrollments || [];
   const hasAdvancedPensionRole = pensionEnrollments.some((enrollment: any) => {
     const pensionRoles = enrollment.pension_package_roles || [];
-    return pensionRoles.some((role: any) => 
-      role.is_active && 
+    return pensionRoles.some((role: any) =>
+      role.is_active &&
       ['executive_member', 'project_presenter', 'assistant_pp'].includes(role.role)
     );
   });
-  
-  // User can access admin if they have admin role OR advanced pension role
-  const canAccessAdmin = hasAdminRole || hasAdvancedPensionRole;
+
+  // User can access admin if they have admin panel access OR advanced pension role
+  const canAccessAdmin = hasAdminPanelAccess || hasAdvancedPensionRole;
   
   const isAdminRoute = pathname?.startsWith("/admin");
 
@@ -48,7 +50,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
     } else {
       // If currently in member dashboard and can access admin, go to admin dashboard
       if (canAccessAdmin) {
-        router.push("/admin/dashboard");
+        router.push("/admin");
       }
     }
   };

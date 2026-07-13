@@ -48,7 +48,7 @@ export type {
   Wallet,
   WalletTransaction,
   WalletTransactionsParams,
-} from './hooks/user/useWallet';
+} from './types/admin/walletsType';
 
 // Hooks - Admin
 export {
@@ -62,7 +62,7 @@ export { useDashboardStats } from './hooks/admin/useDashboard';
 export type { DashboardStats } from './hooks/admin/useDashboard';
 
 export { useDonations, useDonation } from './hooks/admin/useDonations';
-export type { Donation, DonationsResponse, DonationsParams } from './hooks/admin/useDonations';
+export type { Donation, DonationsApiResponse, DonationsParams } from './hooks/admin/useDonations';
 
 // Hooks - Utility
 export { useGSAPInit } from './hooks/useGSAPInit';

@@ -51,6 +51,8 @@ const initialNomineeInfo: NomineeInfoState = {
   relation: "",
   nid: "",
   photo: null,
+  nidFrontPhoto: null,
+  nidBackPhoto: null,
   nomineeMobile: "",
   nomineeAddress: "",
 };
@@ -132,7 +134,9 @@ const MembershipForm = ({ initialSponsorInfo, lockSponsor = false }: MembershipF
             ...prev.nomineeInfo,
             ...parsedData.nomineeInfo,
             nomineeDob: convertDateFormat(parsedData.nomineeInfo?.nomineeDob || parsedData.nomineeInfo?.dateOfBirth || ''),
-            photo: null
+            photo: null,
+            nidFrontPhoto: null,
+            nidBackPhoto: null
           },
           // When sponsor is locked (member dashboard), never restore from localStorage
           sponsorInfo: lockSponsor ? prev.sponsorInfo : { ...prev.sponsorInfo, ...parsedData.sponsorInfo },
@@ -164,7 +168,9 @@ const MembershipForm = ({ initialSponsorInfo, lockSponsor = false }: MembershipF
       },
       nomineeInfo: {
         ...newData.nomineeInfo,
-        photo: null // Exclude file from storage
+        photo: null, // Exclude file from storage
+        nidFrontPhoto: null,
+        nidBackPhoto: null
       },
       sponsorInfo: newData.sponsorInfo,
       pensionInfo: newData.pensionInfo,

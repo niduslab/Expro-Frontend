@@ -380,7 +380,7 @@ export default function MemberMembershipPage() {
                               </>
                             )}
                             <button
-                              onClick={() => router.push(`/admin/membership-request/${request.id}`)}
+                              onClick={() => router.push(`/dashboard/membership/${request.id}`)}
                               title="View Details"
                             >
                               <Eye className="text-[#73808C] h-[22px] w-[22px]" />

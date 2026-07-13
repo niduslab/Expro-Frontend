@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import {
   Package,
   AlertCircle,
@@ -20,6 +20,10 @@ import {
 } from "lucide-react";
 import { useMyPensionEnrollments } from "@/lib/hooks/user/usePensionEnrollment";
 import { usePensionPayment } from "@/lib/hooks/user/usePensionPayment";
+import { useMyProfile } from "@/lib/hooks/user/useProfile";
+import { downloadInvoice, formatDateTime } from "@/lib/utils/invoice";
+import { Download } from "lucide-react";
+import type { InvoiceMember } from "@/lib/utils/invoice";
 import { PensionEnrollment as BasePensionEnrollment, PensionInstallment } from "./types";
 
 // Extended type to include installments from API
@@ -296,15 +300,40 @@ interface EnrollmentCardProps {
   enrollment: PensionEnrollment;
   installments: PensionInstallment[];
   onPayNow: (installment: PensionInstallment) => void;
+  member: InvoiceMember;
 }
 
 function EnrollmentCard({
   enrollment,
   installments,
   onPayNow,
+  member,
 }: EnrollmentCardProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  const handleDownloadInvoice = (inst: PensionInstallment) => {
+    const paidAt = formatDateTime(inst.paid_date);
+    downloadInvoice({
+      title: "PENSION INSTALLMENT INVOICE",
+      invoiceNo: inst.payment_reference || `INST-${inst.id}`,
+      paidAt,
+      member,
+      rows: [
+        ["Enrollment", enrollment.enrollment_number],
+        ["Plan", (enrollment as any)?.pension_package_id?.name || "Pension Plan"],
+        ["Installment No.", String(inst.installment_number)],
+        ["Due Date", fmtDate(inst.due_date)],
+        ["Status", "Paid"],
+        ["Paid Date", paidAt],
+      ],
+      amountLabel: "Installment Amount",
+      amount: fmtMoney(inst.amount),
+      chargesLabel: "Late Fee",
+      charges: parseFloat(inst.late_fee || "0") > 0 ? fmtMoney(inst.late_fee) : undefined,
+      total: fmtMoney(inst.amount_paid && parseFloat(inst.amount_paid) > 0 ? inst.amount_paid : inst.total_amount),
+    });
+  };
 
   const sc =
     enrollmentStatusConfig[enrollment.status] ?? enrollmentStatusConfig.pending;
@@ -341,8 +370,7 @@ function EnrollmentCard({
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[14px] font-bold text-[#030712] font-mono">
-                  {enrollment?.pension_package_id?.name} Plan
-                  {/* {enrollment.enrollment_number} */}
+                  Pension Plan
                 </span>
                 <span
                   className={`inline-flex items-center gap-1.5 text-[12px] font-medium px-2.5 py-1 rounded-full ${sc.bg} ${sc.text}`}
@@ -521,10 +549,20 @@ function EnrollmentCard({
                             Pay Now
                           </button>
                         ) : inst.status === "paid" ? (
-                          <span className="inline-flex items-center gap-1.5 text-[14px] text-emerald-600">
-                            <CheckCircle2 className="w-4 h-4" />
-                            Paid on {fmtDate(inst.paid_date)}
-                          </span>
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center gap-1.5 text-[14px] text-emerald-600">
+                              <CheckCircle2 className="w-4 h-4" />
+                              Paid on {fmtDate(inst.paid_date)}
+                            </span>
+                            <button
+                              onClick={() => handleDownloadInvoice(inst)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#068847] text-[#068847] text-[13px] font-medium hover:bg-[#068847] hover:text-white transition-colors"
+                              title="Download invoice"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              Invoice
+                            </button>
+                          </div>
                         ) : (
                           <span className="text-[14px] text-[#9CA3AF]">—</span>
                         )}
@@ -596,7 +634,7 @@ function EnrollmentCard({
 
 // ── Main Page ───────────────────────────────────────────────────────────────
 
-export default function PensionPage() {
+function PensionPageContent() {
   const searchParams = useSearchParams();
   const [selectedEnrollment, setSelectedEnrollment] =
     useState<PensionEnrollment | null>(null);
@@ -609,6 +647,15 @@ export default function PensionPage() {
     error: enrollmentsErr,
     refetch: refetchEnrollments,
   } = useMyPensionEnrollments();
+
+  const { data: profileRes } = useMyProfile();
+  const profile: any = profileRes?.data;
+  const invoiceMember: InvoiceMember = {
+    name: profile?.name_english,
+    memberId: profile?.member_id,
+    mobile: profile?.mobile,
+    email: profile?.user?.email,
+  };
 
   const { initiatePayment, loading: paymentLoading } = usePensionPayment({
     onSuccess: () => {
@@ -863,6 +910,7 @@ export default function PensionPage() {
                     installmentsByEnrollment.get(enrollment.id) ?? []
                   }
                   onPayNow={handlePayNow}
+                  member={invoiceMember}
                 />
               ))}
             </div>
@@ -893,5 +941,13 @@ export default function PensionPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PensionPage() {
+  return (
+    <Suspense fallback={null}>
+      <PensionPageContent />
+    </Suspense>
   );
 }

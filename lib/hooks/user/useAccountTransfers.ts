@@ -16,7 +16,8 @@ export interface MemberAccountTransfer {
   transfer_fee: number;
   status: 'requested' | 'under_review' | 'approved' | 'rejected' | 'completed' | 'cancelled';
   new_member_data: {
-    name: string;
+    name_english: string;
+    name_bangla?: string;
     email: string;
     phone: string;
     nid: string;
@@ -98,7 +99,7 @@ export const useMyTransferRequests = () => {
   return useQuery({
     queryKey: ['myTransferRequests'],
     queryFn: async () => {
-      const response = await apiRequest.get<any>(
+      const response = await apiRequest.get<PaginatedResponse<MemberAccountTransfer>>(
         '/account-transfers/my-requests'
       );
       // API returns paginated data: { success: true, data: { data: [...], current_page, total, etc } }
@@ -121,7 +122,7 @@ export const useReceivedTransfers = () => {
   return useQuery({
     queryKey: ['receivedTransfers'],
     queryFn: async () => {
-      const response = await apiRequest.get<any>(
+      const response = await apiRequest.get<PaginatedResponse<MemberAccountTransfer>>(
         '/account-transfers/my-received'
       );
       // API returns paginated data: { success: true, data: { data: [...], current_page, total, etc } }
@@ -171,12 +172,13 @@ export const useTransferEligibility = (enrollmentId: number | null) => {
       const response = await apiRequest.get<any>(
         `/pension-enrollment/${enrollmentId}/transfer-eligibility`
       );
-      
+
       // API returns: { success: true, eligible: true, data: {...} }
       // We need to merge eligible with data
+      const responseData = response.data as any;
       return {
-        eligible: response.data.eligible,
-        ...response.data.data,
+        eligible: responseData.eligible,
+        ...responseData.data,
       };
     },
     enabled: !!enrollmentId,

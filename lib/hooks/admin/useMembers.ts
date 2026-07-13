@@ -66,6 +66,7 @@ export interface Member {
   wallet_transactions: any[];
   pension_enrollments: any[];
   pension_installments: any[];
+  payments?: any[];
 }
 
 export interface MembersParams {
@@ -408,6 +409,32 @@ export const useChangeHierarchy = () => {
     mutationFn: async ({ userId, ...payload }) => {
       const response = await apiRequest.post<void>(
         `/admin/member/${userId}/change-hierarchy`,
+        payload,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+    },
+  });
+};
+
+/**
+ * Hook: Remove a leader (EM/PP/APP) and re-home their direct members
+ * under a new sponsor. The leader is detached from the hierarchy; each
+ * direct member keeps their own sub-team.
+ */
+export const useReplaceLeader = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    ApiResponse<void>,
+    AxiosError,
+    { userId: number; new_sponsor_id: number; reason?: string }
+  >({
+    mutationFn: async ({ userId, ...payload }) => {
+      const response = await apiRequest.post<void>(
+        `/admin/member/${userId}/replace-leader`,
         payload,
       );
       return response.data;

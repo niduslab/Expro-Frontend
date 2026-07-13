@@ -136,7 +136,7 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="text-gray-600">Name:</span>
-                  <p className="font-medium text-gray-900">{transfer.new_member_data.name}</p>
+                  <p className="font-medium text-gray-900">{transfer.new_member_data.name_english || transfer.new_member_data.name_bangla}</p>
                 </div>
                 <div>
                   <span className="text-gray-600">Email:</span>
@@ -248,7 +248,7 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-green-900 mb-2">Next Steps</h3>
               <p className="text-sm text-green-800">
-                Your transfer has been approved! The new member ({transfer.new_member_data?.name}) will receive an email with registration instructions. 
+                Your transfer has been approved! The new member ({transfer.new_member_data?.name_english || transfer.new_member_data?.name_bangla}) will receive an email with registration instructions.
                 Once they complete registration, the admin will finalize the transfer.
               </p>
             </div>
@@ -258,7 +258,7 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-purple-900 mb-2">Transfer Completed</h3>
               <p className="text-sm text-purple-800">
-                This transfer has been successfully completed. The pension account has been transferred to {transfer.new_member_data?.name}.
+                This transfer has been successfully completed. The pension account has been transferred to {transfer.new_member_data?.name_english || transfer.new_member_data?.name_bangla}.
               </p>
             </div>
           )}

@@ -4,7 +4,7 @@ export const donationSchema = z.object({
   amount: z
     .string()
     .min(1, "Please enter an amount")
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, "Invalid amount"),
+    .refine((val) => !isNaN(Number(val)) && Number(val) >= 10, "Minimum donation is ৳10"),
   name: z
     .string()
     .min(3, "Full name is required")
@@ -15,6 +15,6 @@ export const donationSchema = z.object({
     .min(10, "Phone must be at least 10 digits")
     .regex(/^\d+$/, "Phone must contain only numbers"),
   message: z.string().optional(),
-  payment: z.enum(["bKash", "Bank"], "Select a payment method"),
-  transactionId: z.string().min(1, "Transaction ID is required"),
+  // Paid through the bKash gateway.
+  payment: z.enum(["bkash"], "Select a payment method"),
 });

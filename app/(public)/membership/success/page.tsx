@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle, Home, FileText } from 'lucide-react';
 
-export default function MembershipSuccessPage() {
+function MembershipSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const paymentStatus = searchParams.get('payment');
@@ -99,5 +99,13 @@ export default function MembershipSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MembershipSuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <MembershipSuccessContent />
+    </Suspense>
   );
 }

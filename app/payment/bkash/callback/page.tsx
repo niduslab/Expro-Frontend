@@ -12,11 +12,11 @@
  * This page will only be used if someone directly accesses this URL or for legacy flows.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { bkashService } from '@/lib/services/bkash.service';
 
-export default function BkashCallbackPage() {
+function BkashCallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<'processing' | 'success' | 'failed'>(
@@ -166,5 +166,13 @@ export default function BkashCallbackPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BkashCallbackPage() {
+  return (
+    <Suspense fallback={null}>
+      <BkashCallbackContent />
+    </Suspense>
   );
 }

@@ -106,9 +106,10 @@ export default function CommissionsTab() {
     );
   };
 
-  const commissionsArray = commissionsData?.data;
+  const paginatedData = commissionsData?.data;
+  const commissionsArray = Array.isArray(paginatedData) ? paginatedData : paginatedData?.data;
   const commissions = Array.isArray(commissionsArray) ? commissionsArray : [];
-  const pagination = commissionsData?.pagination;
+  const pagination = paginatedData && !Array.isArray(paginatedData) ? paginatedData.pagination : undefined;
 
   return (
     <>
@@ -309,7 +310,7 @@ export default function CommissionsTab() {
           </div>
 
           {/* Pagination */}
-          {pagination && pagination.total_pages > 1 && (
+          {pagination && pagination.last_page > 1 && (
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm text-[#6A7282]">
                 Showing {((pagination.current_page - 1) * pagination.per_page) + 1} to{" "}
@@ -325,8 +326,8 @@ export default function CommissionsTab() {
                   Previous
                 </button>
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(pagination.total_pages, prev + 1))}
-                  disabled={currentPage === pagination.total_pages}
+                  onClick={() => setCurrentPage((prev) => Math.min(pagination.last_page, prev + 1))}
+                  disabled={currentPage === pagination.last_page}
                   className="px-4 py-2 border border-[#E5E7EB] rounded-lg text-sm font-medium text-[#4A5565] hover:bg-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Next

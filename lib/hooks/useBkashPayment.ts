@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { bkashService } from '@/lib/services/bkash.service';
+import { bkashService, BkashPaymentRequest } from '@/lib/services/bkash.service';
 import { toast } from 'react-hot-toast';
 
 interface UseBkashPaymentOptions {
@@ -69,6 +69,37 @@ export function useBkashPayment(options: UseBkashPaymentOptions = {}) {
       return null;
     }
   }, [onError]);
+
+  /**
+   * Create a bKash payment and open the gateway window
+   */
+  const initiatePayment = useCallback(async (paymentData: BkashPaymentRequest) => {
+    setLoading(true);
+
+    try {
+      const response = await bkashService.createPayment(paymentData);
+
+      if (response.success && response.data) {
+        await openPaymentGateway({
+          bkashURL: response.data.bkashURL,
+          payment_id: response.data.payment_id,
+          paymentID: response.data.paymentID,
+        });
+      } else {
+        toast.error(response.message || 'Failed to initiate payment');
+        onError?.(response);
+        setLoading(false);
+      }
+
+      return response;
+    } catch (error: any) {
+      console.error('Payment initiation error:', error);
+      toast.error(error.response?.data?.message || 'Failed to initiate payment');
+      onError?.(error);
+      setLoading(false);
+      throw error;
+    }
+  }, [openPaymentGateway, onError]);
 
   /**
    * Confirm payment success after callback
@@ -175,6 +206,7 @@ export function useBkashPayment(options: UseBkashPaymentOptions = {}) {
 
   return {
     openPaymentGateway,
+    initiatePayment,
     confirmPaymentSuccess,
     reportPaymentFailure,
     retryPayment,

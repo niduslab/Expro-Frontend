@@ -55,6 +55,9 @@ export interface PensionEnrollment {
   package_roles?: PensionPackageRole[];
   current_role?: string;
 
+  // Related installments (eager-loaded on show/myEnrollments)
+  pension_installments?: PensionInstallment[];
+
   notes: string | null; // text
 
   // Timestamps

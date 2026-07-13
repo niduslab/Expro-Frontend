@@ -32,20 +32,23 @@ export function ConnectionTest({ userId }: { userId?: number }) {
     // Test 1: Direct Pusher connection
     addLog('🔄 Testing direct Pusher connection...');
     
+    const authEndpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '')}/api/broadcasting/auth`;
+    const authHeaders = {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    };
+
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER!,
       forceTLS: true,
       channelAuthorization: {
-        endpoint: `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace('/api/v1', '')}/api/broadcasting/auth`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
+        endpoint: authEndpoint,
+        headers: authHeaders,
         customHandler: (params, callback) => {
-          fetch(params.authEndpoint!, {
+          fetch(authEndpoint, {
             method: 'POST',
             headers: {
-              ...params.authOptions!.headers,
+              ...authHeaders,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({

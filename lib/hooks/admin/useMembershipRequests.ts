@@ -43,6 +43,47 @@ export interface MembershipRequestsParams {
   search?: string;
 }
 
+export interface MembershipRequestPayment {
+  id: number;
+  payment_id: string;
+  amount: string;
+  gateway_fee: string;
+  net_amount: string;
+  currency: string;
+  payment_method: string;
+  payment_type: string;
+  status: string;
+  gateway_transaction_id: string | null;
+  paid_at: string | null;
+  created_at: string;
+}
+
+export interface MembershipRequestPensionPackage {
+  id: number;
+  name: string;
+  name_bangla: string;
+  monthly_amount: string;
+  total_installments: number;
+  maturity_amount: string;
+  joining_commission: string;
+  installment_commission: string;
+  description: string | null;
+  status: string;
+}
+
+export interface MembershipRequestDocuments {
+  nid_front: string | null;
+  nid_back: string | null;
+  signature: string | null;
+}
+
+export interface MembershipRequestDetail {
+  application: MembershipRequest;
+  payment: MembershipRequestPayment | null;
+  pension_package: MembershipRequestPensionPackage | null;
+  documents: MembershipRequestDocuments;
+}
+
 /**
  * Hook: Get All Membership Requests (Admin)
  * Fetches paginated list of all membership applications
@@ -82,7 +123,7 @@ export const useMembershipRequest = (id: number) => {
   return useQuery({
     queryKey: ['membership-request', id],
     queryFn: async () => {
-      const response = await apiRequest.get<MembershipRequest>(
+      const response = await apiRequest.get<MembershipRequestDetail>(
         `/public/membership-applications/${id}`
       );
       return response.data;

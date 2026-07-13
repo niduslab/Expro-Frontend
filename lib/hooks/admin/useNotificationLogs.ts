@@ -89,14 +89,14 @@ export function useNotificationLogs(initialFilters?: NotificationLogsFilters) {
         params,
       });
 
-      setLogs(response.data.data || []);
+      setLogs(response.data.data.data || []);
       setPagination({
-        current_page: response.data.current_page,
-        last_page: response.data.last_page,
-        per_page: response.data.per_page,
-        total: response.data.total,
-        from: response.data.from,
-        to: response.data.to,
+        current_page: response.data.data.current_page,
+        last_page: response.data.data.last_page,
+        per_page: response.data.data.per_page,
+        total: response.data.data.total,
+        from: response.data.data.from,
+        to: response.data.data.to,
       });
     } catch (err: any) {
       console.error('Failed to fetch notification logs:', err);
@@ -145,7 +145,7 @@ export function useNotificationAnalytics(dateRange?: { from?: string; to?: strin
       setIsLoading(true);
       setError(null);
       
-      const response = await apiRequest.get<{ data: NotificationAnalytics }>('/admin/notification-analytics', {
+      const response = await apiRequest.get<NotificationAnalytics>('/admin/notification-analytics', {
         params: dateRange,
       });
 

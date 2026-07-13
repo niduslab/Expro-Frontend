@@ -9,6 +9,7 @@ import { usePensionPackages } from "@/lib/hooks/admin/usePensionPackages";
 import { ArrowLeft, ArrowRight, Users as UsersIcon } from "lucide-react";
 import PensionRoleModal from "./pensionRoleModal";
 import ChangeHierarchyModal from "./changeHierarchyModal";
+import ReplaceLeaderModal from "./replaceLeaderModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Status = "active" | "pending" | "inactive" | "suspended";
@@ -168,6 +169,7 @@ export default function MembersPage() {
   const [pensionRoleMember, setPensionRoleMember] = useState<{ id: number; name: string; enrollments: any[] } | null>(null);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [changeHierarchyMember, setChangeHierarchyMember] = useState<{ id: number; name: string } | null>(null);
+  const [replaceLeaderMember, setReplaceLeaderMember] = useState<{ id: number; name: string } | null>(null);
   const [enrollmentRoleFilter, setEnrollmentRoleFilter] = useState<string>("");
   const [viewMode, setViewMode] = useState<"table" | "hierarchy">("table");
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set());
@@ -601,10 +603,10 @@ export default function MembersPage() {
           {/* Action Buttons */}
           {!packageNameFromUrl && (
             <div className="flex items-center gap-2 mt-4">
-              <button className="flex items-center gap-1.5 text-[12px] px-3 py-[5px] border border-[#E5E7EB] rounded-lg hover:bg-[#F9FAFB] transition-colors cursor-pointer">
-                <DownloadIcon /> Export CSV
-              </button>
-              <button className="flex items-center gap-1.5 text-[12px] px-3 py-[5px] bg-[#068847] text-white rounded-lg hover:bg-[#045a2e] transition-colors cursor-pointer">
+              <button
+                onClick={() => router.push('/admin/membership')}
+                className="flex items-center gap-1.5 text-[12px] px-3 py-[5px] bg-[#068847] text-white rounded-lg hover:bg-[#045a2e] transition-colors cursor-pointer"
+              >
                 + Add Member
               </button>
             </div>
@@ -1108,6 +1110,20 @@ export default function MembersPage() {
                                     </svg>
                                     Change Hierarchy
                                   </button>
+                                  <button
+                                    onClick={() => {
+                                      setReplaceLeaderMember({ id: member.id, name: memberName });
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className="w-full px-4 py-2 text-left text-sm text-[#DC2626] hover:bg-[#FEF2F2] flex items-center gap-2 transition-colors"
+                                  >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                      <circle cx="8.5" cy="7" r="4" />
+                                      <line x1="23" y1="11" x2="17" y2="11" />
+                                    </svg>
+                                    Remove Leader &amp; Re-home
+                                  </button>
                                 </div>
                               )}
                             </div>
@@ -1215,6 +1231,17 @@ export default function MembersPage() {
           onClose={() => setChangeHierarchyMember(null)}
           memberId={changeHierarchyMember.id}
           memberName={changeHierarchyMember.name}
+          allMembers={apiMembers}
+        />
+      )}
+
+      {/* Remove Leader & Re-home Modal */}
+      {replaceLeaderMember && (
+        <ReplaceLeaderModal
+          isOpen={!!replaceLeaderMember}
+          onClose={() => setReplaceLeaderMember(null)}
+          memberId={replaceLeaderMember.id}
+          memberName={replaceLeaderMember.name}
           allMembers={apiMembers}
         />
       )}

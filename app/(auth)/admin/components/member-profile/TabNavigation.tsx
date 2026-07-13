@@ -1,6 +1,6 @@
 "use client";
 
-type TabType = 'profile' | 'pension_enrollments' | 'pension_installments' | 'wallet' | 'wallet_transactions' | 'nominees';
+type TabType = 'profile' | 'pension_enrollments' | 'pension_installments' | 'wallet' | 'wallet_transactions' | 'payments' | 'nominees';
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -9,6 +9,7 @@ interface TabNavigationProps {
     pensionEnrollments: number;
     pensionInstallments: number;
     walletTransactions: number;
+    payments: number;
     nominees: number;
   };
 }
@@ -44,6 +45,12 @@ export default function TabNavigation({ activeTab, setActiveTab, counts }: TabNa
           onClick={() => setActiveTab('wallet_transactions')}
           label="Transactions"
           count={counts.walletTransactions}
+        />
+        <TabButton
+          active={activeTab === 'payments'}
+          onClick={() => setActiveTab('payments')}
+          label="Payments"
+          count={counts.payments}
         />
         <TabButton
           active={activeTab === 'nominees'}

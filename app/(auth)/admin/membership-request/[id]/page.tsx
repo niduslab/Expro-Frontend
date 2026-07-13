@@ -372,7 +372,7 @@ export default function MembershipRequestDetailsPage() {
                       </label>
                       <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
-                        onClick={() => handleImageClick(documents.nid_front, "NID Front")}
+                        onClick={() => handleImageClick(documents.nid_front as string, "NID Front")}
                       >
                         <Image
                           src={documents.nid_front}
@@ -405,7 +405,7 @@ export default function MembershipRequestDetailsPage() {
                       </label>
                       <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-gray-100"
-                        onClick={() => handleImageClick(documents.nid_back, "NID Back")}
+                        onClick={() => handleImageClick(documents.nid_back as string, "NID Back")}
                       >
                         <Image
                           src={documents.nid_back}
@@ -438,7 +438,7 @@ export default function MembershipRequestDetailsPage() {
                       </label>
                       <div
                         className="relative group cursor-pointer rounded-lg overflow-hidden border-2 border-[#E5E7EB] hover:border-[#068847] transition-all bg-white"
-                        onClick={() => handleImageClick(documents.signature, "Signature")}
+                        onClick={() => handleImageClick(documents.signature as string, "Signature")}
                       >
                         <Image
                           src={documents.signature}

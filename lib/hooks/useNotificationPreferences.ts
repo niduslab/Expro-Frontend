@@ -13,10 +13,6 @@ export interface NotificationPreference {
   updated_at: string;
 }
 
-export interface NotificationPreferencesResponse {
-  data: NotificationPreference[];
-}
-
 export function useNotificationPreferences() {
   const [preferences, setPreferences] = useState<NotificationPreference[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +22,7 @@ export function useNotificationPreferences() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await apiRequest.get<NotificationPreferencesResponse>('/notification-preferences');
+      const response = await apiRequest.get<NotificationPreference[]>('/notification-preferences');
       setPreferences(response.data.data || []);
     } catch (err: any) {
       console.error('Failed to fetch notification preferences:', err);

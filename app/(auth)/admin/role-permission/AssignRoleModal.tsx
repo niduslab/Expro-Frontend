@@ -71,7 +71,7 @@ export default function AssignRoleModal({
             <div>
               <h2 className="text-xl font-semibold text-[#030712]">Assign Roles</h2>
               <p className="text-sm text-[#6B7280] mt-0.5">
-                {user.member?.first_name} {user.member?.last_name} ({user.email})
+                {user.member?.name_english || user.email} ({user.email})
               </p>
             </div>
           </div>

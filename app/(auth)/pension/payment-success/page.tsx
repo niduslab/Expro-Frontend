@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Package, Receipt, ArrowRight, Download } from "lucide-react";
 import { downloadPaymentPDF } from "@/lib/utils/downloadPaymentPDF";
@@ -8,7 +8,7 @@ import { usePensionPayment } from "@/lib/hooks/user/usePensionPayment";
 import { useMyPensionEnrollments } from "@/lib/hooks/user/usePensionEnrollment";
 import { fmtMoney } from "@/app/(auth)/dashboard/pensions/utils";
 
-export default function PensionPaymentSuccessPage() {
+function PensionPaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<"processing" | "success" | "error">(
@@ -325,5 +325,13 @@ export default function PensionPaymentSuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PensionPaymentSuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <PensionPaymentSuccessContent />
+    </Suspense>
   );
 }

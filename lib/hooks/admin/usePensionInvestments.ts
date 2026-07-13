@@ -250,7 +250,7 @@ export const usePensionInvestment = (id: number) => {
   return useQuery({
     queryKey: ['pensionInvestment', id],
     queryFn: async () => {
-      const response = await apiRequest.get<ApiResponse<PensionInvestment>>(
+      const response = await apiRequest.get<PensionInvestment>(
         `/public/pension-investment/${id}`
       );
       return response.data.data;
@@ -272,7 +272,7 @@ export const useInvestmentStatistics = () => {
   return useQuery({
     queryKey: ['investmentStatistics'],
     queryFn: async () => {
-      const response = await apiRequest.get<ApiResponse<InvestmentStatistics>>(
+      const response = await apiRequest.get<InvestmentStatistics>(
         '/public/pension-investments/statistics'
       );
       return response.data.data;
