@@ -1,10 +1,45 @@
 "use client";
 
+import { Download } from "lucide-react";
+import {
+  downloadInvoice,
+  formatBdt,
+  formatDateTime,
+} from "@/lib/utils/invoice";
+
 interface PensionInstallmentsTabProps {
   pensionInstallments: any[];
+  memberProfile?: any;
+  memberEmail?: string;
 }
 
-export default function PensionInstallmentsTab({ pensionInstallments }: PensionInstallmentsTabProps) {
+export default function PensionInstallmentsTab({ pensionInstallments, memberProfile, memberEmail }: PensionInstallmentsTabProps) {
+  const handleDownloadInvoice = (installment: any) => {
+    const paidAt = formatDateTime(installment.paid_date);
+    const paidAmount = installment.amount_paid ?? installment.amount;
+    downloadInvoice({
+      title: "PENSION INSTALLMENT INVOICE",
+      invoiceNo: installment.payment?.payment_id || `INST-${installment.id}`,
+      paidAt,
+      member: {
+        name: memberProfile?.name_english,
+        memberId: memberProfile?.member_id,
+        mobile: memberProfile?.mobile,
+        email: memberEmail,
+      },
+      rows: [
+        ["Installment No.", String(installment.installment_number ?? "—")],
+        ["Due Date", installment.due_date ? new Date(installment.due_date).toLocaleDateString() : "—"],
+        ["Payment Method", installment.payment?.payment_method ? String(installment.payment.payment_method).replace(/_/g, " ") : "—"],
+        ["Status", "Paid"],
+        ["Paid Date", paidAt],
+      ],
+      amountLabel: "Installment Amount",
+      amount: formatBdt(installment.amount),
+      total: formatBdt(paidAmount),
+    });
+  };
+
   if (!pensionInstallments || pensionInstallments.length === 0) {
     return (
       <div className="bg-white border border-[#E5E7EB] rounded-xl p-6">
@@ -26,6 +61,7 @@ export default function PensionInstallmentsTab({ pensionInstallments }: PensionI
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Amount</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Paid Date</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Status</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Invoice</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#F3F4F6]">
@@ -51,6 +87,20 @@ export default function PensionInstallmentsTab({ pensionInstallments }: PensionI
                   }`}>
                     {installment.status}
                   </span>
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {installment.status === "paid" ? (
+                    <button
+                      onClick={() => handleDownloadInvoice(installment)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#068847] text-[#068847] text-xs font-medium hover:bg-[#068847] hover:text-white transition-colors"
+                      title="Download invoice"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Invoice
+                    </button>
+                  ) : (
+                    <span className="text-xs text-[#9CA3AF]">—</span>
+                  )}
                 </td>
               </tr>
             ))}

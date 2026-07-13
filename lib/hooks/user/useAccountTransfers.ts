@@ -16,7 +16,8 @@ export interface MemberAccountTransfer {
   transfer_fee: number;
   status: 'requested' | 'under_review' | 'approved' | 'rejected' | 'completed' | 'cancelled';
   new_member_data: {
-    name: string;
+    name_english: string;
+    name_bangla?: string;
     email: string;
     phone: string;
     nid: string;

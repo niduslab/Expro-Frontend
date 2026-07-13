@@ -21,6 +21,22 @@ export * from './admin/useMembershipRequests';
 export * from './admin/useWallet';
 export * from './admin/usePensionHierarchy';
 
+export {
+  useTeamCollection,
+  useTeamCollectionsByPackage,
+  useTeamMemberContributions,
+  useCreateTeamCollection,
+  useUpdateTeamCollection,
+  useDeleteTeamCollection,
+  useTeamCollections as useAdminTeamCollections,
+} from './admin/useTeamCollections';
+export type {
+  TeamCollection,
+  TeamMemberContribution,
+  TeamCollectionsParams,
+  TeamMemberContributionsParams,
+} from './admin/useTeamCollections';
+
 export { useDonations, useDonation } from './admin/useDonations';
 export type { Donation, DonationsApiResponse, DonationsParams } from './admin/useDonations';
 

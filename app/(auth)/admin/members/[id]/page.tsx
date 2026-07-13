@@ -10,13 +10,14 @@ import PensionEnrollmentsTab from "../../components/member-profile/PensionEnroll
 import PensionInstallmentsTab from "../../components/member-profile/PensionInstallmentsTab";
 import WalletTab from "../../components/member-profile/WalletTab";
 import WalletTransactionsTab from "../../components/member-profile/WalletTransactionsTab";
+import PaymentsTab from "../../components/member-profile/PaymentsTab";
 import NomineesTab from "../../components/member-profile/NomineesTab";
 import EditProfileModal from "../../components/member-profile/EditProfileModal";
 
 export default function MemberDetailPage() {
   const params = useParams();
   const memberId = Number(params.id);
-  const [activeTab, setActiveTab] = useState<'profile' | 'pension_enrollments' | 'pension_installments' | 'wallet' | 'wallet_transactions' | 'nominees'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'pension_enrollments' | 'pension_installments' | 'wallet' | 'wallet_transactions' | 'payments' | 'nominees'>('profile');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { data: response, isLoading, error } = useMember(memberId);
@@ -56,7 +57,7 @@ export default function MemberDetailPage() {
   const pensionEnrollments = member.pension_enrollments || [];
   const nominees = member.nominee || [];
 
-  const handleTabChange = (tab: 'profile' | 'pension_enrollments' | 'pension_installments' | 'wallet' | 'wallet_transactions' | 'nominees') => {
+  const handleTabChange = (tab: 'profile' | 'pension_enrollments' | 'pension_installments' | 'wallet' | 'wallet_transactions' | 'payments' | 'nominees') => {
     setActiveTab(tab);
   };
 
@@ -76,6 +77,7 @@ export default function MemberDetailPage() {
             pensionEnrollments: pensionEnrollments.length,
             pensionInstallments: member.pension_installments?.length || 0,
             walletTransactions: member.wallet_transactions?.length || 0,
+            payments: member.payments?.length || 0,
             nominees: nominees.length,
           }}
         />
@@ -95,7 +97,11 @@ export default function MemberDetailPage() {
         )}
 
         {activeTab === 'pension_installments' && (
-          <PensionInstallmentsTab pensionInstallments={member.pension_installments || []} />
+          <PensionInstallmentsTab
+            pensionInstallments={member.pension_installments || []}
+            memberProfile={memberProfile}
+            memberEmail={member.email}
+          />
         )}
 
         {activeTab === 'wallet' && (
@@ -104,6 +110,14 @@ export default function MemberDetailPage() {
 
         {activeTab === 'wallet_transactions' && (
           <WalletTransactionsTab walletTransactions={member.wallet_transactions || []} />
+        )}
+
+        {activeTab === 'payments' && (
+          <PaymentsTab
+            payments={member.payments || []}
+            memberProfile={memberProfile}
+            memberEmail={member.email}
+          />
         )}
 
         {activeTab === 'nominees' && (

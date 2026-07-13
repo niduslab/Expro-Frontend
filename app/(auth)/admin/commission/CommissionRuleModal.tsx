@@ -42,6 +42,9 @@ export default function CommissionRuleModal({
   const { data: packagesData, isLoading: isLoadingPackages } = usePensionPackages({
     per_page: 100, // Get all packages
   });
+  const packages = Array.isArray(packagesData?.data)
+    ? packagesData.data
+    : [];
 
   useEffect(() => {
     if (ruleToEdit) {
@@ -240,16 +243,16 @@ export default function CommissionRuleModal({
               {isLoadingPackages ? (
                 <option disabled>Loading packages...</option>
               ) : (
-                packagesData?.data?.map((pkg) => (
+                packages.map((pkg) => (
                   <option key={pkg.id} value={pkg.id}>
                     {pkg.name} - ৳{pkg.monthly_amount.toLocaleString()}/month
                   </option>
                 ))
               )}
             </select>
-            {formData.pension_package_id && packagesData?.data && (
+            {formData.pension_package_id && packages.length > 0 && (
               <p className="text-xs text-[#6A7282] mt-1">
-                Selected: {packagesData.data.find(p => p.id === parseInt(formData.pension_package_id))?.name}
+                Selected: {packages.find(p => p.id === parseInt(formData.pension_package_id))?.name}
               </p>
             )}
           </div>

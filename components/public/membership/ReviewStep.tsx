@@ -366,7 +366,10 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                 value={data.nomineeInfo.nomineeNameEnglish}
               />
               <SectionRow label="Relation" value={data.nomineeInfo.relation} />
+              <SectionRow label="National ID" value={data.nomineeInfo.nid} />
               <SectionRow label="Address" value={data.nomineeInfo.nomineeAddress} />
+              <SectionRow label="NID Front" image={data.nomineeInfo.nidFrontPhoto} />
+              <SectionRow label="NID Back" image={data.nomineeInfo.nidBackPhoto} />
             </div>
           </SectionCard>
 

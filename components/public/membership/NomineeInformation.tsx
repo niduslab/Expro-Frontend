@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, ChangeEvent, useRef } from 'react';
-import { Camera, ChevronRight, ChevronLeft, Upload, Calendar } from 'lucide-react';
+import { Camera, ChevronRight, ChevronLeft, Upload, Calendar, Loader2, ScanText } from 'lucide-react';
+import { toast } from 'sonner';
+import { extractNidFront, extractNidBack, NidOcrProgress } from '@/lib/utils/nidOcr';
 
 export type NomineeInfoState = {
   nomineeNameBangla: string;
@@ -10,6 +12,8 @@ export type NomineeInfoState = {
   relation: string;
   nid: string;
   photo: File | null;
+  nidFrontPhoto: File | null;
+  nidBackPhoto: File | null;
   nomineeMobile: string;
   nomineeAddress: string;
 };
@@ -53,7 +57,12 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
   onStepClick,
 }) => {
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isExtractingFront, setIsExtractingFront] = useState(false);
+  const [isExtractingBack, setIsExtractingBack] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const nidFrontInputRef = useRef<HTMLInputElement | null>(null);
+  const nidBackInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChange =
     (field: keyof NomineeInfoState) =>
@@ -82,6 +91,73 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
         ...prev,
         photo: undefined,
       }));
+    }
+  };
+
+  const handleNidFrontChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    onUpdate({ ...data, nidFrontPhoto: file });
+    if (errors.nidFrontPhoto) setErrors((prev) => ({ ...prev, nidFrontPhoto: undefined }));
+
+    if (!file) return;
+
+    setIsExtractingFront(true);
+    setOcrProgress(0);
+
+    try {
+      const extracted = await extractNidFront(file, (p: NidOcrProgress) => {
+        setOcrProgress(p.progress);
+      });
+
+      const updates: Partial<NomineeInfoState> = {};
+      if (extracted.name_bn)       updates.nomineeNameBangla  = extracted.name_bn;
+      if (extracted.name_en)       updates.nomineeNameEnglish = extracted.name_en;
+      if (extracted.date_of_birth) updates.nomineeDob         = extracted.date_of_birth;
+      if (extracted.nid_number)    updates.nid                = extracted.nid_number;
+
+      if (Object.keys(updates).length > 0) {
+        onUpdate({ ...data, nidFrontPhoto: file, ...updates });
+        toast.success("Nominee NID data extracted and filled automatically");
+      } else {
+        toast.warning("Could not read nominee NID fields clearly. Please fill manually.");
+      }
+    } catch (err) {
+      console.error("Nominee OCR error:", err);
+      toast.error("OCR failed. Please fill the fields manually.");
+    } finally {
+      setIsExtractingFront(false);
+      setOcrProgress(0);
+    }
+  };
+
+  const handleNidBackChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    onUpdate({ ...data, nidBackPhoto: file });
+    if (errors.nidBackPhoto) setErrors((prev) => ({ ...prev, nidBackPhoto: undefined }));
+
+    if (!file) return;
+
+    setIsExtractingBack(true);
+    setOcrProgress(0);
+
+    try {
+      const extracted = await extractNidBack(file, (p: NidOcrProgress) => {
+        setOcrProgress(p.progress);
+      });
+
+      if (extracted.address) {
+        onUpdate({ ...data, nidBackPhoto: file, nomineeAddress: extracted.address });
+        if (errors.nomineeAddress) setErrors((prev) => ({ ...prev, nomineeAddress: undefined }));
+        toast.success("Nominee address extracted from NID back");
+      } else {
+        toast.warning("Could not read the address clearly. Please fill manually.");
+      }
+    } catch (err) {
+      console.error("Nominee NID back OCR error:", err);
+      toast.error("OCR failed. Please fill the address manually.");
+    } finally {
+      setIsExtractingBack(false);
+      setOcrProgress(0);
     }
   };
 
@@ -137,6 +213,14 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
       nextErrors.photo = "Maximum allowed file size is 2MB";
     }
 
+    if (data.nidFrontPhoto && data.nidFrontPhoto.size > 2 * 1024 * 1024) {
+      nextErrors.nidFrontPhoto = "Maximum allowed file size is 2MB";
+    }
+
+    if (data.nidBackPhoto && data.nidBackPhoto.size > 2 * 1024 * 1024) {
+      nextErrors.nidBackPhoto = "Maximum allowed file size is 2MB";
+    }
+
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -147,29 +231,51 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
     }
   };
 
+  const isExtracting = isExtractingFront || isExtractingBack;
+
   return (
     <div className="w-full bg-[#F3F4F6] py-12">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-7xl">
-        
+
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10">
-          
+
           {/* Header */}
           <div className="mb-8">
             <h2 className="text-[#00341C] text-3xl font-bold mb-2">Nominee Information</h2>
             <p className="text-gray-500 text-sm md:text-base">Please fill out all required fields to complete your application.</p>
           </div>
 
-          <StepsNavigation 
+          <StepsNavigation
             steps={steps}
             currentStep={currentStep}
             maxStepReached={maxStepReached}
             onStepClick={onStepClick}
           />
 
+          {/* OCR loading banner */}
+          {isExtracting && (
+            <div className="bg-[#F0FDF4] border border-[#A8DAC3] rounded-lg px-4 py-3 mb-6">
+              <div className="flex items-center gap-3 text-[#008543] text-sm font-medium mb-2">
+                <Loader2 size={16} className="animate-spin" />
+                <ScanText size={16} />
+                {isExtractingFront
+                  ? "Reading nominee NID front... filling fields automatically"
+                  : "Reading nominee NID back... filling the address automatically"}
+              </div>
+              <div className="w-full bg-[#D1FAE5] rounded-full h-2">
+                <div
+                  className="bg-[#008543] h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${ocrProgress}%` }}
+                />
+              </div>
+              <p className="text-xs text-[#008543] mt-1">{ocrProgress}%</p>
+            </div>
+          )}
+
           {/* Form Content */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            
+
             {/* Nominee Name (Bangla) */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900">
@@ -240,9 +346,9 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                     {data.nomineeDob ? formatDate(data.nomineeDob) : "mm/dd/yyyy"}
                   </span>
                 </div>
-                <Calendar 
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20" 
-                  size={20} 
+                <Calendar
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-20"
+                  size={20}
                 />
               </div>
               {errors.nomineeDob && (
@@ -311,7 +417,7 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
             </div>
 
             {/* Nominee Address */}
-            <div className="space-y-2 md:col-span-1">
+            <div className="space-y-2 md:col-span-2">
               <label className="block text-sm font-medium text-gray-900">
                 Nominee Address <span className="text-red-500">*</span>
               </label>
@@ -341,53 +447,121 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
                 <p className="text-xs text-red-500">{errors.nomineeAddress}</p>
               )}
             </div>
+          </div>
 
-            {/* Passport Size Photo */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Passport Size Photo <span className="text-red-500">*</span>
-              </label>
-              <p className="text-xs text-gray-500 mb-3">
-                Upload a recent passport size photograph (max 2MB, JPG/PNG)
+          {/* Document Uploads Section */}
+          <div className="col-span-1 md:col-span-2 mt-8">
+            <div className="bg-gradient-to-r from-[#F0F9FF] to-[#F0FDF4] rounded-xl p-6 border border-gray-200">
+              <h3 className="text-xl font-bold text-[#00341C] mb-2 flex items-center">
+                <Upload className="mr-2" size={24} />
+                Document Uploads
+              </h3>
+              <p className="text-xs text-gray-500 mb-6 flex items-center gap-1">
+                <ScanText size={13} />
+                Uploading the nominee's NID Front auto-fills name, date of birth and NID number; NID Back fills the address.
               </p>
-              
-              <div className="flex flex-col items-start space-y-3">
-                <div className="w-40 h-40 bg-[#F3F4F6] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 relative overflow-hidden">
-                  {data.photo ? (
-                    <img 
-                      src={URL.createObjectURL(data.photo)} 
-                      alt="Preview" 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <>
-                      <Camera size={32} className="mb-2" />
-                      <span className="text-xs">PP Size Photo</span>
-                    </>
-                  )}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Passport Size Photo */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    Passport Photo <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">Recent passport size (max 2MB)</p>
+                  <div onClick={() => fileInputRef.current?.click()} className="group cursor-pointer">
+                    <div className="w-full aspect-[3/2] bg-white border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden hover:border-[#008543] transition-all">
+                      {data.photo ? (
+                        <>
+                          <img src={URL.createObjectURL(data.photo)} alt="Preview" className="absolute inset-0 w-full h-full object-cover z-0" />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10" />
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center p-8">
+                          <Camera size={20} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <input ref={fileInputRef} type="file" accept=".jpg,.jpeg,.png" className="hidden" onChange={handlePhotoChange} />
+                  {errors.photo && <p className="text-xs text-red-500 mt-1">{errors.photo}</p>}
                 </div>
-                
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".jpg,.jpeg,.png"
-                  className="hidden"
-                  onChange={handlePhotoChange}
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center space-x-2 px-4 py-2 bg-[#E5E7EB] hover:bg-gray-300 text-gray-700 rounded-md text-sm font-medium transition-colors"
-                >
-                  <Upload size={16} />
-                  <span>{data.photo ? "Change Photo" : "Upload Photo"}</span>
-                </button>
-              </div>
-              {errors.photo && (
-                <p className="text-xs text-red-500">{errors.photo}</p>
-              )}
-            </div>
 
+                {/* NID Front Photo */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    NID Front
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">Auto-fills fields · Max 2MB</p>
+                  <div
+                    onClick={() => !isExtracting && nidFrontInputRef.current?.click()}
+                    className={`group ${isExtracting ? "cursor-wait" : "cursor-pointer"}`}
+                  >
+                    <div className={`w-full aspect-[3/2] bg-white border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden transition-all ${isExtractingFront ? "border-[#008543] bg-[#F0FDF4]" : "border-gray-300 hover:border-[#008543]"}`}>
+                      {isExtractingFront ? (
+                        <div className="flex flex-col items-center gap-2 p-4 w-full px-6">
+                          <Loader2 size={24} className="animate-spin text-[#008543]" />
+                          <span className="text-xs text-[#008543] text-center font-medium">Scanning... {ocrProgress}%</span>
+                          <div className="w-full bg-[#D1FAE5] rounded-full h-1.5 mt-1">
+                            <div className="bg-[#008543] h-1.5 rounded-full transition-all duration-300" style={{ width: `${ocrProgress}%` }} />
+                          </div>
+                        </div>
+                      ) : data.nidFrontPhoto ? (
+                        <>
+                          <img src={URL.createObjectURL(data.nidFrontPhoto)} alt="NID Front" className="absolute inset-0 w-full h-full object-cover z-0" />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10" />
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center p-8">
+                          <Upload size={20} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <input ref={nidFrontInputRef} type="file" accept=".jpg,.jpeg,.png" className="hidden" onChange={handleNidFrontChange} />
+                  {errors.nidFrontPhoto && <p className="text-xs text-red-500 mt-1">{errors.nidFrontPhoto}</p>}
+                </div>
+
+                {/* NID Back Photo */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900">
+                    NID Back
+                  </label>
+                  <p className="text-xs text-gray-600 mb-2">Auto-fills address · Max 2MB</p>
+                  <div
+                    onClick={() => !isExtracting && nidBackInputRef.current?.click()}
+                    className={`group ${isExtracting ? "cursor-wait" : "cursor-pointer"}`}
+                  >
+                    <div className={`w-full aspect-[3/2] bg-white border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-gray-400 relative overflow-hidden transition-all ${isExtractingBack ? "border-[#008543] bg-[#F0FDF4]" : "border-gray-300 hover:border-[#008543]"}`}>
+                      {isExtractingBack ? (
+                        <div className="flex flex-col items-center gap-2 p-4 w-full px-6">
+                          <Loader2 size={24} className="animate-spin text-[#008543]" />
+                          <span className="text-xs text-[#008543] text-center font-medium">Scanning... {ocrProgress}%</span>
+                          <div className="w-full bg-[#D1FAE5] rounded-full h-1.5 mt-1">
+                            <div className="bg-[#008543] h-1.5 rounded-full transition-all duration-300" style={{ width: `${ocrProgress}%` }} />
+                          </div>
+                        </div>
+                      ) : data.nidBackPhoto ? (
+                        <>
+                          <img src={URL.createObjectURL(data.nidBackPhoto)} alt="NID Back" className="absolute inset-0 w-full h-full object-cover z-0" />
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity z-10" />
+                          <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white opacity-0 group-hover:opacity-100 transition-opacity z-20" size={28} />
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center p-8">
+                          <Upload size={20} className="mb-1 text-gray-400 group-hover:text-[#008543] transition-colors" />
+                          <span className="text-xs text-center px-2">Click to Upload</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <input ref={nidBackInputRef} type="file" accept=".jpg,.jpeg,.png" className="hidden" onChange={handleNidBackChange} />
+                  {errors.nidBackPhoto && <p className="text-xs text-red-500 mt-1">{errors.nidBackPhoto}</p>}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -401,11 +575,12 @@ const NomineeInformation: React.FC<NomineeInformationProps> = ({
             <ChevronLeft size={20} className="mr-2" />
             Previous
           </button>
-          
+
           <button
             type="button"
             onClick={handleNextClick}
-            className="flex items-center px-8 py-3 bg-[#008543] text-white rounded-md font-medium hover:bg-[#006C36] transition-colors shadow-sm"
+            disabled={isExtracting}
+            className="flex items-center px-8 py-3 bg-[#008543] text-white rounded-md font-medium hover:bg-[#006C36] transition-colors shadow-sm disabled:opacity-60 disabled:cursor-wait"
           >
             Next
             <ChevronRight size={20} className="ml-2" />

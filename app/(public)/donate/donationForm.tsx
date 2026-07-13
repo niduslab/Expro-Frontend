@@ -8,6 +8,8 @@ import StepTwo from "./stepTwo";
 import StepThree from "./stepThree";
 import { donationSchema } from "@/components/zodschema/donateSchema";
 import { ZodError } from "zod";
+import { payDonation } from "@/lib/api/functions/donation";
+
 interface FormType {
   amount: string;
   cause: string;
@@ -16,10 +18,10 @@ interface FormType {
   phone: string;
   message: string;
   payment: string;
-  transactionId: string;
 }
 const Donationform = () => {
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
 
   const initialForm = {
     amount: "",
@@ -28,8 +30,7 @@ const Donationform = () => {
     email: "",
     phone: "",
     message: "",
-    payment: "",
-    transactionId: "",
+    payment: "bkash",
   };
 
   const [form, setForm] = useState<FormType>(initialForm);
@@ -72,13 +73,11 @@ const Donationform = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Validate the full form before talking to the API.
     try {
       donationSchema.parse(form);
       setErrors({});
-      toast.success("Donation completed successfully");
-      setForm(initialForm);
-      setStep(1);
     } catch (error: unknown) {
       if (error instanceof ZodError) {
         const fieldErrors: Record<string, string> = {};
@@ -87,7 +86,50 @@ const Donationform = () => {
             fieldErrors[issue.path[0] as string] = issue.message;
         });
         setErrors(fieldErrors);
+        const firstMessage = error.issues[0]?.message;
+        if (firstMessage) toast.error(firstMessage);
       }
+      return;
+    }
+
+    // Open to both members and guests — a logged-in member is associated
+    // automatically via the bearer token attached by the API client.
+    setSubmitting(true);
+    const toastId = toast.loading("Initiating secure payment...");
+
+    try {
+      const res = await payDonation({
+        project_id: null,
+        amount: Number(form.amount),
+        donor_name: form.name,
+        donor_email: form.email,
+        donor_phone: form.phone,
+        purpose: form.cause,
+        message: form.message || undefined,
+        is_anonymous: false,
+        payment_method: "bkash",
+      });
+
+      // bKash returns bkashURL; SSLCommerz (if ever enabled) returns gateway_url.
+      const redirectUrl = res.data?.bkashURL || res.data?.gateway_url;
+
+      if (res.success && redirectUrl) {
+        toast.success("Redirecting to bKash...", { id: toastId });
+        window.location.href = redirectUrl;
+        return; // keep the spinner while the browser navigates away
+      }
+
+      toast.error(res.message || "Could not start the payment. Please try again.", {
+        id: toastId,
+      });
+      setSubmitting(false);
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Payment initiation failed. Please try again.";
+      toast.error(message, { id: toastId });
+      setSubmitting(false);
     }
   };
 
@@ -134,6 +176,7 @@ const Donationform = () => {
           setStep={setStep}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
+          submitting={submitting}
           errors={errors}
         />
       )}

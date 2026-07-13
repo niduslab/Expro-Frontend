@@ -47,6 +47,8 @@ const initialNomineeInfo: NomineeInfoState = {
   relation: "",
   nid: "",
   photo: null,
+  nidFrontPhoto: null,
+  nidBackPhoto: null,
   nomineeMobile: "",
   nomineeAddress: "",
 };

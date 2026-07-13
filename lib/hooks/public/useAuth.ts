@@ -158,11 +158,17 @@ export const useLogin = () => {
       // Invalidate all queries to refresh data
       queryClient.invalidateQueries();
 
-      // Redirect based on role using router.push (client-side navigation)
-      const redirectPath =
-        userRole === "admin" || userRole === "chairman"
-          ? "/admin"
-          : "/dashboard";
+      // Redirect based on the admin-access gate permission (falls back to
+      // legacy admin/chairman roles for backward compatibility).
+      const permissions: string[] = user.permissions ?? [];
+      const roles: string[] = user.roles ?? [];
+      const canEnterAdmin =
+        permissions.includes("admin_access") ||
+        permissions.includes("full_system_control") ||
+        roles.includes("admin") ||
+        roles.includes("chairman");
+
+      const redirectPath = canEnterAdmin ? "/admin" : "/dashboard";
       console.log("Redirecting to:", redirectPath); // Debug log
 
       // Use router.push for smooth client-side navigation

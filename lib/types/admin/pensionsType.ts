@@ -55,8 +55,8 @@ export interface PensionEnrollment {
   package_roles?: PensionPackageRole[];
   current_role?: string;
   
-  // Installments (included when fetched with relations)
-  pension_installments?: any[]; // PensionInstallment[]
+  // Related installments (eager-loaded on show/myEnrollments)
+  pension_installments?: PensionInstallment[];
 
   notes: string | null; // text
 

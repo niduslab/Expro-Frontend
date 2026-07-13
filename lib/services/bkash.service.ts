@@ -5,9 +5,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/a
 export interface BkashPaymentRequest {
   amount: number;
   payment_type: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
+  payable_type?: string;
+  payable_id?: number;
+  customer_name?: string;
+  customer_email?: string;
+  customer_phone?: string;
   user_id?: number;
   reference_id?: string;
 }
@@ -39,6 +41,18 @@ class BkashService {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     };
+  }
+
+  /**
+   * Create a new bKash payment and get the gateway redirect URL
+   */
+  async createPayment(data: BkashPaymentRequest): Promise<PaymentResponse> {
+    const response = await axios.post(
+      `${API_URL}/bkash/create-payment`,
+      data,
+      { headers: this.getAuthHeaders() }
+    );
+    return response.data;
   }
 
   /**

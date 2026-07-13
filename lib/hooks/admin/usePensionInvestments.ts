@@ -250,7 +250,7 @@ export const usePensionInvestment = (id: number) => {
   return useQuery({
     queryKey: ['pensionInvestment', id],
     queryFn: async () => {
-      const response = await apiRequest.get<ApiResponse<PensionInvestment>>(
+      const response = await apiRequest.get<PensionInvestment>(
         `/public/pension-investment/${id}`
       );
       return response.data.data;

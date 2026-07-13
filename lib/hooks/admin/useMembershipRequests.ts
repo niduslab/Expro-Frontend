@@ -43,16 +43,12 @@ export interface MembershipRequestsParams {
   search?: string;
 }
 
-/**
- * Membership Request Detail Types (single-application show endpoint)
- * See Expro-Backend MEMBERSHIP_APPLICATION_SHOW_API.md
- */
 export interface MembershipRequestPayment {
   id: number;
   payment_id: string;
-  amount: number;
-  gateway_fee: number;
-  net_amount: number;
+  amount: string;
+  gateway_fee: string;
+  net_amount: string;
   currency: string;
   payment_method: string;
   payment_type: string;
@@ -66,12 +62,12 @@ export interface MembershipRequestPensionPackage {
   id: number;
   name: string;
   name_bangla: string;
-  monthly_amount: number;
+  monthly_amount: string;
   total_installments: number;
-  maturity_amount: number;
-  joining_commission: number;
-  installment_commission: number;
-  description: string;
+  maturity_amount: string;
+  joining_commission: string;
+  installment_commission: string;
+  description: string | null;
   status: string;
 }
 
