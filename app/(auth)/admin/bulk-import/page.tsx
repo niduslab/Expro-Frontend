@@ -46,7 +46,8 @@ export default function BulkImportPage() {
     try {
       toast.loading("Downloading template...", { id: "download" });
 
-      const response = await fetch("/api/v1/admin/bulk-import/template", {
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1/";
+      const response = await fetch(`${apiBase}admin/bulk-import/template`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -89,7 +90,8 @@ export default function BulkImportPage() {
       formData.append("file", file);
       formData.append("dry_run", isDryRun ? "true" : "false");
 
-      const response = await fetch("/api/v1/admin/bulk-import/members", {
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1/";
+      const response = await fetch(`${apiBase}admin/bulk-import/members`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
