@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useBkashPayment } from '@/lib/hooks/useBkashPayment';
 import { AlertCircle, RefreshCw } from 'lucide-react';
@@ -13,8 +13,8 @@ function PaymentRetryContent() {
   
   // Use whichever parameter is available
   const appId = applicationId || applicationNumber;
-  
-  const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'sslcommerz'>('bkash');
+
+  const paymentMethod: 'sslcommerz' = 'sslcommerz';
   const { retryPayment, loading } = useBkashPayment({
     onSuccess: () => {
       router.push('/membership/success?payment=success');
@@ -64,47 +64,6 @@ function PaymentRetryContent() {
             Your membership application was submitted, but the payment was not completed. 
             Please retry the payment to activate your membership.
           </p>
-        </div>
-
-        {/* Payment Method Selection */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-4 text-center">Select Payment Method</h3>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => setPaymentMethod('bkash')}
-              disabled={loading}
-              className={`p-6 border-2 rounded-lg transition-all ${
-                paymentMethod === 'bkash'
-                  ? 'border-pink-600 bg-pink-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <div className="h-12 flex items-center justify-center mb-2">
-                <div className="h-10 w-24 bg-pink-600 rounded flex items-center justify-center text-white font-bold">
-                  bKash
-                </div>
-              </div>
-              <p className="text-sm font-medium">bKash</p>
-            </button>
-
-            <button
-              onClick={() => setPaymentMethod('sslcommerz')}
-              disabled={loading}
-              className={`p-6 border-2 rounded-lg transition-all ${
-                paymentMethod === 'sslcommerz'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <div className="h-12 flex items-center justify-center mb-2">
-                <div className="h-10 w-24 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-xs">
-                  SSLCommerz
-                </div>
-              </div>
-              <p className="text-sm font-medium">Card/Bank</p>
-            </button>
-          </div>
         </div>
 
         {/* Info Box */}

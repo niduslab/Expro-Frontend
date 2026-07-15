@@ -4,6 +4,7 @@
   "/(auth)/admin/blogfeature/page": "app/(auth)/admin/blogfeature/page.js",
   "/(auth)/admin/board-members/page": "app/(auth)/admin/board-members/page.js",
   "/(auth)/admin/branch/page": "app/(auth)/admin/branch/page.js",
+  "/(auth)/admin/bulk-import/page": "app/(auth)/admin/bulk-import/page.js",
   "/(auth)/admin/commission/page": "app/(auth)/admin/commission/page.js",
   "/(auth)/admin/contactmessage/page": "app/(auth)/admin/contactmessage/page.js",
   "/(auth)/admin/dashboard/commission/page": "app/(auth)/admin/dashboard/commission/page.js",

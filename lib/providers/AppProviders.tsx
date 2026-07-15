@@ -6,6 +6,7 @@ import { AuthProvider } from '@/lib/context/AuthContext';
 import { NotificationProvider } from '@/lib/context/NotificationContext';
 import { CartProvider } from '@/lib/context/CartContext';
 import { ToastProvider } from '@/lib/components/ToastProvider';
+import { ThemeProvider } from './ThemeProvider';
 
 /**
  * App Providers Component
@@ -26,15 +27,17 @@ import { ToastProvider } from '@/lib/components/ToastProvider';
  */
 export const AppProviders: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <NotificationProvider>
-          <CartProvider>
-            <ToastProvider />
-            {children}
-          </CartProvider>
-        </NotificationProvider>
-      </AuthProvider>
-    </QueryProvider>
+    <ThemeProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <CartProvider>
+              <ToastProvider />
+              {children}
+            </CartProvider>
+          </NotificationProvider>
+        </AuthProvider>
+      </QueryProvider>
+    </ThemeProvider>
   );
 };

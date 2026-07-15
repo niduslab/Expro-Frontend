@@ -142,8 +142,7 @@ export default function AdminPensionPackages() {
     );
   };
 
-  const packagesArray = packagesData?.data;
-  const packages = Array.isArray(packagesArray) ? packagesArray : [];
+  const packages = Array.isArray(packagesData) ? packagesData : [];
 
   return (
     <>

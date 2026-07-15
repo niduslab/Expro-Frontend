@@ -165,7 +165,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     signature: data.personalInfo.signature || null,
     
     // Payment method selection
-    payment_method: "bkash", // or "sslcommerz"
+    payment_method: "sslcommerz",
   };
   const handleSubmit = () => {
     setErrors({});

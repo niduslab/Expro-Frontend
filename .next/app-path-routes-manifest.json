@@ -4,6 +4,7 @@
   "/(auth)/admin/blogfeature/page": "/admin/blogfeature",
   "/(auth)/admin/board-members/page": "/admin/board-members",
   "/(auth)/admin/branch/page": "/admin/branch",
+  "/(auth)/admin/bulk-import/page": "/admin/bulk-import",
   "/(auth)/admin/commission/page": "/admin/commission",
   "/(auth)/admin/contactmessage/page": "/admin/contactmessage",
   "/(auth)/admin/dashboard/commission/page": "/admin/dashboard/commission",

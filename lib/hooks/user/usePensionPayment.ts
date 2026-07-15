@@ -24,7 +24,7 @@ export function usePensionPayment(options: UsePensionPaymentOptions = {}) {
           enrollmentId,
           {
             count,
-            payment_method: 'bkash',
+            payment_method: 'sslcommerz',
           }
         );
 
@@ -44,19 +44,17 @@ export function usePensionPayment(options: UsePensionPaymentOptions = {}) {
             enrollmentId.toString()
           );
 
-          console.log("🔗 Redirecting to payment URL:", paymentData.bkashURL);
-
           toast.success(response.message || 'Redirecting to payment gateway...');
 
-          // Redirect to bKash payment URL directly (like membership payment)
-          if (paymentData.payment_method === 'bkash' && paymentData.bkashURL) {
-            // Direct redirect to bKash payment page
-            // bKash will redirect back to backend callback after payment
-            // Backend will then redirect to /dashboard/pensions/payment-callback
-            window.location.href = paymentData.bkashURL;
-          } else if (paymentData.gateway_url) {
-            // For other gateways
+          // Redirect to the gateway checkout page directly (like membership payment)
+          if (paymentData.gateway_url) {
+            // SSLCommerz will redirect back to the backend callback after payment,
+            // which then redirects to /pension/payment-success
+            console.log("🔗 Redirecting to payment URL:", paymentData.gateway_url);
             window.location.href = paymentData.gateway_url;
+          } else if (paymentData.payment_method === 'bkash' && paymentData.bkashURL) {
+            console.log("🔗 Redirecting to payment URL:", paymentData.bkashURL);
+            window.location.href = paymentData.bkashURL;
           } else {
             console.error("❌ No payment URL found in response");
             toast.error('Payment URL not found. Please contact support.');

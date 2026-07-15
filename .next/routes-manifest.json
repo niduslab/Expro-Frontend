@@ -237,6 +237,12 @@
       "namedRegex": "^/admin/branch(?:/)?$"
     },
     {
+      "page": "/admin/bulk-import",
+      "regex": "^/admin/bulk\\-import(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/bulk\\-import(?:/)?$"
+    },
+    {
       "page": "/admin/commission",
       "regex": "^/admin/commission(?:/)?$",
       "routeKeys": {},

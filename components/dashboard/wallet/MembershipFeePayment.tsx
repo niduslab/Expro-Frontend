@@ -28,13 +28,15 @@ export default function MembershipFeePayment() {
       {
         fee_id: fee.id,
         fee_type: fee.fee_type,
-        payment_method: "bkash",
+        payment_method: "sslcommerz",
       },
       {
         onSuccess: (response) => {
-          if (response.data.bkashURL) {
-            // Redirect to bKash payment page
-            window.location.href = response.data.bkashURL;
+          if (response.data.gateway_url) {
+            // Redirect to SSLCommerz payment page
+            window.location.href = response.data.gateway_url;
+          } else {
+            alert("Payment URL not found. Please contact support.");
           }
         },
         onError: (error: any) => {
@@ -230,7 +232,7 @@ export default function MembershipFeePayment() {
           <div className="text-sm text-blue-800">
             <p className="font-medium mb-1">Payment Information</p>
             <ul className="list-disc list-inside space-y-1 text-xs">
-              <li>You will be redirected to bKash payment gateway</li>
+              <li>You will be redirected to the SSLCommerz payment gateway</li>
               <li>Payment confirmation may take a few moments</li>
               <li>Late fees apply for overdue payments</li>
             </ul>
