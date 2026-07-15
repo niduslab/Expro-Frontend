@@ -609,6 +609,12 @@ function MembersPageContent() {
               >
                 + Add Member
               </button>
+              <button
+                onClick={() => router.push('/admin/bulk-import')}
+                className="flex items-center gap-1.5 text-[12px] px-3 py-[5px] bg-[#2563EB] text-white rounded-lg hover:bg-[#1D4ED8] transition-colors cursor-pointer"
+              >
+                📤 Bulk Import
+              </button>
             </div>
           )}
         </div>
