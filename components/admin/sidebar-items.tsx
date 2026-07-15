@@ -23,6 +23,7 @@ import {
   BarChart3,
   ArrowLeftRight,
   UserCog,
+  Upload,
 } from "lucide-react";
 import type { ElementType } from "react";
 
@@ -45,6 +46,7 @@ export const sidebarItems: SidebarItem[] = [
   { name: "Manage Members", href: "/admin/members", icon: SquareChartGantt, permission: "access_members" },
   { name: "Membership Request", href: "/admin/membership-request", icon: AudioLines, permission: "access_membership_requests" },
   { name: "Add Membership", href: "/admin/membership", icon: UsersRound, permission: "access_membership" },
+  { name: "Bulk Import", href: "/admin/bulk-import", icon: Upload, permission: "access_bulk_import" },
   { name: "Role Applications", href: "/admin/pension-role-applications", icon: Award, permission: "access_role_applications" },
   { name: "User Management", href: "/admin/users", icon: UserCog, permission: "access_user_management" },
   { name: "Role Permission", href: "/admin/role-permission", icon: ShieldCheck, permission: "access_role_permission" },
@@ -87,6 +89,7 @@ export const sidebarGroups: SidebarGroup[] = [
       { name: "Manage Members", href: "/admin/members", icon: SquareChartGantt, permission: "access_members" },
       { name: "Membership Request", href: "/admin/membership-request", icon: AudioLines, permission: "access_membership_requests" },
       { name: "Add Membership", href: "/admin/membership", icon: UsersRound, permission: "access_membership" },
+      { name: "Bulk Import", href: "/admin/bulk-import", icon: Upload, permission: "access_bulk_import" },
       { name: "Role Applications", href: "/admin/pension-role-applications", icon: Award, permission: "access_role_applications" },
     ],
   },
