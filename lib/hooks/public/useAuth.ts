@@ -46,7 +46,7 @@ interface LoginResponse {
 async function getCsrfCookie(): Promise<void> {
   try {
     const apiBaseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api/v1";
+      process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.ewfbd.org/api/v1";
     // Remove /api/v1 from the end to get the base URL
     const baseURL = apiBaseUrl.replace(/\/api\/v1\/?$/, "");
     const csrfUrl = `${baseURL}/sanctum/csrf-cookie`;
