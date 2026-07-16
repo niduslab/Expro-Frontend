@@ -247,15 +247,6 @@ export function Header() {
     },
     { name: "Our Project", href: "/projects/project", hasDropdown: false },
     {
-      name: "Become A Member",
-      href: "/membership",
-      hasDropdown: true,
-      dropdownItems: [
-        // { name: "Executive Membership", href: "/membership/executive" },
-        { name: "General Membership", href: "/membership" },
-      ],
-    },
-    {
       name: "Blog/Media",
       href: "/blog",
       hasDropdown: true,
