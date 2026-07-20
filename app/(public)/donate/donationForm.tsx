@@ -30,7 +30,7 @@ const Donationform = () => {
     email: "",
     phone: "",
     message: "",
-    payment: "bkash",
+    payment: "sslcommerz",
   };
 
   const [form, setForm] = useState<FormType>(initialForm);
@@ -107,14 +107,14 @@ const Donationform = () => {
         purpose: form.cause,
         message: form.message || undefined,
         is_anonymous: false,
-        payment_method: "bkash",
+        payment_method: "sslcommerz",
       });
 
-      // bKash returns bkashURL; SSLCommerz (if ever enabled) returns gateway_url.
-      const redirectUrl = res.data?.bkashURL || res.data?.gateway_url;
+      // SSLCommerz returns gateway_url; bKash (if ever re-enabled) returns bkashURL.
+      const redirectUrl = res.data?.gateway_url || res.data?.bkashURL;
 
       if (res.success && redirectUrl) {
-        toast.success("Redirecting to bKash...", { id: toastId });
+        toast.success("Redirecting to payment gateway...", { id: toastId });
         window.location.href = redirectUrl;
         return; // keep the spinner while the browser navigates away
       }

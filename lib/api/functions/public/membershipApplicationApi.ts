@@ -63,6 +63,7 @@ export const createMembershipApplication = async (
     {
       headers: {
         "Content-Type": "multipart/form-data",
+        Accept: "application/json",
       },
     },
   );

@@ -16,5 +16,5 @@ export const donationSchema = z.object({
     .regex(/^\d+$/, "Phone must contain only numbers"),
   message: z.string().optional(),
   // Paid through the bKash gateway.
-  payment: z.enum(["bkash"], "Select a payment method"),
+  payment: z.enum(["sslcommerz"], "Select a payment method"),
 });

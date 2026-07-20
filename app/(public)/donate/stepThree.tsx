@@ -10,10 +10,10 @@ export default function StepThree({
   handleSubmit,
   submitting,
 }: any) {
-  // bKash is the donation gateway — select it by default.
+  // SSLCommerz is the donation gateway — select it by default.
   useEffect(() => {
-    if (form.payment !== "bkash") {
-      setForm((prev: any) => ({ ...prev, payment: "bkash" }));
+    if (form.payment !== "sslcommerz") {
+      setForm((prev: any) => ({ ...prev, payment: "sslcommerz" }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -24,25 +24,25 @@ export default function StepThree({
         <CreditCard size={18} /> Payment Method
       </h2>
 
-      {/* bKash option */}
+      {/* SSLCommerz option */}
       <button
         type="button"
-        onClick={() => setForm({ ...form, payment: "bkash" })}
+        onClick={() => setForm({ ...form, payment: "sslcommerz" })}
         className={`w-full rounded-xl cursor-pointer p-5 text-left transition border
           ${
-            form.payment === "bkash"
-              ? "bg-pink-50 border-pink-600"
+            form.payment === "sslcommerz"
+              ? "bg-blue-50 border-blue-600"
               : "hover:bg-gray-50 border-slate-300"
           }`}
       >
         <div className="flex items-center gap-3">
-          <span className="bg-[#e2136e] text-white rounded-lg p-2 font-bold text-sm">
-            bKash
+          <span className="bg-blue-600 text-white rounded-lg p-2 font-bold text-sm">
+            SSLCommerz
           </span>
           <div>
-            <p className="font-semibold text-gray-900">Pay with bKash</p>
+            <p className="font-semibold text-gray-900">Pay with SSLCommerz</p>
             <p className="text-sm text-gray-500">
-              Secure mobile payment via the bKash gateway
+              Secure payment via cards, mobile banking &amp; more
             </p>
           </div>
         </div>
@@ -57,8 +57,8 @@ export default function StepThree({
       </div>
 
       <p className="text-xs text-gray-400 flex items-center gap-1.5">
-        <ShieldCheck size={14} /> You will be redirected to the secure bKash
-        gateway to complete your payment.
+        <ShieldCheck size={14} /> You will be redirected to the secure
+        SSLCommerz gateway to complete your payment.
       </p>
 
       <div className="flex justify-between pt-4">
